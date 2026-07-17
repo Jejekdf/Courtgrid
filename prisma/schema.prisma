@@ -7,44 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-model Lapangan {
-  id          Int          @id @default(autoincrement())
-  gambarUrl   String?
-  hargaPerJam Int
-  isActive    Boolean      @default(true)
-  nama        String
-  tipe        TipeLapangan @default(FUTSAL)
-  Reservasi   Reservasi[]
-}
-
-model Reservasi {
-  id               String          @id
-  lapanganId       Int
-  buktiBayarUrl    String?
-  createdAt        DateTime        @default(now())
-  metodePembayaran String?
-  totalHarga       Int
-  updatedAt        DateTime
-  userId           String
-  waktuMulai       DateTime
-  waktuSelesai     DateTime
-  status           StatusReservasi @default(PENDING)
-  Lapangan         Lapangan        @relation(fields: [lapanganId], references: [id])
-  User             User            @relation(fields: [userId], references: [id])
-}
-
-model User {
-  id        String      @id
-  nama      String
-  email     String      @unique
-  password  String?
-  no_hp     String?
-  role      Role        @default(PELANGGAN)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime
-  Reservasi Reservasi[]
-}
-
 enum Role {
   PELANGGAN
   ADMIN
@@ -60,4 +22,42 @@ enum TipeLapangan {
   FUTSAL
   BASKET
   BADMINTON
+}
+
+model User {
+  id        String      @id @default(cuid())
+  nama      String
+  email     String      @unique
+  password  String?
+  no_hp     String?
+  role      Role        @default(PELANGGAN)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  Reservasi Reservasi[]
+}
+
+model Lapangan {
+  id          Int          @id @default(autoincrement())
+  gambarUrl   String?
+  hargaPerJam Int
+  isActive    Boolean      @default(true)
+  nama        String
+  tipe        TipeLapangan @default(FUTSAL)
+  Reservasi   Reservasi[]
+}
+
+model Reservasi {
+  id               String          @id @default(cuid())
+  lapanganId       Int
+  buktiBayarUrl    String?
+  createdAt        DateTime        @default(now())
+  metodePembayaran String?
+  totalHarga       Int
+  updatedAt        DateTime        @updatedAt
+  userId           String
+  waktuMulai       DateTime
+  waktuSelesai     DateTime
+  status           StatusReservasi @default(PENDING)
+  Lapangan         Lapangan        @relation(fields: [lapanganId], references: [id])
+  User             User            @relation(fields: [userId], references: [id])
 }
