@@ -3,20 +3,35 @@ import { prisma } from '../lib/prisma';
 import bcrypt from 'bcrypt';
 
 async function main() {
-  // Load from environment variables, fallback to defaults if not set
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@sportcenter.com';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'password_default_123';
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  const adminNama = process.env.ADMIN_NAMA;
+
+  if (!adminEmail || !adminPassword || !adminNama) {
+    throw new Error(
+      '❌ ADMIN_EMAIL, ADMIN_PASSWORD, dan ADMIN_NAMA harus diisi di file .env'
+    );
+  }
+
+  // Hapus admin lama jika ada
+  await prisma.user.deleteMany({
+    where: {
+      email: { not: adminEmail }, 
+      role: 'ADMIN',
+    },
+  });
 
   const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
   const admin = await prisma.user.upsert({
     where: { email: adminEmail },
     update: {
+      nama: adminNama,
       password: hashedPassword,
     },
     create: {
       email: adminEmail,
-      nama: 'Super Admin',
+      nama: adminNama,
       password: hashedPassword,
       role: 'ADMIN',
     },
