@@ -9,11 +9,11 @@ async function main() {
 
   if (!adminEmail || !adminPassword || !adminNama) {
     throw new Error(
-      '❌ ADMIN_EMAIL, ADMIN_PASSWORD, dan ADMIN_NAMA harus diisi di file .env'
+      'Missing required environment variables: ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_NAMA'
     );
   }
 
-  // Hapus admin lama jika ada
+  // Remove stale admin accounts
   await prisma.user.deleteMany({
     where: {
       email: { not: adminEmail }, 
@@ -37,12 +37,12 @@ async function main() {
     },
   });
 
-  console.log('✅ Admin account secured and seeded for:', admin.email);
+  console.log('Admin account seeded:', admin.email);
 }
 
 main()
   .catch((e) => {
-    console.error("❌ Failed to create admin:", e);
+    console.error('Seed failed:', e);
     process.exit(1);
   })
   .finally(async () => {
