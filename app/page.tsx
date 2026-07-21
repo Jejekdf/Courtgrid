@@ -1,65 +1,104 @@
-import Image from "next/image";
+import Hero from "@/components/layout/Hero";
+import Link from "next/link";
+import { Zap, Calendar, ShieldCheck } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="min-h-screen bg-white text-zinc-950 font-sans flex flex-col justify-between selection:bg-zinc-950 selection:text-white">
+      {/* Navigation Header */}
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-zinc-200">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center space-x-2.5 group">
+            <div className="h-8 w-8 rounded-md bg-zinc-950 text-white flex items-center justify-center font-mono font-bold text-xs tracking-tighter shadow-sm transition-transform group-hover:scale-[0.98]">
+              CG
+            </div>
+            <span className="text-sm font-semibold tracking-tight text-zinc-950 uppercase">
+              CourtGrid
+            </span>
+          </Link>
+
+          <nav className="flex items-center space-x-3">
+            <Link
+              href="/login"
+              className="text-xs font-medium text-zinc-500 hover:text-zinc-950 transition-colors px-3 py-2"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              Masuk
+            </Link>
+            <Link
+              href="/register"
+              className="inline-flex items-center justify-center rounded-md text-xs font-semibold transition-all bg-zinc-950 text-white hover:bg-zinc-800 h-9 px-4 shadow-sm active:scale-[0.98]"
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              Daftar Sekarang
+            </Link>
+          </nav>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+      </header>
+
+      {/* Hero Section Component */}
+      <main className="flex-1">
+        <Hero />
+
+        {/* Feature Cards Section */}
+        <section className="bg-zinc-50 border-t border-zinc-200 py-24 relative z-10">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="p-6 rounded-xl border border-zinc-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+                <div className="h-10 w-10 rounded-lg bg-zinc-950 text-white flex items-center justify-center mb-4 font-bold">
+                  <Zap className="h-5 w-5" />
+                </div>
+                <h3 className="text-base font-semibold text-zinc-950 tracking-tight">
+                  Real-time Availability
+                </h3>
+                <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
+                  Jadwal lapangan terupdate otomatis tanpa jeda. Bebas bentrokan jadwal booking antar pengguna.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-xl border border-zinc-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+                <div className="h-10 w-10 rounded-lg bg-zinc-950 text-white flex items-center justify-center mb-4 font-bold">
+                  <Calendar className="h-5 w-5" />
+                </div>
+                <h3 className="text-base font-semibold text-zinc-950 tracking-tight">
+                  Presisi Slot Waktu
+                </h3>
+                <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
+                  Sistem reservasi berbasis slot jam presisi yang fleksibel sesuai jadwal sesi latihan tim Anda.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-xl border border-zinc-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+                <div className="h-10 w-10 rounded-lg bg-zinc-950 text-white flex items-center justify-center mb-4 font-bold">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <h3 className="text-base font-semibold text-zinc-950 tracking-tight">
+                  Konfirmasi Instan
+                </h3>
+                <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
+                  Dapatkan bukti reservasi QR/Digital resmi secara instan begitu pembayaran diverifikasi.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-zinc-200 py-8 bg-white relative z-10">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 gap-4">
+          <div className="flex items-center space-x-2">
+            <div className="h-5 w-5 rounded bg-zinc-950 text-white font-mono font-bold text-[10px] flex items-center justify-center">
+              CG
+            </div>
+            <span className="font-semibold text-zinc-950">CourtGrid</span>
+            <span>© {new Date().getFullYear()}</span>
+          </div>
+          <div className="flex space-x-6 text-xs text-zinc-500">
+            <span className="hover:text-zinc-950 cursor-pointer transition-colors">Dokumentasi</span>
+            <span className="hover:text-zinc-950 cursor-pointer transition-colors">Keamanan</span>
+            <span className="hover:text-zinc-950 cursor-pointer transition-colors">Privasi</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
