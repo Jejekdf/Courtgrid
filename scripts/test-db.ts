@@ -6,8 +6,8 @@ async function main() {
     const usersCount = await prisma.user.count();
     console.log(`Successfully connected! Number of users: ${usersCount}`);
     
-    const lapangans = await prisma.lapangan.findMany({ take: 5 });
-    console.log("Lapangans found:", lapangans);
+    const courts = await prisma.court.findMany({ take: 5 });
+    console.log("Courts found:", courts);
   } catch (error) {
     console.error("Database connection test failed:", error);
     process.exit(1);

@@ -20,11 +20,27 @@ export async function authenticate(
     return "Validation failed: " + validatedFields.error.issues[0].message;
   }
 
+  // Determine redirect target based on admin role / credentials
+  const envAdminEmail = process.env.ADMIN_EMAIL;
+  let targetRedirect = "/";
+
+  if (envAdminEmail && email === envAdminEmail) {
+    targetRedirect = "/admin";
+  } else {
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+      select: { role: true },
+    });
+    if (existingUser?.role === "ADMIN") {
+      targetRedirect = "/admin";
+    }
+  }
+
   try {
     await signIn("credentials", {
       email: validatedFields.data.email,
       password: validatedFields.data.password,
-      redirectTo: "/",
+      redirectTo: targetRedirect,
     });
   } catch (error) {
     if (error instanceof AuthError) {
@@ -35,12 +51,23 @@ export async function authenticate(
           return "Terjadi kesalahan saat masuk. Silakan coba lagi.";
       }
     }
-    // Re-throw Next.js redirect errors so the Next.js router handles the redirect correctly
+    // Re-throw Next.js redirect error so the Next.js router handles navigation
     throw error;
   }
 }
 
 export const login = authenticate;
+
+export async function socialSignIn(provider: "google" | "facebook") {
+  try {
+    await signIn(provider, { redirectTo: "/" });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return "Gagal melakukan autentikasi dengan " + provider;
+    }
+    throw error;
+  }
+}
 
 export async function registerUser(formData: FormData) {
   const rawData = {
@@ -60,10 +87,9 @@ export async function registerUser(formData: FormData) {
     };
   }
 
-  const { nama, email, no_hp, password } = validated.data;
+  const { nama, email, password } = validated.data;
 
   try {
-    // Check if email is already registered in PostgreSQL database via Prisma
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -75,17 +101,14 @@ export async function registerUser(formData: FormData) {
       };
     }
 
-    // Hash password securely with bcrypt
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user in PostgreSQL database via Prisma Client
     await prisma.user.create({
       data: {
-        nama,
+        name: nama,
         email,
-        no_hp,
-        password: hashedPassword,
-        role: "PELANGGAN",
+        passwordHash: hashedPassword,
+        role: "CUSTOMER",
       },
     });
 

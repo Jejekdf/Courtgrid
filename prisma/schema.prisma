@@ -1,6 +1,5 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -8,56 +7,141 @@ datasource db {
 }
 
 enum Role {
-  PELANGGAN
   ADMIN
+  CUSTOMER
 }
 
-enum StatusReservasi {
-  PENDING
-  LUNAS
-  BATAL
-}
-
-enum TipeLapangan {
+enum CourtType {
   FUTSAL
-  BASKET
   BADMINTON
 }
 
+enum ReservationStatus {
+  PENDING
+  DP_PAID
+  CANCELED
+  DONE
+}
+
+enum PaymentStatus {
+  PENDING
+  VERIFIED
+}
+
 model User {
-  id        String      @id @default(cuid())
-  nama      String
-  email     String      @unique
-  password  String?
-  no_hp     String?
-  role      Role        @default(PELANGGAN)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  Reservasi Reservasi[]
+  id            String        @id @default(cuid())
+  name          String?
+  email         String?       @unique
+  emailVerified DateTime?     @map("email_verified")
+  passwordHash  String?       @map("password_hash")
+  role          Role          @default(CUSTOMER)
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  reservations  Reservation[]
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  @@map("users")
 }
 
-model Lapangan {
-  id          Int          @id @default(autoincrement())
-  gambarUrl   String?
-  hargaPerJam Int
-  isActive    Boolean      @default(true)
-  nama        String
-  tipe        TipeLapangan @default(FUTSAL)
-  Reservasi   Reservasi[]
+model Account {
+  id                String   @id @default(cuid())
+  userId            String   @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String   @map("provider_account_id")
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?  @db.Text
+  session_state     String?
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
 }
 
-model Reservasi {
-  id               String          @id @default(cuid())
-  lapanganId       Int
-  buktiBayarUrl    String?
-  createdAt        DateTime        @default(now())
-  metodePembayaran String?
-  totalHarga       Int
-  updatedAt        DateTime        @updatedAt
-  userId           String
-  waktuMulai       DateTime
-  waktuSelesai     DateTime
-  status           StatusReservasi @default(PENDING)
-  Lapangan         Lapangan        @relation(fields: [lapanganId], references: [id])
-  User             User            @relation(fields: [userId], references: [id])
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Court {
+  id           String        @id @default(cuid())
+  name         String
+  type         CourtType
+  pricePerHour Int           @map("price_per_hour")
+  isActive     Boolean       @default(true) @map("is_active")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  reservations Reservation[]
+
+  @@map("courts")
+}
+
+model Reservation {
+  id              String            @id @default(cuid())
+  userId          String            @map("user_id")
+  courtId         String            @map("court_id")
+  date            DateTime          @db.Date
+  startTime       String            @map("start_time")
+  endTime         String            @map("end_time")
+  totalPrice      Int               @map("total_price")
+  status          ReservationStatus @default(PENDING)
+  stripeSessionId String?           @unique @map("stripe_session_id")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  court   Court    @relation(fields: [courtId], references: [id], onDelete: Cascade)
+  payment Payment?
+
+  @@index([courtId, date])
+  @@index([date, startTime, endTime])
+  @@map("reservations")
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  reservationId String        @unique @map("reservation_id")
+  dpAmount      Int           @map("dp_amount")
+  status        PaymentStatus @default(PENDING)
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  reservation Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+model PasswordResetToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+  @@map("password_reset_tokens")
 }

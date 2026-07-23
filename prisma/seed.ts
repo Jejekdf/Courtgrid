@@ -13,31 +13,24 @@ async function main() {
     );
   }
 
-  // Remove stale admin accounts
-  await prisma.user.deleteMany({
-    where: {
-      email: { not: adminEmail }, 
-      role: 'ADMIN',
-    },
-  });
-
   const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
   const admin = await prisma.user.upsert({
     where: { email: adminEmail },
     update: {
-      nama: adminNama,
-      password: hashedPassword,
+      name: adminNama,
+      passwordHash: hashedPassword,
+      role: 'ADMIN',
     },
     create: {
       email: adminEmail,
-      nama: adminNama,
-      password: hashedPassword,
+      name: adminNama,
+      passwordHash: hashedPassword,
       role: 'ADMIN',
     },
   });
 
-  console.log('Admin account seeded:', admin.email);
+  console.log('✓ Admin account synchronized to Supabase PostgreSQL database:', admin.email);
 }
 
 main()
