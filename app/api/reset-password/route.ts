@@ -1,23 +1,51 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { z } from "zod";
+import { getRateLimiter } from "@/lib/ratelimit";
+
+const rateLimiter = getRateLimiter();
+
+const resetPasswordSchema = z.object({
+  token: z.string().min(1, "Token wajib diisi"),
+  newPassword: z
+    .string()
+    .min(8, "Password baru minimal 8 karakter")
+    .regex(/[A-Z]/, "Tambahkan minimal 1 huruf besar (A-Z).")
+    .regex(/[a-z]/, "Tambahkan minimal 1 huruf kecil (a-z).")
+    .regex(/[0-9]/, "Tambahkan minimal 1 angka (0-9).")
+    .regex(
+      /[^A-Za-z0-9]/,
+      "Tambahkan minimal 1 karakter spesial (!@#$%^&*) untuk keamanan ekstra."
+    ),
+});
 
 export async function POST(req: Request) {
   try {
-    const { token, newPassword } = await req.json();
+    const body = await req.json();
 
-    if (!token || !newPassword) {
+    const validated = resetPasswordSchema.safeParse(body);
+    if (!validated.success) {
       return NextResponse.json(
-        { error: "Token dan password baru wajib diisi." },
+        { error: validated.error.issues[0].message },
         { status: 400 }
       );
     }
 
-    if (newPassword.length < 8) {
-      return NextResponse.json(
-        { error: "Password minimal harus 8 karakter." },
-        { status: 400 }
-      );
+    const { token, newPassword } = validated.data;
+
+    const clientIp = req.headers.get("x-forwarded-for") || "client_ip";
+    const rateLimitKey = `pwd_reset_submit:${clientIp}_${token}`;
+
+    if (rateLimiter) {
+      const { success } = await rateLimiter.limit(rateLimitKey);
+
+      if (!success) {
+        return NextResponse.json(
+          { error: "Terlalu banyak percobaan. Silakan coba lagi dalam 15 menit." },
+          { status: 429 }
+        );
+      }
     }
 
     // Find the token in the database
