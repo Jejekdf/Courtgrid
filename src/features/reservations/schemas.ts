@@ -12,6 +12,12 @@ export const createReservationSchema = z.object({
   if (tzError) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, message: tzError });
   }
+  if (data.endTime <= data.startTime) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Waktu selesai harus lebih besar dari waktu mulai.",
+    });
+  }
 });
 
 export const cancelReservationSchema = z.object({
