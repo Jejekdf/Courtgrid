@@ -110,7 +110,7 @@ export async function createReservation(formData: FormData) {
     revalidatePath("/admin/reservations");
 
     return { success: true, url: checkoutSession.url };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Booking error:", error);
     return { success: false, error: "Terjadi kesalahan pada server saat membuat booking." };
   }
