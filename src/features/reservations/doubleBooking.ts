@@ -27,9 +27,10 @@ export function intervalsOverlap(
 }
 
 /**
- * Compute deposit amount (PAY-1): ceil(totalPrice / 2).
+ * Compute deposit amount (PAY-1): ceil(totalPrice * dpPercentage / 100).
+ * dpPercentage comes from `Setting.dpPercentage` (default 50).
  * Pure math; no DB.
  */
-export function computeDeposit(totalPrice: number): number {
-  return Math.ceil(totalPrice / 2);
+export function computeDeposit(totalPrice: number, dpPercentage: number = 50): number {
+  return Math.ceil((totalPrice * dpPercentage) / 100);
 }

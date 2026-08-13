@@ -3,11 +3,11 @@
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { updateProfile, uploadAvatarAction } from "@/actions/profile";
+import { updateProfile, uploadAvatarAction } from "@/features/auth/actions";
 import { Save, User, Mail, Camera, Loader2 } from "lucide-react";
 import { updateProfileSchema, type UpdateProfileInput } from "@/lib/zod";
 
@@ -95,26 +95,26 @@ export default function ProfileForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {/* Avatar Upload */}
-      <div className="flex items-center gap-4 pb-3 border-b border-zinc-100">
+      {/* Avatar Upload Container */}
+      <div className="flex items-center gap-4 pb-4 border-b border-zinc-100">
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={isUploadingAvatar}
-          className="relative group shrink-0"
+          className="relative group shrink-0 cursor-pointer"
         >
           {avatarPreview ? (
             <img
               src={avatarPreview}
               alt="Avatar"
-              className="w-16 h-16 rounded-full object-cover border-2 border-zinc-200"
+              className="w-16 h-16 rounded-2xl object-cover border border-zinc-200 shadow-xs"
             />
           ) : (
-            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center border-2 border-emerald-300 text-lg">
+            <div className="w-16 h-16 rounded-2xl bg-zinc-950 text-white font-bold flex items-center justify-center text-base shadow-xs">
               {userInitial}
             </div>
           )}
-          <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+          <div className="absolute inset-0 rounded-2xl bg-black/40 opacity-0 group-hover-fine:opacity-100 flex items-center justify-center transition-opacity">
             {isUploadingAvatar ? (
               <Loader2 className="w-5 h-5 text-white animate-spin" />
             ) : (
@@ -130,25 +130,26 @@ export default function ProfileForm({
           onChange={handleAvatarChange}
         />
         <div>
-          <p className="text-sm font-bold text-zinc-950">{user.name || "Pelanggan"}</p>
-          <p className="text-xs text-zinc-400">{user.email}</p>
-          <p className="text-xs text-zinc-400 mt-0.5">Klik avatar untuk mengganti foto</p>
+          <p className="text-sm font-extrabold text-zinc-950">{user.name || "Pelanggan"}</p>
+          <p className="text-sm text-zinc-400 font-mono">{user.email}</p>
+          <p className="text-sm text-zinc-400 mt-1 font-mono">Klik foto untuk mengunggah avatar</p>
         </div>
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="name">Nama Lengkap</Label>
+        <Label htmlFor="name" className="text-xs font-bold text-zinc-700 font-mono">Nama Lengkap</Label>
         <Input
           id="name"
           {...register("name")}
           placeholder="Nama Lengkap"
           error={errors.name?.message}
           leftIcon={<User className="w-4 h-4 text-zinc-400" />}
+          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
         />
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="email">Alamat Email</Label>
+        <Label htmlFor="email" className="text-xs font-bold text-zinc-700 font-mono">Alamat Email</Label>
         <Input
           id="email"
           type="email"
@@ -156,21 +157,22 @@ export default function ProfileForm({
           placeholder="nama@email.com"
           error={errors.email?.message}
           leftIcon={<Mail className="w-4 h-4 text-zinc-400" />}
+          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
         />
       </div>
 
       {serverError && (
-        <p className="text-xs font-semibold text-red-500">{serverError}</p>
+        <p className="text-sm font-semibold text-red-500">{serverError}</p>
       )}
 
       <Button
         type="submit"
         isLoading={loading || isSubmitting}
         disabled={loading || isSubmitting || !isValid}
-        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
-        leftIcon={<Save className="w-4 h-4" />}
+        className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold h-11 text-xs rounded-xl shadow-xs cursor-pointer"
+        leftIcon={<Save className="w-4 h-4 text-white" />}
       >
-        Simpan Perubahan Profil
+        Simpan Profil
       </Button>
     </form>
   );

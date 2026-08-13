@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { updatePassword } from "@/actions/profile";
+import { updatePassword } from "@/features/auth/actions";
 import { Lock, ShieldCheck, CheckCircle2, XCircle } from "lucide-react";
 import { updatePasswordSchema } from "@/lib/zod";
 
@@ -70,9 +70,9 @@ export default function PasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-1.5">
-        <Label htmlFor="currentPassword">Password Saat Ini</Label>
+        <Label htmlFor="currentPassword" className="text-xs font-bold text-zinc-700 font-mono">Password Saat Ini</Label>
         <Input
           id="currentPassword"
           type="password"
@@ -80,11 +80,12 @@ export default function PasswordForm() {
           placeholder="••••••••"
           error={errors.currentPassword?.message}
           leftIcon={<Lock className="w-4 h-4 text-zinc-400" />}
+          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
         />
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="newPassword">Password Baru</Label>
+        <Label htmlFor="newPassword" className="text-xs font-bold text-zinc-700 font-mono">Password Baru</Label>
         <Input
           id="newPassword"
           type="password"
@@ -92,22 +93,23 @@ export default function PasswordForm() {
           placeholder="Min 8 karakter (1 besar, 1 kecil, 1 angka, 1 simbol)"
           error={errors.newPassword?.message}
           leftIcon={<Lock className="w-4 h-4 text-zinc-400" />}
+          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
         />
         {newPassword && (
-          <div className="space-y-1.5 mt-2">
+          <div className="space-y-1.5 mt-2 bg-zinc-50 p-3 rounded-xl border border-zinc-200/60">
             {requirements.map((req) => (
               <div
                 key={req.label}
-                className={`flex items-center gap-2 text-xs transition-colors duration-200 ${
-                  req.met ? "text-emerald-600" : "text-zinc-400"
+                className={`flex items-center gap-2 text-sm transition-colors duration-200 font-mono ${
+                  req.met ? "text-emerald-600 font-semibold" : "text-zinc-400"
                 }`}
               >
                 {req.met ? (
-                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                 ) : (
-                  <XCircle className="w-3.5 h-3.5" />
+                  <XCircle className="w-3.5 h-3.5 shrink-0" />
                 )}
-                <span className={req.met ? "font-medium" : ""}>{req.label}</span>
+                <span>{req.label}</span>
               </div>
             ))}
           </div>
@@ -115,7 +117,7 @@ export default function PasswordForm() {
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="confirmPassword">Konfirmasi Password Baru</Label>
+        <Label htmlFor="confirmPassword" className="text-xs font-bold text-zinc-700 font-mono">Konfirmasi Password Baru</Label>
         <Input
           id="confirmPassword"
           type="password"
@@ -123,9 +125,10 @@ export default function PasswordForm() {
           placeholder="Ulangi password baru"
           error={errors.confirmPassword?.message}
           leftIcon={<ShieldCheck className="w-4 h-4 text-zinc-400" />}
+          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
         />
         {confirmPassword && !errors.confirmPassword && (
-          <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1">
+          <p className="text-sm text-emerald-600 font-mono mt-1 flex items-center gap-1">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Password cocok
           </p>
@@ -133,15 +136,15 @@ export default function PasswordForm() {
       </div>
 
       {serverError && (
-        <p className="text-xs font-semibold text-red-500">{serverError}</p>
+        <p className="text-sm font-semibold text-red-500">{serverError}</p>
       )}
 
       <Button
         type="submit"
         isLoading={loading || isSubmitting}
         disabled={loading || isSubmitting || !isValid}
-        className="w-full mt-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
-        leftIcon={<Lock className="w-4 h-4" />}
+        className="w-full mt-2 bg-zinc-950 hover:bg-zinc-800 text-white font-bold h-11 text-xs rounded-xl shadow-xs cursor-pointer"
+        leftIcon={<Lock className="w-4 h-4 text-white" />}
       >
         Ubah Password
       </Button>

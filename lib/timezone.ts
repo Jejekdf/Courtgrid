@@ -18,6 +18,29 @@ export function getJakartaNow(): { dateStr: string; hour: number } {
 }
 
 /**
+ * Jakarta day bounds (DM-2, RFC-018). Returns the UTC instants for
+ * [00:00 WIB, 00:00 WIB next day) of the given YYYY-MM-DD date.
+ * Used for daily report/filter windows.
+ */
+export function jakartaDayBounds(dateStr: string): { start: Date; end: Date } {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const start = new Date(Date.UTC(y, m - 1, d) - JAKARTA_OFFSET_MS);
+  const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
+  return { start, end };
+}
+
+/**
+ * Jakarta month bounds (DM-2, RFC-018). Returns the UTC instants for
+ * [00:00 WIB first-of-month, 00:00 WIB first-of-next-month).
+ */
+export function jakartaMonthBounds(dateStr: string): { start: Date; end: Date } {
+  const [y, m] = dateStr.split("-").map(Number);
+  const start = new Date(Date.UTC(y, m - 1, 1) - JAKARTA_OFFSET_MS);
+  const end = new Date(Date.UTC(y, m, 1) - JAKARTA_OFFSET_MS);
+  return { start, end };
+}
+
+/**
  * Validates that a booking date+startTime is not in the past (Asia/Jakarta).
  * DM-2, DM-3: reject date < today; reject date === today with startTime <= current hour.
  * Returns null if valid, or an id-ID error message.

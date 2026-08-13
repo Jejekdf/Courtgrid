@@ -5,6 +5,5 @@ if (!process.env.STRIPE_SECRET_KEY) {
 }
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  // @ts-ignore
-  apiVersion: "2024-12-18.acacia", // Adjust based on your Stripe API version
+  apiVersion: "2026-06-24.dahlia",
 });

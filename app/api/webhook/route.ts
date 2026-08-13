@@ -6,6 +6,7 @@ import { resend, RESEND_FROM_EMAIL } from "@/lib/resend";
 import { paymentSuccessEmail } from "@/lib/emails/templates";
 import Stripe from "stripe";
 import { headers } from "next/headers";
+import { invalidateCache } from "@/lib/redis";
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -108,6 +109,9 @@ export async function POST(req: Request) {
       }
 
       console.log(`Payment verified and reservation ${reservationId} updated to DP_PAID.`);
+
+      // Invalidate Redis cache for admin stats
+      await invalidateCache("admin:dashboard:stats");
 
       // Revalidate admin and dashboard caches
       revalidatePath("/admin");

@@ -2,14 +2,14 @@ import { Metadata } from "next";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { User, Key, ShieldCheck } from "lucide-react";
 import ProfileForm from "@/components/dashboard/ProfileForm";
 import PasswordForm from "@/components/dashboard/PasswordForm";
+import PageHeader from "@/components/ui/PageHeader";
 
 export const metadata: Metadata = {
-  title: "Profil & Keamanan | CourtGrid User Portal",
-  description: "Kelola profil dan kata sandi akun Anda.",
+  title: "Profil & Keamanan | CourtGrid",
+  description: "Kelola profil pengguna dan keamanan kata sandi akun Anda.",
 };
 
 export default async function CustomerSettingsPage() {
@@ -31,63 +31,60 @@ export default async function CustomerSettingsPage() {
   const isOAuth = user.accounts.length > 0;
 
   return (
-    <div className="space-y-8 max-w-4xl">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-950 flex items-center gap-2.5">
-          Pengaturan Profil & Keamanan
-        </h1>
-        <p className="text-zinc-500 mt-1 text-sm">
-          Perbarui identitas diri dan kata sandi akun Anda secara berkala.
-        </p>
-      </div>
+    <div className="space-y-8 max-w-7xl mx-auto text-zinc-950">
+      {/* Clean Shared PageHeader */}
+      <PageHeader
+        title="Pengaturan Profil & Keamanan"
+        description="Perbarui identitas akun pengguna, foto profil, dan kata sandi Anda."
+      />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         {/* Profile Card */}
-        <Card className="border-zinc-200 shadow-xs bg-white">
-          <CardHeader>
-            <CardTitle className="text-lg font-bold flex items-center gap-2">
-              <User className="w-5 h-5 text-emerald-600" />
-              Informasi Akun
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Ubah nama lengkap pengguna yang akan ditampilkan pada bukti sewa.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ProfileForm user={{ name: user.name || "", email: user.email || "", image: user.image || "" }} />
-          </CardContent>
-        </Card>
+        <div className="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-xs space-y-5">
+          <div className="flex items-center gap-2.5 border-b border-zinc-100 pb-4">
+            <div className="w-8 h-8 rounded-lg bg-zinc-950 text-white flex items-center justify-center font-bold text-xs">
+              <User className="w-4 h-4" />
+            </div>
+            <div>
+              <h2 className="text-sm font-extrabold text-zinc-950">Informasi Pengguna</h2>
+              <p className="text-sm text-zinc-400 font-mono">Identitas & Foto Profil</p>
+            </div>
+          </div>
+          <ProfileForm user={{ name: user.name || "", email: user.email || "", image: user.image || "" }} />
+        </div>
 
-        {/* Password Card */}
+        {/* Password / OAuth Security Card */}
         {!isOAuth ? (
-          <Card className="border-zinc-200 shadow-xs bg-white">
-            <CardHeader>
-              <CardTitle className="text-lg font-bold flex items-center gap-2">
-                <Key className="w-5 h-5 text-blue-600" />
-                Ubah Kata Sandi
-              </CardTitle>
-              <CardDescription className="text-xs">
-                Masukkan password lama dan password baru untuk meningkatkan keamanan.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <PasswordForm />
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="border-zinc-200 shadow-xs bg-zinc-50 flex flex-col justify-center">
-            <CardContent className="pt-6">
-              <div className="flex gap-3 text-sm text-zinc-600">
-                <ShieldCheck className="w-6 h-6 text-emerald-600 shrink-0" />
-                <div className="space-y-1">
-                  <h4 className="font-bold text-zinc-950 text-sm">Autentikasi OAuth Aktif</h4>
-                  <p className="text-xs text-zinc-500 leading-relaxed">
-                    Anda masuk menggunakan penyedia akun sosial Google/Facebook. Kata sandi dikelola secara langsung oleh penyedia tersebut demi keamanan Anda.
-                  </p>
-                </div>
+          <div className="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-xs space-y-5">
+            <div className="flex items-center gap-2.5 border-b border-zinc-100 pb-4">
+              <div className="w-8 h-8 rounded-lg bg-zinc-950 text-white flex items-center justify-center font-bold text-xs">
+                <Key className="w-4 h-4" />
               </div>
-            </CardContent>
-          </Card>
+              <div>
+                <h2 className="text-sm font-extrabold text-zinc-950">Keamanan Kata Sandi</h2>
+                <p className="text-sm text-zinc-400 font-mono">Pembaruan Password Berkala</p>
+              </div>
+            </div>
+            <PasswordForm />
+          </div>
+        ) : (
+          <div className="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+            <div className="flex items-center gap-2.5 border-b border-zinc-100 pb-4">
+              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">
+                <ShieldCheck className="w-4 h-4" />
+              </div>
+              <div>
+                <h2 className="text-sm font-extrabold text-zinc-950">Penyedia Otentikasi (OAuth)</h2>
+                <p className="text-sm text-zinc-400 font-mono">Google / Facebook Single Sign-On</p>
+              </div>
+            </div>
+            <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-2">
+              <span className="text-xs font-bold text-zinc-950 block">Google / Facebook Connected</span>
+              <p className="text-sm text-zinc-500 leading-relaxed font-mono">
+                Anda terhubung melalui akun SSO. Keamanan kata sandi dikelola langsung oleh penyedia autentikasi eksternal Anda.
+              </p>
+            </div>
+          </div>
         )}
       </div>
     </div>

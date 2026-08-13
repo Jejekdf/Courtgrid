@@ -7,6 +7,7 @@ export const createReservationSchema = z.object({
   startTime: z.string().regex(/^\d{2}:00$/, "Format waktu mulai tidak valid. Contoh: 14:00"),
   endTime: z.string().regex(/^\d{2}:00$/, "Format waktu selesai tidak valid. Contoh: 15:00"),
   totalPrice: z.number().positive("Total harga harus lebih dari 0."),
+  voucherCode: z.string().optional(),
 }).superRefine((data, ctx) => {
   const tzError = validateBookingTime(data.dateStr, data.startTime);
   if (tzError) {
