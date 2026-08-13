@@ -41,7 +41,17 @@ yarn-error.log*
 next-env.d.ts
 
 /app/generated/prisma
-.agents
-.DESIGN.MD
-.CLAUDE.md
-.AGENTS.md
+
+# AI tooling & docs (not committed — repo is for product code only)
+.codegraph/
+.opencode/
+/AGENTS.md
+/CLAUDE.md
+/RULES.md
+/PRD.md
+/FEATURES.md
+/PRD-REVIEW.md
+/PRODUCT.md
+/RFCS.md
+/RFCs/
+/DESIGN.md
