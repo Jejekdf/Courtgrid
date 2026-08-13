@@ -52,7 +52,7 @@ async function main() {
       type: "FUTSAL" as const,
       pricePerHour: 150000,
       isActive: true,
-      imageUrl: "/futsal1.png",
+      imageUrl: "/futsal_arena_modern.jpg",
     },
     {
       name: "Futsal Court B",
@@ -66,21 +66,21 @@ async function main() {
       type: "BADMINTON" as const,
       pricePerHour: 50000,
       isActive: true,
-      imageUrl: "/badminton1.png",
+      imageUrl: "/badminton_court_pro.jpg",
     },
     {
       name: "Badminton Court 2",
       type: "BADMINTON" as const,
       pricePerHour: 50000,
       isActive: true,
-      imageUrl: "/badminton1.png",
+      imageUrl: "/badminton2.png",
     },
     {
       name: "Badminton Court 3",
       type: "BADMINTON" as const,
       pricePerHour: 50000,
       isActive: true,
-      imageUrl: "/badminton1.png",
+      imageUrl: "/badminton3.png",
     },
   ];
 
