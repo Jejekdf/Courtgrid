@@ -1,80 +1,83 @@
+import { Suspense } from "react";
 import LoginForm from "@/components/LoginForm";
 import Link from "next/link";
+import Image from "next/image";
 import { Metadata } from "next";
-import { Quote, Hexagon } from "lucide-react";
+import { Quote, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Masuk | CourtGrid",
-  description: "Masuk ke akun CourtGrid Anda untuk mengelola booking lapangan.",
+  description: "Masuk ke akun CourtGrid Anda untuk mengelola booking lapangan secara realtime.",
 };
 
 export default function LoginPage() {
   return (
     <main className="min-h-screen w-full flex bg-white text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
       {/* Left Panel: Auth Form */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-16 md:px-24 xl:px-32 relative">
-
-
-        <div className="w-full max-w-sm mx-auto space-y-8">
+      <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 sm:px-12 md:px-16 xl:px-24 relative py-12">
+        <div className="w-full max-w-md mx-auto space-y-8">
           {/* Header Branding */}
           <div className="flex flex-col space-y-3">
-            <Link href="/" className="flex items-center space-x-3 mb-2 group w-max outline-none [-webkit-tap-highlight-color:transparent]">
-              <div className="h-11 w-11 relative flex items-center justify-center transition-transform group-hover:scale-[0.98]">
-                <Hexagon className="absolute inset-0 w-full h-full text-zinc-950 fill-zinc-950/5 stroke-[1.5]" />
-                <img src="/favicon.ico" alt="Logo" className="absolute w-5 h-5 object-contain" />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-zinc-950">CourtGrid</span>
+            <Link href="/" className="flex items-center gap-2.5 mb-2 group w-max outline-none">
+              <Image src="/icon.ico" alt="CourtGrid Logo" width={32} height={32} priority className="rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
+              <span className="text-xl font-extrabold tracking-tight text-zinc-950">CourtGrid</span>
             </Link>
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-950">
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-950">
               Selamat Datang
             </h1>
-            <p className="text-sm text-zinc-500 font-normal leading-relaxed">
-              Silakan masuk dengan email dan password Anda untuk mengelola jadwal latihan tim Anda.
+            <p className="text-sm text-zinc-500 font-mono leading-relaxed">
+              Silakan masuk dengan kredensial akun Anda untuk mengelola reservasi dan E-Ticket arena olahraga.
             </p>
           </div>
 
-          {/* Form */}
-          <div className="mt-8">
-            <LoginForm />
+          {/* Login Form wrapped in Suspense */}
+          <div>
+            <Suspense fallback={<div className="text-sm font-mono text-zinc-400">Memuat formulir masuk...</div>}>
+              <LoginForm />
+            </Suspense>
           </div>
 
           {/* Footer Link */}
-          <p className="text-center text-sm text-zinc-500 pt-4">
-            Belum punya akun?{" "}
+          <p className="text-center text-sm font-mono text-zinc-500 pt-2">
+            Belum memiliki akun?{" "}
             <Link
               href="/register"
-              className="font-semibold text-zinc-950 underline underline-offset-4 hover:text-zinc-700 transition-colors"
+              className="font-bold text-zinc-950 underline underline-offset-4 hover:text-zinc-700 transition-colors"
             >
-              Daftar Sekarang
+              Daftar Akun Baru
             </Link>
           </p>
         </div>
       </div>
 
       {/* Right Panel: Visual Showcase (Hidden on Mobile) */}
-      <div className="hidden lg:flex w-1/2 bg-zinc-950 relative overflow-hidden flex-col justify-between p-12 lg:p-24">
+      <div className="hidden lg:flex w-1/2 bg-zinc-950 relative overflow-hidden flex-col justify-between p-12 lg:p-20 border-l border-zinc-900">
         {/* Background Image with Overlay */}
-        <div className="absolute inset-0 bg-[url('/futsal2.png')] bg-cover bg-center opacity-40 mix-blend-luminosity transition-transform duration-1000 hover:scale-105" />
-        <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/60 to-transparent" />
-        <div className="absolute inset-0 bg-linear-to-r from-zinc-950 via-transparent to-transparent opacity-80" />
+        <div className="absolute inset-0 bg-[url('/futsal2.png')] bg-cover bg-center opacity-30 mix-blend-luminosity transition-transform duration-700 hover-fine:scale-105" />
+        <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/70 to-transparent" />
         
-        {/* Decorative Blur */}
-        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-500/20 blur-[120px] pointer-events-none" />
+        {/* Anti-Slop Pill */}
+        <div className="relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 w-max shadow-xs">
+          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">
+            Anti-Palkor Verified
+          </span>
+        </div>
 
-        {/* Content */}
-        <div className="relative z-10 flex flex-col justify-end h-full max-w-xl">
-          <Quote className="text-emerald-500 w-12 h-12 mb-6 opacity-80" />
-          <blockquote className="space-y-6">
-            <p className="text-2xl lg:text-3xl font-medium leading-tight text-white">
-              "CourtGrid membuat manajemen jadwal tim kami jauh lebih mudah. Tidak ada lagi drama jadwal bentrok atau berebut lapangan di akhir pekan."
+        {/* Testimonial Quote Content */}
+        <div className="relative z-10 flex flex-col justify-end max-w-lg space-y-6">
+          <Quote className="text-emerald-400 w-10 h-10 opacity-80" />
+          <blockquote className="space-y-4">
+            <p className="text-xl lg:text-2xl font-extrabold leading-tight text-white font-sans">
+              &ldquo;CourtGrid membuat manajemen jadwal tim kami jauh lebih profesional. Pembayaran DP 50% memastikan jadwal kami tidak di-palkor lagi.&rdquo;
             </p>
-            <footer className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-zinc-800 border-2 border-zinc-700 flex items-center justify-center text-white font-bold text-lg">
+            <footer className="flex items-center gap-3 pt-2">
+              <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white font-mono font-bold text-sm">
                 AT
               </div>
               <div>
-                <div className="font-semibold text-white">Ahmad Tariq</div>
-                <div className="text-sm text-zinc-400">Kapten FC Garuda</div>
+                <div className="font-extrabold text-white text-sm">Ahmad Tariq</div>
+                <div className="text-sm text-zinc-300 font-mono">Kapten FC Garuda</div>
               </div>
             </footer>
           </blockquote>

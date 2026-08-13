@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { forgotPasswordAction } from "@/features/auth/actions";
 
 const easeCustom = [0.16, 1, 0.3, 1] as const;
 
@@ -21,24 +22,18 @@ export default function ForgotPasswordForm() {
     setMessage(null);
 
     try {
-      const response = await fetch("/api/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+      const result = await forgotPasswordAction({ email });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Gagal memproses permintaan.");
+      if (!result.success) {
+        throw new Error(result.error);
       }
 
       setStatus("success");
-      setMessage("Tautan reset kata sandi telah dikirim ke email Anda.");
+      setMessage(result.message);
       setEmail("");
-    } catch (error: any) {
+    } catch (error) {
       setStatus("error");
-      setMessage(error.message || "Terjadi kesalahan yang tidak terduga.");
+      setMessage(error instanceof Error ? error.message : "Terjadi kesalahan yang tidak terduga.");
     }
   };
 
@@ -59,7 +54,7 @@ export default function ForgotPasswordForm() {
               exit={{ opacity: 0, height: 0, y: -6 }}
               transition={{ duration: 0.3, ease: easeCustom }}
               aria-live="polite"
-              className={`flex items-start gap-2.5 p-3 rounded-lg border text-xs font-medium overflow-hidden ${
+              className={`flex items-start gap-2.5 p-3 rounded-lg border text-sm font-medium overflow-hidden ${
                 status === "success" 
                   ? "bg-emerald-50 border-emerald-200 text-emerald-600"
                   : "bg-red-50 border-red-200 text-red-500"

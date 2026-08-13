@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { socialSignIn } from "@/actions/auth";
-import { Button } from "@/components/ui/Button";
+import { signIn } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 
 export function GoogleIcon({ className = "h-4 w-4" }: { className?: string }) {
   return (
@@ -45,7 +45,7 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
   const handleProviderSignIn = async (provider: "google" | "facebook") => {
     setLoadingProvider(provider);
     try {
-      await socialSignIn(provider);
+      await signIn(provider, { callbackUrl: "/dashboard" });
     } catch {
       setLoadingProvider(null);
     }

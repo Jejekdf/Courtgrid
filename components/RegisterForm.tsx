@@ -4,12 +4,12 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { Eye, EyeOff, AlertCircle, CheckCircle2, Check } from "lucide-react";
+import { Eye, EyeOff, AlertCircle, CheckCircle2, Check, UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { registerSchema, RegisterInput } from "@/lib/zod";
-import { registerUser } from "@/actions/auth";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
+import { registerUser } from "@/features/auth/actions";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import SocialAuthButtons from "@/components/ui/SocialAuthButtons";
 
 const easeCustom = [0.16, 1, 0.3, 1] as const;
@@ -78,9 +78,9 @@ export default function RegisterForm() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: easeCustom }}
+      transition={{ duration: 0.3, ease: easeCustom }}
       className="space-y-4 text-left"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -93,7 +93,7 @@ export default function RegisterForm() {
               exit={{ opacity: 0, height: 0, y: -6 }}
               transition={{ duration: 0.3, ease: easeCustom }}
               aria-live="polite"
-              className="flex items-start gap-2.5 p-3 rounded-lg bg-red-50 border border-red-200 text-red-500 text-xs font-medium overflow-hidden"
+              className="flex items-start gap-2.5 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm font-mono font-medium overflow-hidden"
             >
               <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-red-500" />
               <span>{serverError}</span>
@@ -107,7 +107,7 @@ export default function RegisterForm() {
               exit={{ opacity: 0, height: 0, y: -6 }}
               transition={{ duration: 0.3, ease: easeCustom }}
               aria-live="polite"
-              className="flex items-start gap-2.5 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium overflow-hidden"
+              className="flex items-start gap-2.5 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-mono font-medium overflow-hidden"
             >
               <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-emerald-600" />
               <span>{serverSuccess}</span>
@@ -123,6 +123,7 @@ export default function RegisterForm() {
           placeholder="Randi Maulana"
           autoComplete="name"
           error={errors.nama?.message}
+          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
           {...register("nama")}
         />
 
@@ -130,10 +131,11 @@ export default function RegisterForm() {
         <Input
           id="email"
           type="email"
-          label="Email Address"
-          placeholder="nama@domain.com"
+          label="Alamat Email"
+          placeholder="nama@email.com"
           autoComplete="email"
           error={errors.email?.message}
+          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
           {...register("email")}
         />
 
@@ -141,10 +143,11 @@ export default function RegisterForm() {
         <Input
           id="no_hp"
           type="tel"
-          label="Nomor WhatsApp / HP"
+          label="Nomor WhatsApp / Telepon"
           placeholder="081234567890"
           autoComplete="tel"
           error={errors.no_hp?.message}
+          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
           {...register("no_hp")}
         />
 
@@ -153,15 +156,16 @@ export default function RegisterForm() {
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
-            label="Password"
+            label="Kata Sandi Baru"
             placeholder="••••••••"
             autoComplete="new-password"
             error={errors.password?.message}
+            className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
             rightElement={
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-1 cursor-pointer"
+                className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
                 aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
               >
                 {showPassword ? (
@@ -180,11 +184,11 @@ export default function RegisterForm() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               transition={{ duration: 0.2 }}
-              className="space-y-2 p-3 rounded-lg bg-zinc-50 border border-zinc-200"
+              className="space-y-2 p-3 rounded-xl bg-zinc-50 border border-zinc-200/60"
             >
-              <div className="flex items-center justify-between text-xs font-mono">
-                <span className="text-zinc-500">Kekuatan Password:</span>
-                <span className={`font-semibold ${strength.textColor}`}>
+              <div className="flex items-center justify-between text-sm font-mono">
+                <span className="text-zinc-500">Kekuatan Kata Sandi:</span>
+                <span className={`font-bold ${strength.textColor}`}>
                   {strength.label}
                 </span>
               </div>
@@ -192,18 +196,18 @@ export default function RegisterForm() {
               {/* Strength Bar */}
               <div className="h-1.5 w-full bg-zinc-200 rounded-full overflow-hidden">
                 <div
-                  className={`h-full transition-all duration-300 rounded-full ${strength.color}`}
+                  className={`h-full transition-[width] duration-300 rounded-full ${strength.color}`}
                   style={{ width: `${strength.percent}%` }}
                 />
               </div>
 
               {/* Criteria Checklist */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1 text-[11px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1 text-sm font-mono">
                 {passwordCriteria.map((c, i) => (
                   <div
                     key={i}
                     className={`flex items-center space-x-1.5 transition-colors ${
-                      c.valid ? "text-emerald-600 font-medium" : "text-zinc-400"
+                      c.valid ? "text-emerald-600 font-bold" : "text-zinc-400"
                     }`}
                   >
                     {c.valid ? (
@@ -223,15 +227,16 @@ export default function RegisterForm() {
         <Input
           id="confirmPassword"
           type={showConfirmPassword ? "text" : "password"}
-          label="Konfirmasi Password"
+          label="Konfirmasi Kata Sandi"
           placeholder="••••••••"
           autoComplete="new-password"
           error={errors.confirmPassword?.message}
+          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
           rightElement={
             <button
               type="button"
               onClick={() => setShowConfirmPassword((prev) => !prev)}
-              className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-1 cursor-pointer"
+              className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
               aria-label={
                 showConfirmPassword ? "Sembunyikan konfirmasi password" : "Tampilkan konfirmasi password"
               }
@@ -252,7 +257,8 @@ export default function RegisterForm() {
           variant="primary"
           size="default"
           isLoading={isSubmitting}
-          className="w-full mt-2"
+          className="w-full mt-2 bg-zinc-950 hover:bg-zinc-800 text-white font-bold h-11 text-xs rounded-xl shadow-xs cursor-pointer"
+          leftIcon={<UserPlus className="w-4 h-4 text-white" />}
         >
           Buat Akun Sekarang
         </Button>

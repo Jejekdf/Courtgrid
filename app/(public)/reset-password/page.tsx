@@ -21,14 +21,11 @@ export default function ResetPasswordPage() {
           &larr; Kembali ke Login
         </Link>
 
-        <div className="w-full max-w-sm mx-auto space-y-8 mt-12 mb-12">
+        <div className="w-full max-w-md mx-auto space-y-8 mt-12 mb-12">
           {/* Header Branding */}
           <div className="flex flex-col space-y-3">
-            <Link href="/" className="flex items-center space-x-3 mb-2 group w-max outline-none [-webkit-tap-highlight-color:transparent]">
-              <div className="h-11 w-11 relative flex items-center justify-center transition-transform group-hover:scale-[0.98]">
-                <Hexagon className="absolute inset-0 w-full h-full text-zinc-950 fill-zinc-950/5 stroke-[1.5]" />
-                <img src="/favicon.ico" alt="Logo" className="absolute w-5 h-5 object-contain" />
-              </div>
+            <Link href="/" className="flex items-center gap-2.5 mb-2 group w-max outline-none [-webkit-tap-highlight-color:transparent]">
+              <img src="/icon.ico" alt="CourtGrid Logo" className="w-8 h-8 rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
               <span className="text-xl font-bold tracking-tight text-zinc-950">CourtGrid</span>
             </Link>
             <h1 className="text-3xl font-bold tracking-tight text-zinc-950">
@@ -50,7 +47,7 @@ export default function ResetPasswordPage() {
 
       {/* Left Panel: Visual Showcase (Hidden on Mobile) */}
       <div className="hidden lg:flex w-1/2 bg-zinc-950 relative overflow-hidden flex-col justify-between p-12 lg:p-24 border-r border-zinc-800">
-        <div className="absolute inset-0 bg-[url('/badminton1.png')] bg-cover bg-center opacity-30 mix-blend-luminosity transition-transform duration-1000 hover:scale-105" />
+        <div className="absolute inset-0 bg-[url('/badminton1.png')] bg-cover bg-center opacity-30 mix-blend-luminosity transition-transform duration-1000 hover-fine:scale-105" />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-l from-zinc-950 via-transparent to-transparent opacity-80" />
         
@@ -60,7 +57,7 @@ export default function ResetPasswordPage() {
           <Quote className="text-emerald-500 w-12 h-12 mb-6 opacity-80" />
           <blockquote className="space-y-6">
             <p className="text-2xl lg:text-3xl font-medium leading-tight text-white">
-              "Kenyamanan bertransaksi dan keamanan data pelanggan selalu menjadi prioritas nomor satu kami."
+              &ldquo;Kenyamanan bertransaksi dan keamanan data pelanggan selalu menjadi prioritas nomor satu kami.&rdquo;
             </p>
             <footer className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-zinc-800 border-2 border-zinc-700 flex items-center justify-center text-white font-bold text-lg">
@@ -68,7 +65,7 @@ export default function ResetPasswordPage() {
               </div>
               <div>
                 <div className="font-semibold text-white">Security Team CourtGrid</div>
-                <div className="text-sm text-zinc-400">Proteksi Aktif 24/7</div>
+                <div className="text-sm text-zinc-300">Proteksi Aktif 24/7</div>
               </div>
             </footer>
           </blockquote>

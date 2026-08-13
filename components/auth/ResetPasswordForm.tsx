@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, CheckCircle2, Eye, EyeOff } from "lucide-react";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { resetPasswordAction } from "@/features/auth/actions";
 
 const easeCustom = [0.16, 1, 0.3, 1] as const;
 
@@ -50,16 +51,10 @@ export default function ResetPasswordForm() {
     setMessage(null);
 
     try {
-      const response = await fetch("/api/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, newPassword: password }),
-      });
+      const result = await resetPasswordAction({ token, newPassword: password });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Gagal mengubah kata sandi.");
+      if (!result.success) {
+        throw new Error(result.error);
       }
 
       setStatus("success");
@@ -68,9 +63,9 @@ export default function ResetPasswordForm() {
       setTimeout(() => {
         router.push("/login");
       }, 3000);
-    } catch (error: any) {
+    } catch (error) {
       setStatus("error");
-      setMessage(error.message || "Terjadi kesalahan yang tidak terduga.");
+      setMessage(error instanceof Error ? error.message : "Terjadi kesalahan yang tidak terduga.");
     }
   };
 
@@ -91,7 +86,7 @@ export default function ResetPasswordForm() {
               exit={{ opacity: 0, height: 0, y: -6 }}
               transition={{ duration: 0.3, ease: easeCustom }}
               aria-live="polite"
-              className={`flex items-start gap-2.5 p-3 rounded-lg border text-xs font-medium overflow-hidden ${
+              className={`flex items-start gap-2.5 p-3 rounded-lg border text-sm font-medium overflow-hidden ${
                 status === "success" 
                   ? "bg-emerald-50 border-emerald-200 text-emerald-600"
                   : "bg-red-50 border-red-200 text-red-500"
@@ -121,7 +116,7 @@ export default function ResetPasswordForm() {
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-1 cursor-pointer"
+              className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
               aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
             >
               {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
@@ -143,7 +138,7 @@ export default function ResetPasswordForm() {
             <button
               type="button"
               onClick={() => setShowConfirmPassword((prev) => !prev)}
-              className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-1 cursor-pointer"
+              className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
               aria-label={showConfirmPassword ? "Sembunyikan password" : "Tampilkan password"}
             >
               {showConfirmPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
