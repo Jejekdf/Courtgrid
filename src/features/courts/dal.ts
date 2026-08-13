@@ -31,26 +31,30 @@ function pad2(n: number): string {
 }
 
 function fmtTime(h: number): string {
-  return `${pad2(h)}.00`;
+  return `${pad2(h)}:00`;
 }
 
+import { getOrSetCache } from "@/lib/redis";
+
 /**
- * Data Access Layer: Get active courts with React cache() to prevent duplicate queries
+ * Data Access Layer: Get active courts with React cache() & Redis caching to prevent duplicate queries
  */
 export const getActiveCourtsDAL = cache(async (): Promise<CourtDTO[]> => {
-  const courts = await prisma.court.findMany({
-    where: { isActive: true },
-    orderBy: { name: "asc" },
-    select: {
-      id: true,
-      name: true,
-      type: true,
-      pricePerHour: true,
-      isActive: true,
-    },
-  });
+  return getOrSetCache("courts:active", async () => {
+    const courts = await prisma.court.findMany({
+      where: { isActive: true },
+      orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        pricePerHour: true,
+        isActive: true,
+      },
+    });
 
-  return courts as CourtDTO[];
+    return courts as CourtDTO[];
+  }, 600); // Cache for 10 minutes
 });
 
 /**

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isCourtType } from "@/lib/api/courts";
 import { getCourtAvailabilityDAL } from "@/features/courts/dal";
+import { getOrSetCache } from "@/lib/redis";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -25,15 +26,18 @@ export async function GET(request: Request) {
   const type = searchParams.get("type");
 
   try {
-    const courts = await prisma.court.findMany({
-      where: {
-        isActive: true,
-        ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
-        ...(isCourtType(type) ? { type } : {}),
-      },
-      orderBy: { name: "asc" },
-      include: { venue: { select: { name: true } } },
-    });
+    const cacheKey = `public:courts:${type || "ALL"}:${search || "none"}`;
+    const courts = await getOrSetCache(cacheKey, async () => {
+      return prisma.court.findMany({
+        where: {
+          isActive: true,
+          ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
+          ...(isCourtType(type) ? { type } : {}),
+        },
+        orderBy: { name: "asc" },
+        include: { venue: { select: { name: true } } },
+      });
+    }, 300); // 5 min Redis Cache
 
     return NextResponse.json({ data: courts });
   } catch (error) {

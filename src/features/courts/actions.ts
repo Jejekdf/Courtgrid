@@ -2,12 +2,22 @@
 
 import { prisma } from "@/lib/prisma";
 import { autoCancelGhostBookings } from "@/features/reservations/ghostCancel";
+import { auth } from "@/auth";
+import { uploadCourtImage } from "@/lib/supabase/storage";
+import { revalidatePath } from "next/cache";
+
+
 
 /**
  * Converts a Date to localized HH:mm time string.
  */
 const formatTime = (date: Date) =>
-  date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
+  date.toLocaleTimeString("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "UTC",
+  });
 
 /**
  * Returns all active courts sorted by name.
@@ -19,6 +29,13 @@ export async function getCourts() {
     const courts = await prisma.court.findMany({
       where: { isActive: true },
       orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        pricePerHour: true,
+        isActive: true,
+      },
     });
     return courts;
   } catch (error) {
@@ -67,5 +84,37 @@ export async function getCourtAvailability(courtId: string, dateStr: string) {
   } catch (error) {
     console.error("Error fetching availability:", error);
     return [];
+  }
+}
+
+
+
+export async function uploadCourtImageAction(formData: FormData) {
+  const session = await auth();
+  if (!session?.user || session.user.role !== "ADMIN") {
+    return { success: false, error: "Akses khusus Superadmin." };
+  }
+
+  const file = formData.get("file") as File | null;
+  if (!file) {
+    return { success: false, error: "Pilih file gambar untuk diupload." };
+  }
+
+  if (!file.type.startsWith("image/")) {
+    return { success: false, error: "File harus format gambar (JPG/PNG/WEBP)." };
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    return { success: false, error: "Ukuran file maksimal 5MB." };
+  }
+
+  try {
+    const url = await uploadCourtImage(file);
+    revalidatePath("/admin/courts");
+    revalidatePath("/courts");
+    return { success: true, url, message: "Gambar lapangan berhasil diupload." };
+  } catch (err) {
+    console.error("Court image upload error:", err);
+    return { success: false, error: "Gagal mengupload file gambar." };
   }
 }

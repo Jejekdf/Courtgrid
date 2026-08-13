@@ -82,7 +82,7 @@ export default function AvailabilityGrid({
           <CalendarDays className="h-4 w-4 text-zinc-500" />
           <label
             htmlFor={`date-${courtId}`}
-            className="text-xs font-semibold text-zinc-700"
+            className="text-sm font-semibold text-zinc-700"
           >
             Pilih Tanggal
           </label>
@@ -99,7 +99,7 @@ export default function AvailabilityGrid({
             className="text-xs border border-zinc-200 rounded-md px-2 py-1 bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
         </div>
-        <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+        <div className="flex items-center gap-1.5 text-sm text-zinc-500">
           <Clock className="h-3.5 w-3.5" />
           <span>Rp {pricePerHour.toLocaleString("id-ID")}/jam</span>
         </div>
@@ -118,7 +118,7 @@ export default function AvailabilityGrid({
           </span>
           <button
             onClick={() => refetch()}
-            className="text-xs font-medium text-emerald-600 hover:underline"
+            className="text-sm font-medium text-emerald-600 hover:underline"
           >
             Coba lagi
           </button>
@@ -142,7 +142,7 @@ export default function AvailabilityGrid({
                   onClick={() =>
                     setSelectedHour(isSelected ? null : slot.hour)
                   }
-                  className={`flex flex-col items-center gap-0.5 px-3 py-2.5 rounded-lg border text-xs font-medium transition-colors ${slotStyle(
+                  className={`flex flex-col items-center gap-0.5 px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors ${slotStyle(
                     slot.status,
                     isSelected
                   )}`}
@@ -151,7 +151,7 @@ export default function AvailabilityGrid({
                   <span className="font-semibold tabular-nums">
                     {slot.startTime}
                   </span>
-                  <span className="text-[10px] opacity-75">
+                  <span className="text-[11px] opacity-75">
                     {slotLabel(slot.status)}
                   </span>
                 </motion.button>
@@ -162,13 +162,13 @@ export default function AvailabilityGrid({
       )}
 
       {!isPending && !isError && freeCount === 0 && (
-        <p className="text-center text-xs text-zinc-400 pt-1">
+        <p className="text-center text-sm text-zinc-400 pt-1">
           Tidak ada jam tersedia untuk tanggal ini.
         </p>
       )}
 
       {!isPending && !isError && freeCount > 0 && (
-        <p className="text-center text-xs text-zinc-400 pt-1">
+        <p className="text-center text-sm text-zinc-400 pt-1">
           {freeCount} jam tersedia dari 14 slot.
         </p>
       )}
