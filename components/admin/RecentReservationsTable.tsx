@@ -14,13 +14,13 @@ export default function RecentReservationsTable({ reservations = [] }: { reserva
   const getStatusBadge = (status: Reservation["status"]) => {
     switch (status) {
       case "DP_PAID":
-        return <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-md">DP Paid</span>;
+        return <span className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-md">DP Paid</span>;
       case "PENDING":
-        return <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 rounded-md">Pending</span>;
+        return <span className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 rounded-md">Pending</span>;
       case "DONE":
-        return <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 border border-zinc-200 rounded-md">Lunas</span>;
+        return <span className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 border border-zinc-200 rounded-md">Lunas</span>;
       case "CANCELED":
-        return <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-red-50 text-red-600 border border-red-200 rounded-md">Canceled</span>;
+        return <span className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-red-50 text-red-600 border border-red-200 rounded-md">Canceled</span>;
     }
   };
 

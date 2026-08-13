@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { Hexagon, LayoutDashboard, CalendarDays, Box, Settings, LogOut, X } from "lucide-react";
+import { LayoutDashboard, CalendarDays, Box, Settings, LogOut, X } from "lucide-react";
 
 interface AdminSidebarProps {
   isOpen: boolean;
@@ -14,10 +16,10 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
 
   const links = [
-    { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/reservations", label: "Reservations", icon: CalendarDays },
-    { href: "/admin/courts", label: "Courts", icon: Box },
-    { href: "/admin/settings", label: "Settings", icon: Settings },
+    { href: "/admin", label: "Overview", icon: LayoutDashboard },
+    { href: "/admin/reservations", label: "Reservasi", icon: CalendarDays },
+    { href: "/admin/courts", label: "Lapangan", icon: Box },
+    { href: "/admin/settings", label: "Pengaturan", icon: Settings },
   ];
 
   return (
@@ -26,22 +28,21 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
         isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
       }`}
     >
-      <div className="h-16 flex items-center justify-between px-6 border-b border-zinc-800 shrink-0">
-        <Link href="/admin" className="flex items-center gap-2.5 group outline-none [-webkit-tap-highlight-color:transparent]">
-          <div className="relative w-8 h-8 flex items-center justify-center transition-transform group-hover:scale-[0.98]">
-            <Hexagon className="absolute inset-0 w-full h-full text-white fill-white/10 stroke-[1.5]" />
-            <img src="/favicon.ico" alt="CourtGrid Logo" className="absolute w-4 h-4 object-contain brightness-0 invert" />
-          </div>
-          <span className="font-bold tracking-tight text-lg">CourtGrid Admin</span>
+      {/* Brand Header */}
+      <div className="h-16 flex items-center justify-between px-6 border-b border-zinc-900 shrink-0">
+        <Link href="/admin" className="flex items-center gap-2.5 outline-none">
+          <Image src="/icon.ico" alt="CourtGrid Logo" width={24} height={24} priority className="rounded-md object-contain" />
+          <span className="font-bold tracking-tight text-base">CourtGrid Admin</span>
         </Link>
-        <button className="md:hidden text-zinc-400 hover:text-white" onClick={onClose} aria-label="Close menu">
+        <button className="md:hidden text-zinc-400 hover:text-white" onClick={onClose} aria-label="Tutup menu">
           <X className="w-5 h-5" />
         </button>
       </div>
 
+      {/* Navigation Links */}
       <nav className="flex-1 py-6 px-4 space-y-1 overflow-y-auto">
-        <div className="px-3 mb-2 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-          Menu
+        <div className="px-3 mb-2 text-[11px] font-mono font-semibold text-zinc-400 uppercase tracking-wider">
+          Navigasi Utama
         </div>
         {links.map((link) => {
           const isActive = pathname === link.href;
@@ -51,26 +52,27 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
               key={link.href}
               href={link.href}
               onClick={onClose}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 isActive
-                  ? "bg-zinc-800 text-white font-medium"
-                  : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200"
+                  ? "bg-zinc-900 text-white font-semibold"
+                  : "text-zinc-300 hover:bg-zinc-900/50 hover:text-white"
               }`}
             >
-              <Icon className={`w-5 h-5 ${isActive ? "text-emerald-500" : ""}`} />
-              <span className="text-sm">{link.label}</span>
+              <Icon className={`w-4 h-4 ${isActive ? "text-emerald-400" : "text-zinc-400"}`} />
+              <span>{link.label}</span>
             </Link>
           );
         })}
       </nav>
 
-      <div className="p-4 border-t border-zinc-800 shrink-0">
+      {/* Logout Footer */}
+      <div className="p-4 border-t border-zinc-900 shrink-0">
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="flex w-full items-center justify-center gap-2 px-3 py-2.5 text-zinc-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+          className="flex w-full items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-950/40 rounded-lg transition-colors cursor-pointer"
         >
-          <LogOut className="w-5 h-5" />
-          <span className="text-sm font-medium">Log out</span>
+          <LogOut className="w-4 h-4" />
+          <span>Keluar Sistem</span>
         </button>
       </div>
     </aside>

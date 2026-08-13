@@ -1,17 +1,19 @@
 "use client";
 
-import { CalendarCheck, DollarSign, Box } from "lucide-react";
+import { CalendarCheck, DollarSign, Box, Clock, Wallet } from "lucide-react";
 
 interface DashboardStatsProps {
   totalReservations: number;
   totalRevenue: number;
   activeCourts: number;
+  pendingCount?: number;
 }
 
 export default function DashboardStats({
   totalReservations,
   totalRevenue,
   activeCourts,
+  pendingCount = 0,
 }: DashboardStatsProps) {
   const formattedRevenue = new Intl.NumberFormat("id-ID", {
     style: "currency",
@@ -24,65 +26,48 @@ export default function DashboardStats({
     {
       title: "Total Reservasi",
       value: totalReservations.toString(),
-      trend: "Data Aktual",
-      trendUp: true,
+      sub: "Semua Status",
       icon: CalendarCheck,
-      desc: "Semua status",
     },
     {
       title: "Total Pendapatan",
       value: formattedRevenue,
-      trend: "Data Aktual",
-      trendUp: true,
-      icon: DollarSign,
-      desc: "Lunas & DP Paid",
+      sub: "DP Paid & Lunas",
+      icon: Wallet,
     },
     {
       title: "Lapangan Aktif",
       value: activeCourts.toString(),
-      trend: "Status",
-      trendUp: true,
+      sub: "Siap Disewa",
       icon: Box,
-      desc: "Beroperasi",
+    },
+    {
+      title: "Menunggu DP",
+      value: pendingCount.toString(),
+      sub: "Status Pending",
+      icon: Clock,
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {stats.map((stat, i) => {
         const Icon = stat.icon;
         return (
           <div
             key={i}
-            className="group relative bg-white p-6 rounded-xl border border-zinc-200 shadow-sm overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
+            className="p-4 bg-zinc-50 rounded-xl border border-zinc-200 space-y-1"
           >
-            {/* Soft hover gradient background (21st.dev style) */}
-            <div className="absolute inset-0 bg-gradient-to-br from-zinc-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-            <div className="relative flex items-center justify-between">
-              <span className="text-sm font-medium text-zinc-500">
-                {stat.title}
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+                {stat.sub}
               </span>
-              <div className="w-10 h-10 rounded-full bg-zinc-50 border border-zinc-100 flex items-center justify-center transition-colors duration-300 group-hover:bg-white group-hover:border-zinc-200">
-                <Icon className="w-5 h-5 text-zinc-950" />
-              </div>
+              <Icon className="w-4 h-4 text-zinc-950" />
             </div>
-            
-            <div className="relative mt-4">
-              <h3 className="text-3xl font-bold tracking-tight text-zinc-950">
-                {stat.value}
-              </h3>
-              <div className="flex items-center gap-2 mt-2">
-                <span
-                  className={`text-xs font-semibold ${
-                    stat.trendUp ? "text-emerald-600" : "text-zinc-500"
-                  }`}
-                >
-                  {stat.trend}
-                </span>
-                <span className="text-xs text-zinc-500">{stat.desc}</span>
-              </div>
-            </div>
+            <p className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950">
+              {stat.value}
+            </p>
+            <p className="text-sm font-medium text-zinc-500">{stat.title}</p>
           </div>
         );
       })}
