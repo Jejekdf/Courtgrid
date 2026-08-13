@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import PageTransition from "@/components/motion/PageTransition";
 
 export default function PublicLayout({
   children,
@@ -10,7 +11,9 @@ export default function PublicLayout({
     <>
       <Header />
       <main className="grow flex flex-col pt-24">
-        {children}
+        <PageTransition>
+          {children}
+        </PageTransition>
       </main>
       <Footer />
     </>

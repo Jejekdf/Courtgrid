@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,61 +10,32 @@ import { useSession } from "next-auth/react";
 export function Header() {
   const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
-  const [headerShapeClass, setHeaderShapeClass] = useState("rounded-full");
   const [activeSection, setActiveSection] = useState("");
-  const shapeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pathname = usePathname();
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen);
+    setIsOpen((prev) => !prev);
   };
 
-  useEffect(() => {
-    if (shapeTimeoutRef.current) {
-      clearTimeout(shapeTimeoutRef.current);
-    }
-
-    if (isOpen) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setHeaderShapeClass("rounded-xl");
-    } else {
-      shapeTimeoutRef.current = setTimeout(() => {
-        setHeaderShapeClass("rounded-full");
-      }, 300);
-    }
-
-    return () => {
-      if (shapeTimeoutRef.current) {
-        clearTimeout(shapeTimeoutRef.current);
-      }
-    };
-  }, [isOpen]);
+  const headerShapeClass = isOpen ? "rounded-2xl" : "rounded-full";
 
   // Scroll spy to detect active section on landing page
   useEffect(() => {
-    if (pathname !== "/") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setActiveSection("");
-      return;
-    }
+    if (pathname !== "/") return;
 
     const handleScroll = () => {
       const courtsSection = document.getElementById("courts");
       const aboutSection = document.getElementById("about");
-
-      if (!courtsSection || !aboutSection) return;
-
       const scrollY = window.scrollY;
-      const courtsTop = courtsSection.offsetTop - 150;
-      const aboutTop = aboutSection.offsetTop - 150;
-
-      if (scrollY >= aboutTop) {
-        setActiveSection("#about");
-      } else if (scrollY >= courtsTop) {
-        setActiveSection("#courts");
-      } else {
-        setActiveSection("");
+      
+      let newActive = "";
+      if (aboutSection && scrollY >= (aboutSection.offsetTop - 150)) {
+        newActive = "#about";
+      } else if (courtsSection && scrollY >= (courtsSection.offsetTop - 150)) {
+        newActive = "#courts";
       }
+      
+      setActiveSection(newActive);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -73,45 +44,46 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [pathname]);
 
-  // Close menu on path change
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsOpen(false);
-  }, [pathname]);
-
   const checkIsActive = (href: string) => {
-    if (pathname !== "/") return pathname === href;
-    if (href === "/") return activeSection === "";
-    return href === `/${activeSection}`;
+    if (href === "/") {
+      return pathname === "/" && activeSection === "";
+    }
+    
+    if (href.startsWith("/#")) {
+      const hash = href.replace("/", "");
+      return pathname === "/" && activeSection === hash;
+    }
+
+    return pathname === href;
   };
 
   const logoElement = (
-    <Link href="/" className="flex items-center gap-2.5 group shrink-0 outline-none [-webkit-tap-highlight-color:transparent]">
-      <Image src="/icon.ico" alt="CourtGrid Logo" width={32} height={32} priority className="rounded-lg object-contain transition-transform group-hover:scale-95" />
-      <span className="text-zinc-950 font-bold tracking-tight text-base sm:text-lg">
+    <Link href="/" className="flex items-center gap-2.5 group shrink-0 outline-none">
+      <Image src="/icon.ico" alt="CourtGrid Logo" width={28} height={28} priority className="rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
+      <span className="text-zinc-950 font-extrabold tracking-tight text-base sm:text-lg">
         CourtGrid
       </span>
     </Link>
   );
 
   const navLinksData = [
-    { label: "Home", href: "/" },
-    { label: "Courts", href: "/#courts" },
-    { label: "Katalog", href: "/courts" },
-    { label: "About", href: "/#about" },
+    { label: "Beranda", href: "/" },
+    { label: "Fasilitas", href: "/#courts" },
+    { label: "Katalog Arena", href: "/courts" },
+    { label: "Tentang Kami", href: "/#about" },
   ];
 
   const isLoggedIn = status === "authenticated" && session?.user;
   const isAdmin = session?.user?.role === "ADMIN";
   const dashboardHref = isAdmin ? "/admin" : "/dashboard";
-  const dashboardText = isAdmin ? "Admin Panel" : "Dashboard Saya";
+  const dashboardText = isAdmin ? "Admin Panel" : "Dashboard";
   const userImage = session?.user?.image || null;
   const userName = session?.user?.name || "";
 
   const userButtonsElement = isLoggedIn ? (
     <Link
       href={dashboardHref}
-      className="flex items-center justify-center gap-2 px-4 py-2 text-xs sm:text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-md transition-all shadow-xs outline-none w-full sm:w-auto"
+      className="flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold font-mono bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl transition-colors shadow-xs outline-none w-full sm:w-auto cursor-pointer min-h-11"
     >
       {userImage ? (
         <img src={userImage} alt={userName} className="w-4 h-4 rounded-full object-cover" />
@@ -124,28 +96,28 @@ export function Header() {
     <>
       <Link
         href="/login"
-        className="px-4 py-2 text-xs sm:text-sm font-medium border border-zinc-200 bg-white text-zinc-950 rounded-md hover:bg-zinc-50 transition-all duration-200 w-full sm:w-auto text-center outline-none"
+        className="px-4 py-2 text-xs font-bold font-mono border border-zinc-200 bg-white text-zinc-950 rounded-xl hover:bg-zinc-50 transition-colors duration-200 w-full sm:w-auto text-center outline-none cursor-pointer min-h-11"
       >
-        Log In
+        Masuk
       </Link>
       <Link
         href="/register"
-        className="flex items-center justify-center px-4 py-2 text-xs sm:text-sm font-medium text-white bg-zinc-950 rounded-md hover:bg-zinc-800 transition-all duration-200 w-full sm:w-auto outline-none"
+        className="flex items-center justify-center px-4 py-2 text-xs font-bold font-mono text-white bg-zinc-950 rounded-xl hover:bg-zinc-800 transition-colors duration-200 w-full sm:w-auto outline-none cursor-pointer shadow-xs min-h-11"
       >
-        Sign Up
+        Daftar
       </Link>
     </>
   );
 
   return (
-    <div className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+    <div className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
       <header
         className={`pointer-events-auto
           flex flex-col items-center
-          px-4 py-3 backdrop-blur-md
+          px-5 py-3 backdrop-blur-md
           ${headerShapeClass}
-          border border-zinc-200 bg-white/80 shadow-sm
-          w-full max-w-4xl
+          border border-zinc-200/80 bg-white/90 shadow-xs
+          w-full max-w-7xl
           transition-[border-radius] duration-300 ease-in-out`}
       >
         <div className="flex items-center justify-between w-full gap-x-6 sm:gap-x-8">
@@ -156,21 +128,25 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm outline-none transition-colors ${
-                  checkIsActive(link.href) ? "text-zinc-950 font-semibold" : "text-zinc-500 font-medium hover:text-zinc-950"
-                }`}
+                className={`relative text-xs font-mono font-bold outline-none transition-colors py-1
+                  after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-zinc-950 after:transition-[width] after:duration-300
+                  ${
+                    checkIsActive(link.href)
+                      ? "text-zinc-950 after:w-full"
+                      : "text-zinc-500 hover:text-zinc-950 after:w-0 hover:after:w-full"
+                  }`}
               >
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          <div className="hidden sm:flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-2">
             {userButtonsElement}
           </div>
 
           <button
-            className="sm:hidden flex items-center justify-center w-8 h-8 text-zinc-700 hover:text-zinc-950 focus:outline-none transition-colors outline-none"
+            className="sm:hidden flex items-center justify-center w-11 h-11 text-zinc-700 hover:text-zinc-950 focus:outline-none transition-colors outline-none cursor-pointer"
             onClick={toggleMenu}
             aria-label={isOpen ? "Close Menu" : "Open Menu"}
           >
@@ -179,23 +155,27 @@ export function Header() {
         </div>
 
         <div
-          className={`sm:hidden flex flex-col items-center w-full transition-all ease-in-out duration-300 overflow-hidden
-            ${isOpen ? "max-h-250 opacity-100 pt-6 pb-2" : "max-h-0 opacity-0 pt-0 pointer-events-none"}`}
+          className={`sm:hidden flex flex-col items-center w-full transition-[max-height,opacity] ease-in-out duration-300 overflow-hidden
+            ${isOpen ? "max-h-250 opacity-100 pt-5 pb-2" : "max-h-0 opacity-0 pt-0 pointer-events-none"}`}
         >
-          <nav className="flex flex-col items-center space-y-4 w-full">
+          <nav className="flex flex-col items-center space-y-3 w-full">
             {navLinksData.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-base font-medium w-full text-center py-2 transition-colors outline-none ${
-                  checkIsActive(link.href) ? "text-zinc-950" : "text-zinc-500 hover:text-zinc-950"
-                }`}
+                className={`relative text-xs font-mono font-bold w-max mx-auto text-center min-h-11 flex items-center transition-colors outline-none
+                  after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-zinc-950 after:transition-[width] after:duration-300
+                  ${
+                    checkIsActive(link.href)
+                      ? "text-zinc-950 after:w-full"
+                      : "text-zinc-500 hover:text-zinc-950 after:w-0 hover:after:w-full"
+                  }`}
               >
                 {link.label}
               </Link>
             ))}
           </nav>
-          <div className="flex flex-col items-center space-y-3 mt-6 w-full">
+          <div className="flex flex-col items-center space-y-2 mt-5 w-full">
             {userButtonsElement}
           </div>
         </div>

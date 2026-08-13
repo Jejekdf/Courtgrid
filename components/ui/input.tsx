@@ -48,7 +48,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             disabled={disabled}
-            className={`flex h-10 w-full rounded-lg border bg-white px-3.5 py-2 text-sm text-zinc-950 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-950/20 focus:border-zinc-950 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200 ${
+            className={`flex h-11 sm:h-10 w-full rounded-lg border bg-white px-3.5 py-2 text-sm text-zinc-950 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-950/20 focus:border-zinc-950 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200 ${
               leftIcon ? "pl-10" : ""
             } ${rightElement ? "pr-10" : ""} ${
               error
@@ -58,17 +58,17 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightElement && (
-            <div className="absolute right-3 flex items-center justify-center">
+            <div className="absolute inset-y-0 right-2 flex items-center justify-center">
               {rightElement}
             </div>
           )}
         </div>
         {error ? (
-          <p className="text-xs font-medium text-red-500 mt-1">
+          <p className="text-sm font-medium text-red-500 mt-1">
             {error}
           </p>
         ) : helperText ? (
-          <p className="text-xs text-zinc-500 mt-1">{helperText}</p>
+          <p className="text-sm text-zinc-500 mt-1">{helperText}</p>
         ) : null}
       </div>
     );
