@@ -1,186 +1,205 @@
+<div align="center">
+
 # CourtGrid
 
-Sistem reservasi lapangan olahraga (Futsal & Badminton) untuk **SM Sport Center**. Booking online, pembayaran DP 50% via Stripe, dashboard pelanggan, dan panel admin.
+**Sports Court Reservation Platform** — Futsal & Badminton booking for **SM Sport Center**
 
-## Fitur
+Built with Next.js 16, TypeScript, Supabase PostgreSQL, and Stripe.
 
-- Autentikasi email/password + Google & Facebook OAuth
-- Pencarian lapangan, cek ketersediaan slot per jam, dan booking
-- Pembayaran DP 50% melalui Stripe Checkout
-- Dashboard pelanggan: riwayat booking, status pembayaran, e-ticket
-- Panel admin: kelola lapangan, reservasi, pelanggan, dan pengaturan venue
-- Notifikasi email (konfirmasi booking, pembayaran sukses, reset password)
-- Webhook Stripe untuk update status pembayaran otomatis
-- Ghost booking cleanup: batalkan reservasi PENDING yang belum dibayar melewati batas waktu
-- Rate limiting pada endpoint autentikasi
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=next.js&logoColor=white)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-4169E1?logo=postgresql&logoColor=white)](https://supabase.com)
+[![NextAuth](https://img.shields.io/badge/NextAuth-v5-000000?logo=auth0&logoColor=white)](https://next-auth.js.org)
+[![Stripe](https://img.shields.io/badge/Stripe-635BFF?logo=stripe&logoColor=white)](https://stripe.com)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 
-## Tech Stack
+</div>
 
-| Area | Teknologi |
-|------|-----------|
-| Framework | Next.js 16 (App Router) |
-| Bahasa | TypeScript |
-| Database | PostgreSQL (Supabase) |
-| ORM | Prisma 7 |
-| Autentikasi | NextAuth v5 |
-| Pembayaran | Stripe |
-| Email | Resend |
-| UI | Tailwind CSS v4, Shadcn UI, Framer Motion |
-| Validasi | Zod |
+---
+
+## Overview
+
+CourtGrid lets customers find an available futsal or badminton court, reserve a time slot, and pay a **50% down payment** through Stripe Checkout. A dedicated customer dashboard tracks bookings and e-tickets, while a full admin panel manages courts, reservations, customers, and venue settings.
+
+Reservations follow a strict lifecycle (`PENDING → DP_PAID → DONE`, with `CANCELED` on timeout or self-cancel), enforced server-side with Zod validation, atomic double-booking checks, timezone-aware time slots (Asia/Jakarta), and a Stripe webhook that only fulfills **paid** checkouts.
+
+## ✨ Features
+
+- **Authentication** — Email/password with bcrypt + Google & Facebook OAuth via NextAuth v5
+- **Reservation engine** — Court catalog, per-hour availability grid, and atomic double-booking prevention (half-open `[start, end)` intervals)
+- **Payments** — 50% down payment through Stripe Checkout, verified by signed webhook (`payment_status === "paid"`)
+- **Customer dashboard** — Booking history, payment status, e-ticket, profile & password management
+- **Admin panel** — Dashboard stats, courts CRUD, reservation management, customer management, e-ticket scanning, venue settings
+- **Email notifications** — Booking confirmation, payment success, password reset (Resend)
+- **Ghost-booking cleanup** — Auto-cancels stale `PENDING` reservations that never opened a Stripe session
+- **Rate limiting** — Upstash Redis on auth & password endpoints
+- **RBAC** — Route-level guards in middleware (proxy): `/admin` for admins, `/dashboard` for customers
+
+## 🛠 Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | [Next.js 16](https://nextjs.org) (App Router, RSC, Server Actions) |
+| Language | TypeScript 5 (strict) |
+| Database | PostgreSQL on [Supabase](https://supabase.com) |
+| ORM | [Prisma 7](https://www.prisma.io) with `@prisma/adapter-pg` |
+| Auth | [NextAuth v5](https://next-auth.js.org) (beta) + bcryptjs |
+| Payments | [Stripe](https://stripe.com) Checkout + webhooks |
+| Email | [Resend](https://resend.com) |
+| UI | Tailwind CSS v4, [shadcn/ui](https://ui.shadcn.com), Framer Motion, Recharts |
+| State | Zustand, TanStack Query |
+| Validation | [Zod](https://zod.dev) v4 |
 | Cache & Rate Limit | Upstash Redis |
+| Testing | `node:test` + `tsx` |
 
-## Struktur Proyek
+## 📁 Project Structure
 
 ```
 app/
-  (public)/          Halaman publik (landing, login, courts, dll)
-  (admin)/admin/     Panel admin
-  dashboard/         Dashboard pelanggan
-  api/               Route handlers (auth, courts, webhook)
+├── (public)/            # Landing, courts, login, register, auth pages, info pages
+├── (admin)/admin/       # Admin panel
+├── dashboard/           # Customer dashboard & booking workspace
+└── api/                 # Route handlers: auth, courts, webhook
 components/
-  ui/                Komponen UI dasar
-  layout/            Header, Footer, Hero
-  admin/             Komponen panel admin
-  dashboard/         Komponen dashboard pelanggan
-  courts/            Komponen pencarian & ketersediaan lapangan
-  auth/              Form autentikasi
-src/features/        Feature slice: actions.ts, dal.ts, schemas.ts
-lib/                 Singletons: prisma, stripe, resend, ratelimit
-prisma/              schema.prisma, migrations, seed.ts
-tests/               Unit & integration tests (node:test)
+├── ui/                  # shadcn/ui primitives
+├── layout/              # Header, Footer, Hero
+├── admin/               # Admin components
+├── dashboard/           # Customer components
+├── courts/              # Catalog & availability grid
+└── auth/                # Auth forms
+src/features/            # Feature slices: actions.ts, dal.ts, schemas.ts
+├── auth/                ├── reservations/
+├── courts/              ├── admin/
+├── contact/             ├── notifications/
+└── settings/
+lib/                     # Singletons: prisma, stripe, resend, ratelimit, timezone
+prisma/                  # schema.prisma, migrations, seed.ts
+tests/                   # Unit & integration tests
 ```
 
-## Menjalankan di Lokal
+Data access flows through a **DAL layer** (`src/features/**/dal.ts`) — components never touch raw Prisma rows.
 
-### 1. Prasyarat
+## 🚀 Getting Started
 
-- Node.js >= 20
-- npm >= 10
-- Akun Supabase (PostgreSQL), Stripe (test mode), Resend
-- (Opsional) Kredensial Google & Facebook OAuth
+### Prerequisites
 
-### 2. Setup
+- Node.js ≥ 20
+- npm ≥ 10
+- [Stripe CLI](https://docs.stripe.com/stripe-cli) (for local webhook testing)
+- Accounts: Supabase, Stripe (test mode), Resend
+
+### Setup
 
 ```bash
 git clone https://github.com/Jejekdf/Courtgrid.git
 cd Courtgrid
 npm install
-cp .env.example .env   # isi kredensial
+cp .env.example .env      # fill in credentials
 ```
 
-### 3. Database
+### Database
 
 ```bash
 npx prisma generate
-npx prisma db push
-npx prisma db seed
+npx prisma db push        # sync schema to Supabase
+npx prisma db seed        # admin account + 5 courts
 ```
 
-### 4. Jalankan
+### Run
 
 ```bash
-npm run dev
+npm run dev               # http://localhost:3000
 ```
 
-Buka http://localhost:3000. Webhook Stripe di terminal terpisah:
+In a second terminal, forward Stripe webhooks locally:
 
 ```bash
 stripe listen --forward-to localhost:3000/api/webhook
 ```
 
-Salin `whsec_...` yang tampil ke `.env` sebagai `STRIPE_WEBHOOK_SECRET`.
+Copy the displayed `whsec_...` secret into `.env` as `STRIPE_WEBHOOK_SECRET`.
 
-## Environment Variables
+## ⚙️ Environment Variables
 
-| Variable | Wajib | Keterangan |
-|----------|-------|------------|
-| `DATABASE_URL` | Ya | Supabase PostgreSQL connection string |
-| `DIRECT_URL` | Ya | Koneksi langsung untuk Prisma |
-| `AUTH_URL` | Ya | URL aplikasi (lokal: `http://localhost:3000`) |
-| `AUTH_SECRET` | Ya | Secret sesi NextAuth (`openssl rand -base64 32`) |
-| `STRIPE_SECRET_KEY` | Ya | Stripe secret key (`sk_test_...`) |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Ya | Stripe publishable key (`pk_test_...`) |
-| `STRIPE_WEBHOOK_SECRET` | Ya | Webhook signing secret (`whsec_...`) |
-| `RESEND_API_KEY` | Ya | Resend API key (`re_...`) |
-| `RESEND_FROM_EMAIL` | Ya | Email pengirim |
-| `NEXT_PUBLIC_APP_URL` | Ya | URL publik aplikasi |
-| `GOOGLE_CLIENT_ID` | Tidak | Google OAuth |
-| `GOOGLE_CLIENT_SECRET` | Tidak | Google OAuth |
-| `FACEBOOK_CLIENT_ID` | Tidak | Facebook OAuth |
-| `FACEBOOK_CLIENT_SECRET` | Tidak | Facebook OAuth |
-| `UPSTASH_REDIS_REST_URL` | Tidak | Upstash Redis (rate limit & cache) |
-| `UPSTASH_REDIS_REST_TOKEN` | Tidak | Upstash Redis |
-| `ADMIN_EMAIL` | Tidak | Admin awal untuk seed |
-| `ADMIN_PASSWORD` | Tidak | Password admin awal untuk seed |
-| `ADMIN_NAMA` | Tidak | Nama admin awal |
-| `SEED_DEMO` | Tidak | `"true"` untuk membuat data demo |
+| Variable | Required | Description |
+|----------|:--------:|-------------|
+| `DATABASE_URL` | ✅ | Supabase PostgreSQL connection string |
+| `DIRECT_URL` | ✅ | Direct connection for Prisma |
+| `AUTH_URL` | ✅ | App URL (local: `http://localhost:3000`) |
+| `AUTH_SECRET` | ✅ | NextAuth secret (`openssl rand -base64 32`) |
+| `STRIPE_SECRET_KEY` | ✅ | `sk_test_...` |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ✅ | `pk_test_...` |
+| `STRIPE_WEBHOOK_SECRET` | ✅ | `whsec_...` |
+| `RESEND_API_KEY` | ✅ | `re_...` |
+| `RESEND_FROM_EMAIL` | ✅ | Sender address |
+| `NEXT_PUBLIC_APP_URL` | ✅ | Public app URL |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | ❌ | Google OAuth |
+| `FACEBOOK_CLIENT_ID` / `FACEBOOK_CLIENT_SECRET` | ❌ | Facebook OAuth |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | ❌ | Rate limit & cache |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAMA` | ❌ | Seed super admin |
+| `SEED_DEMO` | ❌ | `"true"` to seed demo data |
 
-## Route Utama
+## 🗺 Routes
 
-| URL | Deskripsi |
-|-----|-----------|
+| URL | Description |
+|-----|-------------|
 | `/` | Landing page |
-| `/courts` | Daftar lapangan |
-| `/login`, `/register` | Masuk / daftar |
-| `/forgot-password`, `/reset-password` | Reset password |
-| `/dashboard` | Dashboard pelanggan |
-| `/dashboard/book` | Form reservasi |
-| `/dashboard/reservations` | Riwayat booking |
-| `/dashboard/settings` | Pengaturan akun |
-| `/admin` | Dashboard admin |
-| `/admin/courts` | Kelola lapangan |
-| `/admin/reservations` | Kelola reservasi |
-| `/admin/customers` | Kelola pelanggan |
-| `/admin/settings` | Pengaturan venue |
+| `/courts` | Court catalog & availability |
+| `/login` · `/register` | Sign in / create account |
+| `/forgot-password` · `/reset-password` | Password recovery |
+| `/dashboard` | Customer dashboard |
+| `/dashboard/book` | Booking workspace |
+| `/dashboard/reservations` | Booking history & e-tickets |
+| `/dashboard/settings` | Profile & password |
+| `/admin` | Admin dashboard |
+| `/admin/courts` · `/admin/reservations` · `/admin/customers` · `/admin/settings` | Admin management |
 
-## Script
+## 🧪 Testing
 
 ```bash
-npm run dev          # Development server
-npm run build        # Build produksi
-npm run start        # Jalankan build produksi
-npm run lint         # ESLint
-npm test             # Unit test (node:test)
-npm run db:studio    # Prisma Studio
-npm run db:test      # Tes koneksi database
+npm run lint          # ESLint
+npx tsc --noEmit      # Type-check
+npm test              # node:test suite
 ```
 
-## Testing
+Coverage highlights (Acceptance Criteria from the PRD):
 
-```bash
-npm run lint
-npx tsc --noEmit
-npm test
-```
+- **AC-LOGIN-1/2** — correct credentials pass; wrong password rejected with no session
+- **AC-BOOK-1** — valid future booking accepted; past-date / malformed input rejected
+- **FIX-H2** — Asia/Jakarta timezone boundary: rejects past date and today's elapsed hour
+- **F6** — overlapping slots rejected, adjacent slots allowed (half-open intervals)
+- **PAY-1** — deposit = `ceil(total * dp%)`, default 50%
+- **FIX-H4** — ghost-cancel: stale `PENDING` without Stripe session is canceled; live checkout is never released
 
-Coverage utama: login (sukses/gagal), validasi booking (double-booking, timezone, past-date), ghost-cancel timeout, dan gating webhook `payment_status`.
+## ☁️ Deployment
 
-## Deploy (Netlify)
+Deploy on [Netlify](https://www.netlify.com):
 
-1. Push repo ke GitHub.
-2. Buat project baru di Netlify → **Import from Git**.
-3. Pilih repo `Jejekdf/Courtgrid`.
-4. Build command: `npm run build` (auto-detect Next.js).
-5. Set semua environment variable dari `.env` di dashboard Netlify.
-6. Deploy.
+1. Push the repo to GitHub.
+2. Netlify → **Add new site** → **Import from Git** → select `Jejekdf/Courtgrid`.
+3. Build command: `npm run build` (Next.js auto-detected).
+4. Add every environment variable from `.env` in the Netlify dashboard.
+5. Deploy.
 
-Setelah deploy:
+Post-deploy checklist:
 
-- Atur `AUTH_URL` dan `NEXT_PUBLIC_APP_URL` ke domain Netlify.
-- Daftarkan endpoint `/api/webhook` di Stripe Dashboard.
-- Verifikasi domain pengirim di Resend Dashboard.
+- Set `AUTH_URL` and `NEXT_PUBLIC_APP_URL` to your Netlify domain.
+- Register `/api/webhook` in the [Stripe Dashboard](https://dashboard.stripe.com/webhooks).
+- Verify your sending domain in the [Resend Dashboard](https://resend.com/domains).
 
-## Alur Data
+## 📜 Scripts
 
-```
-Client Component → Server Component → DAL → Prisma → PostgreSQL
-```
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Start dev server |
+| `npm run build` | Production build |
+| `npm run start` | Run production build |
+| `npm run lint` | ESLint |
+| `npm test` | Run unit tests |
+| `npm run db:studio` | Prisma Studio |
+| `npm run db:test` | Verify DB connection |
 
-Konvensi:
-- Akses database hanya lewat DAL atau server action.
-- Semua mutasi divalidasi Zod + cek kepemilikan/peran.
-- Tidak pernah ekspos field sensitif ke komponen client.
+## 📄 License
 
-## Lisensi
-
-Dibuat oleh **Randi Maulana** untuk keperluan sertifikasi kompetensi.
+Created by **Randi Maulana** for competency certification.
