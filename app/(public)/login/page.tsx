@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen w-full flex bg-white text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
+    <main className="min-h-screen w-full flex bg-[var(--background)] text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
       {/* Left Panel: Auth Form */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 sm:px-12 md:px-16 xl:px-24 relative py-12">
         <div className="w-full max-w-md mx-auto space-y-8">
@@ -25,20 +25,20 @@ export default function LoginPage() {
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-950">
               Selamat Datang
             </h1>
-            <p className="text-sm text-zinc-500 font-mono leading-relaxed">
+            <p className="text-sm text-zinc-500 leading-relaxed">
               Silakan masuk dengan kredensial akun Anda untuk mengelola reservasi dan E-Ticket arena olahraga.
             </p>
           </div>
 
           {/* Login Form wrapped in Suspense */}
           <div>
-            <Suspense fallback={<div className="text-sm font-mono text-zinc-400">Memuat formulir masuk...</div>}>
+            <Suspense fallback={<div className="text-sm text-zinc-400">Memuat formulir masuk...</div>}>
               <LoginForm />
             </Suspense>
           </div>
 
           {/* Footer Link */}
-          <p className="text-center text-sm font-mono text-zinc-500 pt-2">
+          <p className="text-center text-sm text-zinc-500 pt-2">
             Belum memiliki akun?{" "}
             <Link
               href="/register"

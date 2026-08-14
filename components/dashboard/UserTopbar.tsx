@@ -91,7 +91,7 @@ export function UserTopbar({ isSidebarOpen = true, onToggleSidebar }: UserTopbar
         {/* Mobile Drawer Trigger */}
         <Sheet>
           <SheetTrigger 
-            className="md:hidden p-2 -ml-2 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
+            className="md:hidden flex items-center justify-center w-11 h-11 -ml-3 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
             aria-label="Buka menu"
           >
             <Menu className="w-5 h-5" />
@@ -167,7 +167,7 @@ export function UserTopbar({ isSidebarOpen = true, onToggleSidebar }: UserTopbar
 
           {/* Search Results Dropdown */}
 {isSearchOpen && debouncedQuery.trim().length > 0 && (
-            <div className="absolute right-0 left-0 top-full mt-1.5 bg-white border border-zinc-200 rounded-xl shadow-lg p-3 space-y-2 z-50 text-sm max-h-80 overflow-y-auto">
+            <div className="absolute right-0 left-0 top-full mt-1.5 bg-white border border-zinc-200 rounded-xl shadow-xl p-3 space-y-2 z-50 text-sm max-h-80 overflow-y-auto">
               {searchResults.length > 0 ? (
                 searchResults.map((c) => (
                   <Link
@@ -178,7 +178,7 @@ export function UserTopbar({ isSidebarOpen = true, onToggleSidebar }: UserTopbar
                   >
                     <div>
                       <div className="font-bold text-zinc-950">{c.name}</div>
-                      <div className="text-[11px] text-zinc-400 font-mono">{c.type}</div>
+                      <div className="text-xs text-zinc-400 font-mono">{c.type}</div>
                     </div>
                     <span className="font-bold text-zinc-900">Rp {c.pricePerHour.toLocaleString("id-ID")}/jam</span>
                   </Link>
@@ -214,7 +214,7 @@ export function UserTopbar({ isSidebarOpen = true, onToggleSidebar }: UserTopbar
               <span className="text-sm font-semibold text-zinc-950 leading-none truncate max-w-28">
                 {userName}
               </span>
-              <span className="text-[11px] text-zinc-400 mt-0.5 leading-none font-mono">
+              <span className="text-xs text-zinc-400 mt-0.5 leading-none font-mono">
                 Pelanggan
               </span>
             </div>

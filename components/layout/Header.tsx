@@ -17,8 +17,6 @@ export function Header() {
     setIsOpen((prev) => !prev);
   };
 
-  const headerShapeClass = isOpen ? "rounded-2xl" : "rounded-full";
-
   // Scroll spy to detect active section on landing page
   useEffect(() => {
     if (pathname !== "/") return;
@@ -83,7 +81,7 @@ export function Header() {
   const userButtonsElement = isLoggedIn ? (
     <Link
       href={dashboardHref}
-      className="flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold font-mono bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl transition-colors shadow-xs outline-none w-full sm:w-auto cursor-pointer min-h-11"
+      className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-bold bg-zinc-950 hover:bg-zinc-800 text-white rounded-lg transition-colors shadow-xs outline-none w-full sm:w-auto cursor-pointer min-h-11"
     >
       {userImage ? (
         <img src={userImage} alt={userName} className="w-4 h-4 rounded-full object-cover" />
@@ -96,13 +94,13 @@ export function Header() {
     <>
       <Link
         href="/login"
-        className="px-4 py-2 text-xs font-bold font-mono border border-zinc-200 bg-white text-zinc-950 rounded-xl hover:bg-zinc-50 transition-colors duration-200 w-full sm:w-auto text-center outline-none cursor-pointer min-h-11"
+        className="px-4 py-2 text-sm font-bold border border-zinc-200 bg-zinc-50 text-zinc-950 rounded-lg hover:bg-zinc-100 transition-colors duration-200 w-full sm:w-auto text-center outline-none cursor-pointer min-h-11"
       >
         Masuk
       </Link>
       <Link
         href="/register"
-        className="flex items-center justify-center px-4 py-2 text-xs font-bold font-mono text-white bg-zinc-950 rounded-xl hover:bg-zinc-800 transition-colors duration-200 w-full sm:w-auto outline-none cursor-pointer shadow-xs min-h-11"
+        className="flex items-center justify-center px-4 py-2 text-sm font-bold text-white bg-zinc-950 rounded-lg hover:bg-zinc-800 transition-colors duration-200 w-full sm:w-auto outline-none cursor-pointer shadow-xs min-h-11"
       >
         Daftar
       </Link>
@@ -115,10 +113,9 @@ export function Header() {
         className={`pointer-events-auto
           flex flex-col items-center
           px-5 py-3 backdrop-blur-md
-          ${headerShapeClass}
+          rounded-xl
           border border-zinc-200/80 bg-white/90 shadow-xs
-          w-full max-w-7xl
-          transition-[border-radius] duration-300 ease-in-out`}
+          w-full max-w-7xl`}
       >
         <div className="flex items-center justify-between w-full gap-x-6 sm:gap-x-8">
           <div className="flex items-center">{logoElement}</div>

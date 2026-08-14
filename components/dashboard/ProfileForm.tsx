@@ -141,7 +141,7 @@ export default function ProfileForm({
         <Input
           id="name"
           {...register("name")}
-          placeholder="Nama Lengkap"
+          placeholder="Masukkan Nama Lengkap Anda"
           error={errors.name?.message}
           leftIcon={<User className="w-4 h-4 text-zinc-400" />}
           className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"

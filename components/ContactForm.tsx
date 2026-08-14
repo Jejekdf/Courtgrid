@@ -57,7 +57,7 @@ export default function ContactForm() {
             <FormItem>
               <FormLabel className="text-zinc-950 font-semibold">Nama Lengkap</FormLabel>
               <FormControl>
-                <Input placeholder="Randi Maulana" {...field} className="bg-zinc-50/50" />
+                <Input placeholder="Masukkan Nama Lengkap Anda" {...field} className="bg-zinc-50/50" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -70,7 +70,7 @@ export default function ContactForm() {
             <FormItem>
               <FormLabel className="text-zinc-950 font-semibold">Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="nama@domain.com" {...field} className="bg-zinc-50/50" />
+                <Input type="email" placeholder="nama@email.com" {...field} className="bg-zinc-50/50" />
               </FormControl>
               <FormMessage />
             </FormItem>

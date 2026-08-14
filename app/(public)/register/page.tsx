@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function RegisterPage() {
   return (
-    <main className="min-h-screen w-full flex flex-row-reverse bg-white text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
+    <main className="min-h-screen w-full flex flex-row-reverse bg-background text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
       {/* Right Panel: Auth Form */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 sm:px-12 md:px-16 xl:px-24 relative py-12">
         <div className="w-full max-w-md mx-auto space-y-8">
@@ -24,7 +24,7 @@ export default function RegisterPage() {
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-950">
               Buat Akun Baru
             </h1>
-            <p className="text-sm text-zinc-500 font-mono leading-relaxed">
+            <p className="text-sm text-zinc-500 leading-relaxed">
               Bergabunglah dengan ratusan tim olahraga lainnya dan amankan slot lapangan favorit Anda.
             </p>
           </div>
@@ -35,7 +35,7 @@ export default function RegisterPage() {
           </div>
 
           {/* Footer Link */}
-          <p className="text-center text-sm font-mono text-zinc-500 pt-2">
+          <p className="text-center text-sm text-zinc-500 pt-2">
             Sudah memiliki akun?{" "}
             <Link
               href="/login"

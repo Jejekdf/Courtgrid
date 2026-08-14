@@ -84,3 +84,33 @@ export const updateProfileSchema = z.object({
 });
 
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .min(1, "Email wajib diisi")
+    .and(z.email("Format email tidak valid. Contoh: kamu@email.com")),
+});
+
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Password minimal 8 karakter")
+      .regex(/[A-Z]/, "Tambahkan minimal 1 huruf besar (A-Z).")
+      .regex(/[a-z]/, "Tambahkan minimal 1 huruf kecil (a-z).")
+      .regex(/[0-9]/, "Tambahkan minimal 1 angka (0-9).")
+      .regex(
+        /[^A-Za-z0-9]/,
+        "Tambahkan minimal 1 karakter spesial (!@#$%^&*) untuk keamanan ekstra."
+      ),
+    confirmPassword: z.string().min(1, "Konfirmasi password wajib diisi"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Konfirmasi password tidak cocok. Cek kembali password yang kamu masukkan.",
+    path: ["confirmPassword"],
+  });
+
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;

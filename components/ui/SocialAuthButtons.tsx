@@ -55,7 +55,7 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
     <div className="space-y-3 w-full">
       <div className="relative flex items-center justify-center my-4">
         <div className="border-t border-zinc-200 w-full" />
-        <span className="bg-white px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider shrink-0">
+        <span className="bg-[var(--background)] px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider shrink-0">
           Atau Lanjutkan Dengan
         </span>
         <div className="border-t border-zinc-200 w-full" />
@@ -68,7 +68,7 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
           isLoading={loadingProvider === "google" || isLoading}
           onClick={() => handleProviderSignIn("google")}
           leftIcon={loadingProvider !== "google" ? <GoogleIcon /> : null}
-          className="w-full text-xs font-medium border-zinc-200 hover:bg-zinc-50"
+          className="w-full text-sm font-medium border-zinc-200 hover:bg-zinc-50"
         >
           Google
         </Button>
@@ -79,7 +79,7 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
           isLoading={loadingProvider === "facebook" || isLoading}
           onClick={() => handleProviderSignIn("facebook")}
           leftIcon={loadingProvider !== "facebook" ? <FacebookIcon /> : null}
-          className="w-full text-xs font-medium border-zinc-200 hover:bg-zinc-50"
+          className="w-full text-sm font-medium border-zinc-200 hover:bg-zinc-50"
         >
           Facebook
         </Button>

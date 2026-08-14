@@ -22,6 +22,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { createReservationAction } from "@/features/reservations/actions";
 import { getCourts, getCourtAvailability } from "@/features/courts/actions";
 import { courtKeys } from "@/lib/query-keys";
+import { useAvailabilityRealtime } from "@/components/dashboard/useAvailabilityRealtime";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -85,6 +86,9 @@ export default function CustomerBookingWorkspace() {
     },
     enabled: !!activeCourtId && !!selectedDate,
   });
+
+  // Live refresh: invalidate availability when any slot changes on this court/date
+  useAvailabilityRealtime(activeCourtId, selectedDate);
 
   const handleSelectCourt = (court: Court) => {
     setSelectedCourtId(court.id);

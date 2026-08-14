@@ -162,7 +162,7 @@ export default function CareersPageContent() {
                       <form onSubmit={handleApplySubmit} className="space-y-3 pt-2">
                         <Input
                           label="Nama Lengkap"
-                          placeholder="Masukkan nama lengkap"
+                          placeholder="Masukkan Nama Lengkap Anda"
                           value={applicantName}
                           onChange={(e) => setApplicantName(e.target.value)}
                           required
@@ -170,7 +170,7 @@ export default function CareersPageContent() {
                         <Input
                           label="Alamat Email"
                           type="email"
-                          placeholder="nama@domain.com"
+                          placeholder="nama@email.com"
                           value={applicantEmail}
                           onChange={(e) => setApplicantEmail(e.target.value)}
                           required

@@ -3,35 +3,40 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion, AnimatePresence } from "framer-motion";
-import { Eye, EyeOff, AlertCircle, CheckCircle2, Check, UserPlus } from "lucide-react";
+import { motion } from "framer-motion";
+import { toast } from "sonner";
+import { Eye, EyeOff, Check, UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { registerSchema, RegisterInput } from "@/lib/zod";
 import { registerUser } from "@/features/auth/actions";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import SocialAuthButtons from "@/components/ui/SocialAuthButtons";
 
 const easeCustom = [0.16, 1, 0.3, 1] as const;
+
+const inputLabelClass = "text-xs font-medium uppercase tracking-wider text-zinc-500";
 
 export default function RegisterForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [serverError, setServerError] = useState<string | null>(null);
-  const [serverSuccess, setServerSuccess] = useState<string | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors, isSubmitting },
-  } = useForm<RegisterInput>({
+  const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
     mode: "onChange",
+    defaultValues: { nama: "", email: "", no_hp: "", password: "", confirmPassword: "" },
   });
 
-  const watchPassword = watch("password", "");
+  const watchPassword = form.watch("password", "");
 
   // Real-time password criteria verification
   const passwordCriteria = [
@@ -54,9 +59,6 @@ export default function RegisterForm() {
   const strength = getStrengthInfo();
 
   const onSubmit = async (data: RegisterInput) => {
-    setServerError(null);
-    setServerSuccess(null);
-
     const formData = new FormData();
     formData.append("nama", data.nama);
     formData.append("email", data.email);
@@ -67,13 +69,14 @@ export default function RegisterForm() {
     const result = await registerUser(formData);
 
     if (!result.success) {
-      setServerError(result.error || "Terjadi kesalahan saat mendaftar.");
-    } else {
-      setServerSuccess(result.message || "Pendaftaran berhasil! Mengalihkan ke halaman masuk...");
-      setTimeout(() => {
-        router.push("/login");
-      }, 2000);
+      toast.error(result.error || "Terjadi kesalahan saat mendaftar.");
+      return;
     }
+
+    toast.success(result.message || "Pendaftaran berhasil! Mengalihkan ke halaman masuk...");
+    setTimeout(() => {
+      router.push("/login");
+    }, 2000);
   };
 
   return (
@@ -83,189 +86,200 @@ export default function RegisterForm() {
       transition={{ duration: 0.3, ease: easeCustom }}
       className="space-y-4 text-left"
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Alert Banners */}
-        <AnimatePresence mode="wait">
-          {serverError && (
-            <motion.div
-              initial={{ opacity: 0, height: 0, y: -6 }}
-              animate={{ opacity: 1, height: "auto", y: 0 }}
-              exit={{ opacity: 0, height: 0, y: -6 }}
-              transition={{ duration: 0.3, ease: easeCustom }}
-              aria-live="polite"
-              className="flex items-start gap-2.5 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm font-mono font-medium overflow-hidden"
-            >
-              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-red-500" />
-              <span>{serverError}</span>
-            </motion.div>
-          )}
-
-          {serverSuccess && (
-            <motion.div
-              initial={{ opacity: 0, height: 0, y: -6 }}
-              animate={{ opacity: 1, height: "auto", y: 0 }}
-              exit={{ opacity: 0, height: 0, y: -6 }}
-              transition={{ duration: 0.3, ease: easeCustom }}
-              aria-live="polite"
-              className="flex items-start gap-2.5 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-mono font-medium overflow-hidden"
-            >
-              <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-emerald-600" />
-              <span>{serverSuccess}</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Nama Lengkap */}
-        <Input
-          id="nama"
-          type="text"
-          label="Nama Lengkap"
-          placeholder="Randi Maulana"
-          autoComplete="name"
-          error={errors.nama?.message}
-          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
-          {...register("nama")}
-        />
-
-        {/* Email Address */}
-        <Input
-          id="email"
-          type="email"
-          label="Alamat Email"
-          placeholder="nama@email.com"
-          autoComplete="email"
-          error={errors.email?.message}
-          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
-          {...register("email")}
-        />
-
-        {/* Nomor HP */}
-        <Input
-          id="no_hp"
-          type="tel"
-          label="Nomor WhatsApp / Telepon"
-          placeholder="081234567890"
-          autoComplete="tel"
-          error={errors.no_hp?.message}
-          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
-          {...register("no_hp")}
-        />
-
-        {/* Password Field */}
-        <div className="space-y-2">
-          <Input
-            id="password"
-            type={showPassword ? "text" : "password"}
-            label="Kata Sandi Baru"
-            placeholder="••••••••"
-            autoComplete="new-password"
-            error={errors.password?.message}
-            className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
-            rightElement={
-              <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
-                aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
-              >
-                {showPassword ? (
-                  <Eye className="h-4 w-4" />
-                ) : (
-                  <EyeOff className="h-4 w-4" />
-                )}
-              </button>
-            }
-            {...register("password")}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="nama"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel className={inputLabelClass}>Nama Lengkap</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="Masukkan Nama Lengkap Anda"
+                    autoComplete="name"
+                    error={!!fieldState.error}
+                    className="border-zinc-200"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
 
-          {/* Real-time Password Strength Meter */}
-          {watchPassword.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              transition={{ duration: 0.2 }}
-              className="space-y-2 p-3 rounded-xl bg-zinc-50 border border-zinc-200/60"
-            >
-              <div className="flex items-center justify-between text-sm font-mono">
-                <span className="text-zinc-500">Kekuatan Kata Sandi:</span>
-                <span className={`font-bold ${strength.textColor}`}>
-                  {strength.label}
-                </span>
-              </div>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel className={inputLabelClass}>Alamat Email</FormLabel>
+                <FormControl>
+                  <Input
+                    type="email"
+                    placeholder="nama@email.com"
+                    autoComplete="email"
+                    error={!!fieldState.error}
+                    className="border-zinc-200"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-              {/* Strength Bar */}
-              <div className="h-1.5 w-full bg-zinc-200 rounded-full overflow-hidden">
-                <div
-                  className={`h-full transition-[width] duration-300 rounded-full ${strength.color}`}
-                  style={{ width: `${strength.percent}%` }}
-                />
-              </div>
+          <FormField
+            control={form.control}
+            name="no_hp"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel className={inputLabelClass}>Nomor Handphone</FormLabel>
+                <FormControl>
+                  <Input
+                    type="tel"
+                    placeholder="081234567890"
+                    autoComplete="tel"
+                    error={!!fieldState.error}
+                    className="border-zinc-200"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-              {/* Criteria Checklist */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1 text-sm font-mono">
-                {passwordCriteria.map((c, i) => (
-                  <div
-                    key={i}
-                    className={`flex items-center space-x-1.5 transition-colors ${
-                      c.valid ? "text-emerald-600 font-bold" : "text-zinc-400"
-                    }`}
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel className={inputLabelClass}>Kata Sandi Baru</FormLabel>
+                <FormControl>
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    autoComplete="new-password"
+                    error={!!fieldState.error}
+                    className="border-zinc-200"
+                    rightElement={
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
+                        aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                      >
+                        {showPassword ? (
+                          <Eye className="h-4 w-4" />
+                        ) : (
+                          <EyeOff className="h-4 w-4" />
+                        )}
+                      </button>
+                    }
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+
+                {watchPassword.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="space-y-2 p-3 rounded-lg bg-zinc-50 border border-zinc-200/60"
                   >
-                    {c.valid ? (
-                      <Check className="h-3 w-3 shrink-0 text-emerald-600" />
-                    ) : (
-                      <div className="h-1.5 w-1.5 rounded-full bg-zinc-300 mx-0.5 shrink-0" />
-                    )}
-                    <span>{c.label}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </div>
+                    <div className="flex items-center justify-between text-sm font-mono">
+                      <span className="text-zinc-500">Kekuatan Kata Sandi:</span>
+                      <span className={`font-bold ${strength.textColor}`}>
+                        {strength.label}
+                      </span>
+                    </div>
 
-        {/* Confirm Password Field */}
-        <Input
-          id="confirmPassword"
-          type={showConfirmPassword ? "text" : "password"}
-          label="Konfirmasi Kata Sandi"
-          placeholder="••••••••"
-          autoComplete="new-password"
-          error={errors.confirmPassword?.message}
-          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
-          rightElement={
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword((prev) => !prev)}
-              className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
-              aria-label={
-                showConfirmPassword ? "Sembunyikan konfirmasi password" : "Tampilkan konfirmasi password"
-              }
-            >
-              {showConfirmPassword ? (
-                <Eye className="h-4 w-4" />
-              ) : (
-                <EyeOff className="h-4 w-4" />
-              )}
-            </button>
-          }
-          {...register("confirmPassword")}
-        />
+                    {/* Strength Bar */}
+                    <div className="h-1.5 w-full bg-zinc-200 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full transition-[width] duration-300 rounded-full ${strength.color}`}
+                        style={{ width: `${strength.percent}%` }}
+                      />
+                    </div>
 
-        {/* Submit Button */}
-        <Button
-          type="submit"
-          variant="primary"
-          size="default"
-          isLoading={isSubmitting}
-          className="w-full mt-2 bg-zinc-950 hover:bg-zinc-800 text-white font-bold h-11 text-xs rounded-xl shadow-xs cursor-pointer"
-          leftIcon={<UserPlus className="w-4 h-4 text-white" />}
-        >
-          Buat Akun Sekarang
-        </Button>
-      </form>
+                    {/* Criteria Checklist */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1 text-sm font-mono">
+                      {passwordCriteria.map((c, i) => (
+                        <div
+                          key={i}
+                          className={`flex items-center space-x-1.5 transition-colors ${
+                            c.valid ? "text-emerald-600 font-bold" : "text-zinc-400"
+                          }`}
+                        >
+                          {c.valid ? (
+                            <Check className="h-3 w-3 shrink-0 text-emerald-600" />
+                          ) : (
+                            <div className="h-1.5 w-1.5 rounded-full bg-zinc-300 mx-0.5 shrink-0" />
+                          )}
+                          <span>{c.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </FormItem>
+            )}
+          />
 
-      {/* Social OAuth Providers */}
-      <SocialAuthButtons isLoading={isSubmitting} />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel className={inputLabelClass}>Konfirmasi Kata Sandi</FormLabel>
+                <FormControl>
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    autoComplete="new-password"
+                    error={!!fieldState.error}
+                    className="border-zinc-200"
+                    rightElement={
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword((prev) => !prev)}
+                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
+                        aria-label={
+                          showConfirmPassword ? "Sembunyikan konfirmasi password" : "Tampilkan konfirmasi password"
+                        }
+                      >
+                        {showConfirmPassword ? (
+                          <Eye className="h-4 w-4" />
+                        ) : (
+                          <EyeOff className="h-4 w-4" />
+                        )}
+                      </button>
+                    }
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button
+            type="submit"
+            variant="primary"
+            size="default"
+            isLoading={form.formState.isSubmitting}
+            className="w-full mt-2"
+            leftIcon={<UserPlus className="w-4 h-4 text-white" />}
+          >
+            Buat Akun Sekarang
+          </Button>
+        </form>
+      </Form>
+
+      <SocialAuthButtons isLoading={form.formState.isSubmitting} />
     </motion.div>
   );
 }
