@@ -133,7 +133,7 @@ export default function AdminReservationsPage() {
                     </td>
                     <td className="px-4 py-3.5 print:px-2 text-zinc-700">
                       <div className="font-semibold text-zinc-950">{res.court?.name || "Lapangan"}</div>
-                      <div className="text-xs text-zinc-400 font-mono">{format(new Date(res.startTime), "HH:mm")} - {format(new Date(res.endTime), "HH:mm")} WIB</div>
+                      <div className="text-xs text-zinc-400 font-mono">{res.startTime} - {res.endTime} WIB</div>
                     </td>
                     <td className="px-4 py-3.5 print:px-2 font-semibold text-zinc-950">
                       Rp {res.totalPrice.toLocaleString("id-ID")}
