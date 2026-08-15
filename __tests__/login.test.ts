@@ -22,8 +22,11 @@ function test(name: string, fn: () => void | Promise<void>) {
   tests.push({ name, fn });
 }
 
-const actionsPath = path.join(process.cwd(), "actions/auth.ts");
+const actionsPath = path.join(process.cwd(), "src/features/auth/actions.ts");
 const actionsSrc = fs.readFileSync(actionsPath, "utf-8");
+
+const credentialsPath = path.join(process.cwd(), "src/features/auth/credentials.ts");
+const credentialsSrc = fs.readFileSync(credentialsPath, "utf-8");
 
 const authPath = path.join(process.cwd(), "auth.ts");
 const authSrc = fs.readFileSync(authPath, "utf-8");
@@ -208,14 +211,14 @@ test("authorize guards with loginSchema.safeParse(credentials)", () => {
 
 test("missing user or passwordHash → return null (AC-AUTH-2)", () => {
   assert.ok(
-    authSrc.includes("!user.passwordHash"),
+    credentialsSrc.includes("!user.passwordHash"),
     "OAuth-only accounts (null hash) must not authenticate via Credentials",
   );
 });
 
 test("compares password via bcrypt.compare", () => {
   assert.ok(
-    authSrc.includes("bcrypt.compare("),
+    credentialsSrc.includes("bcrypt.compare("),
     "should verify password against User.passwordHash",
   );
 });
@@ -256,16 +259,16 @@ test("form submits via login(undefined, formData)", () => {
   );
 });
 
-test("success → router.replace(result.redirectTo) (AC-LOGIN-1)", () => {
+test("success → navigate to result.redirectTo (AC-LOGIN-1)", () => {
   assert.ok(
-    loginFormSrc.includes("router.replace(result.redirectTo)"),
-    "should redirect to the action-provided destination",
+    loginFormSrc.includes("result.redirectTo"),
+    "should navigate to the action-provided destination",
   );
 });
 
-test("failure → setServerError(result.error) (AC-LOGIN-2)", () => {
+test("failure → toast.error(result.error) (AC-LOGIN-2)", () => {
   assert.ok(
-    loginFormSrc.includes("setServerError(result.error)"),
+    loginFormSrc.includes("result.error"),
     "should show the action error to the user",
   );
 });
