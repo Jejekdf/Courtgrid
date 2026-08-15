@@ -4,6 +4,7 @@ import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import { verifyUserSession } from "@/features/auth/dal";
 import { getPaymentProofSignedUrl } from "@/lib/supabase/storage";
+import { formatSlotHour } from "@/lib/timezone";
 
 export type ReservationDTO = {
   id: string;
@@ -35,13 +36,6 @@ export type ReservationDetailDTO = {
   paymentProofUrl?: string | null;
 };
 
-const formatTime = (date: Date) =>
-  date.toLocaleTimeString("id-ID", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "UTC",
-  });
 
 const PAYMENT_PROOF_LEGACY_MARKER = "/public/payment-proofs/";
 
@@ -90,8 +84,8 @@ export const getCustomerReservationsDAL = cache(async (): Promise<ReservationDTO
       reservations.map(async (res) => ({
         id: res.id,
         date: res.date instanceof Date ? res.date.toISOString() : String(res.date),
-        startTime: formatTime(res.startTime),
-        endTime: formatTime(res.endTime),
+        startTime: formatSlotHour(res.startTime),
+        endTime: formatSlotHour(res.endTime),
         totalPrice: res.totalPrice,
         status: res.status,
         courtName: res.court?.name || "",
@@ -138,8 +132,8 @@ export const getReservationDetailsDAL = cache(async (reservationId: string): Pro
     id: res.id,
     userId: res.userId ?? undefined,
     date: res.date instanceof Date ? res.date.toISOString() : String(res.date),
-    startTime: formatTime(res.startTime),
-    endTime: formatTime(res.endTime),
+    startTime: formatSlotHour(res.startTime),
+    endTime: formatSlotHour(res.endTime),
     totalPrice: res.totalPrice,
     status: res.status,
     court: res.court ? { name: res.court.name, type: res.court.type } : null,
