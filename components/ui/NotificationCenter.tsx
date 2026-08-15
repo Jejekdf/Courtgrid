@@ -63,7 +63,7 @@ export default function NotificationCenter({ notifications }: NotificationCenter
                       <div className="font-bold text-zinc-950">{notif.title}</div>
                       <div className="text-sm text-zinc-600 mt-0.5">{notif.message}</div>
                       <div className="text-[11px] text-zinc-400 font-mono mt-1">
-                        {new Date(notif.time).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
+                        {new Date(notif.time).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" })} WIB
                       </div>
                     </div>
                   </div>
