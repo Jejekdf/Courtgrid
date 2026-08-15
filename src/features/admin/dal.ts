@@ -3,16 +3,9 @@ import 'server-only';
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import { verifyUserSession } from "@/features/auth/dal";
-import { getJakartaNow, jakartaDayBounds, jakartaMonthBounds } from "@/lib/timezone";
+import { getJakartaNow, jakartaDayBounds, jakartaMonthBounds, formatSlotHour } from "@/lib/timezone";
 import { getOrSetCache } from "@/lib/redis";
 
-const formatTime = (date: Date) =>
-  date.toLocaleTimeString("id-ID", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "UTC",
-  });
 
 export type AdminStatsDTO = {
   totalReservations: number;
@@ -25,6 +18,8 @@ export type AdminStatsDTO = {
     userEmail: string;
     courtName: string;
     date: string;
+    startTime: string;
+    endTime: string;
     totalPrice: number;
     status: string;
   }>;
@@ -109,6 +104,8 @@ export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> 
             select: {
               id: true,
               date: true,
+              startTime: true,
+              endTime: true,
               totalPrice: true,
               status: true,
               user: { select: { name: true, email: true } },
@@ -129,6 +126,8 @@ export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> 
           userEmail: r.user?.email || "",
           courtName: r.court?.name || "",
           date: r.date instanceof Date ? r.date.toISOString() : String(r.date),
+          startTime: formatSlotHour(r.startTime),
+          endTime: formatSlotHour(r.endTime),
           totalPrice: r.totalPrice,
           status: r.status,
         })),
@@ -181,8 +180,8 @@ export const getAdminPaginatedReservationsDAL = cache(
       reservations: reservations.map((r) => ({
         id: r.id,
         date: r.date instanceof Date ? r.date.toISOString() : String(r.date),
-        startTime: formatTime(r.startTime),
-        endTime: formatTime(r.endTime),
+        startTime: formatSlotHour(r.startTime),
+        endTime: formatSlotHour(r.endTime),
         totalPrice: r.totalPrice,
         status: r.status,
         userName: r.user?.name || "Customer",
