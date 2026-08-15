@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { jakartaDayBounds, jakartaMonthBounds, getJakartaNow } from "../lib/timezone";
+import { jakartaDayBounds, jakartaMonthBounds, getJakartaNow, formatSlotHour } from "../lib/timezone";
 
 // DM-2 / RFC-018: admin day & month report windows are Asia/Jakarta,
 // independent of the server's local timezone.
@@ -36,6 +36,11 @@ test("getJakartaNow returns YYYY-MM-DD with hour 0-23 (deterministic math)", () 
   const now = getJakartaNow();
   assert.match(now.dateStr, /^\d{4}-\d{2}-\d{2}$/);
   assert.ok(now.hour >= 0 && now.hour <= 23);
+});
+
+test("formatSlotHour renders the WIB booking hour (WIB-as-UTC convention)", () => {
+  assert.equal(formatSlotHour(new Date("2026-08-15T18:00:00.000Z")), "18:00");
+  assert.equal(formatSlotHour(new Date("2026-08-15T09:00:00.000Z")), "09:00");
 });
 
 (async () => {
