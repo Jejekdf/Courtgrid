@@ -113,9 +113,9 @@ export async function createReservationAction(rawInput: unknown) {
     appliedVoucherId = voucher.id;
   }
 
-  const date = new Date(dateStr);
-  const startDateTime = new Date(`${dateStr}T${startTime}:00`);
-  const endDateTime = new Date(`${dateStr}T${endTime}:00`);
+  const date = new Date(`${dateStr}T00:00:00.000Z`);
+  const startDateTime = new Date(`${dateStr}T${startTime}:00.000Z`);
+  const endDateTime = new Date(`${dateStr}T${endTime}:00.000Z`);
 
   // Layer 5b: DP percentage from Setting (PAY-1, F18 AC) — default 50%.
   const setting = await prisma.setting.findUnique({ where: { id: 1 } });
