@@ -42,7 +42,7 @@ export default function AdminCustomersPage() {
     placeholderData: keepPreviousData,
   });
 
-  const customers = data?.customers ?? [];
+  const customers: Customer[] = data?.customers ?? [];
   const totalPages = data?.totalPages ?? 1;
 
   const deleteMutation = useMutation({
