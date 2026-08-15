@@ -15,6 +15,31 @@ interface AdminTopbarProps {
   onToggleSidebar?: () => void;
 }
 
+type SearchResultReservation = {
+  id: string;
+  date: string;
+  totalPrice: number;
+  status: string;
+  user: { name: string | null; email: string | null } | null;
+  court: { name: string } | null;
+};
+
+type SearchResultCourt = {
+  id: string;
+  name: string;
+  type: string;
+  pricePerHour: number;
+  isActive: boolean;
+};
+
+type NotificationItem = {
+  id: string;
+  title: string;
+  message: string;
+  time: string;
+  link: string;
+};
+
 export default function AdminTopbar({
   onMenuClick,
   isSidebarOpen = true,
@@ -117,7 +142,7 @@ export default function AdminTopbar({
                   {searchResults.reservations.length > 0 && (
                     <div className="space-y-1.5">
                       <div className="text-[11px] font-mono font-bold uppercase text-zinc-400 px-1">Reservasi</div>
-                      {searchResults.reservations.map((r) => (
+                      {searchResults.reservations.map((r: SearchResultReservation) => (
                         <Link
                           key={r.id}
                           href="/admin/reservations"
@@ -140,7 +165,7 @@ export default function AdminTopbar({
                   {searchResults.courts.length > 0 && (
                     <div className="space-y-1.5 pt-1 border-t border-zinc-100">
                       <div className="text-[11px] font-mono font-bold uppercase text-zinc-400 px-1">Lapangan</div>
-                      {searchResults.courts.map((c) => (
+                      {searchResults.courts.map((c: SearchResultCourt) => (
                         <Link
                           key={c.id}
                           href="/admin/courts"
@@ -195,7 +220,7 @@ export default function AdminTopbar({
                 {notifications.length === 0 ? (
                   <div className="text-center py-6 text-zinc-400">Tidak ada notifikasi baru.</div>
                 ) : (
-                  notifications.map((notif) => (
+                  notifications.map((notif: NotificationItem) => (
                     <Link
                       key={notif.id}
                       href={notif.link}
