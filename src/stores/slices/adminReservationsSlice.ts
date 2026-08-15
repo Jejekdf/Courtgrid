@@ -85,17 +85,6 @@ export const createAdminReservationsSlice = (set: any, get: any, api: any): Admi
       const data = await getAllReservations(get().filter, get().page, 10);
       const mapped: ReservationDetail[] = data.reservations.map((r) => ({
         ...r,
-        startTime: typeof r.startTime === "string" ? r.startTime : new Date(r.startTime).toLocaleTimeString("id-ID", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        }),
-        endTime: typeof r.endTime === "string" ? r.endTime : new Date(r.endTime).toLocaleTimeString("id-ID", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        }),
-        date: typeof r.date === "string" ? r.date : new Date(r.date).toISOString(),
       }));
       set((draft: AdminReservationsState) => {
         draft.reservations = mapped;
@@ -152,20 +141,7 @@ export const createAdminReservationsSlice = (set: any, get: any, api: any): Admi
       set((draft: AdminReservationsState) => {
         draft.scanner.isSearching = false;
         if (res.success && res.reservation) {
-          draft.scanner.scannedReservation = {
-            ...res.reservation,
-            startTime: typeof res.reservation.startTime === "string" ? res.reservation.startTime : new Date(res.reservation.startTime).toLocaleTimeString("id-ID", {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: false,
-            }),
-            endTime: typeof res.reservation.endTime === "string" ? res.reservation.endTime : new Date(res.reservation.endTime).toLocaleTimeString("id-ID", {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: false,
-            }),
-            date: typeof res.reservation.date === "string" ? res.reservation.date : new Date(res.reservation.date).toISOString(),
-          };
+          draft.scanner.scannedReservation = res.reservation;
           toast.success("E-Ticket Ditemukan!");
         } else {
           toast.error(res.error || "Tiket tidak ditemukan.");
