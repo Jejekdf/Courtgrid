@@ -3,7 +3,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { getJakartaNow, jakartaDayBounds, jakartaMonthBounds } from "@/lib/timezone";
+import { getJakartaNow, jakartaDayBounds, jakartaMonthBounds, formatSlotHour } from "@/lib/timezone";
 import { z } from "zod";
 import { invalidateCache } from "@/lib/redis";
 import { getAdminDashboardStatsDAL, type AdminStatsDTO } from "@/features/admin/dal";
@@ -56,66 +56,8 @@ function parseCourtForm(formData: FormData): { data: CourtFormInput | null; erro
   return { data: parsed.data, error: null };
 }
 
-// =======================
-// Dashboard Statistics
-// =======================
 
-/**
- * Aggregates admin dashboard metrics.
- *
- * - Total reservations count
- * - Revenue sum for `DP_PAID` and `DONE` reservations
- * - Total courts count
- * - 5 most recent reservations with related user, court, and payment
- *
- * Intended for the admin dashboard overview page.
- *
- * @throws If the caller is not an admin.
- * @returns Dashboard statistics payload.
- */
-export async function getDashboardStats() {
-  const adminCheck = await checkAdmin();
-  if (!adminCheck.success) {
-    throw new Error(adminCheck.error);
-  }
 
-  const totalReservations = await prisma.reservation.count();
-
-  // Total Revenue (only DP_PAID and DONE)
-  const revenueResult = await prisma.reservation.aggregate({
-    _sum: {
-      totalPrice: true,
-    },
-    where: {
-      status: {
-        in: ["DP_PAID", "DONE"],
-      },
-    },
-  });
-
-  const totalCourts = await prisma.court.count();
-
-  const recentReservations = await prisma.reservation.findMany({
-    take: 5,
-    orderBy: { createdAt: "desc" },
-    include: {
-      user: { select: { name: true, email: true } },
-      court: true,
-      payment: true,
-    },
-  });
-
-  return {
-    totalReservations,
-    totalRevenue: revenueResult._sum.totalPrice || 0,
-    totalCourts,
-    recentReservations,
-  };
-}
-
-// =======================
-// Reservations Reporting & Cleanup
-// =======================
 
 /**
  * Returns paginated admin reservations with optional daily or monthly filtering.
@@ -173,6 +115,8 @@ export async function getAllReservations(
   const reservations = rawReservations.map((r) => ({
     ...r,
     date: r.date instanceof Date ? r.date.toISOString() : String(r.date),
+    startTime: formatSlotHour(r.startTime),
+    endTime: formatSlotHour(r.endTime),
   }));
 
   return {
@@ -335,45 +279,6 @@ export async function adminToggleCourtActive(id: string, formData: FormData) {
   return { success: true };
 }
 
-// =======================
-// Customers Management
-// =======================
-
-/**
- * Retrieves all customer users, optionally filtered by search term.
- *
- * Search is case-insensitive across `name` and `email`.
- *
- * @param search - Optional search query.
- * @returns Customer user records.
- */
-export async function adminGetCustomers(search?: string) {
-  const adminCheck = await checkAdmin();
-  if (!adminCheck.success) {
-    return [];
-  }
-  const whereCondition = search
-    ? {
-        role: "CUSTOMER" as const,
-        OR: [
-          { name: { contains: search, mode: "insensitive" as const } },
-          { email: { contains: search, mode: "insensitive" as const } },
-        ],
-      }
-    : { role: "CUSTOMER" as const };
-
-  const customers = await prisma.user.findMany({
-    where: whereCondition,
-    orderBy: { createdAt: "desc" },
-    include: {
-      _count: {
-        select: { reservations: true },
-      },
-    },
-  });
-
-  return customers;
-}
 
 /**
  * Permanently deletes a customer account.
@@ -470,23 +375,42 @@ export async function adminScanTicket(reservationId: string) {
   if (!adminCheck.success) {
     return adminCheck;
   }
-  const reservation = await prisma.reservation.findUnique({
+  const res = await prisma.reservation.findUnique({
     where: { id: reservationId.trim() },
-    include: {
+    select: {
+      id: true,
+      date: true,
+      startTime: true,
+      endTime: true,
+      totalPrice: true,
+      status: true,
       user: { select: { name: true, email: true } },
       court: { select: { name: true, type: true } },
-      payment: true,
+      payment: { select: { dpAmount: true, status: true } },
     },
   });
 
-  if (!reservation) {
+  if (!res) {
     return {
       success: false,
       error: "Tiket / ID Reservasi tidak ditemukan di database.",
     };
   }
 
-  return { success: true, reservation };
+  return {
+    success: true,
+    reservation: {
+      id: res.id,
+      date: res.date instanceof Date ? res.date.toISOString() : String(res.date),
+      startTime: formatSlotHour(res.startTime),
+      endTime: formatSlotHour(res.endTime),
+      totalPrice: res.totalPrice,
+      status: res.status,
+      user: res.user,
+      court: res.court,
+      payment: res.payment ? { dpAmount: res.payment.dpAmount, status: res.payment.status } : null,
+    },
+  };
 }
 
 /**
