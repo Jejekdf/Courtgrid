@@ -1,11 +1,19 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { headers } from "next/headers";
 import { resend, RESEND_FROM_EMAIL } from "@/lib/resend";
 import { bookingConfirmationEmail, paymentSuccessEmail, forgotPasswordEmail } from "@/lib/emails/templates";
+import { checkRateLimit } from "@/lib/ratelimit";
 
 export async function POST(req: Request) {
   if (process.env.NODE_ENV !== "development") {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  const h = await headers();
+  const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() || "anon";
+  const { success } = await checkRateLimit(`dev-email-test:${ip}`);
+  if (!success) {
+    return NextResponse.json({ error: "Terlalu banyak permintaan. Coba lagi dalam 15 menit." }, { status: 429 });
   }
 
   try {
@@ -61,52 +69,21 @@ export async function POST(req: Request) {
     }
 
     if (type === "forgot-password") {
-      const user = await prisma.user.findFirst();
-
-      if (!user?.email) {
-        return NextResponse.json(
-          { ok: false, error: "No user found in database. Register a user first." },
-          { status: 400 }
-        );
-      }
-
       const resetToken = "local-test-token-" + Date.now();
       const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
 
-      const emailHtml = `
-        <div style="font-family: Arial, sans-serif; max-w-xl; margin: 0 auto; padding: 20px; color: #333;">
-          <h2 style="color: #059669; text-align: center;">CourtGrid</h2>
-          <div style="background-color: #fafafa; padding: 30px; border-radius: 8px; border: 1px solid #eaeaea;">
-            <h3 style="margin-top: 0;">Password Reset Request</h3>
-            <p>Hello ${user.name || "Customer"},</p>
-            <p>This is a local test email. Click the link below:</p>
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${resetUrl}" style="background-color: #09090b; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Reset Password</a>
-            </div>
-            <p style="font-size: 14px; color: #666; margin-top: 30px;">
-              Or copy and paste this URL:<br>
-              <a href="${resetUrl}" style="color: #059669; word-break: break-all;">${resetUrl}</a>
-            </p>
-          </div>
-          <p style="text-align: center; font-size: 12px; color: #999; margin-top: 20px;">
-            &copy; ${new Date().getFullYear()} CourtGrid. All rights reserved.
-          </p>
-        </div>
-      `;
-
       const { error: emailError } = await resend.emails.send({
-        ...forgotPasswordEmail(user.name, resetUrl),
+        ...forgotPasswordEmail("Test Customer", resetUrl),
         from: RESEND_FROM_EMAIL,
-        to: [user.email],
+        to: [targetEmail],
         subject: "Reset Your CourtGrid Password",
-        html: emailHtml,
       });
 
       if (emailError) {
         return NextResponse.json({ ok: false, error: emailError }, { status: 500 });
       }
 
-      return NextResponse.json({ ok: true, message: `Forgot password email sent to ${user.email}.` });
+      return NextResponse.json({ ok: true, message: `Forgot password email sent to ${targetEmail}.` });
     }
 
     return NextResponse.json(
