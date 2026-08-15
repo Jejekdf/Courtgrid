@@ -2,6 +2,7 @@ import 'server-only';
 
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
+import { isCourtType } from "@/lib/api/courts";
 import { autoCancelGhostBookings } from "@/features/reservations/ghostCancel";
 import { getJakartaNow } from "@/lib/timezone";
 
@@ -11,6 +12,15 @@ export type CourtDTO = {
   type: "FUTSAL" | "BADMINTON";
   pricePerHour: number;
   isActive: boolean;
+};
+
+export type ActiveCourtDTO = {
+  id: string;
+  name: string;
+  type: "FUTSAL" | "BADMINTON";
+  pricePerHour: number;
+  imageUrl: string | null;
+  venue: { name: string };
 };
 
 export type SlotStatus = "PAST" | "BOOKED" | "FREE";
@@ -34,28 +44,27 @@ function fmtTime(h: number): string {
   return `${pad2(h)}:00`;
 }
 
-import { getOrSetCache } from "@/lib/redis";
-
-/**
- * Data Access Layer: Get active courts with React cache() & Redis caching to prevent duplicate queries
- */
-export const getActiveCourtsDAL = cache(async (): Promise<CourtDTO[]> => {
-  return getOrSetCache("courts:active", async () => {
+export const getActiveCourtsDAL = cache(
+  async (search: string, type: string | null): Promise<ActiveCourtDTO[]> => {
     const courts = await prisma.court.findMany({
-      where: { isActive: true },
+      where: {
+        isActive: true,
+        ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
+        ...(isCourtType(type) ? { type } : {}),
+      },
       orderBy: { name: "asc" },
       select: {
         id: true,
         name: true,
         type: true,
         pricePerHour: true,
-        isActive: true,
+        imageUrl: true,
+        venue: { select: { name: true } },
       },
     });
-
-    return courts as CourtDTO[];
-  }, 600); // Cache for 10 minutes
-});
+    return courts as ActiveCourtDTO[];
+  }
+);
 
 /**
  * Data Access Layer: Generate full 14-slot availability grid for a court+date.
