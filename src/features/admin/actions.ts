@@ -8,6 +8,82 @@ import { z } from "zod";
 import { invalidateCache } from "@/lib/redis";
 import { getAdminDashboardStatsDAL, type AdminStatsDTO } from "@/features/admin/dal";
 
+// =======================
+// Shared Return Types
+// =======================
+
+type AdminReservationRow = {
+  id: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  totalPrice: number;
+  status: string;
+  user: { name: string | null; email: string | null } | null;
+  court: { name: string; type?: string } | null;
+  payment: { dpAmount?: number; status?: string } | null;
+};
+
+type PaginatedReservationsResult =
+  | { success: false; error: string; reservations: never[]; totalCount: 0; totalPages: 1; currentPage: 1 }
+  | { reservations: AdminReservationRow[]; totalCount: number; totalPages: number; currentPage: number };
+
+type AdminCourtRow = {
+  id: string;
+  name: string;
+  type: string;
+  pricePerHour: number;
+  isActive: boolean;
+  imageUrl: string | null;
+};
+
+type SearchResultReservation = {
+  id: string;
+  date: string;
+  totalPrice: number;
+  status: string;
+  user: { name: string | null; email: string | null } | null;
+  court: { name: string } | null;
+};
+
+type SearchResultCourt = {
+  id: string;
+  name: string;
+  type: string;
+  pricePerHour: number;
+  isActive: boolean;
+};
+
+type GlobalSearchResult =
+  | { success: false; error: string; reservations: never[]; courts: never[] }
+  | { success: true; reservations: (SearchResultReservation & { date: string })[]; courts: SearchResultCourt[] };
+
+type NotificationItem = {
+  id: string;
+  title: string;
+  message: string;
+  time: string;
+  link: string;
+};
+
+type NotificationsResult =
+  | { success: false; notifications: never[] }
+  | { success: true; notifications: NotificationItem[] };
+
+type CustomerRow = {
+  id: string;
+  name: string | null;
+  email: string | null;
+  createdAt: string;
+  totalBookings: number;
+  totalSpent: number;
+  lastBookingAt: string | null;
+};
+
+type PaginatedCustomersResult =
+  | { success: false; error: string; customers: never[]; totalCount: 0; totalPages: 1; currentPage: 1 }
+  | { customers: CustomerRow[]; totalCount: number; totalPages: number; currentPage: number };
+
 
 
 /**
@@ -74,7 +150,7 @@ export async function getAllReservations(
   filter: "daily" | "monthly" | "all" = "all",
   page: number = 1,
   pageSize: number = 10,
-) {
+): Promise<PaginatedReservationsResult> {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
     return { success: false as const, error: adminCheck.error, reservations: [], totalCount: 0, totalPages: 1, currentPage: 1 };
@@ -155,7 +231,7 @@ export async function adminDeleteReservation(id: string) {
  *
  * @returns Lightweight court records used by admin management UI.
  */
-export async function adminGetCourts() {
+export async function adminGetCourts(): Promise<AdminCourtRow[]> {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
     return [];
@@ -348,7 +424,7 @@ export async function adminToggleUserRole(id: string) {
  * @param pageSize - Number of customers per page.
  * @returns Paginated customers payload.
  */
-export async function getAdminPaginatedCustomersAction(search?: string, page = 1, pageSize = 10) {
+export async function getAdminPaginatedCustomersAction(search?: string, page = 1, pageSize = 10): Promise<PaginatedCustomersResult> {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
     return { success: false as const, error: adminCheck.error, customers: [], totalCount: 0, totalPages: 1, currentPage: 1 };
@@ -463,7 +539,7 @@ export async function adminCheckInReservation(reservationId: string) {
     message: `Check-in E-Ticket berhasil! Status reservasi ${reservationId.slice(0, 8)} diubah menjadi SELESAI (DONE).`,
   };
 }
-export async function adminGlobalSearch(query: string) {
+export async function adminGlobalSearch(query: string): Promise<GlobalSearchResult> {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
     return { success: false as const, error: adminCheck.error, reservations: [], courts: [] };
@@ -523,7 +599,7 @@ export async function adminGlobalSearch(query: string) {
  * Fetch Notifications for Admin Topbar
  * Returns latest pending reservations and stats requiring attention.
  */
-export async function adminGetNotifications() {
+export async function adminGetNotifications(): Promise<NotificationsResult> {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
     return { success: false as const, notifications: [] };
