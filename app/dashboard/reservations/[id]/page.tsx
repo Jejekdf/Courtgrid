@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import { auth } from "@/auth";
 import { redirect, notFound } from "next/navigation";
 import { getReservationDetailsDAL } from "@/features/reservations/dal";
-import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import PrintButton from "@/components/ui/PrintButton";
 import { ArrowLeft, ShieldCheck, Calendar, Clock, Receipt } from "lucide-react";
@@ -127,7 +126,7 @@ export default async function CustomerETicketPage({ params }: { params: Promise<
                 <div className="flex items-center gap-3 text-zinc-600">
                   <Clock className="w-4 h-4 text-zinc-400" />
                   <span className="font-mono">
-                    {format(reservation.startTime, "HH:mm")} - {format(reservation.endTime, "HH:mm")} WIB
+                    {reservation.startTime} - {reservation.endTime} WIB
                   </span>
                 </div>
               </div>
