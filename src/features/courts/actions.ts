@@ -1,23 +1,13 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { getActiveCourtsDAL } from "@/features/courts/dal";
 import { autoCancelGhostBookings } from "@/features/reservations/ghostCancel";
+import { formatSlotHour } from "@/lib/timezone";
 import { auth } from "@/auth";
 import { uploadCourtImage } from "@/lib/supabase/storage";
 import { revalidatePath } from "next/cache";
 
-
-
-/**
- * Converts a Date to localized HH:mm time string.
- */
-const formatTime = (date: Date) =>
-  date.toLocaleTimeString("id-ID", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "UTC",
-  });
 
 /**
  * Returns all active courts sorted by name.
@@ -26,18 +16,7 @@ const formatTime = (date: Date) =>
  */
 export async function getCourts() {
   try {
-    const courts = await prisma.court.findMany({
-      where: { isActive: true },
-      orderBy: { name: "asc" },
-      select: {
-        id: true,
-        name: true,
-        type: true,
-        pricePerHour: true,
-        isActive: true,
-      },
-    });
-    return courts;
+    return await getActiveCourtsDAL("", null);
   } catch (error) {
     console.error("Error fetching courts:", error);
     return [];
@@ -77,8 +56,8 @@ export async function getCourtAvailability(courtId: string, dateStr: string) {
       },
     });
     return reservations.map((slot) => ({
-      startTime: formatTime(slot.startTime),
-      endTime: formatTime(slot.endTime),
+      startTime: formatSlotHour(slot.startTime),
+      endTime: formatSlotHour(slot.endTime),
       status: slot.status,
     }));
   } catch (error) {
