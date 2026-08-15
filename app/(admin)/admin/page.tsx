@@ -20,6 +20,8 @@ type Stats = {
     userEmail: string;
     courtName: string;
     date: string;
+    startTime: string;
+    endTime: string;
     totalPrice: number;
     status: string;
   }>;
@@ -107,7 +109,7 @@ export default function AdminDashboardPage() {
             customerName: res.userName || "Pelanggan",
             courtName: res.courtName || "Lapangan",
             date: isValidDate ? new Date(res.date).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }) : "-",
-            time: isValidDate ? new Date(res.date).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false }) : "-",
+            time: res.startTime ? `${res.startTime} - ${res.endTime} WIB` : "-",
             status: (res.status || "PENDING") as "PENDING" | "DP_PAID" | "DONE" | "CANCELED",
             amount: `Rp ${(res.totalPrice || 0).toLocaleString("id-ID")}`,
           };
