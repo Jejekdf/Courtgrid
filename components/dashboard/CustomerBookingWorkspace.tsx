@@ -121,7 +121,7 @@ export default function CustomerBookingWorkspace() {
         return "PAST";
       }
 
-      const slot = availability.find((res) => {
+      const slot = availability.find((res: { startTime: string; endTime: string; status: string }) => {
         const sHour = parseInt(res.startTime.split(":")[0], 10);
         const eHour = parseInt(res.endTime.split(":")[0], 10);
         return tHour >= sHour && tHour < eHour;

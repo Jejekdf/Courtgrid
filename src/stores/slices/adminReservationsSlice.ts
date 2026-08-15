@@ -83,7 +83,7 @@ export const createAdminReservationsSlice = (set: any, get: any, api: any): Admi
         draft.isLoading = true;
       });
       const data = await getAllReservations(get().filter, get().page, 10);
-      const mapped: ReservationDetail[] = data.reservations.map((r) => ({
+      const mapped: ReservationDetail[] = data.reservations.map((r: ReservationDetail) => ({
         ...r,
       }));
       set((draft: AdminReservationsState) => {

@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { getActiveCourtsDAL } from "@/features/courts/dal";
+import { getActiveCourtsDAL, ActiveCourtDTO } from "@/features/courts/dal";
 import { autoCancelGhostBookings } from "@/features/reservations/ghostCancel";
 import { formatSlotHour } from "@/lib/timezone";
 import { auth } from "@/auth";
@@ -14,7 +14,7 @@ import { revalidatePath } from "next/cache";
  *
  * @returns Active court records or an empty array on failure.
  */
-export async function getCourts() {
+export async function getCourts(): Promise<ActiveCourtDTO[]> {
   try {
     return await getActiveCourtsDAL("", null);
   } catch (error) {
@@ -34,7 +34,9 @@ export async function getCourts() {
  * @param dateStr - ISO date string for the requested day.
  * @returns Array of time slots with status metadata.
  */
-export async function getCourtAvailability(courtId: string, dateStr: string) {
+type AvailabilitySlot = { startTime: string; endTime: string; status: string };
+
+export async function getCourtAvailability(courtId: string, dateStr: string): Promise<AvailabilitySlot[]> {
   try {
     const date = new Date(dateStr);
 
