@@ -28,7 +28,7 @@ function test(name: string, fn: () => void) {
   }
 }
 
-const actionsPath = path.join(process.cwd(), "actions/profile.ts");
+const actionsPath = path.join(process.cwd(), "src/features/auth/actions.ts");
 const actionsSrc = fs.readFileSync(actionsPath, "utf-8");
 
 const dalPath = path.join(process.cwd(), "src/features/auth/dal.ts");
