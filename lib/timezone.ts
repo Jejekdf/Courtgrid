@@ -59,3 +59,18 @@ export function validateBookingTime(dateStr: string, startTime: string): string 
 
   return null;
 }
+
+/**
+ * Format slot hours for display (Kategori A — WIB-as-UTC convention).
+ *
+ * Slot hours are stored as UTC timestamps whose UTC wall-clock hour EQUALS
+ * the booked WIB hour (18:00 WIB → 18:00Z, NOT 11:00Z). This is a deliberate
+ * convention — see getCourtAvailabilityDAL's getUTCHours() indexing.
+ * Display MUST use timeZone "UTC". Do NOT use "Asia/Jakarta" (shift +7 → "01:00")
+ * and do NOT omit timeZone (would follow server/browser TZ).
+ */
+export function formatSlotHour(date: Date): string {
+  const hh = String(date.getUTCHours()).padStart(2, "0");
+  const mm = String(date.getUTCMinutes()).padStart(2, "0");
+  return `${hh}:${mm}`;
+}
