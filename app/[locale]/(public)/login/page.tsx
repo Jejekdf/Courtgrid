@@ -1,16 +1,16 @@
+"use client";
+
 import { Suspense } from "react";
 import LoginForm from "@/components/LoginForm";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
-import { Metadata } from "next";
 import { Quote, ShieldCheck } from "lucide-react";
-
-export const metadata: Metadata = {
-  title: "Masuk | CourtGrid",
-  description: "Masuk ke akun CourtGrid Anda untuk mengelola booking lapangan secara realtime.",
-};
+import { useTranslations } from "next-intl";
 
 export default function LoginPage() {
+  const t = useTranslations("auth.login");
+  const ta = useTranslations("auth");
+
   return (
     <main className="min-h-screen w-full flex bg-[var(--background)] text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
       {/* Left Panel: Auth Form */}
@@ -23,28 +23,28 @@ export default function LoginPage() {
               <span className="text-xl font-extrabold tracking-tight text-zinc-950">CourtGrid</span>
             </Link>
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-950">
-              Selamat Datang
+              {t("title")}
             </h1>
             <p className="text-sm text-zinc-500 leading-relaxed">
-              Silakan masuk dengan kredensial akun Anda untuk mengelola reservasi dan E-Ticket arena olahraga.
+              {t("desc")}
             </p>
           </div>
 
           {/* Login Form wrapped in Suspense */}
           <div>
-            <Suspense fallback={<div className="text-sm text-zinc-400">Memuat formulir masuk...</div>}>
+            <Suspense fallback={<div className="text-sm text-zinc-400">{t("formLoading")}</div>}>
               <LoginForm />
             </Suspense>
           </div>
 
           {/* Footer Link */}
           <p className="text-center text-sm text-zinc-500 pt-2">
-            Belum memiliki akun?{" "}
+            {t("noAccount")}{" "}
             <Link
               href="/register"
               className="font-bold text-zinc-950 underline underline-offset-4 hover:text-zinc-700 transition-colors"
             >
-              Daftar Akun Baru
+              {t("registerLink")}
             </Link>
           </p>
         </div>
@@ -60,7 +60,7 @@ export default function LoginPage() {
         <div className="relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 w-max shadow-xs">
           <ShieldCheck className="w-4 h-4 text-emerald-400" />
           <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">
-            Anti-Palkor Verified
+            {ta("antiPalkor")}
           </span>
         </div>
 
@@ -69,15 +69,15 @@ export default function LoginPage() {
           <Quote className="text-emerald-400 w-10 h-10 opacity-80" />
           <blockquote className="space-y-4">
             <p className="text-xl lg:text-2xl font-extrabold leading-tight text-white font-sans">
-              &ldquo;CourtGrid membuat manajemen jadwal tim kami jauh lebih profesional. Pembayaran DP 50% memastikan jadwal kami tidak di-palkor lagi.&rdquo;
+              &ldquo;{t("quote")}&rdquo;
             </p>
             <footer className="flex items-center gap-3 pt-2">
               <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white font-mono font-bold text-sm">
                 AT
               </div>
               <div>
-                <div className="font-extrabold text-white text-sm">Ahmad Tariq</div>
-                <div className="text-sm text-zinc-300 font-mono">Kapten FC Garuda</div>
+                <div className="font-extrabold text-white text-sm">{t("quoteAuthor")}</div>
+                <div className="text-sm text-zinc-300 font-mono">{t("quoteRole")}</div>
               </div>
             </footer>
           </blockquote>
