@@ -1,54 +1,70 @@
 import { Metadata } from "next";
 import PageWrapper from "@/components/ui/PageWrapper";
-import { Zap, ShieldCheck, Building2, ChevronRight, ArrowUpRight, Award, Target, Users2 } from "lucide-react";
-import Link from "next/link";
+import { Zap, ShieldCheck, Building2, ArrowUpRight } from "lucide-react";
+import { Link } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "About Us | CourtGrid",
-  description: "Mengenal CourtGrid — Platform reservasi dan ekosistem venue olahraga modern di Indonesia.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale: locale as "id" | "en", namespace: "about" });
+  return {
+    title: t("metaTitle"),
+    description: t("metaDesc"),
+  };
+}
 
-const stats = [
-  { label: "Arena Terintegrasi", value: "5 Arena Utama", sub: "Futsal & Badminton" },
-  { label: "Garansi Jadwal", value: "DP 50%", sub: "Sistem Anti-Palkor" },
-  { label: "Waktu Konfirmasi", value: "< 1 Detik", sub: "Pesan Instan Real-time" },
-  { label: "Keamanan Server", value: "SSL / TLS", sub: "Enkripsi Transaksi" },
-];
+export default async function AboutPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale: locale as "id" | "en", namespace: "about" });
 
-const pillars = [
-  {
-    icon: Zap,
-    title: "1. Pemesanan Instan 24/7",
-    desc: "Menghilangkan proses konfirmasi manual yang memakan waktu. Jadwal arena yang ditampilkan di layar selalu akurat secara real-time.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "2. Kepastian Sistem DP 50%",
-    desc: "Melindungi kepentingan pemain dan pengelola arena dari risiko pembatalan sepihak (palkor) atau slot yang terbengkalai.",
-  },
-  {
-    icon: Building2,
-    title: "3. Fasilitas Berstandar Resmi",
-    desc: "Bekerja sama secara eksklusif dengan SM Sport Center untuk menyediakan lapangan futsal rumput sintetis dan badminton mat vinyl berkualitas tinggi.",
-  },
-];
+  const stats = [
+    { label: t("stats.arenasLabel"), value: t("stats.arenas"), sub: t("stats.arenasSub") },
+    { label: t("stats.dpLabel"), value: t("stats.dp"), sub: t("stats.dpSub") },
+    { label: t("stats.timeLabel"), value: t("stats.time"), sub: t("stats.timeSub") },
+    { label: t("stats.securityLabel"), value: t("stats.security"), sub: t("stats.securitySub") },
+  ];
 
-export default function AboutPage() {
+  const pillars = [
+    {
+      icon: Zap,
+      title: t("pillar1Title"),
+      desc: t("pillar1Desc"),
+    },
+    {
+      icon: ShieldCheck,
+      title: t("pillar2Title"),
+      desc: t("pillar2Desc"),
+    },
+    {
+      icon: Building2,
+      title: t("pillar3Title"),
+      desc: t("pillar3Desc"),
+    },
+  ];
+
   return (
-    <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 bg-white text-zinc-950">
-      <PageWrapper className="max-w-5xl mx-auto space-y-12">
+    <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 bg-[var(--background)] text-zinc-950">
+      <PageWrapper className="max-w-4xl mx-auto space-y-12">
         {/* Header Document */}
         <header className="border-b border-zinc-200 pb-8 space-y-3">
           <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-zinc-400">
-            <span>Company</span>
+            <span>{t("breadcrumbCompany")}</span>
             <span>/</span>
-            <span className="text-zinc-950 font-semibold">About Us</span>
+            <span className="text-zinc-950 font-semibold">{t("breadcrumbAbout")}</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-950 leading-tight">
-            Menetapkan Standar Baru Pengelolaan Arena Olahraga.
+            {t("title")}
           </h1>
           <p className="text-sm text-zinc-600 leading-relaxed max-w-2xl">
-            CourtGrid dibangun untuk memberikan pengalaman reservasi yang efisien, jujur, dan dapat diandalkan bagi komunitas olahraga di Indonesia.
+            {t("description")}
           </p>
         </header>
 
@@ -57,7 +73,7 @@ export default function AboutPage() {
           {stats.map((item, idx) => (
             <div
               key={idx}
-              className="p-4 bg-zinc-50 rounded-xl border border-zinc-200 space-y-1"
+              className="p-4 bg-zinc-50/80 rounded-xl border border-zinc-200 space-y-1"
             >
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-400">
                 {item.sub}
@@ -68,14 +84,14 @@ export default function AboutPage() {
           ))}
         </section>
 
-        {/* Pillars of Service (Simple List with Divider, No AI Slop Cards) */}
+        {/* Pillars of Service (Simple List with Divider) */}
         <section className="space-y-6">
           <div className="space-y-1">
             <h2 className="text-xl font-bold tracking-tight text-zinc-950">
-              Pilar Utama Platform
+              {t("pillarsTitle")}
             </h2>
             <p className="text-sm text-zinc-500">
-              Prinsip desain dan keandalan sistem yang kami terapkan pada setiap transaksi.
+              {t("pillarsDesc")}
             </p>
           </div>
 
@@ -84,7 +100,7 @@ export default function AboutPage() {
               const Icon = p.icon;
               return (
                 <div key={idx} className="py-5 flex flex-col sm:flex-row sm:items-start gap-4">
-                  <div className="p-2 w-max bg-zinc-100 rounded-lg text-zinc-950 shrink-0">
+                  <div className="p-2 w-max bg-zinc-100/80 rounded-lg text-zinc-950 shrink-0">
                     <Icon className="w-5 h-5" />
                   </div>
                   <div className="space-y-1">
@@ -100,16 +116,16 @@ export default function AboutPage() {
         {/* Direct Action Link */}
         <section className="bg-zinc-950 rounded-xl p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="space-y-1 text-center sm:text-left">
-            <h3 className="text-base font-bold">Ingin Mengamankan Waktu Bertanding?</h3>
+            <h3 className="text-base font-bold">{t("ctaTitle")}</h3>
             <p className="text-sm text-zinc-400">
-              Cek ketersediaan slot lapangan Futsal & Badminton SM Sport Center hari ini.
+              {t("ctaDesc")}
             </p>
           </div>
           <Link
             href="/courts"
-            className="px-4 py-2 text-xs font-semibold bg-white text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0"
+            className="px-4 py-2.5 min-h-11 text-xs font-semibold bg-white text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0 cursor-pointer"
           >
-            <span>Lihat Katalog Arena</span>
+            <span>{t("ctaButton")}</span>
             <ArrowUpRight className="w-4 h-4" />
           </Link>
         </section>
