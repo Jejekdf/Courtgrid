@@ -6,7 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Eye, EyeOff, Check, UserPlus } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { registerSchema, RegisterInput } from "@/lib/zod";
 import { registerUser } from "@/features/auth/actions";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,7 @@ export default function RegisterForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const t = useTranslations("auth.register");
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -40,20 +42,20 @@ export default function RegisterForm() {
 
   // Real-time password criteria verification
   const passwordCriteria = [
-    { label: "Minimal 8 Karakter", valid: watchPassword.length >= 8 },
-    { label: "Minimal 1 Huruf Besar (A-Z)", valid: /[A-Z]/.test(watchPassword) },
-    { label: "Minimal 1 Huruf Kecil (a-z)", valid: /[a-z]/.test(watchPassword) },
-    { label: "Minimal 1 Angka (0-9)", valid: /[0-9]/.test(watchPassword) },
-    { label: "Minimal 1 Karakter Spesial (!@#$%)", valid: /[^A-Za-z0-9]/.test(watchPassword) },
+    { label: t("criteriaMin"), valid: watchPassword.length >= 8 },
+    { label: t("criteriaUpper"), valid: /[A-Z]/.test(watchPassword) },
+    { label: t("criteriaLower"), valid: /[a-z]/.test(watchPassword) },
+    { label: t("criteriaDigit"), valid: /[0-9]/.test(watchPassword) },
+    { label: t("criteriaSpecial"), valid: /[^A-Za-z0-9]/.test(watchPassword) },
   ];
 
   const metCount = passwordCriteria.filter((c) => c.valid).length;
 
   const getStrengthInfo = () => {
     if (!watchPassword) return { label: "", percent: 0, color: "bg-zinc-200", textColor: "text-zinc-400" };
-    if (metCount <= 2) return { label: "Lemah", percent: 25, color: "bg-red-500", textColor: "text-red-500" };
-    if (metCount <= 4) return { label: "Sedang", percent: 65, color: "bg-amber-500", textColor: "text-amber-600" };
-    return { label: "Kuat", percent: 100, color: "bg-emerald-600", textColor: "text-emerald-600" };
+    if (metCount <= 2) return { label: t("strengthWeak"), percent: 25, color: "bg-red-500", textColor: "text-red-500" };
+    if (metCount <= 4) return { label: t("strengthMedium"), percent: 65, color: "bg-amber-500", textColor: "text-amber-600" };
+    return { label: t("strengthStrong"), percent: 100, color: "bg-emerald-600", textColor: "text-emerald-600" };
   };
 
   const strength = getStrengthInfo();
@@ -69,11 +71,11 @@ export default function RegisterForm() {
     const result = await registerUser(formData);
 
     if (!result.success) {
-      toast.error(result.error || "Terjadi kesalahan saat mendaftar.");
+      toast.error(result.error || t("toastError"));
       return;
     }
 
-    toast.success(result.message || "Pendaftaran berhasil! Mengalihkan ke halaman masuk...");
+    toast.success(result.message || t("toastSuccess"));
     setTimeout(() => {
       router.push("/login");
     }, 2000);
@@ -93,11 +95,11 @@ export default function RegisterForm() {
             name="nama"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className={inputLabelClass}>Nama Lengkap</FormLabel>
+                <FormLabel className={inputLabelClass}>{t("nama")}</FormLabel>
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Masukkan Nama Lengkap Anda"
+                    placeholder={t("namaPlaceholder")}
                     autoComplete="name"
                     error={!!fieldState.error}
                     className="border-zinc-200"
@@ -114,7 +116,7 @@ export default function RegisterForm() {
             name="email"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className={inputLabelClass}>Alamat Email</FormLabel>
+                <FormLabel className={inputLabelClass}>{t("email")}</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
@@ -135,11 +137,11 @@ export default function RegisterForm() {
             name="no_hp"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className={inputLabelClass}>Nomor Handphone</FormLabel>
+                <FormLabel className={inputLabelClass}>{t("noHp")}</FormLabel>
                 <FormControl>
                   <Input
                     type="tel"
-                    placeholder="081234567890"
+                    placeholder={t("noHpPlaceholder")}
                     autoComplete="tel"
                     error={!!fieldState.error}
                     className="border-zinc-200"
@@ -156,7 +158,7 @@ export default function RegisterForm() {
             name="password"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className={inputLabelClass}>Kata Sandi Baru</FormLabel>
+                <FormLabel className={inputLabelClass}>{t("password")}</FormLabel>
                 <FormControl>
                   <Input
                     type={showPassword ? "text" : "password"}
@@ -169,7 +171,7 @@ export default function RegisterForm() {
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
                         className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
-                        aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                        aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                       >
                         {showPassword ? (
                           <Eye className="h-4 w-4" />
@@ -191,7 +193,7 @@ export default function RegisterForm() {
                     className="space-y-2 p-3 rounded-lg bg-zinc-50 border border-zinc-200/60"
                   >
                     <div className="flex items-center justify-between text-sm font-mono">
-                      <span className="text-zinc-500">Kekuatan Kata Sandi:</span>
+                      <span className="text-zinc-500">{t("strengthLabel")}</span>
                       <span className={`font-bold ${strength.textColor}`}>
                         {strength.label}
                       </span>
@@ -234,7 +236,7 @@ export default function RegisterForm() {
             name="confirmPassword"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className={inputLabelClass}>Konfirmasi Kata Sandi</FormLabel>
+                <FormLabel className={inputLabelClass}>{t("confirmPassword")}</FormLabel>
                 <FormControl>
                   <Input
                     type={showConfirmPassword ? "text" : "password"}
@@ -248,7 +250,7 @@ export default function RegisterForm() {
                         onClick={() => setShowConfirmPassword((prev) => !prev)}
                         className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
                         aria-label={
-                          showConfirmPassword ? "Sembunyikan konfirmasi password" : "Tampilkan konfirmasi password"
+                          showConfirmPassword ? t("hideConfirm") : t("showConfirm")
                         }
                       >
                         {showConfirmPassword ? (
@@ -274,7 +276,7 @@ export default function RegisterForm() {
             className="w-full mt-2"
             leftIcon={<UserPlus className="w-4 h-4 text-white" />}
           >
-            Buat Akun Sekarang
+            {t("submit")}
           </Button>
         </form>
       </Form>
