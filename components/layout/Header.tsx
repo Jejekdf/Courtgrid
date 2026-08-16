@@ -2,19 +2,26 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link } from "@/i18n/navigation";
+import { usePathname } from "@/i18n/navigation";
 import { Menu, X, LayoutDashboard } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 
 export function Header() {
   const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const pathname = usePathname();
+  const t = useTranslations("header");
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
+  };
+
+  const closeMenu = () => {
+    setIsOpen(false);
   };
 
   // Scroll spy to detect active section on landing page
@@ -65,16 +72,16 @@ export function Header() {
   );
 
   const navLinksData = [
-    { label: "Beranda", href: "/" },
-    { label: "Fasilitas", href: "/#courts" },
-    { label: "Katalog Arena", href: "/courts" },
-    { label: "Tentang Kami", href: "/#about" },
+    { label: t("navBeranda"), href: "/" },
+    { label: t("navFasilitas"), href: "/#courts" },
+    { label: t("navKatalog"), href: "/courts" },
+    { label: t("navTentang"), href: "/#about" },
   ];
 
   const isLoggedIn = status === "authenticated" && session?.user;
   const isAdmin = session?.user?.role === "ADMIN";
   const dashboardHref = isAdmin ? "/admin" : "/dashboard";
-  const dashboardText = isAdmin ? "Admin Panel" : "Dashboard";
+  const dashboardText = isAdmin ? t("adminPanel") : t("dashboard");
   const userImage = session?.user?.image || null;
   const userName = session?.user?.name || "";
 
@@ -96,13 +103,13 @@ export function Header() {
         href="/login"
         className="px-4 py-2 text-sm font-bold border border-zinc-200 bg-zinc-50 text-zinc-950 rounded-lg hover:bg-zinc-100 transition-colors duration-200 w-full sm:w-auto text-center outline-none cursor-pointer min-h-11"
       >
-        Masuk
+        {t("masuk")}
       </Link>
       <Link
         href="/register"
         className="flex items-center justify-center px-4 py-2 text-sm font-bold text-white bg-zinc-950 rounded-lg hover:bg-zinc-800 transition-colors duration-200 w-full sm:w-auto outline-none cursor-pointer shadow-xs min-h-11"
       >
-        Daftar
+        {t("daftar")}
       </Link>
     </>
   );
@@ -139,13 +146,14 @@ export function Header() {
           </nav>
 
           <div className="hidden sm:flex items-center gap-2">
+            <LanguageSwitcher />
             {userButtonsElement}
           </div>
 
           <button
             className="sm:hidden flex items-center justify-center w-11 h-11 text-zinc-700 hover:text-zinc-950 focus:outline-none transition-colors outline-none cursor-pointer"
             onClick={toggleMenu}
-            aria-label={isOpen ? "Close Menu" : "Open Menu"}
+            aria-label={isOpen ? t("closeMenu") : t("openMenu")}
           >
             {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -155,7 +163,7 @@ export function Header() {
           className={`sm:hidden flex flex-col items-center w-full transition-[max-height,opacity] ease-in-out duration-300 overflow-hidden
             ${isOpen ? "max-h-250 opacity-100 pt-5 pb-2" : "max-h-0 opacity-0 pt-0 pointer-events-none"}`}
         >
-          <nav className="flex flex-col items-center space-y-3 w-full">
+          <nav onClick={closeMenu} className="flex flex-col items-center space-y-3 w-full">
             {navLinksData.map((link) => (
               <Link
                 key={link.href}
@@ -172,7 +180,8 @@ export function Header() {
               </Link>
             ))}
           </nav>
-          <div className="flex flex-col items-center space-y-2 mt-5 w-full">
+          <div onClick={closeMenu} className="flex flex-col items-center space-y-2 mt-5 w-full">
+            <LanguageSwitcher />
             {userButtonsElement}
           </div>
         </div>
