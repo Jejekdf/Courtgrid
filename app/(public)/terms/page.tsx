@@ -20,15 +20,15 @@ const sections = [
           Setiap transaksi pemesanan arena di CourtGrid diwajibkan melakukan pembayaran Down Payment (DP) sebesar <strong className="text-zinc-950 font-bold">50%</strong> dari total biaya sewa secara otomatis melalui gateway pembayaran Stripe Checkout.
         </p>
         <div className="bg-zinc-50 border border-zinc-200/80 rounded-2xl p-4 space-y-2">
-          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-mono">
+          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-sans">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>Pembatalan sepihak oleh pelanggan menyebabkan dana DP 50% hangus dan tidak dapat dikembalikan.</span>
           </div>
-          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-mono">
+          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-sans">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>Pelunasan sisa 50% dilakukan di lokasi (GOR) secara tunai/QRIS sebelum sesi penggunaan arena dimulai.</span>
           </div>
-          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-mono">
+          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-sans">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>Pengembalian dana 100% hanya diproses jika terjadi penutupan operasional darurat oleh pengelola venue.</span>
           </div>
@@ -46,11 +46,11 @@ const sections = [
           Sistem alokasi slot waktu CourtGrid memberlakukan batas waktu otomatis <strong className="text-zinc-950 font-bold">15 menit</strong> pada sesi transaksi pending.
         </p>
         <div className="bg-zinc-50 border border-zinc-200/80 rounded-2xl p-4 space-y-2">
-          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-mono">
+          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-sans">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>Jika pembayaran DP tidak diselesaikan dalam 15 menit, slot jam akan dirilis secara otomatis oleh sistem ghost-cancel.</span>
           </div>
-          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-mono">
+          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-sans">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>Durasi penyewaan dihitung presisi sesuai jam yang tercantum pada E-Ticket QR tanpa kompensasi keterlambatan.</span>
           </div>
@@ -68,11 +68,11 @@ const sections = [
           Seluruh pengguna wajib mematuhi standar keselamatan dan fasilitas fisik di GOR CourtGrid Arena.
         </p>
         <div className="bg-zinc-50 border border-zinc-200/80 rounded-2xl p-4 space-y-2">
-          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-mono">
+          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-sans">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>Wajib menggunakan sepatu khusus olahraga (non-marking shoes) di arena indoor futsal & badminton.</span>
           </div>
-          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-mono">
+          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-sans">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>Dilarang keras merokok, membawa senjata tajam, serta minuman beralkohol ke lingkungan arena.</span>
           </div>
@@ -97,7 +97,7 @@ export default function TermsPage() {
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-950">
             Syarat & Ketentuan Layanan
           </h1>
-          <p className="text-sm text-zinc-500 font-mono leading-relaxed max-w-2xl">
+          <p className="text-sm text-zinc-500 font-sans leading-relaxed max-w-2xl">
             Aturan dan ketentuan penggunaan sistem pemesanan online serta penggunaan arena olahraga CourtGrid.
           </p>
         </header>
@@ -109,7 +109,7 @@ export default function TermsPage() {
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-400">
               Daftar Regulasi
             </span>
-            <ul className="space-y-2 text-sm font-mono">
+            <ul className="space-y-2 text-sm font-sans">
               {sections.map((s) => (
                 <li key={s.id}>
                   <a
