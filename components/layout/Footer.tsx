@@ -1,26 +1,25 @@
-import Link from "next/link";
+"use client";
+
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
-import {
-  Globe,
-  MapPin,
-  Mail,
-  Phone,
-  ShieldCheck,
-} from "lucide-react";
+import { MapPin, Mail, Phone, ShieldCheck } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const t = useTranslations("footer");
 
   const company = [
-    { title: "Tentang Kami", href: "/#about" },
-    { title: "Katalog Arena", href: "/courts" },
-    { title: "Pesan Online", href: "/dashboard/book" },
+    { title: t("tentang"), href: "/#about" },
+    { title: t("katalog"), href: "/courts" },
+    { title: t("pesanOnline"), href: "/dashboard/book" },
   ];
 
   const resources = [
-    { title: "Syarat & Ketentuan", href: "/terms" },
-    { title: "Kebijakan Privasi", href: "/privacy" },
-    { title: "Bantuan FAQ", href: "/faq" },
+    { title: t("syarat"), href: "/terms" },
+    { title: t("privasi"), href: "/privacy" },
+    { title: t("faq"), href: "/faq" },
   ];
 
   return (
@@ -36,12 +35,12 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-zinc-500 text-sm leading-relaxed max-w-xs font-mono">
-              Platform reservasi penyewaan arena futsal & badminton profesional. Bebas double booking dengan verifikasi DP otomatis 24/7.
+              {t("tagline")}
             </p>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-200 bg-emerald-50 w-max">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
               <span className="text-[11px] font-mono font-bold text-emerald-800 uppercase tracking-wider">
-                System Anti-Palkor Active
+                {t("antiPalkor")}
               </span>
             </div>
           </div>
@@ -50,7 +49,7 @@ export default function Footer() {
             {/* Resources Column */}
             <div className="flex flex-col gap-3">
               <span className="text-zinc-950 font-mono font-bold text-xs uppercase tracking-wider mb-1">
-                Layanan & Legal
+                {t("servicesTitle")}
               </span>
               <div className="flex flex-col gap-2.5">
                 {resources.map(({ href, title }, i) => (
@@ -68,7 +67,7 @@ export default function Footer() {
             {/* Company Column */}
             <div className="flex flex-col gap-3">
               <span className="text-zinc-950 font-mono font-bold text-xs uppercase tracking-wider mb-1">
-                Navigasi Publik
+                {t("navigationTitle")}
               </span>
               <div className="flex flex-col gap-2.5">
                 {company.map(({ href, title }, i) => (
@@ -86,12 +85,12 @@ export default function Footer() {
             {/* Contact Column */}
             <div className="col-span-2 md:col-span-1 flex flex-col gap-3">
               <span className="text-zinc-950 font-mono font-bold text-xs uppercase tracking-wider mb-1">
-                Kontak GOR
+                {t("contactTitle")}
               </span>
               <div className="flex flex-col gap-3 font-mono text-sm text-zinc-500">
                 <div className="flex items-start gap-2.5">
                   <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-zinc-400" />
-                  <span>Blok M, Jakarta Selatan 12190</span>
+                  <span>{t("address")}</span>
                 </div>
                 <div className="flex items-center gap-2.5">
                   <Phone className="w-4 h-4 shrink-0 text-zinc-400" />
@@ -109,14 +108,17 @@ export default function Footer() {
         <div className="mt-12 pt-8 border-t border-zinc-200/80">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-mono text-zinc-500">
             <p>
-              &copy; {year} CourtGrid. All rights reserved.
+              &copy; {year} CourtGrid. {t("rights")}
             </p>
             <p className="flex items-center gap-1.5">
-              <span>Developed by</span>
+              <span>{t("developedBy")}</span>
               <span className="text-zinc-950 font-bold">Randi Maulana</span>
               <span>•</span>
-              <span className="text-zinc-500">CourtGrid Standard</span>
+              <span className="text-zinc-500">{t("standard")}</span>
             </p>
+          </div>
+          <div className="mt-6 flex justify-center md:justify-start">
+            <LanguageSwitcher />
           </div>
         </div>
       </div>
