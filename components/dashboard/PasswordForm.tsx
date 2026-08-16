@@ -72,7 +72,7 @@ export default function PasswordForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-1.5">
-        <Label htmlFor="currentPassword" className="text-xs font-bold text-zinc-700 font-mono">Password Saat Ini</Label>
+        <Label htmlFor="currentPassword" className="text-xs font-bold text-zinc-700 font-sans">Password Saat Ini</Label>
         <Input
           id="currentPassword"
           type="password"
@@ -85,7 +85,7 @@ export default function PasswordForm() {
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="newPassword" className="text-xs font-bold text-zinc-700 font-mono">Password Baru</Label>
+        <Label htmlFor="newPassword" className="text-xs font-bold text-zinc-700 font-sans">Password Baru</Label>
         <Input
           id="newPassword"
           type="password"
@@ -117,7 +117,7 @@ export default function PasswordForm() {
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="confirmPassword" className="text-xs font-bold text-zinc-700 font-mono">Konfirmasi Password Baru</Label>
+        <Label htmlFor="confirmPassword" className="text-xs font-bold text-zinc-700 font-sans">Konfirmasi Password Baru</Label>
         <Input
           id="confirmPassword"
           type="password"
