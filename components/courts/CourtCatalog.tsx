@@ -2,9 +2,11 @@
 
 import { useCallback, useState } from "react";
 import { useDebounce } from "react-use";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { RotateCcw, Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { fetchCourts, isCourtType, type CourtFilters, type CourtType } from "@/lib/api/courts";
 import { courtKeys } from "@/lib/query-keys";
 import { Input } from "@/components/ui/input";
@@ -13,15 +15,16 @@ import CourtState from "./CourtState";
 
 type TabFilter = "ALL" | CourtType;
 
-const TABS: { value: TabFilter; label: string }[] = [
-  { value: "ALL", label: "Semua Arena" },
-  { value: "FUTSAL", label: "Futsal" },
-  { value: "BADMINTON", label: "Badminton" },
-];
-
 export default function CourtCatalog() {
+  const t = useTranslations("courts");
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const tabs: { value: TabFilter; label: string }[] = [
+    { value: "ALL", label: t("tabAll") },
+    { value: "FUTSAL", label: t("tabFutsal") },
+    { value: "BADMINTON", label: t("tabBadminton") },
+  ];
 
   const search = searchParams.get("search") ?? "";
   const tabParam = searchParams.get("type");
@@ -71,13 +74,13 @@ export default function CourtCatalog() {
       {/* Header Catalog */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
         <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-          Katalog Arena Terverifikasi
+          {t("badge")}
         </span>
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-950">
-          Pilih Lapangan Favorit Anda
+          {t("title")}
         </h1>
         <p className="text-sm text-zinc-500 leading-relaxed font-mono">
-          Jelajahi ketersediaan arena futsal dan badminton berstandar nasional di CourtGrid.
+          {t("description")}
         </p>
       </div>
 
@@ -85,22 +88,22 @@ export default function CourtCatalog() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t border-zinc-200/80">
         <div
           role="tablist"
-          aria-label="Filter tipe lapangan"
+          aria-label={t("filterLabel")}
           className="flex items-center gap-1.5 bg-zinc-100/80 p-1.5 rounded-2xl border border-zinc-200/80 shadow-xs"
         >
-          {TABS.map((t) => (
+          {tabs.map((tabItem) => (
             <button
-              key={t.value}
+              key={tabItem.value}
               role="tab"
-              aria-selected={tab === t.value}
-              onClick={() => updateParams({ type: t.value })}
+              aria-selected={tab === tabItem.value}
+              onClick={() => updateParams({ type: tabItem.value })}
               className={`px-4 min-h-11 py-2.5 rounded-xl text-xs font-mono font-bold transition-colors cursor-pointer ${
-                tab === t.value
+                tab === tabItem.value
                   ? "bg-zinc-950 text-white shadow-xs"
-                  : "text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/60"
+                  : "text-zinc-600 hover-fine:text-zinc-950 hover-fine:bg-zinc-200/60"
               }`}
             >
-              {t.label}
+              {tabItem.label}
             </button>
           ))}
         </div>
@@ -109,7 +112,7 @@ export default function CourtCatalog() {
           <Input
             value={searchDraft}
             onChange={(e) => setSearchDraft(e.target.value)}
-            placeholder="Cari nama arena lapangan..."
+            placeholder={t("searchPlaceholder")}
             containerClassName="w-full sm:w-72"
             leftIcon={<Search className="w-4 h-4 text-zinc-400" />}
             className="h-11 text-xs bg-zinc-50 border-zinc-200 rounded-xl"
@@ -117,9 +120,9 @@ export default function CourtCatalog() {
           <button
             onClick={() => refetch()}
             disabled={isFetching}
-            title="Muat ulang data"
-            aria-label="Muat ulang data"
-            className={`flex items-center justify-center h-11 w-11 shrink-0 rounded-xl border border-zinc-200 bg-white text-zinc-600 transition-colors hover:bg-zinc-50 hover:text-zinc-950 cursor-pointer disabled:opacity-50 ${
+            title={t("reloadTitle")}
+            aria-label={t("reloadTitle")}
+            className={`flex items-center justify-center h-11 w-11 shrink-0 rounded-xl border border-zinc-200 bg-[var(--background)] text-zinc-600 transition-colors hover-fine:bg-zinc-50 hover-fine:text-zinc-950 cursor-pointer disabled:opacity-50 ${
               isFetching ? "animate-spin" : ""
             }`}
           >
