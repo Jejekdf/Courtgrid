@@ -12,7 +12,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => makeQueryClient());
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} forcedTheme="light">
       <MotionConfig reducedMotion="user">
         <QueryClientProvider client={queryClient}>
           <SessionProvider>{children}</SessionProvider>
