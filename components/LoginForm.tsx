@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +12,7 @@ import { login } from "@/features/auth/actions";
 import { loginSchema, LoginInput } from "@/lib/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 import {
   Form,
   FormControl,
@@ -29,6 +30,7 @@ const inputLabelClass = "text-xs font-medium uppercase tracking-wider text-zinc-
 export default function LoginForm() {
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
+  const t = useTranslations("auth.login");
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -41,20 +43,20 @@ export default function LoginForm() {
   useEffect(() => {
     const errorParam = searchParams.get("error");
     if (errorParam === "OAuthAccountNotLinked") {
-      toast.error("Email ini sudah terdaftar sebagai Admin via password. Silakan masuk menggunakan Email & Password.");
+      toast.error(t("toastOAuthNotLinked"));
     } else if (errorParam === "CallbackRouteError" || errorParam === "Configuration") {
-      toast.error("Gagal melakukan login OAuth sosial. Silakan masuk menggunakan Email & Password.");
+      toast.error(t("toastOAuthFailed"));
     } else if (errorParam) {
-      toast.error("Terjadi kesalahan otentikasi. Silakan masuk menggunakan Email & Password.");
+      toast.error(t("toastAuthError"));
     }
-  }, [searchParams]);
+  }, [searchParams, t]);
 
   const requirements = [
-    { label: "Minimal 8 karakter", met: password.length >= 8 },
-    { label: "1 huruf besar (A-Z)", met: /[A-Z]/.test(password) },
-    { label: "1 huruf kecil (a-z)", met: /[a-z]/.test(password) },
-    { label: "1 angka (0-9)", met: /[0-9]/.test(password) },
-    { label: "1 karakter spesial (!@#$%^&*)", met: /[^A-Za-z0-9]/.test(password) },
+    { label: t("reqMin"), met: password.length >= 8 },
+    { label: t("reqUpper"), met: /[A-Z]/.test(password) },
+    { label: t("reqLower"), met: /[a-z]/.test(password) },
+    { label: t("reqDigit"), met: /[0-9]/.test(password) },
+    { label: t("reqSpecial"), met: /[^A-Za-z0-9]/.test(password) },
   ];
 
   const onSubmit = async (data: LoginInput) => {
@@ -66,7 +68,7 @@ export default function LoginForm() {
       const result = await login(undefined, formData);
 
       if (result && typeof result === "object" && result.success) {
-        toast.success("Berhasil masuk. Mengalihkan ke halaman utama...");
+        toast.success(t("toastSuccess"));
         window.location.href = result.redirectTo;
         return;
       }
@@ -76,9 +78,9 @@ export default function LoginForm() {
         return;
       }
 
-      toast.error("Terjadi kesalahan saat masuk. Silakan coba lagi.");
+      toast.error(t("toastGenericError"));
     } catch {
-      toast.error("Terjadi kesalahan saat masuk. Silakan coba lagi.");
+      toast.error(t("toastGenericError"));
     }
   };
 
@@ -96,11 +98,11 @@ export default function LoginForm() {
             name="email"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className={inputLabelClass}>Alamat Email</FormLabel>
+                <FormLabel className={inputLabelClass}>{t("email")}</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="nama@email.com"
+                    placeholder={t("emailPlaceholder")}
                     autoComplete="email"
                     error={!!fieldState.error}
                     className="border-zinc-200"
@@ -117,11 +119,11 @@ export default function LoginForm() {
             name="password"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className={inputLabelClass}>Kata Sandi</FormLabel>
+                <FormLabel className={inputLabelClass}>{t("password")}</FormLabel>
                 <FormControl>
                   <Input
                     type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
+                    placeholder={t("passwordPlaceholder")}
                     autoComplete="current-password"
                     error={!!fieldState.error}
                     className="border-zinc-200"
@@ -130,7 +132,7 @@ export default function LoginForm() {
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
                         className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
-                        aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                        aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                       >
                         {showPassword ? (
                           <Eye className="h-4 w-4" />
@@ -174,7 +176,7 @@ export default function LoginForm() {
                     href="/forgot-password"
                     className="text-sm font-medium text-zinc-500 hover:text-zinc-950 transition-colors"
                   >
-                    Lupa Kata Sandi?
+                    {t("forgotPassword")}
                   </Link>
                 </div>
               </FormItem>
@@ -189,7 +191,7 @@ export default function LoginForm() {
             className="w-full mt-2"
             leftIcon={<LogIn className="w-4 h-4 text-white" />}
           >
-            Masuk Ke Akun
+            {t("submit")}
           </Button>
         </form>
       </Form>
