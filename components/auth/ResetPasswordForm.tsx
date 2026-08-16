@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { AlertCircle, Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +29,7 @@ const inputLabelClass = "text-xs font-medium uppercase tracking-wider text-zinc-
 export default function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const t = useTranslations("auth.reset");
   const token = searchParams.get("token");
 
   const [showPassword, setShowPassword] = useState(false);
@@ -40,15 +43,15 @@ export default function ResetPasswordForm() {
 
   useEffect(() => {
     if (!token) {
-      toast.error("Token reset password tidak ditemukan atau tidak valid. Silakan ajukan permintaan ulang di halaman Lupa Password.");
+      toast.error(t("toastInvalidToken"));
     }
-  }, [token]);
+  }, [token, t]);
 
   if (!token) {
     return (
       <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 flex items-start gap-2">
         <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-        <p>Token reset password tidak ditemukan atau tidak valid. Silakan ajukan permintaan ulang di halaman Lupa Password.</p>
+        <p>{t("toastInvalidToken")}</p>
       </div>
     );
   }
@@ -62,12 +65,12 @@ export default function ResetPasswordForm() {
         return;
       }
 
-      toast.success("Kata sandi berhasil diubah! Mengalihkan ke halaman login...");
+      toast.success(t("toastSuccess"));
       setTimeout(() => {
         router.push("/login");
       }, 3000);
     } catch {
-      toast.error("Terjadi kesalahan yang tidak terduga.");
+      toast.error(t("toastUnexpected"));
     }
   };
 
@@ -85,11 +88,11 @@ export default function ResetPasswordForm() {
             name="password"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className={inputLabelClass}>Password Baru</FormLabel>
+                <FormLabel className={inputLabelClass}>{t("password")}</FormLabel>
                 <FormControl>
                   <Input
                     type={showPassword ? "text" : "password"}
-                    placeholder="Min. 8 karakter"
+                    placeholder={t("passwordPlaceholder")}
                     autoComplete="new-password"
                     disabled={form.formState.isSubmitting}
                     error={!!fieldState.error}
@@ -99,7 +102,7 @@ export default function ResetPasswordForm() {
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
                         className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
-                        aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                        aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                       >
                         {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                       </button>
@@ -117,11 +120,11 @@ export default function ResetPasswordForm() {
             name="confirmPassword"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className={inputLabelClass}>Konfirmasi Password Baru</FormLabel>
+                <FormLabel className={inputLabelClass}>{t("confirmPassword")}</FormLabel>
                 <FormControl>
                   <Input
                     type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Ulangi password baru"
+                    placeholder={t("confirmPlaceholder")}
                     autoComplete="new-password"
                     disabled={form.formState.isSubmitting}
                     error={!!fieldState.error}
@@ -131,7 +134,7 @@ export default function ResetPasswordForm() {
                         type="button"
                         onClick={() => setShowConfirmPassword((prev) => !prev)}
                         className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
-                        aria-label={showConfirmPassword ? "Sembunyikan konfirmasi password" : "Tampilkan konfirmasi password"}
+                        aria-label={showConfirmPassword ? t("hideConfirm") : t("showConfirm")}
                       >
                         {showConfirmPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                       </button>
@@ -152,7 +155,7 @@ export default function ResetPasswordForm() {
             disabled={form.formState.isSubmitting}
             className="w-full mt-2"
           >
-            {form.formState.isSubmitting ? "Menyimpan..." : "Simpan Password Baru"}
+            {form.formState.isSubmitting ? t("saving") : t("submit")}
           </Button>
         </form>
       </Form>
