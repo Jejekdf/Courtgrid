@@ -7,7 +7,7 @@ import { Menu, PanelLeftClose, PanelLeft, Search, LogOut } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { courtKeys } from "@/lib/query-keys";
 import NotificationCenter, { type NotificationItem } from "@/components/ui/NotificationCenter";
@@ -40,6 +40,9 @@ export function UserTopbar({ isSidebarOpen = true, onToggleSidebar }: UserTopbar
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+
+  // Mobile Sheet State
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   // Debounce search input (react-use functional form, same as CourtCatalog).
   useDebounce(
@@ -89,7 +92,7 @@ export function UserTopbar({ isSidebarOpen = true, onToggleSidebar }: UserTopbar
     <header className="h-16 bg-white/90 backdrop-blur-md border-b border-zinc-200 flex items-center justify-between px-4 md:px-6 shrink-0 sticky top-0 z-30">
       <div className="flex items-center gap-3 flex-1">
         {/* Mobile Drawer Trigger */}
-        <Sheet>
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger 
             className="md:hidden flex items-center justify-center w-11 h-11 -ml-3 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
             aria-label="Buka menu"
@@ -111,6 +114,7 @@ export function UserTopbar({ isSidebarOpen = true, onToggleSidebar }: UserTopbar
                   <Link
                     key={item.href}
                     href={item.href}
+                    onClick={() => setSheetOpen(false)}
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                       isActive
@@ -125,7 +129,7 @@ export function UserTopbar({ isSidebarOpen = true, onToggleSidebar }: UserTopbar
             </nav>
             <div className="absolute bottom-0 left-0 right-0 border-t border-zinc-200 p-4 bg-white">
               <button
-                onClick={handleLogout}
+                onClick={() => { setSheetOpen(false); handleLogout(); }}
                 className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
               >
                 <LogOut className="h-4 w-4" />
