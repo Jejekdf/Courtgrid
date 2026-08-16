@@ -1,15 +1,14 @@
-import Link from "next/link";
-import { Metadata } from "next";
-import { Quote, Hexagon } from "lucide-react";
+"use client";
+
+import { Link } from "@/i18n/navigation";
+import { Quote } from "lucide-react";
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
 import { Suspense } from "react";
-
-export const metadata: Metadata = {
-  title: "Reset Password | CourtGrid",
-  description: "Atur ulang kata sandi CourtGrid Anda.",
-};
+import { useTranslations } from "next-intl";
 
 export default function ResetPasswordPage() {
+  const t = useTranslations("auth.reset");
+
   return (
     <main className="min-h-screen w-full flex flex-row-reverse bg-white text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
       {/* Right Panel: Form */}
@@ -18,7 +17,7 @@ export default function ResetPasswordPage() {
           href="/login" 
           className="absolute top-8 left-8 sm:left-16 md:left-24 xl:left-32 text-sm font-medium text-zinc-500 hover:text-zinc-950 transition-colors flex items-center gap-2"
         >
-          &larr; Kembali ke Login
+          &larr; {t("backToLogin")}
         </Link>
 
         <div className="w-full max-w-md mx-auto space-y-8 mt-12 mb-12">
@@ -29,16 +28,16 @@ export default function ResetPasswordPage() {
               <span className="text-xl font-bold tracking-tight text-zinc-950">CourtGrid</span>
             </Link>
             <h1 className="text-3xl font-bold tracking-tight text-zinc-950">
-              Buat Password Baru
+              {t("title")}
             </h1>
             <p className="text-sm text-zinc-500 font-normal leading-relaxed">
-              Silakan masukkan password baru Anda. Pastikan kombinasi karakter cukup kuat demi keamanan.
+              {t("desc")}
             </p>
           </div>
 
           {/* Form */}
           <div className="mt-8">
-            <Suspense fallback={<div className="h-40 flex items-center justify-center text-sm text-zinc-500">Memuat form...</div>}>
+            <Suspense fallback={<div className="h-40 flex items-center justify-center text-sm text-zinc-500">{t("loadingForm")}</div>}>
               <ResetPasswordForm />
             </Suspense>
           </div>
@@ -57,15 +56,15 @@ export default function ResetPasswordPage() {
           <Quote className="text-emerald-500 w-12 h-12 mb-6 opacity-80" />
           <blockquote className="space-y-6">
             <p className="text-2xl lg:text-3xl font-medium leading-tight text-white">
-              &ldquo;Kenyamanan bertransaksi dan keamanan data pelanggan selalu menjadi prioritas nomor satu kami.&rdquo;
+              &ldquo;{t("quote")}&rdquo;
             </p>
             <footer className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-zinc-800 border-2 border-zinc-700 flex items-center justify-center text-white font-bold text-lg">
                 CG
               </div>
               <div>
-                <div className="font-semibold text-white">Security Team CourtGrid</div>
-                <div className="text-sm text-zinc-300">Proteksi Aktif 24/7</div>
+                <div className="font-semibold text-white">{t("quoteAuthor")}</div>
+                <div className="text-sm text-zinc-300">{t("quoteRole")}</div>
               </div>
             </footer>
           </blockquote>
