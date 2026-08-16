@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro, Albert_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import { Toaster } from "@/components/ui/sonner";
 
-const heading = Be_Vietnam_Pro({
+const heading = Plus_Jakarta_Sans({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
-const body = Albert_Sans({
+const body = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
 });
@@ -18,7 +17,7 @@ const body = Albert_Sans({
 const mono = IBM_Plex_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600", "700"],
 });
 
 export const metadata: Metadata = {
