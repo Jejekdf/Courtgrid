@@ -1,55 +1,70 @@
 import { auth } from "@/auth";
+import createMiddleware from "next-intl/middleware";
 import { NextResponse } from "next/server";
+import { routing } from "@/i18n/routing";
 
 /**
- * Application-wide proxy that enforces route-level access control.
+ * Application-wide proxy that enforces route-level access control with
+ * locale-aware routing (next-intl, localePrefix: "always").
  *
  * Guards:
- * - /admin/* requires an authenticated ADMIN
- * - /dashboard/* requires an authenticated non-admin customer
- * - /login and /register redirect authenticated users to their home route
+ * - /{locale}/admin/* requires an authenticated ADMIN
+ * - /{locale}/dashboard/* requires an authenticated non-admin customer
+ * - /{locale}/login and /{locale}/register redirect authenticated users to their home route
  *
- * This keeps routing logic centralized instead of duplicating checks
- * across every page or layout component.
+ * The next-intl middleware (handleI18nRouting) is composed AFTER the guards so
+ * redirects produced here always carry the correct locale prefix.
  */
+const handleI18nRouting = createMiddleware(routing);
+
 export const proxy = auth((req) => {
-  const { nextUrl } = req;
+  const { pathname } = req.nextUrl;
+
+  const match = /^\/(id|en)(?:\/|$)/.exec(pathname);
+  const locale = match?.[1] ?? routing.defaultLocale;
+  const logicalPath = match
+    ? pathname.slice(match[1].length + 1) || "/"
+    : pathname;
+
   const isLoggedIn = !!req.auth;
   const userRole = req.auth?.user?.role;
 
-  const isAdminRoute = nextUrl.pathname.startsWith("/admin");
+  const toLocale = (target: string) =>
+    new URL(`/${locale}${target === "/" ? "" : target}`, req.nextUrl);
+
+  const isAdminRoute = logicalPath.startsWith("/admin");
+  const isDashboardRoute = logicalPath.startsWith("/dashboard");
   const isAuthRoute =
-    nextUrl.pathname.startsWith("/login") || nextUrl.pathname.startsWith("/register");
+    logicalPath.startsWith("/login") || logicalPath.startsWith("/register");
 
   if (isAdminRoute) {
     if (!isLoggedIn) {
-      return NextResponse.redirect(new URL("/login", nextUrl));
+      return NextResponse.redirect(toLocale("/login"));
     }
     if (userRole !== "ADMIN") {
-      return NextResponse.redirect(new URL("/", nextUrl));
+      return NextResponse.redirect(toLocale("/"));
     }
   }
 
-  const isDashboardRoute = nextUrl.pathname.startsWith("/dashboard");
   if (isDashboardRoute) {
     if (!isLoggedIn) {
-      return NextResponse.redirect(new URL("/login", nextUrl));
+      return NextResponse.redirect(toLocale("/login"));
     }
     if (userRole === "ADMIN") {
-      return NextResponse.redirect(new URL("/admin", nextUrl));
+      return NextResponse.redirect(toLocale("/admin"));
     }
   }
 
   if (isAuthRoute && isLoggedIn) {
     const target = userRole === "ADMIN" ? "/admin" : "/dashboard";
-    return NextResponse.redirect(new URL(target, nextUrl));
+    return NextResponse.redirect(toLocale(target));
   }
 
-  return NextResponse.next();
+  return handleI18nRouting(req);
 });
 
 export default proxy;
 
 export const config = {
-  matcher: ["/admin/:path*", "/dashboard/:path*", "/dashboard", "/login", "/register"],
+  matcher: "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
 };

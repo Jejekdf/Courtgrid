@@ -16,7 +16,7 @@ declare module "next-auth" {
 
 export const authConfig = {
   pages: {
-    signIn: "/login",
+    signIn: "/id/login",
   },
   callbacks: {
     async jwt({ token, user }) {
