@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +23,7 @@ const easeCustom = [0.16, 1, 0.3, 1] as const;
 const inputLabelClass = "text-xs font-medium uppercase tracking-wider text-zinc-500";
 
 export default function ForgotPasswordForm() {
+  const t = useTranslations("auth.forgot");
   const form = useForm<ForgotPasswordInput>({
     resolver: zodResolver(forgotPasswordSchema),
     mode: "onChange",
@@ -40,7 +42,7 @@ export default function ForgotPasswordForm() {
       toast.success(result.message);
       form.reset();
     } catch {
-      toast.error("Terjadi kesalahan yang tidak terduga.");
+      toast.error(t("toastUnexpected"));
     }
   };
 
@@ -58,7 +60,7 @@ export default function ForgotPasswordForm() {
             name="email"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className={inputLabelClass}>Alamat Email</FormLabel>
+                <FormLabel className={inputLabelClass}>{t("email")}</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
@@ -83,7 +85,7 @@ export default function ForgotPasswordForm() {
             disabled={form.formState.isSubmitting}
             className="w-full mt-2"
           >
-            {form.formState.isSubmitting ? "Mengirim..." : "Kirim Tautan Reset"}
+            {form.formState.isSubmitting ? t("sending") : t("submit")}
           </Button>
         </form>
       </Form>
