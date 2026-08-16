@@ -47,7 +47,7 @@ export default async function CustomerSettingsPage() {
             </div>
             <div>
               <h2 className="text-sm font-extrabold text-zinc-950">Informasi Pengguna</h2>
-              <p className="text-sm text-zinc-400 font-mono">Identitas & Foto Profil</p>
+              <p className="text-sm text-zinc-400 font-sans">Identitas & Foto Profil</p>
             </div>
           </div>
           <ProfileForm user={{ name: user.name || "", email: user.email || "", image: user.image || "" }} />
@@ -62,7 +62,7 @@ export default async function CustomerSettingsPage() {
               </div>
               <div>
                 <h2 className="text-sm font-extrabold text-zinc-950">Keamanan Kata Sandi</h2>
-                <p className="text-sm text-zinc-400 font-mono">Pembaruan Password Berkala</p>
+                <p className="text-sm text-zinc-400 font-sans">Pembaruan Password Berkala</p>
               </div>
             </div>
             <PasswordForm />
