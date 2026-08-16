@@ -20,15 +20,15 @@ const sections = [
           Kami mengumpulkan informasi pribadi secara terbatas dan transparan untuk mendukung kebutuhan autentikasi serta reservasi arena olahraga di CourtGrid.
         </p>
         <div className="bg-zinc-50 border border-zinc-200/80 rounded-2xl p-4 space-y-2">
-          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-mono">
+          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-sans">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span><strong className="text-zinc-950">Data Akun:</strong> Nama, alamat email, dan avatar profil yang diotorisasi via Google, Facebook, atau registrasi langsung.</span>
           </div>
-          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-mono">
+          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-sans">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span><strong className="text-zinc-950">Data Transaksi:</strong> Informasi DP 50% diproses terenkripsi via Stripe Checkout. Server kami tidak pernah menyimpan nomor kartu kredit.</span>
           </div>
-          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-mono">
+          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-sans">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span><strong className="text-zinc-950">E-Ticket QR:</strong> Nomor rujukan unik digunakan khusus untuk verifikasi check-in kasir di GOR.</span>
           </div>
@@ -46,15 +46,15 @@ const sections = [
           Seluruh data yang dikumpulkan digunakan secara eksklusif untuk kelancaran operasional platform CourtGrid:
         </p>
         <div className="bg-zinc-50 border border-zinc-200/80 rounded-2xl p-4 space-y-2">
-          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-mono">
+          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-sans">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>Memverifikasi identitas akun dan ketersediaan jadwal slot arena secara otomatis.</span>
           </div>
-          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-mono">
+          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-sans">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>Memvalidasi E-Ticket QR Code saat penukaran di kasir arena olahraga.</span>
           </div>
-          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-mono">
+          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-sans">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>Mengirimkan resi pembayaran DP dan bukti booking resmi melalui email.</span>
           </div>
@@ -72,11 +72,11 @@ const sections = [
           Kami menerapkan proteksi teknis berstandar industri untuk menjamin kerahasiaan data pribadi pengguna.
         </p>
         <div className="bg-zinc-50 border border-zinc-200/80 rounded-2xl p-4 space-y-2">
-          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-mono">
+          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-sans">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>Transmisi data dienkripsi dengan protokol HTTPS / SSL/TLS berkecepatan tinggi.</span>
           </div>
-          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-mono">
+          <div className="flex items-start gap-2.5 text-sm text-zinc-700 font-sans">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>Kami tidak pernah menjual, memperjualbelikan, atau memberikan data pribadi ke pihak komersial mana pun.</span>
           </div>
@@ -101,7 +101,7 @@ export default function PrivacyPage() {
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-950">
             Kebijakan Privasi Data
           </h1>
-          <p className="text-sm text-zinc-500 font-mono leading-relaxed max-w-2xl">
+          <p className="text-sm text-zinc-500 font-sans leading-relaxed max-w-2xl">
             Penjelasan transparan mengenai bagaimana data pribadi Anda dikumpulkan, digunakan, dan dilindungi oleh platform CourtGrid.
           </p>
         </header>
@@ -113,7 +113,7 @@ export default function PrivacyPage() {
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-400">
               Daftar Privasi
             </span>
-            <ul className="space-y-2 text-sm font-mono">
+            <ul className="space-y-2 text-sm font-sans">
               {sections.map((s) => (
                 <li key={s.id}>
                   <a
