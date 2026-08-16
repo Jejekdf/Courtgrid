@@ -60,7 +60,7 @@ export default async function CustomerReservationsPage() {
           <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
             Semua Transaksi ({reservations.length})
           </span>
-          <span className="text-sm text-zinc-500 font-mono">Status Otomatis via Stripe</span>
+          <span className="text-sm text-zinc-500 font-sans">Status Otomatis via Stripe</span>
         </div>
         
         <ReservationList reservations={reservations} />
