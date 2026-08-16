@@ -2,12 +2,20 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import CourtCatalog from "@/components/courts/CourtCatalog";
 import CourtState from "@/components/courts/CourtState";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Katalog Lapangan - CourtGrid",
-  description:
-    "Jelajahi dan saring lapangan Futsal maupun Badminton yang tersedia di CourtGrid beserta harga per jam.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale: locale as "id" | "en", namespace: "courts" });
+  return {
+    title: t("metaTitle"),
+    description: t("metaDesc"),
+  };
+}
 
 export default function CourtsPage() {
   return (
