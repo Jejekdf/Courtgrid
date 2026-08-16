@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 
 export function GoogleIcon({ className = "h-4 w-4" }: { className?: string }) {
@@ -41,6 +42,7 @@ interface SocialAuthButtonsProps {
 
 export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps) {
   const [loadingProvider, setLoadingProvider] = useState<"google" | "facebook" | null>(null);
+  const t = useTranslations("auth.social");
 
   const handleProviderSignIn = async (provider: "google" | "facebook") => {
     setLoadingProvider(provider);
@@ -56,7 +58,7 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
       <div className="relative flex items-center justify-center my-4">
         <div className="border-t border-zinc-200 w-full" />
         <span className="bg-[var(--background)] px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider shrink-0">
-          Atau Lanjutkan Dengan
+          {t("divider")}
         </span>
         <div className="border-t border-zinc-200 w-full" />
       </div>
@@ -70,7 +72,7 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
           leftIcon={loadingProvider !== "google" ? <GoogleIcon /> : null}
           className="w-full text-sm font-medium border-zinc-200 hover:bg-zinc-50"
         >
-          Google
+          {t("google")}
         </Button>
 
         <Button
@@ -81,7 +83,7 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
           leftIcon={loadingProvider !== "facebook" ? <FacebookIcon /> : null}
           className="w-full text-sm font-medium border-zinc-200 hover:bg-zinc-50"
         >
-          Facebook
+          {t("facebook")}
         </Button>
       </div>
     </div>
