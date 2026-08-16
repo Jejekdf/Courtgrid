@@ -101,7 +101,7 @@ export default function Home() {
                       <Zap className="w-5 h-5 text-zinc-950" />
                       <p className="text-lg font-extrabold text-zinc-950 font-mono">Instant Stripe</p>
                     </div>
-                    <p className="text-sm text-zinc-500 font-mono">Verifikasi DP Otomatis 24/7</p>
+                    <p className="text-sm text-zinc-500 font-sans">Verifikasi DP Otomatis 24/7</p>
                   </div>
                 </div>
               </div>
@@ -114,7 +114,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h3 className="text-base font-extrabold">CourtGrid Official Standard</h3>
-                    <p className="text-sm text-zinc-300 font-mono">Sistem Reservasi Terverifikasi</p>
+                    <p className="text-sm text-zinc-300 font-sans">Sistem Reservasi Terverifikasi</p>
                   </div>
                 </div>
                 <div className="space-y-4 text-sm font-mono text-zinc-100">
