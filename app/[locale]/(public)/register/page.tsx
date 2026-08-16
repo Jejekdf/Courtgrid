@@ -1,15 +1,15 @@
-import RegisterForm from "@/components/RegisterForm";
-import Link from "next/link";
-import Image from "next/image";
-import { Metadata } from "next";
-import { Quote, ShieldCheck } from "lucide-react";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Daftar Akun | CourtGrid",
-  description: "Buat akun CourtGrid baru untuk reservasi dan kelola jadwal booking lapangan secara efisien.",
-};
+import RegisterForm from "@/components/RegisterForm";
+import { Link } from "@/i18n/navigation";
+import Image from "next/image";
+import { Quote, ShieldCheck } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function RegisterPage() {
+  const t = useTranslations("auth.register");
+  const ta = useTranslations("auth");
+
   return (
     <main className="min-h-screen w-full flex flex-row-reverse bg-background text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
       {/* Right Panel: Auth Form */}
@@ -22,10 +22,10 @@ export default function RegisterPage() {
               <span className="text-xl font-extrabold tracking-tight text-zinc-950">CourtGrid</span>
             </Link>
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-950">
-              Buat Akun Baru
+              {t("title")}
             </h1>
             <p className="text-sm text-zinc-500 leading-relaxed">
-              Bergabunglah dengan ratusan tim olahraga lainnya dan amankan slot lapangan favorit Anda.
+              {t("desc")}
             </p>
           </div>
 
@@ -36,12 +36,12 @@ export default function RegisterPage() {
 
           {/* Footer Link */}
           <p className="text-center text-sm text-zinc-500 pt-2">
-            Sudah memiliki akun?{" "}
+            {t("haveAccount")}{" "}
             <Link
               href="/login"
               className="font-bold text-zinc-950 underline underline-offset-4 hover:text-zinc-700 transition-colors"
             >
-              Masuk Sekarang
+              {t("signInLink")}
             </Link>
           </p>
         </div>
@@ -57,7 +57,7 @@ export default function RegisterPage() {
         <div className="relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 w-max shadow-xs">
           <ShieldCheck className="w-4 h-4 text-emerald-400" />
           <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">
-            100% Guaranteed Schedule
+            {ta("guaranteeSchedule")}
           </span>
         </div>
 
@@ -66,15 +66,15 @@ export default function RegisterPage() {
           <Quote className="text-emerald-400 w-10 h-10 opacity-80" />
           <blockquote className="space-y-4">
             <p className="text-xl lg:text-2xl font-extrabold leading-tight text-white font-sans">
-              &ldquo;Proses pendaftaran cepat dan sistem jadwalnya 100% akurat. Penanganan DP otomatis via Stripe membuat jadwal tim kami terjamin.&rdquo;
+              &ldquo;{t("quote")}&rdquo;
             </p>
             <footer className="flex items-center gap-3 pt-2">
               <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white font-mono font-bold text-sm">
                 BW
               </div>
               <div>
-                <div className="font-extrabold text-white text-sm">Budi Wibowo</div>
-                <div className="text-sm text-zinc-300 font-mono">Pengelola Turnamen Badminton</div>
+                <div className="font-extrabold text-white text-sm">{t("quoteAuthor")}</div>
+                <div className="text-sm text-zinc-300 font-mono">{t("quoteRole")}</div>
               </div>
             </footer>
           </blockquote>
