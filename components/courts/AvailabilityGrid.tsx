@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarDays, Clock, Loader2, AlertTriangle } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import {
   fetchAvailability,
   type AvailabilitySlot,
-  type SlotStatus,
 } from "@/lib/api/courts";
 import { courtKeys } from "@/lib/query-keys";
+import { SlotCell } from "./SlotCell";
 
 const JAKARTA_OFFSET_MS = 7 * 60 * 60 * 1000;
 
@@ -29,27 +29,6 @@ function addDays(dateStr: string, days: number): string {
   const m = String(d.getUTCMonth() + 1).padStart(2, "0");
   const day = String(d.getUTCDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
-}
-
-function slotLabel(status: SlotStatus): string {
-  switch (status) {
-    case "PAST":
-      return "Lewat";
-    case "BOOKED":
-      return "Terisi";
-    case "FREE":
-      return "Tersedia";
-  }
-}
-
-function slotStyle(status: SlotStatus, isSelected: boolean): string {
-  if (status === "FREE") {
-    if (isSelected) {
-      return "bg-emerald-600 text-white border-emerald-600 shadow-md";
-    }
-    return "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 cursor-pointer";
-  }
-  return "bg-zinc-100 text-zinc-400 border-zinc-200 cursor-not-allowed line-through";
 }
 
 interface Props {
@@ -96,7 +75,7 @@ export default function AvailabilityGrid({
               setSelectedDate(e.target.value);
               setSelectedHour(null);
             }}
-            className="text-xs border border-zinc-200 rounded-md px-2 py-1 bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="text-sm border border-zinc-200 rounded-md px-2 py-1 bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
         </div>
         <div className="flex items-center gap-1.5 text-sm text-zinc-500">
@@ -126,37 +105,16 @@ export default function AvailabilityGrid({
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
           <AnimatePresence mode="popLayout">
-            {slots.map((slot) => {
-              const isDisabled = slot.status !== "FREE";
-              const isSelected = selectedHour === slot.hour;
-
-              return (
-                <motion.button
-                  key={slot.hour}
-                  layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.15 }}
-                  disabled={isDisabled}
-                  onClick={() =>
-                    setSelectedHour(isSelected ? null : slot.hour)
-                  }
-                  className={`flex flex-col items-center gap-0.5 px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors ${slotStyle(
-                    slot.status,
-                    isSelected
-                  )}`}
-                  aria-label={`${slot.startTime} - ${slotLabel(slot.status)}`}
-                >
-                  <span className="font-semibold tabular-nums">
-                    {slot.startTime}
-                  </span>
-                  <span className="text-[11px] opacity-75">
-                    {slotLabel(slot.status)}
-                  </span>
-                </motion.button>
-              );
-            })}
+            {slots.map((slot) => (
+              <SlotCell
+                key={slot.hour}
+                slot={slot}
+                isSelected={selectedHour === slot.hour}
+                onSelect={(hour) =>
+                  setSelectedHour(selectedHour === hour ? null : hour)
+                }
+              />
+            ))}
           </AnimatePresence>
         </div>
       )}
