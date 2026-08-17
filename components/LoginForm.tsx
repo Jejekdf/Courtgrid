@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Eye, EyeOff, CheckCircle2, XCircle, LogIn } from "lucide-react";
+import { Eye, EyeOff, LogIn } from "lucide-react";
 import { login } from "@/features/auth/actions";
 import { loginSchema, LoginInput } from "@/lib/zod";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { PasswordRequirements } from "@/components/auth/PasswordRequirements";
 import SocialAuthButtons from "@/components/ui/SocialAuthButtons";
 
 const easeCustom = [0.16, 1, 0.3, 1] as const;
@@ -147,28 +148,7 @@ export default function LoginForm() {
                 <FormMessage />
 
                 {password.length > 0 && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="space-y-1.5 mt-2 bg-zinc-50 p-3 rounded-lg border border-zinc-200/60"
-                  >
-                    {requirements.map((req) => (
-                      <div
-                        key={req.label}
-                        className={`flex items-center gap-2 text-sm font-mono transition-colors duration-200 ${
-                          req.met ? "text-emerald-600 font-semibold" : "text-zinc-400"
-                        }`}
-                      >
-                        {req.met ? (
-                          <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-                        ) : (
-                          <XCircle className="w-3.5 h-3.5 shrink-0" />
-                        )}
-                        <span>{req.label}</span>
-                      </div>
-                    ))}
-                  </motion.div>
+                  <PasswordRequirements requirements={requirements} />
                 )}
 
                 <div className="flex justify-end mt-1.5">
