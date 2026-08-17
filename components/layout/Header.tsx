@@ -7,7 +7,6 @@ import { usePathname } from "@/i18n/navigation";
 import { Menu, X, LayoutDashboard } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 
 export function Header() {
   const { data: session, status } = useSession();
@@ -146,7 +145,6 @@ export function Header() {
           </nav>
 
           <div className="hidden sm:flex items-center gap-2">
-            <LanguageSwitcher />
             {userButtonsElement}
           </div>
 
@@ -181,7 +179,6 @@ export function Header() {
             ))}
           </nav>
           <div onClick={closeMenu} className="flex flex-col items-center space-y-2 mt-5 w-full">
-            <LanguageSwitcher />
             {userButtonsElement}
           </div>
         </div>
