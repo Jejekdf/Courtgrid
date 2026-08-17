@@ -72,7 +72,7 @@ export default function PasswordForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-1.5">
-        <Label htmlFor="currentPassword" className="text-xs font-bold text-zinc-700 font-sans">Password Saat Ini</Label>
+        <Label htmlFor="currentPassword" className="text-xs font-medium uppercase tracking-wider text-zinc-500">Password Saat Ini</Label>
         <Input
           id="currentPassword"
           type="password"
@@ -85,7 +85,7 @@ export default function PasswordForm() {
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="newPassword" className="text-xs font-bold text-zinc-700 font-sans">Password Baru</Label>
+        <Label htmlFor="newPassword" className="text-xs font-medium uppercase tracking-wider text-zinc-500">Password Baru</Label>
         <Input
           id="newPassword"
           type="password"
@@ -117,7 +117,7 @@ export default function PasswordForm() {
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="confirmPassword" className="text-xs font-bold text-zinc-700 font-sans">Konfirmasi Password Baru</Label>
+        <Label htmlFor="confirmPassword" className="text-xs font-medium uppercase tracking-wider text-zinc-500">Konfirmasi Password Baru</Label>
         <Input
           id="confirmPassword"
           type="password"
@@ -143,7 +143,7 @@ export default function PasswordForm() {
         type="submit"
         isLoading={loading || isSubmitting}
         disabled={loading || isSubmitting || !isValid}
-        className="w-full mt-2 bg-zinc-950 hover:bg-zinc-800 text-white font-bold h-11 text-xs rounded-xl shadow-xs cursor-pointer"
+        className="w-full mt-2 bg-zinc-950 hover:bg-zinc-800 text-white font-bold h-11 text-sm rounded-xl shadow-xs cursor-pointer"
         leftIcon={<Lock className="w-4 h-4 text-white" />}
       >
         Ubah Password

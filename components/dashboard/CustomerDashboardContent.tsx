@@ -35,7 +35,7 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
         description="Ringkasan aktivitas sewa arena, jadwal main aktif, dan riwayat reservasi Anda."
         actions={
           <Link href="/dashboard/book">
-            <button className="px-4 py-2.5 text-xs font-bold bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl transition-colors shadow-xs inline-flex items-center gap-2 shrink-0 cursor-pointer">
+            <button className="px-4 py-2.5 text-sm font-bold bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl transition-colors shadow-xs inline-flex items-center gap-2 shrink-0 cursor-pointer">
               <CalendarPlus className="w-4 h-4" />
               <span>Pesan Lapangan Baru</span>
             </button>
@@ -99,7 +99,7 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
             </div>
           </div>
           <Link href="/dashboard/reservations">
-            <button className="px-4 py-2 text-xs font-bold bg-white text-zinc-950 rounded-xl hover:bg-zinc-100 transition-colors inline-flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs">
+            <button className="px-4 py-2 text-sm font-bold bg-white text-zinc-950 rounded-xl hover:bg-zinc-100 transition-colors inline-flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs">
               <span>Buka E-Ticket</span>
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -114,7 +114,7 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
             <h2 className="text-base font-extrabold tracking-tight text-zinc-950">Reservasi Terbaru</h2>
             <p className="text-sm text-zinc-500 font-mono">Daftar penyewaan arena terkini Anda.</p>
           </div>
-          <Link href="/dashboard/reservations" className="text-xs font-bold text-zinc-950 hover:underline font-mono">
+          <Link href="/dashboard/reservations" className="text-sm font-bold text-zinc-950 hover:underline font-mono">
             Lihat Semua Transaksi &rarr;
           </Link>
         </div>

@@ -137,7 +137,7 @@ export default function ProfileForm({
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="name" className="text-xs font-bold text-zinc-700 font-mono">Nama Lengkap</Label>
+        <Label htmlFor="name" className="text-xs font-medium uppercase tracking-wider text-zinc-500 font-mono">Nama Lengkap</Label>
         <Input
           id="name"
           {...register("name")}
@@ -149,7 +149,7 @@ export default function ProfileForm({
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="email" className="text-xs font-bold text-zinc-700 font-mono">Alamat Email</Label>
+        <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-zinc-500 font-mono">Alamat Email</Label>
         <Input
           id="email"
           type="email"
@@ -169,7 +169,7 @@ export default function ProfileForm({
         type="submit"
         isLoading={loading || isSubmitting}
         disabled={loading || isSubmitting || !isValid}
-        className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold h-11 text-xs rounded-xl shadow-xs cursor-pointer"
+        className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold h-11 text-sm rounded-xl shadow-xs cursor-pointer"
         leftIcon={<Save className="w-4 h-4 text-white" />}
       >
         Simpan Profil

@@ -210,7 +210,7 @@ export function UserTopbar({ isSidebarOpen = true, onToggleSidebar }: UserTopbar
                 className="w-7 h-7 rounded-full object-cover shrink-0"
               />
             ) : (
-              <div className="w-7 h-7 rounded-full bg-zinc-950 flex items-center justify-center text-white text-[11px] font-bold shrink-0">
+              <div className="w-7 h-7 rounded-full bg-zinc-950 flex items-center justify-center text-white text-xs font-bold shrink-0">
                 {userInitial}
               </div>
             )}
