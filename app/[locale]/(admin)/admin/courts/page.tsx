@@ -186,7 +186,7 @@ export default function AdminCourtsPage() {
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <button
               onClick={openAdd}
-              className="px-4 py-2 text-xs font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0"
+              className="px-4 py-2 text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0"
             >
               <Plus className="h-4 w-4" />
               <span>Tambah Lapangan</span>
@@ -209,7 +209,7 @@ export default function AdminCourtsPage() {
                 />
 
                 <div className="space-y-1.5 w-full text-left">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                  <label className="block text-xs font-medium uppercase tracking-wider text-zinc-500">
                     Tipe Arena
                   </label>
                   <select
@@ -233,11 +233,11 @@ export default function AdminCourtsPage() {
 
                 {/* Upload File Section */}
                 <div className="space-y-1.5 w-full text-left">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                  <label className="block text-xs font-medium uppercase tracking-wider text-zinc-500">
                     Upload Foto Arena (Pilih File)
                   </label>
                   <div className="flex items-center gap-2">
-                    <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2 border border-zinc-200 rounded-lg bg-zinc-50 hover:bg-zinc-100 transition-colors cursor-pointer text-xs font-medium text-zinc-700">
+                    <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2 border border-zinc-200 rounded-lg bg-zinc-50 hover:bg-zinc-100 transition-colors cursor-pointer text-sm font-medium text-zinc-700">
                       <Upload className="w-4 h-4 text-zinc-500" />
                       <span>{selectedFile ? selectedFile.name : "Pilih File Foto..."}</span>
                       <input
@@ -265,14 +265,14 @@ export default function AdminCourtsPage() {
                     onChange={(e) => setIsActive(e.target.checked)}
                     className="h-4 w-4 rounded border-zinc-300 text-zinc-950 focus:ring-zinc-950 cursor-pointer"
                   />
-                  <label htmlFor="isActive" className="text-xs font-medium text-zinc-700 cursor-pointer">
+                  <label htmlFor="isActive" className="text-sm font-medium text-zinc-700 cursor-pointer">
                     Lapangan Aktif (Tersedia untuk disewa)
                   </label>
                 </div>
 
                 <div className="flex justify-end gap-2 pt-4 border-t border-zinc-100">
-                  <DialogClose render={<Button type="button" variant="outline" size="sm" className="text-xs">Batal</Button>} />
-                  <Button type="submit" size="sm" isLoading={uploadingImage} disabled={uploadingImage} className="bg-zinc-950 text-white text-xs font-semibold" leftIcon={isEditing ? <CheckCircle2 className="h-3.5 w-3.5"/> : <Plus className="h-3.5 w-3.5"/>}>
+                  <DialogClose render={<Button type="button" variant="outline" size="sm" className="text-sm">Batal</Button>} />
+                  <Button type="submit" size="sm" isLoading={uploadingImage} disabled={uploadingImage} className="bg-zinc-950 text-white text-sm font-semibold" leftIcon={isEditing ? <CheckCircle2 className="h-3.5 w-3.5"/> : <Plus className="h-3.5 w-3.5"/>}>
                     {uploadingImage ? "Uploading..." : isEditing ? "Simpan Perubahan" : "Simpan Lapangan"}
                   </Button>
                 </div>
@@ -285,13 +285,13 @@ export default function AdminCourtsPage() {
       {/* Tabs & Search */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-1.5 bg-zinc-50 border border-zinc-200 rounded-lg p-1">
-          <button onClick={() => setTab("all")} className={`px-3 py-1 rounded-md text-xs font-semibold transition-colors ${tab === "all" ? "bg-zinc-950 text-white" : "text-zinc-600 hover:bg-zinc-200/50"}`}>
+          <button onClick={() => setTab("all")} className={`px-3 py-1.5 rounded-md text-sm font-semibold transition-colors ${tab === "all" ? "bg-zinc-950 text-white" : "text-zinc-600 hover:bg-zinc-200/50"}`}>
             Semua ({courts.length})
           </button>
-          <button onClick={() => setTab("active")} className={`px-3 py-1 rounded-md text-xs font-semibold transition-colors ${tab === "active" ? "bg-emerald-600 text-white" : "text-emerald-700 hover:bg-emerald-50"}`}>
+          <button onClick={() => setTab("active")} className={`px-3 py-1.5 rounded-md text-sm font-semibold transition-colors ${tab === "active" ? "bg-emerald-600 text-white" : "text-emerald-700 hover:bg-emerald-50"}`}>
             Aktif
           </button>
-          <button onClick={() => setTab("inactive")} className={`px-3 py-1 rounded-md text-xs font-semibold transition-colors ${tab === "inactive" ? "bg-red-600 text-white" : "text-red-700 hover:bg-red-50"}`}>
+          <button onClick={() => setTab("inactive")} className={`px-3 py-1.5 rounded-md text-sm font-semibold transition-colors ${tab === "inactive" ? "bg-red-600 text-white" : "text-red-700 hover:bg-red-50"}`}>
             Nonaktif
           </button>
         </div>
@@ -350,7 +350,7 @@ export default function AdminCourtsPage() {
                   <div className="mt-auto flex items-center justify-between gap-2 pt-3 border-t border-zinc-100">
                     <button
                       onClick={() => handleToggleActive(court)}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md border text-xs font-semibold transition-colors border-zinc-200 text-zinc-700 hover:bg-zinc-100"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md border text-sm font-semibold transition-colors border-zinc-200 text-zinc-700 hover:bg-zinc-100"
                     >
                       <Power className={`w-3.5 h-3.5 ${court.isActive ? "text-red-600" : "text-emerald-600"}`} />
                       <span>{court.isActive ? "Nonaktifkan" : "Aktifkan"}</span>

@@ -178,7 +178,7 @@ export default function AdminSettingsPage() {
             type="submit"
             isLoading={loading}
             disabled={loading}
-            className="bg-zinc-950 hover:bg-zinc-800 text-white font-semibold px-5 h-10 text-xs rounded-lg shadow-xs"
+            className="bg-zinc-950 hover:bg-zinc-800 text-white font-semibold px-5 h-10 text-sm rounded-lg shadow-xs"
             leftIcon={<Save className="w-4 h-4" />}
           >
             {loading ? "Menyimpan..." : "Simpan Perubahan"}

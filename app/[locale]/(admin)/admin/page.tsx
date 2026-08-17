@@ -75,7 +75,7 @@ export default function AdminDashboardPage() {
           title="Dashboard"
           description="Gagal memuat statistik server."
           actions={
-            <button onClick={() => refetch()} className="px-3 py-1.5 text-xs font-semibold bg-zinc-950 text-white rounded-lg">
+            <button onClick={() => refetch()} className="px-3 py-1.5 text-sm font-semibold bg-zinc-950 text-white rounded-lg">
               Coba Lagi
             </button>
           }

@@ -248,14 +248,14 @@ export default function AdminTopbar({
         <div className="h-4 w-px bg-zinc-200 hidden sm:block" />
 
         <div className="flex items-center gap-2.5 p-1 pr-2 hover:bg-zinc-100 rounded-lg transition-colors border border-transparent hover:border-zinc-200">
-          <div className="w-7 h-7 rounded-full bg-zinc-950 flex items-center justify-center text-white text-[11px] font-bold shrink-0">
+          <div className="w-7 h-7 rounded-full bg-zinc-950 flex items-center justify-center text-white text-xs font-bold shrink-0">
             {userInitial}
           </div>
           <div className="hidden sm:flex flex-col items-start">
             <span className="text-sm font-semibold text-zinc-950 leading-none truncate max-w-28">
               {userName}
             </span>
-            <span className="text-[11px] text-zinc-400 mt-0.5 leading-none font-mono">
+            <span className="text-xs text-zinc-400 mt-0.5 leading-none font-mono">
               Superadmin
             </span>
           </div>
