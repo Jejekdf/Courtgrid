@@ -57,7 +57,7 @@ export default function CourtCard({
 
         <button
           onClick={() => setShowAvailability((v) => !v)}
-          className="flex items-center justify-center gap-2 w-full min-h-11 py-2.5 text-xs font-bold font-mono text-white bg-zinc-950 hover:bg-zinc-800 rounded-xl transition-colors shadow-xs cursor-pointer"
+          className="flex items-center justify-center gap-2 w-full min-h-11 py-2.5 text-sm font-bold font-mono text-white bg-zinc-950 hover:bg-zinc-800 rounded-xl transition-colors shadow-xs cursor-pointer"
         >
           <span>{showAvailability ? "Sembunyikan Jadwal" : "Cek Ketersediaan Jam"}</span>
           <motion.span
