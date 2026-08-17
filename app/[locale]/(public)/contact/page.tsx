@@ -74,7 +74,7 @@ export default async function ContactPage({
                 const Icon = item.icon;
                 return (
                   <div key={idx} className="py-4 space-y-1">
-                    <div className="flex items-center gap-2 text-xs font-bold text-zinc-950">
+                    <div className="flex items-center gap-2 text-sm font-bold text-zinc-950">
                       <Icon className="w-4 h-4 text-zinc-900 shrink-0" />
                       <span>{item.title}</span>
                     </div>

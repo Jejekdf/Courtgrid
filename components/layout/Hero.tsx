@@ -42,7 +42,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
-          className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-zinc-950 tracking-tight max-w-5xl leading-[1.1] mb-6"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-950 max-w-5xl leading-[1.1] mb-6"
         >
           {t("headline")}
         </motion.h1>
@@ -65,13 +65,13 @@ export default function Hero() {
           className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto"
         >
           <Link href="/dashboard/book" className="w-full sm:w-auto">
-            <Button size="lg" className="w-full sm:w-auto text-xs font-bold min-h-11 h-12 px-6 bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl shadow-xs cursor-pointer group">
+            <Button size="lg" className="w-full sm:w-auto text-sm font-bold min-h-11 h-12 px-6 bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl shadow-xs cursor-pointer group">
               <span>{t("checkSchedule")}</span>
               <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover-fine:translate-x-1 text-white" />
             </Button>
           </Link>
           <Link href="/register" className="w-full sm:w-auto">
-            <Button variant="secondary" size="lg" className="w-full sm:w-auto text-xs font-bold min-h-11 h-12 px-6 bg-[var(--background)] border border-zinc-200 text-zinc-950 hover:bg-zinc-100 rounded-xl cursor-pointer">
+            <Button variant="secondary" size="lg" className="w-full sm:w-auto text-sm font-bold min-h-11 h-12 px-6 bg-[var(--background)] border border-zinc-200 text-zinc-950 hover:bg-zinc-100 rounded-xl cursor-pointer">
               {t("registerAccount")}
             </Button>
           </Link>

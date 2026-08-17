@@ -32,7 +32,7 @@ export default async function Home({
               </div>
               <Link
                 href="/dashboard/book"
-                className="inline-flex items-center text-xs font-bold font-mono text-zinc-950 hover:text-zinc-600 gap-1.5 group cursor-pointer min-h-11 py-2"
+                className="inline-flex items-center text-sm font-bold font-mono text-zinc-950 hover:text-zinc-600 gap-1.5 group cursor-pointer min-h-11 py-2"
               >
                 <span>{t("viewAllCourts")}</span>
                 <ArrowRight className="w-4 h-4 transform group-hover-fine:translate-x-1 transition-transform" />
@@ -164,7 +164,7 @@ export default async function Home({
               
               <Link
                 href="/dashboard/book"
-                className="relative z-10 inline-flex items-center justify-center rounded-xl text-xs font-bold font-mono bg-white text-zinc-950 hover:bg-zinc-100 min-h-11 h-12 px-8 shrink-0 transition-colors cursor-pointer shadow-xs"
+                className="relative z-10 inline-flex items-center justify-center rounded-xl text-sm font-bold font-mono bg-white text-zinc-950 hover:bg-zinc-100 min-h-11 h-12 px-8 shrink-0 transition-colors cursor-pointer shadow-xs"
               >
                 <span>{t("ctaButton")}</span>
                 <ArrowRight className="ml-2 h-4 w-4" />

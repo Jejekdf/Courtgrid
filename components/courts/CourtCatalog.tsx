@@ -76,7 +76,7 @@ export default function CourtCatalog() {
         <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
           {t("badge")}
         </span>
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-950">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-zinc-950">
           {t("title")}
         </h1>
         <p className="text-sm text-zinc-500 leading-relaxed font-mono">
@@ -97,7 +97,7 @@ export default function CourtCatalog() {
               role="tab"
               aria-selected={tab === tabItem.value}
               onClick={() => updateParams({ type: tabItem.value })}
-              className={`px-4 min-h-11 py-2.5 rounded-xl text-xs font-mono font-bold transition-colors cursor-pointer ${
+              className={`px-4 min-h-11 py-2.5 rounded-xl text-sm font-mono font-bold transition-colors cursor-pointer ${
                 tab === tabItem.value
                   ? "bg-zinc-950 text-white shadow-xs"
                   : "text-zinc-600 hover-fine:text-zinc-950 hover-fine:bg-zinc-200/60"
@@ -115,7 +115,7 @@ export default function CourtCatalog() {
             placeholder={t("searchPlaceholder")}
             containerClassName="w-full sm:w-72"
             leftIcon={<Search className="w-4 h-4 text-zinc-400" />}
-            className="h-11 text-xs bg-zinc-50 border-zinc-200 rounded-xl"
+            className="h-11 text-sm bg-zinc-50 border-zinc-200 rounded-xl"
           />
           <button
             onClick={() => refetch()}

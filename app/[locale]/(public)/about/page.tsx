@@ -123,7 +123,7 @@ export default async function AboutPage({
           </div>
           <Link
             href="/courts"
-            className="px-4 py-2.5 min-h-11 text-xs font-semibold bg-white text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0 cursor-pointer"
+            className="px-4 py-2.5 min-h-11 text-sm font-semibold bg-white text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0 cursor-pointer"
           >
             <span>{t("ctaButton")}</span>
             <ArrowUpRight className="w-4 h-4" />
