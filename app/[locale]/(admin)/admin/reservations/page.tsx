@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { getAllReservations, adminDeleteReservation } from "@/features/admin/actions";
 import { format } from "date-fns";
 import { Printer, Filter, Trash2 } from "lucide-react";
 import AdminHeader from "@/components/admin/AdminHeader";
+import { Button } from "@/components/ui/button";
 import { adminKeys } from "@/lib/query-keys";
 import { toast } from "sonner";
 
@@ -24,17 +25,22 @@ type ReservationDetail = {
 export default function AdminReservationsPage() {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState<"daily" | "monthly" | "all">("all");
+  const [page, setPage] = useState(1);
 
   // TanStack Query Integration for Admin Reservations
-  const { data: reservations = [], isLoading } = useQuery({
-    queryKey: adminKeys.reservations(filter),
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: [...adminKeys.reservations(filter), page],
     queryFn: async () => {
-      const res = await getAllReservations(filter);
+      const res = await getAllReservations(filter, page, 10);
       const list = Array.isArray(res) ? res : res?.reservations || [];
-      return list as unknown as ReservationDetail[];
+      return { reservations: list as unknown as ReservationDetail[], totalPages: !Array.isArray(res) ? res?.totalPages ?? 1 : 1 };
     },
+    placeholderData: keepPreviousData,
     staleTime: 10000,
   });
+
+  const reservations = data?.reservations ?? [];
+  const totalPages = data?.totalPages ?? 1;
 
   // Mutation for deleting reservation
   const deleteMutation = useMutation({
@@ -68,7 +74,10 @@ export default function AdminReservationsPage() {
                 <Filter className="h-3.5 w-3.5 text-zinc-400 mr-1.5" />
                 <select
                   value={filter}
-                  onChange={(e) => setFilter(e.target.value as "daily" | "monthly" | "all")}
+                  onChange={(e) => {
+                    setFilter(e.target.value as "daily" | "monthly" | "all");
+                    setPage(1);
+                  }}
                   className="bg-transparent text-sm text-zinc-950 font-medium focus:outline-none cursor-pointer"
                 >
                   <option value="all">Semua Waktu</option>
@@ -166,7 +175,35 @@ export default function AdminReservationsPage() {
           </table>
         </div>
       </div>
-      
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="print:hidden flex flex-col sm:flex-row items-center justify-between gap-3 px-4 sm:px-6 py-4 bg-white border border-zinc-200 rounded-xl shadow-xs">
+          <div className="text-sm text-zinc-500">
+            Halaman <span className="font-semibold text-zinc-950">{page}</span> dari{" "}
+            <span className="font-semibold text-zinc-950">{totalPages}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page <= 1 || isFetching}
+              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            >
+              Sebelumnya
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page >= totalPages || isFetching}
+              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+            >
+              Selanjutnya
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Print Styles */}
       <style dangerouslySetInnerHTML={{__html: `
         @media print {
