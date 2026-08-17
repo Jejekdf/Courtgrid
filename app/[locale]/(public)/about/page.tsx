@@ -55,15 +55,15 @@ export default async function AboutPage({
       <PageWrapper className="max-w-4xl mx-auto space-y-12">
         {/* Header Document */}
         <header className="border-b border-zinc-200 pb-8 space-y-3">
-          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-zinc-400">
+          <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-zinc-500">
             <span>{t("breadcrumbCompany")}</span>
             <span>/</span>
             <span className="text-zinc-950 font-semibold">{t("breadcrumbAbout")}</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-950 leading-tight">
+          <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 leading-tight">
             {t("title")}
           </h1>
-          <p className="text-sm text-zinc-600 leading-relaxed max-w-2xl">
+          <p className="text-base text-zinc-600 leading-relaxed max-w-2xl">
             {t("description")}
           </p>
         </header>
@@ -73,12 +73,12 @@ export default async function AboutPage({
           {stats.map((item, idx) => (
             <div
               key={idx}
-              className="p-4 bg-zinc-50/80 rounded-xl border border-zinc-200 space-y-1"
+              className="p-4 bg-white rounded-xl border border-zinc-200 space-y-1"
             >
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-500">
                 {item.sub}
               </span>
-              <p className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950">{item.value}</p>
+              <p className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-zinc-950">{item.value}</p>
               <p className="text-sm text-zinc-500 font-medium">{item.label}</p>
             </div>
           ))}
@@ -87,7 +87,7 @@ export default async function AboutPage({
         {/* Pillars of Service (Simple List with Divider) */}
         <section className="space-y-6">
           <div className="space-y-1">
-            <h2 className="text-xl font-bold tracking-tight text-zinc-950">
+            <h2 className="font-heading text-2xl font-semibold tracking-tight text-zinc-950">
               {t("pillarsTitle")}
             </h2>
             <p className="text-sm text-zinc-500">
@@ -100,11 +100,11 @@ export default async function AboutPage({
               const Icon = p.icon;
               return (
                 <div key={idx} className="py-5 flex flex-col sm:flex-row sm:items-start gap-4">
-                  <div className="p-2 w-max bg-zinc-100/80 rounded-lg text-zinc-950 shrink-0">
+                  <div className="p-2 w-max bg-zinc-100 rounded-lg text-zinc-950 shrink-0">
                     <Icon className="w-5 h-5" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-base font-bold text-zinc-950">{p.title}</h3>
+                    <h3 className="font-heading text-lg font-medium tracking-tight text-zinc-950">{p.title}</h3>
                     <p className="text-sm text-zinc-600 leading-relaxed max-w-2xl">{p.desc}</p>
                   </div>
                 </div>
@@ -116,14 +116,14 @@ export default async function AboutPage({
         {/* Direct Action Link */}
         <section className="bg-zinc-950 rounded-xl p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="space-y-1 text-center sm:text-left">
-            <h3 className="text-base font-bold">{t("ctaTitle")}</h3>
-            <p className="text-sm text-zinc-400">
+            <h3 className="font-heading text-lg font-medium tracking-tight text-white">{t("ctaTitle")}</h3>
+            <p className="text-sm text-zinc-300">
               {t("ctaDesc")}
             </p>
           </div>
           <Link
             href="/courts"
-            className="px-4 py-2.5 min-h-11 text-sm font-semibold bg-white text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0 cursor-pointer"
+            className="px-4 py-2.5 min-h-11 text-sm font-semibold bg-white text-zinc-950 hover-fine:bg-zinc-100 rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0 cursor-pointer"
           >
             <span>{t("ctaButton")}</span>
             <ArrowUpRight className="w-4 h-4" />

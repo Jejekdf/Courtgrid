@@ -46,18 +46,18 @@ export default async function ContactPage({
 
   return (
     <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 bg-[var(--background)] text-zinc-950">
-      <PageWrapper className="max-w-5xl mx-auto space-y-10">
+      <PageWrapper className="max-w-4xl mx-auto space-y-10">
         {/* Document Header */}
         <header className="border-b border-zinc-200 pb-6 space-y-2">
-          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-zinc-400">
+          <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-zinc-500">
             <span>{t("breadcrumbCompany")}</span>
             <span>/</span>
             <span className="text-zinc-950 font-semibold">{t("breadcrumbContact")}</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-950">
+          <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950">
             {t("title")}
           </h1>
-          <p className="text-sm text-zinc-600 leading-relaxed max-w-xl">
+          <p className="text-base text-zinc-600 leading-relaxed max-w-xl">
             {t("description")}
           </p>
         </header>
@@ -66,7 +66,7 @@ export default async function ContactPage({
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
           {/* Channels List */}
           <div className="md:col-span-5 space-y-6">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+            <span className="text-xs font-medium uppercase tracking-wider text-zinc-500 block">
               {t("channelsTitle")}
             </span>
             <div className="divide-y divide-zinc-200 border-t border-b border-zinc-200">
@@ -74,11 +74,11 @@ export default async function ContactPage({
                 const Icon = item.icon;
                 return (
                   <div key={idx} className="py-4 space-y-1">
-                    <div className="flex items-center gap-2 text-sm font-bold text-zinc-950">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-zinc-950">
                       <Icon className="w-4 h-4 text-zinc-900 shrink-0" />
                       <span>{item.title}</span>
                     </div>
-                    <p className={`text-sm text-zinc-600 pl-6 leading-relaxed ${item.mono ? "font-mono font-semibold" : ""}`}>
+                    <p className={`text-sm text-zinc-600 pl-6 leading-relaxed ${item.mono ? "font-mono font-medium" : ""}`}>
                       {item.desc}
                     </p>
                   </div>
@@ -88,10 +88,10 @@ export default async function ContactPage({
           </div>
 
           {/* Contact Form Section */}
-          <div className="md:col-span-7 space-y-4 p-6 bg-zinc-50/80 rounded-xl border border-zinc-200">
+          <div className="md:col-span-7 space-y-4 p-6 bg-white rounded-xl border border-zinc-200 shadow-xs">
             <div className="flex items-center gap-2 border-b border-zinc-200 pb-3">
               <Mail className="w-4 h-4 text-zinc-900" />
-              <span className="text-xs font-bold uppercase tracking-wider text-zinc-950">{t("sendMessageTitle")}</span>
+              <span className="text-xs font-medium uppercase tracking-wider text-zinc-950">{t("sendMessageTitle")}</span>
             </div>
             <ContactForm />
           </div>
