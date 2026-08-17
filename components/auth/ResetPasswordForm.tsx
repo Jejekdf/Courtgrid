@@ -20,7 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { resetPasswordAction } from "@/features/auth/actions";
-import { resetPasswordSchema, ResetPasswordInput } from "@/lib/zod";
+import { createResetPasswordSchema, ResetPasswordInput } from "@/lib/zod";
 
 const easeCustom = [0.16, 1, 0.3, 1] as const;
 
@@ -30,13 +30,14 @@ export default function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const t = useTranslations("auth.reset");
+  const tVal = useTranslations("validation");
   const token = searchParams.get("token");
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<ResetPasswordInput>({
-    resolver: zodResolver(resetPasswordSchema),
+    resolver: zodResolver(createResetPasswordSchema(tVal)),
     mode: "onChange",
     defaultValues: { password: "", confirmPassword: "" },
   });

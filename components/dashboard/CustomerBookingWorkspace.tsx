@@ -17,6 +17,8 @@ import { TimeSlotPicker } from "./booking/TimeSlotPicker";
 import { BookingSummaryPanel } from "./booking/BookingSummaryPanel";
 import { BookingPreviewModal } from "./booking/BookingPreviewModal";
 
+import { useTranslations } from "next-intl";
+
 const TIME_SLOTS = Array.from({ length: 14 }, (_, i) => {
   const hour = i + 8;
   return `${hour.toString().padStart(2, "0")}:00`;
@@ -32,6 +34,7 @@ export type Court = {
 
 export default function CustomerBookingWorkspace() {
   const router = useRouter();
+  const tVal = useTranslations("validation");
 
   const [selectedDate, setSelectedDate] = useState<string>(
     format(new Date(), "yyyy-MM-dd")
@@ -124,7 +127,7 @@ export default function CustomerBookingWorkspace() {
   const bookingMutation = useMutation({
     mutationFn: async () => {
       if (selectedTimeSlots.length === 0 || !activeCourt)
-        throw new Error("Pilihan jam kosong.");
+        throw new Error(tVal("emptyTimeSlots"));
 
       const sortedSlots = [...selectedTimeSlots].sort();
       const startHour = parseInt(sortedSlots[0].split(":")[0], 10);
@@ -133,7 +136,7 @@ export default function CustomerBookingWorkspace() {
       const duration = endHour - startHour;
 
       if (duration !== sortedSlots.length) {
-        throw new Error("Jam main yang dipilih harus berurutan tanpa jeda.");
+        throw new Error(tVal("contiguousTimeSlots"));
       }
 
       const startTime = sortedSlots[0];

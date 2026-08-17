@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { updateProfile, uploadAvatarAction } from "@/features/auth/actions";
 import { Save, User, Mail, Camera, Loader2 } from "lucide-react";
-import { updateProfileSchema, type UpdateProfileInput } from "@/lib/zod";
+import { createUpdateProfileSchema, type UpdateProfileInput } from "@/lib/zod";
+import { useTranslations } from "next-intl";
 
 export default function ProfileForm({
   user,
@@ -21,13 +22,14 @@ export default function ProfileForm({
   const [avatarPreview, setAvatarPreview] = useState<string | null>(user.image || null);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const tVal = useTranslations("validation");
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isValid },
   } = useForm<UpdateProfileInput>({
-    resolver: zodResolver(updateProfileSchema),
+    resolver: zodResolver(createUpdateProfileSchema(tVal)),
     mode: "onChange",
     defaultValues: {
       name: user.name,

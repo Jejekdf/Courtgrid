@@ -9,23 +9,21 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { updatePassword } from "@/features/auth/actions";
 import { Lock, ShieldCheck, CheckCircle2, XCircle } from "lucide-react";
-import { updatePasswordSchema } from "@/lib/zod";
+import { createUpdatePasswordSchema, UpdatePasswordInput } from "@/lib/zod";
+import { useTranslations } from "next-intl";
 
 export default function PasswordForm() {
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const tVal = useTranslations("validation");
 
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors, isSubmitting, isValid },
-  } = useForm<{
-    currentPassword: string;
-    newPassword: string;
-    confirmPassword: string;
-  }>({
-    resolver: zodResolver(updatePasswordSchema),
+  } = useForm<UpdatePasswordInput>({
+    resolver: zodResolver(createUpdatePasswordSchema(tVal)),
     mode: "onChange",
     defaultValues: {
       currentPassword: "",

@@ -1,21 +1,25 @@
 "use server";
 
 import { signIn } from "@/auth";
-import { loginSchema, registerSchema } from "@/lib/zod";
+import {
+  createLoginSchema,
+  createRegisterSchema,
+  createUpdateProfileSchema,
+  createUpdatePasswordSchema,
+  createForgotPasswordSchema,
+  createResetPasswordActionSchema,
+} from "@/lib/zod";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { headers } from "next/headers";
 import { checkRateLimit } from "@/lib/ratelimit";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
-import { updateProfileSchema, updatePasswordSchema } from "@/lib/zod";
 import { uploadAvatar } from "@/lib/supabase/storage";
 import crypto from "crypto";
-import { z } from "zod";
 import { resend, RESEND_FROM_EMAIL } from "@/lib/resend";
 import { forgotPasswordEmail } from "@/lib/emails/templates";
-
-
+import { getTranslations } from "next-intl/server";
 
 async function clientIp(): Promise<string> {
   try {
@@ -35,36 +39,26 @@ export type LoginResult =
 
 /**
  * Authenticates a user using email/password credentials via NextAuth v5.
- *
- * This action:
- * - Validates input using the login Zod schema.
- * - Looks up the user role for post-login redirection.
- * - Calls `signIn("credentials", ...)` and normalizes the v5 server-action
- *   return shape, which may be a redirect URL string rather than `{ ok: true }`.
- * - Catches `CredentialsSignin` errors so the client receives a friendly message
- *   instead of a 500 stack trace.
- *
- * @param prevState - unused; kept to satisfy Next.js server-action signature.
- * @param formData - form payload containing `email` and `password`.
- * @returns Login result with either `redirectTo` or an `error` message.
  */
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData
 ): Promise<LoginResult> {
+  const t = await getTranslations("validation");
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
-  const validatedFields = loginSchema.safeParse({ email, password });
+  // loginSchema.safeParse({ email, password })
+  const validatedFields = createLoginSchema(t).safeParse({ email, password });
 
   if (!validatedFields.success) {
-    return { success: false, error: "Validation failed: " + validatedFields.error.issues[0].message };
+    return { success: false, error: validatedFields.error.issues[0].message };
   }
 
   const ip = await clientIp();
   const { success } = await checkRateLimit(`login:${ip}`);
   if (!success) {
-    return { success: false, error: "Terlalu banyak percobaan masuk. Silakan coba lagi dalam 15 menit." };
+    return { success: false, error: t("rateLimitLogin") };
   }
 
   const existingUser = await prisma.user.findUnique({
@@ -80,41 +74,33 @@ export async function authenticate(
       password: validatedFields.data.password,
       redirect: false,
     });
-  } catch (error) {
-    return { success: false, error: "Email atau password yang Anda masukkan salah." };
+  } catch {
+    // Email atau password yang Anda masukkan salah.
+    return { success: false, error: t("invalidCredentials") };
   }
 
-  // In NextAuth v5 server actions, `signIn(..., { redirect: false })` returns
-  // the resolved redirect URL as a string. On credential failure this typically
-  // contains the signin error query (e.g. `?error=CredentialsSignin`).
   const resolved = typeof result === "string" ? result : "";
   const isSuccess = resolved !== "" && !resolved.includes("error=");
 
   if (!isSuccess) {
-    return { success: false, error: "Email atau password yang Anda masukkan salah." };
+    // Email atau password yang Anda masukkan salah.
+    return { success: false, error: t("invalidCredentials") };
   }
 
   if (isSuccess) {
     return { success: true, redirectTo: existingUser?.role === "ADMIN" ? "/admin" : "/dashboard" };
   }
 
-  return { success: false, error: "Terjadi kesalahan saat masuk. Silakan coba lagi." }
+  return { success: false, error: t("genericLoginError") };
 }
 
 export const login = authenticate;
 
-
 /**
  * Registers a new customer account.
- *
- * - Validates input against `registerSchema`.
- * - Ensures email uniqueness.
- * - Hashes the password before persisting.
- *
- * @param formData - form payload containing `nama`, `email`, `no_hp`, `password`, and `confirmPassword`.
- * @returns Registration outcome with `success`, optional `message`, or `error`.
  */
 export async function registerUser(formData: FormData) {
+  const t = await getTranslations("validation");
   const rawData = {
     nama: formData.get("nama") as string,
     email: formData.get("email") as string,
@@ -123,7 +109,7 @@ export async function registerUser(formData: FormData) {
     confirmPassword: formData.get("confirmPassword") as string,
   };
 
-  const validated = registerSchema.safeParse(rawData);
+  const validated = createRegisterSchema(t).safeParse(rawData);
 
   if (!validated.success) {
     return {
@@ -135,7 +121,7 @@ export async function registerUser(formData: FormData) {
   const ip = await clientIp();
   const { success } = await checkRateLimit(`register:${ip}`);
   if (!success) {
-    return { success: false, error: "Terlalu banyak percobaan pendaftaran. Silakan coba lagi dalam 15 menit." };
+    return { success: false, error: t("rateLimitRegister") };
   }
 
   const { nama, email, password } = validated.data;
@@ -148,7 +134,7 @@ export async function registerUser(formData: FormData) {
     if (existingUser) {
       return {
         success: false,
-        error: "Email sudah terdaftar. Silakan gunakan email lain atau masuk.",
+        error: t("emailAlreadyRegistered"),
       };
     }
 
@@ -165,23 +151,23 @@ export async function registerUser(formData: FormData) {
 
     return {
       success: true,
-      message: "Pendaftaran akun berhasil! Silakan masuk ke akun Anda.",
+      message: t("registerSuccess"),
     };
   } catch (error) {
     console.error("Error registering user:", error);
     return {
       success: false,
-      error: "Terjadi kesalahan pada server saat mendaftar. Silakan coba lagi.",
+      error: t("registerServerError"),
     };
   }
 }
 
-
-
 export async function updateProfile(formData: FormData) {
+  const t = await getTranslations("validation");
   const session = await auth();
   if (!session || !session.user || !session.user.id) {
-    return { success: false, error: "Unauthorized" };
+    // error: "Unauthorized"
+    return { success: false, error: t("unauthorized") };
   }
 
   const rawInput = {
@@ -190,7 +176,8 @@ export async function updateProfile(formData: FormData) {
     image: (formData.get("image") as string) || undefined,
   };
 
-  const validation = updateProfileSchema.safeParse(rawInput);
+  // updateProfileSchema.safeParse(rawInput)
+  const validation = createUpdateProfileSchema(t).safeParse(rawInput);
   if (!validation.success) {
     return { success: false, error: validation.error.issues[0].message };
   }
@@ -201,7 +188,8 @@ export async function updateProfile(formData: FormData) {
     if (email !== session.user.email) {
       const existingUser = await prisma.user.findUnique({ where: { email } });
       if (existingUser && existingUser.id !== session.user.id) {
-        return { success: false, error: "Email sudah digunakan oleh akun lain." };
+        // Email sudah digunakan oleh akun lain.
+        return { success: false, error: t("emailInUse") };
       }
     }
 
@@ -211,17 +199,19 @@ export async function updateProfile(formData: FormData) {
     revalidatePath("/");
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/settings");
-    return { success: true, message: "Profil akun berhasil diperbarui." };
+    // Profil akun berhasil diperbarui.
+    return { success: true, message: t("profileUpdateSuccess") };
   } catch (error) {
     console.error("Update profile error:", error);
-    return { success: false, error: "Terjadi kesalahan server saat memperbarui profil." };
+    return { success: false, error: t("profileUpdateServerError") };
   }
 }
 
 export async function updatePassword(formData: FormData) {
+  const t = await getTranslations("validation");
   const session = await auth();
   if (!session || !session.user || !session.user.id) {
-    return { success: false, error: "Unauthorized" };
+    return { success: false, error: t("unauthorized") };
   }
 
   const rawInput = {
@@ -230,7 +220,7 @@ export async function updatePassword(formData: FormData) {
     confirmPassword: formData.get("confirmPassword") as string,
   };
 
-  const validation = updatePasswordSchema.safeParse(rawInput);
+  const validation = createUpdatePasswordSchema(t).safeParse(rawInput);
   if (!validation.success) {
     return { success: false, error: validation.error.issues[0].message };
   }
@@ -244,12 +234,12 @@ export async function updatePassword(formData: FormData) {
     });
 
     if (!user || !user.passwordHash) {
-      return { success: false, error: "Pengguna ini tidak memiliki password lokal (Gunakan login Social/OAuth)." };
+      return { success: false, error: t("oauthNoLocalPassword") };
     }
 
     const isMatch = await bcrypt.compare(currentPassword, user.passwordHash);
     if (!isMatch) {
-      return { success: false, error: "Password saat ini salah." };
+      return { success: false, error: t("currentPasswordWrong") };
     }
 
     const newHashedPassword = await bcrypt.hash(newPassword, 10);
@@ -257,30 +247,34 @@ export async function updatePassword(formData: FormData) {
     const { changePasswordDAL } = await import("@/features/auth/dal");
     await changePasswordDAL(session.user.id, newHashedPassword);
 
-    return { success: true, message: "Password berhasil diubah!" };
+    return { success: true, message: t("passwordUpdateSuccess") };
   } catch (error) {
     console.error("Update password error:", error);
-    return { success: false, error: "Terjadi kesalahan server saat mengubah password." };
+    return { success: false, error: t("passwordUpdateServerError") };
   }
 }
 
 export async function uploadAvatarAction(formData: FormData) {
+  const t = await getTranslations("validation");
   const session = await auth();
   if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" };
+    return { success: false, error: t("unauthorized") };
   }
 
   const file = formData.get("file") as File | null;
   if (!file || file.size === 0) {
-    return { success: false, error: "File gambar wajib diisi." };
+    // File gambar wajib diisi.
+    return { success: false, error: t("imageRequired") };
   }
 
   if (!file.type.startsWith("image/")) {
-    return { success: false, error: "File harus berupa gambar (JPG/PNG/WebP)." };
+    // File harus berupa gambar (JPG/PNG/WebP).
+    return { success: false, error: t("imageInvalidType") };
   }
 
   if (file.size > 2 * 1024 * 1024) {
-    return { success: false, error: "Ukuran file maksimal 2MB." };
+    // Ukuran file maksimal 2MB.
+    return { success: false, error: t("imageTooLarge") };
   }
 
   try {
@@ -296,24 +290,20 @@ export async function uploadAvatarAction(formData: FormData) {
     revalidatePath("/");
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/settings");
-    return { success: true, message: "Avatar berhasil diperbarui.", url };
+    return { success: true, message: t("avatarUpdateSuccess"), url };
   } catch (error) {
     console.error("Upload avatar error:", error);
-    return { success: false, error: "Gagal mengupload avatar." };
+    return { success: false, error: t("avatarUploadFailed") };
   }
 }
-
 
 export type ForgotPasswordResult =
   | { success: true; message: string }
   | { success: false; error: string };
 
-const forgotPasswordSchema = z.object({
-  email: z.email("Email tidak valid."),
-});
-
 export async function forgotPasswordAction(rawInput: unknown): Promise<ForgotPasswordResult> {
-  const parsed = forgotPasswordSchema.safeParse(rawInput);
+  const t = await getTranslations("validation");
+  const parsed = createForgotPasswordSchema(t).safeParse(rawInput);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }
@@ -322,12 +312,12 @@ export async function forgotPasswordAction(rawInput: unknown): Promise<ForgotPas
   const ip = await clientIp();
   const { success } = await checkRateLimit(`pwd_reset:${ip}_${email}`);
   if (!success) {
-    return { success: false, error: "Terlalu banyak permintaan reset password. Silakan coba lagi dalam 15 menit." };
+    return { success: false, error: t("rateLimitReset") };
   }
 
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
-    return { success: true, message: "Tautan reset kata sandi telah dikirim ke email Anda." };
+    return { success: true, message: t("resetLinkSent") };
   }
 
   const resetToken = crypto.randomBytes(32).toString("hex");
@@ -348,29 +338,19 @@ export async function forgotPasswordAction(rawInput: unknown): Promise<ForgotPas
 
   if (resendError) {
     console.error("Resend Error:", resendError);
-    return { success: false, error: "Gagal mengirim email reset. Silakan coba lagi." };
+    return { success: false, error: t("resetEmailFailed") };
   }
 
-  return { success: true, message: "Tautan reset kata sandi telah dikirim ke email Anda." };
+  return { success: true, message: t("resetLinkSent") };
 }
 
 export type ResetPasswordResult =
   | { success: true; message: string }
   | { success: false; error: string };
 
-const resetPasswordSchema = z.object({
-  token: z.string().min(1, "Token wajib diisi"),
-  newPassword: z
-    .string()
-    .min(8, "Password baru minimal 8 karakter")
-    .regex(/[A-Z]/, "Tambahkan minimal 1 huruf besar (A-Z).")
-    .regex(/[a-z]/, "Tambahkan minimal 1 huruf kecil (a-z).")
-    .regex(/[0-9]/, "Tambahkan minimal 1 angka (0-9).")
-    .regex(/[^A-Za-z0-9]/, "Tambahkan minimal 1 karakter spesial (!@#$%^&*) untuk keamanan ekstra."),
-});
-
 export async function resetPasswordAction(rawInput: unknown): Promise<ResetPasswordResult> {
-  const validated = resetPasswordSchema.safeParse(rawInput);
+  const t = await getTranslations("validation");
+  const validated = createResetPasswordActionSchema(t).safeParse(rawInput);
   if (!validated.success) {
     return { success: false, error: validated.error.issues[0].message };
   }
@@ -379,22 +359,22 @@ export async function resetPasswordAction(rawInput: unknown): Promise<ResetPassw
   const ip = await clientIp();
   const { success } = await checkRateLimit(`pwd_reset_submit:${ip}_${token}`);
   if (!success) {
-    return { success: false, error: "Terlalu banyak percobaan. Silakan coba lagi dalam 15 menit." };
+    return { success: false, error: t("rateLimitResetSubmit") };
   }
 
   const resetToken = await prisma.passwordResetToken.findUnique({ where: { token } });
   if (!resetToken) {
-    return { success: false, error: "Tautan reset tidak valid." };
+    return { success: false, error: t("resetLinkInvalid") };
   }
 
   if (new Date() > resetToken.expires) {
     await prisma.passwordResetToken.delete({ where: { id: resetToken.id } });
-    return { success: false, error: "Tautan reset sudah kadaluarsa. Silakan ajukan ulang." };
+    return { success: false, error: t("resetLinkExpired") };
   }
 
   const user = await prisma.user.findUnique({ where: { email: resetToken.email } });
   if (!user) {
-    return { success: false, error: "Pengguna tidak ditemukan." };
+    return { success: false, error: t("userNotFound") };
   }
 
   const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -404,5 +384,5 @@ export async function resetPasswordAction(rawInput: unknown): Promise<ResetPassw
     prisma.passwordResetToken.delete({ where: { id: resetToken.id } }),
   ]);
 
-  return { success: true, message: "Password berhasil diperbarui." };
+  return { success: true, message: t("passwordUpdateSuccess") };
 }

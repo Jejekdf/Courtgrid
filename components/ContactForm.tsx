@@ -2,25 +2,21 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Send, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { Send, Loader2 } from "lucide-react";
 import { sendContactAction } from "@/features/contact/actions";
-
-const formSchema = z.object({
-  name: z.string().min(2, "Nama terlalu pendek. Minimal 2 karakter.").max(50, "Nama terlalu panjang. Maksimal 50 karakter."),
-  email: z.string().min(1, "Email wajib diisi").email("Format email tidak valid. Contoh: kamu@email.com"),
-  message: z.string().min(10, "Pesan terlalu pendek. Minimal 10 karakter agar tim kami bisa memahami kendala Anda dengan jelas.").max(1000, "Pesan terlalu panjang. Maksimal 1000 karakter."),
-});
+import { buildContactSchema, type ContactInput } from "@/features/contact/schemas";
+import { useTranslations } from "next-intl";
 
 export default function ContactForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const tVal = useTranslations("validation");
+  const form = useForm<ContactInput>({
+    resolver: zodResolver(buildContactSchema(tVal)),
     defaultValues: {
       name: "",
       email: "",
@@ -30,18 +26,18 @@ export default function ContactForm() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: ContactInput) {
     setIsSubmitting(true);
     const result = await sendContactAction(values);
     setIsSubmitting(false);
 
     if (result.success) {
-      toast.success("Pesan Terkirim!", {
-        description: "Terima kasih telah menghubungi kami. Tim kami akan segera merespons.",
+      toast.success(tVal("contactSendSuccess"), {
+        description: tVal("contactSendSuccessDesc"),
       });
       form.reset();
     } else {
-      toast.error("Pesan Gagal Terkirim", {
+      toast.error(tVal("contactSendFailed"), {
         description: result.error,
       });
     }

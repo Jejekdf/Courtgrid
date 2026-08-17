@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Eye, EyeOff, UserPlus } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { registerSchema, RegisterInput } from "@/lib/zod";
+import { createRegisterSchema, RegisterInput } from "@/lib/zod";
 import { registerUser } from "@/features/auth/actions";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -32,9 +32,10 @@ export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const t = useTranslations("auth.register");
+  const tVal = useTranslations("validation");
 
   const form = useForm<RegisterInput>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(createRegisterSchema(tVal)),
     mode: "onChange",
     defaultValues: { nama: "", email: "", no_hp: "", password: "", confirmPassword: "" },
   });

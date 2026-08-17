@@ -40,21 +40,29 @@ export function jakartaMonthBounds(dateStr: string): { start: Date; end: Date } 
   return { start, end };
 }
 
+import type { SchemaTranslator } from "@/lib/zod";
+
 /**
  * Validates that a booking date+startTime is not in the past (Asia/Jakarta).
  * DM-2, DM-3: reject date < today; reject date === today with startTime <= current hour.
- * Returns null if valid, or an id-ID error message.
+ * Returns null if valid, or a localized / id-ID error message.
  */
-export function validateBookingTime(dateStr: string, startTime: string): string | null {
+export function validateBookingTime(
+  dateStr: string,
+  startTime: string,
+  t?: SchemaTranslator
+): string | null {
   const { dateStr: todayStr, hour: currentHour } = getJakartaNow();
   const startHour = parseInt(startTime.split(":")[0], 10);
 
   if (dateStr < todayStr) {
-    return "Tidak bisa memesan untuk tanggal yang sudah lewat.";
+    return t ? t("pastDate") : "Tidak bisa memesan untuk tanggal yang sudah lewat.";
   }
 
   if (dateStr === todayStr && startHour <= currentHour) {
-    return "Tidak bisa memesan untuk jam yang sudah lewat. Pilih jam setelah jam berikutnya.";
+    return t
+      ? t("pastHour")
+      : "Tidak bisa memesan untuk jam yang sudah lewat. Pilih jam setelah jam berikutnya.";
   }
 
   return null;

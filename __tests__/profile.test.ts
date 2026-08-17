@@ -37,10 +37,11 @@ const dalSrc = fs.readFileSync(dalPath, "utf-8");
 const storagePath = path.join(process.cwd(), "lib/supabase/storage.ts");
 const storageSrc = fs.readFileSync(storagePath, "utf-8");
 
-const settingsPagePath = path.join(
-  process.cwd(),
-  "app/dashboard/settings/page.tsx",
-);
+const settingsPagePath = fs.existsSync(
+  path.join(process.cwd(), "app/[locale]/dashboard/settings/page.tsx")
+)
+  ? path.join(process.cwd(), "app/[locale]/dashboard/settings/page.tsx")
+  : path.join(process.cwd(), "app/dashboard/settings/page.tsx");
 const settingsPageSrc = fs.readFileSync(settingsPagePath, "utf-8");
 
 // --- AC-PROF-3: updateProfileSchema validation ---

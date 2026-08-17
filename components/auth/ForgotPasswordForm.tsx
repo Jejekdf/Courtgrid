@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { forgotPasswordAction } from "@/features/auth/actions";
-import { forgotPasswordSchema, ForgotPasswordInput } from "@/lib/zod";
+import { createForgotPasswordSchema, ForgotPasswordInput } from "@/lib/zod";
 
 const easeCustom = [0.16, 1, 0.3, 1] as const;
 
@@ -24,8 +24,9 @@ const inputLabelClass = "text-xs font-medium uppercase tracking-wider text-zinc-
 
 export default function ForgotPasswordForm() {
   const t = useTranslations("auth.forgot");
+  const tVal = useTranslations("validation");
   const form = useForm<ForgotPasswordInput>({
-    resolver: zodResolver(forgotPasswordSchema),
+    resolver: zodResolver(createForgotPasswordSchema(tVal)),
     mode: "onChange",
     defaultValues: { email: "" },
   });

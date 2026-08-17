@@ -9,34 +9,25 @@ import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
 import { verifyUserSession } from "@/features/auth/dal";
 import { getReservationDetailsDAL } from "@/features/reservations/dal";
-import { createReservationSchema, cancelReservationSchema } from "@/features/reservations/schemas";
+import {
+  createReservationSchema,
+  createCancelReservationSchema,
+} from "@/features/reservations/schemas";
 import { resend, RESEND_FROM_EMAIL } from "@/lib/resend";
 import { bookingConfirmationEmail } from "@/lib/emails/templates";
 import { validateBookingTime } from "@/lib/timezone";
 import { auth } from "@/auth";
 import { uploadPaymentProof, getPaymentProofSignedUrl } from "@/lib/supabase/storage";
-
-
-
-
+import { getTranslations } from "next-intl/server";
 
 /**
  * Server Action: Create Reservation & Stripe Checkout Session (RFC-011 / F6 / F7)
- *
- * Pipeline (DM-4, PAY-1, PAY-2, STYLE-3):
- * 1. Zod safeParse (DM-7)
- * 2. verifyUserSession (SEC-2)
- * 3. timezone/past-date re-check (RFC-003 / FIX-H2)
- * 4. court exists + active (DM-5, 404 explicit)
- * 5. server-side price recompute (PAY-1 anti-pattern)
- * 6. atomic overlap query + create in one $transaction (DM-4, F6)
- * 7. Stripe Checkout session (RFC-012 / F7)
- * 8. email fire-and-forget + revalidatePath
- * 9. typed { success, url } result
  */
 export async function createReservationAction(rawInput: unknown) {
+  const t = await getTranslations("validation");
+
   // Layer 1: Strict Zod Validation (DM-7)
-  const validation = createReservationSchema.safeParse(rawInput);
+  const validation = createReservationSchema(t).safeParse(rawInput);
   if (!validation.success) {
     return {
       success: false,
@@ -51,13 +42,13 @@ export async function createReservationAction(rawInput: unknown) {
   } catch {
     return {
       success: false,
-      error: "Silakan masuk (login) ke akun Anda terlebih dahulu.",
+      error: t("unauthorized"),
     };
   }
 
   // Layer 3: Server-side timezone/past-date re-check (RFC-003, AC-TZ-3)
   const { courtId, dateStr, startTime, endTime, voucherCode } = validation.data;
-  const tzError = validateBookingTime(dateStr, startTime);
+  const tzError = validateBookingTime(dateStr, startTime, t);
   if (tzError) {
     return { success: false, error: tzError };
   }
@@ -69,11 +60,13 @@ export async function createReservationAction(rawInput: unknown) {
   });
 
   if (!court) {
-    return { success: false, error: "Lapangan tidak ditemukan." };
+    // Lapangan tidak ditemukan
+    return { success: false, error: t("courtNotFound") };
   }
 
   if (!court.isActive) {
-    return { success: false, error: "Lapangan ini sedang tidak aktif." };
+    // Lapangan ini sedang tidak aktif
+    return { success: false, error: t("courtInactive") };
   }
 
   // Layer 5: Server-side price recompute & optional Voucher discount (PAY-1, PAY-6 / RFC-014)
@@ -90,17 +83,17 @@ export async function createReservationAction(rawInput: unknown) {
     });
 
     if (!voucher || !voucher.isActive) {
-      return { success: false, error: "Kode voucher tidak valid atau tidak aktif." };
+      return { success: false, error: t("voucherInvalid") };
     }
 
     if (voucher.expiresAt < new Date()) {
-      return { success: false, error: "Kode voucher telah kedaluwarsa." };
+      return { success: false, error: t("voucherExpired") };
     }
 
     if (originalTotalPrice < voucher.minSpend) {
       return {
         success: false,
-        error: `Minimal transaksi untuk voucher ini adalah Rp ${voucher.minSpend.toLocaleString("id-ID")}.`,
+        error: t("voucherMinSpend", { minSpend: voucher.minSpend.toLocaleString("id-ID") }),
       };
     }
 
@@ -124,8 +117,6 @@ export async function createReservationAction(rawInput: unknown) {
   const dpAmount = computeDeposit(finalTotalPrice, dpPercentage);
 
   // Layer 6: Atomic overlap check + create (DM-4, F6)
-  // Both happen inside one interactive $transaction so they are one atomic unit.
-  // P2002 backstop catches the same-startTime race (DM-4).
   let reservationId: string;
   try {
     const reservation = await prisma.$transaction(async (tx) => {
@@ -142,9 +133,7 @@ export async function createReservationAction(rawInput: unknown) {
       });
 
       if (overlap) {
-        throw new DoubleBookingError(
-          "Slot waktu ini sudah dipesan. Silakan pilih jam lain.",
-        );
+        throw new DoubleBookingError(t("doubleBooked"));
       }
 
       // No overlap — create reservation + payment atomically
@@ -175,10 +164,11 @@ export async function createReservationAction(rawInput: unknown) {
       return { success: false, error: error.message };
     }
     if (error && typeof error === "object" && "code" in error && error.code === "P2002") {
-      return { success: false, error: "Slot waktu ini baru saja dipesan. Silakan pilih jam lain." };
+      // baru saja dipesan
+      return { success: false, error: t("doubleBookedRace") };
     }
     console.error("Create reservation action error:", error);
-    return { success: false, error: "Terjadi kesalahan server saat memproses booking." };
+    return { success: false, error: t("bookingServerError") };
   }
 
   // Layer 7: Stripe Checkout session (RFC-012 / F7)
@@ -215,7 +205,7 @@ export async function createReservationAction(rawInput: unknown) {
     console.error("Stripe Checkout Error:", stripeError);
     // Cleanup the pending reservation if Stripe fails
     await prisma.reservation.delete({ where: { id: reservationId } });
-    return { success: false, error: "Layanan pembayaran (Stripe) sedang gangguan. Silakan coba lagi nanti." };
+    return { success: false, error: t("stripeError") };
   }
 
   // Layer 8: Fire-and-forget email + explicit cache invalidation
@@ -248,10 +238,6 @@ export async function createReservationAction(rawInput: unknown) {
   return { success: true, url: checkoutSession.url };
 }
 
-/**
- * Layer 6 helper: typed error for double-booking overlap (not P2002 race).
- * Used inside $transaction to abort with a user-friendly id-ID message.
- */
 class DoubleBookingError extends Error {
   constructor(message: string) {
     super(message);
@@ -263,7 +249,8 @@ class DoubleBookingError extends Error {
  * Server Action: Cancel Pending Reservation
  */
 export async function cancelReservationAction(rawInput: unknown) {
-  const validation = cancelReservationSchema.safeParse(rawInput);
+  const t = await getTranslations("validation");
+  const validation = createCancelReservationSchema(t).safeParse(rawInput);
   if (!validation.success) {
     return { success: false, error: validation.error.issues[0].message };
   }
@@ -272,11 +259,11 @@ export async function cancelReservationAction(rawInput: unknown) {
 
   const reservation = await getReservationDetailsDAL(reservationId);
   if (!reservation) {
-    return { success: false, error: "Reservasi tidak ditemukan." };
+    return { success: false, error: t("reservationNotFound") };
   }
 
   if (reservation.status !== "PENDING") {
-    return { success: false, error: "Hanya pesanan berstatus PENDING yang dapat dibatalkan." };
+    return { success: false, error: t("cancelOnlyPending") };
   }
 
   await prisma.reservation.update({
@@ -289,22 +276,21 @@ export async function cancelReservationAction(rawInput: unknown) {
   revalidatePath("/admin");
   revalidatePath("/admin/reservations");
 
-  return { success: true, message: "Pesanan berhasil dibatalkan." };
+  return { success: true, message: t("cancelSuccess") };
 }
 
-
-
 export async function uploadPaymentProofAction(formData: FormData) {
+  const t = await getTranslations("validation");
   const session = await auth();
   if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" };
+    return { success: false, error: t("unauthorized") };
   }
 
   const reservationId = formData.get("reservationId") as string;
   const file = formData.get("file") as File | null;
 
   if (!reservationId || !file) {
-    return { success: false, error: "Reservasi dan file bukti pembayaran wajib diisi." };
+    return { success: false, error: t("proofFileRequired") };
   }
 
   try {
@@ -314,15 +300,15 @@ export async function uploadPaymentProofAction(formData: FormData) {
     });
 
     if (!reservation || reservation.userId !== session.user.id) {
-      return { success: false, error: "Reservasi tidak ditemukan atau Anda tidak memiliki akses." };
+      return { success: false, error: t("reservationNotFound") };
     }
 
     if (!file.type.startsWith("image/")) {
-      return { success: false, error: "File harus berupa gambar (JPG/PNG)." };
+      return { success: false, error: t("proofImageInvalid") };
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      return { success: false, error: "Ukuran file maksimal 5MB." };
+      return { success: false, error: t("proofFileTooLarge") };
     }
 
     const path = await uploadPaymentProof(reservationId, file);
@@ -337,9 +323,9 @@ export async function uploadPaymentProofAction(formData: FormData) {
 
     const url = (await getPaymentProofSignedUrl(path)) ?? path;
 
-    return { success: true, message: "Bukti pembayaran berhasil diupload.", url };
+    return { success: true, message: t("proofUploadSuccess"), url };
   } catch (error) {
     console.error("Upload payment proof error:", error);
-    return { success: false, error: "Gagal mengupload bukti pembayaran." };
+    return { success: false, error: t("proofUploadFailed") };
   }
 }

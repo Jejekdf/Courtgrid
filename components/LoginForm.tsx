@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { login } from "@/features/auth/actions";
-import { loginSchema, LoginInput } from "@/lib/zod";
+import { createLoginSchema, LoginInput } from "@/lib/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
@@ -32,9 +32,10 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const t = useTranslations("auth.login");
+  const tVal = useTranslations("validation");
 
   const form = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(createLoginSchema(tVal)),
     mode: "onChange",
     defaultValues: { email: "", password: "" },
   });

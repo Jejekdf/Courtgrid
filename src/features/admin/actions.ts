@@ -4,7 +4,6 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getJakartaNow, jakartaDayBounds, jakartaMonthBounds, formatSlotHour } from "@/lib/timezone";
-import { z } from "zod";
 import { invalidateCache } from "@/lib/redis";
 import { getAdminDashboardStatsDAL, type AdminStatsDTO } from "@/features/admin/dal";
 
@@ -86,6 +85,10 @@ type PaginatedCustomersResult =
 
 
 
+import { getTranslations } from "next-intl/server";
+import { buildCourtSchema, type CreateCourtInput } from "@/features/admin/schemas";
+import type { SchemaTranslator } from "@/lib/zod";
+
 /**
  * Verifies that the current session belongs to an admin user.
  *
@@ -97,26 +100,20 @@ type PaginatedCustomersResult =
 async function checkAdmin() {
   const session = await auth();
   if (session?.user?.role !== "ADMIN") {
-    return { success: false as const, error: "Unauthorized. Admins only." };
+    const t = await getTranslations("validation");
+    return { success: false as const, error: t("unauthorizedAdmin") };
   }
 
   return { success: true as const };
 }
 
-const courtFormSchema = z.object({
-  name: z.string().min(1, "Nama lapangan wajib diisi.").max(60, "Nama lapangan terlalu panjang."),
-  type: z.enum(["FUTSAL", "BADMINTON"], "Tipe lapangan tidak valid."),
-  pricePerHour: z.number().int().positive("Harga per jam harus berupa angka lebih dari 0."),
-  isActive: z.boolean(),
-  imageUrl: z.string().max(500, "URL gambar terlalu panjang.").optional().or(z.literal("")),
-});
-
-type CourtFormInput = z.infer<typeof courtFormSchema>;
-
 /**
  * Parses and validates the court form (SEC-8: all server inputs go through Zod).
  */
-function parseCourtForm(formData: FormData): { data: CourtFormInput | null; error: string | null } {
+function parseCourtForm(
+  formData: FormData,
+  t?: SchemaTranslator
+): { data: CreateCourtInput | null; error: string | null } {
   const raw = {
     name: formData.get("name"),
     type: formData.get("type"),
@@ -125,7 +122,8 @@ function parseCourtForm(formData: FormData): { data: CourtFormInput | null; erro
     imageUrl: (formData.get("imageUrl") as string | null)?.trim() ?? "",
   };
 
-  const parsed = courtFormSchema.safeParse(raw);
+  const schema = buildCourtSchema(t);
+  const parsed = schema.safeParse(raw);
   if (!parsed.success) {
     return { data: null, error: parsed.error.issues[0].message };
   }
@@ -251,15 +249,16 @@ export async function adminCreateCourt(formData: FormData) {
     return adminCheck;
   }
 
-  const { data: courtData, error: validationError } = parseCourtForm(formData);
+  const t = await getTranslations("validation");
+  const { data: courtData, error: validationError } = parseCourtForm(formData, t);
   if (validationError || !courtData) {
-    return { success: false as const, error: validationError ?? "Data lapangan tidak valid." };
+    return { success: false as const, error: validationError ?? t("courtTypeInvalid") };
   }
 
   try {
     const venue = await prisma.venue.findFirst();
     if (!venue) {
-      return { success: false as const, error: "Venue belum terdaftar. Tambahkan Venue terlebih dahulu." };
+      return { success: false as const, error: t("venueNotRegistered") };
     }
 
     await prisma.court.create({
@@ -277,7 +276,7 @@ export async function adminCreateCourt(formData: FormData) {
     return { success: true as const };
   } catch (error) {
     console.error("Error creating court:", error);
-    return { success: false as const, error: "Terjadi kesalahan server saat menambah lapangan." };
+    return { success: false as const, error: t("courtCreateFailed") };
   }
 }
 
@@ -294,9 +293,10 @@ export async function adminUpdateCourt(id: string, formData: FormData) {
     return adminCheck;
   }
 
-  const { data: courtData, error: validationError } = parseCourtForm(formData);
+  const t = await getTranslations("validation");
+  const { data: courtData, error: validationError } = parseCourtForm(formData, t);
   if (validationError || !courtData) {
-    return { success: false as const, error: validationError ?? "Data lapangan tidak valid." };
+    return { success: false as const, error: validationError ?? t("courtTypeInvalid") };
   }
 
   try {
@@ -314,7 +314,7 @@ export async function adminUpdateCourt(id: string, formData: FormData) {
     return { success: true as const };
   } catch (error) {
     console.error("Error updating court:", error);
-    return { success: false as const, error: "Terjadi kesalahan server saat memperbarui lapangan." };
+    return { success: false as const, error: t("courtUpdateFailed") };
   }
 }
 
@@ -367,11 +367,12 @@ export async function adminDeleteCustomer(id: string) {
   if (!adminCheck.success) {
     return adminCheck;
   }
+  const t = await getTranslations("validation");
   const target = await prisma.user.findUnique({ where: { id }, select: { role: true } });
   if (target?.role === "ADMIN") {
     const adminCount = await prisma.user.count({ where: { role: "ADMIN" } });
     if (adminCount <= 1) {
-      return { success: false, error: "Tidak dapat menghapus satu-satunya akun ADMIN." };
+      return { success: false, error: t("onlyAdminDelete") };
     }
   }
   await prisma.user.delete({
@@ -396,19 +397,20 @@ export async function adminToggleUserRole(id: string) {
   if (!adminCheck.success) {
     return adminCheck;
   }
+  const t = await getTranslations("validation");
   const user = await prisma.user.findUnique({ where: { id }, select: { role: true } });
-  if (!user) return { success: false, error: "Pengguna tidak ditemukan." };
+  if (!user) return { success: false, error: t("userNotFound") };
 
   if (user.role === "CUSTOMER") {
     return {
       success: false,
-      error: "Tidak diizinkan membuat akun ADMIN baru. Gunakan akun Super Admin yang sudah ada.",
+      error: t("adminCreateNotAllowed"),
     };
   }
 
   const adminCount = await prisma.user.count({ where: { role: "ADMIN" } });
   if (adminCount <= 1) {
-    return { success: false, error: "Tidak dapat mengganti role satu-satunya akun ADMIN." };
+    return { success: false, error: t("onlyAdminRoleSwap") };
   }
 
   await prisma.user.update({ where: { id }, data: { role: "CUSTOMER" } });
@@ -451,6 +453,7 @@ export async function adminScanTicket(reservationId: string) {
   if (!adminCheck.success) {
     return adminCheck;
   }
+  const t = await getTranslations("validation");
   const res = await prisma.reservation.findUnique({
     where: { id: reservationId.trim() },
     select: {
@@ -469,7 +472,7 @@ export async function adminScanTicket(reservationId: string) {
   if (!res) {
     return {
       success: false,
-      error: "Tiket / ID Reservasi tidak ditemukan di database.",
+      error: t("ticketNotFound"),
     };
   }
 
@@ -503,25 +506,26 @@ export async function adminCheckInReservation(reservationId: string) {
   if (!adminCheck.success) {
     return adminCheck;
   }
+  const t = await getTranslations("validation");
   const reservation = await prisma.reservation.findUnique({
     where: { id: reservationId.trim() },
   });
 
   if (!reservation) {
-    return { success: false, error: "Reservasi tidak ditemukan." };
+    return { success: false, error: t("reservationNotFound") };
   }
 
   if (reservation.status === "CANCELED") {
     return {
       success: false,
-      error: "Tiket ini sudah DIBATALKAN dan tidak dapat digunakan.",
+      error: t("ticketCanceled"),
     };
   }
 
   if (reservation.status === "DONE") {
     return {
       success: false,
-      error: "Tiket ini sudah digunakan untuk check-in dan berada dalam status SELESAI (DONE).",
+      error: t("ticketAlreadyUsed"),
     };
   }
 
@@ -635,14 +639,15 @@ export type AdminStatsActionResult =
   | { success: false; error: string; unauthorized?: boolean };
 
 export async function getAdminStatsAction(): Promise<AdminStatsActionResult> {
+  const t = await getTranslations("validation");
   try {
     const stats = await getAdminDashboardStatsDAL();
     if (!stats) {
-      return { success: false, error: "Data statistik belum tersedia." };
+      return { success: false, error: t("statsNotReady") };
     }
     return { success: true, data: stats };
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Gagal memuat statistik.";
+    const message = error instanceof Error ? error.message : t("statsNotReady");
     return { success: false, error: message, unauthorized: /Unauthorized|Forbidden/.test(message) };
   }
 }
