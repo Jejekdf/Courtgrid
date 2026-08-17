@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { isCourtType } from "@/lib/api/courts";
 import { autoCancelGhostBookings } from "@/features/reservations/ghostCancel";
 import { getJakartaNow } from "@/lib/timezone";
+import { getRedisClient } from "@/lib/redis";
 
 export type CourtDTO = {
   id: string;
@@ -66,6 +67,16 @@ export const getActiveCourtsDAL = cache(
   }
 );
 
+export const checkActiveCourtExistsDAL = cache(
+  async (courtId: string): Promise<boolean> => {
+    const court = await prisma.court.findUnique({
+      where: { id: courtId },
+      select: { isActive: true },
+    });
+    return Boolean(court?.isActive);
+  }
+);
+
 /**
  * Data Access Layer: Generate full 14-slot availability grid for a court+date.
  *
@@ -81,8 +92,21 @@ export const getCourtAvailabilityDAL = cache(
     const { dateStr: todayStr, hour: currentHour } = getJakartaNow();
     const isToday = dateStr === todayStr;
 
-    // Ghost-booking cleanup (PAY-3, FIX-H4): single owner rule
-    await autoCancelGhostBookings();
+    // Ghost-booking cleanup (PAY-3, FIX-H4): single owner rule throttled via Redis
+    const redis = getRedisClient();
+    let shouldRunCancel = true;
+    if (redis) {
+      try {
+        const acquired = await redis.set("ghost-cancel:last-run", "1", { nx: true, ex: 300 });
+        shouldRunCancel = acquired === "OK";
+      } catch (err) {
+        console.warn("[Redis ghost-cancel throttle error]", err);
+        shouldRunCancel = true;
+      }
+    }
+    if (shouldRunCancel) {
+      await autoCancelGhostBookings();
+    }
 
     // Parse date as UTC midnight — Prisma will compare against stored timestamptz
     const date = new Date(dateStr + "T00:00:00.000Z");

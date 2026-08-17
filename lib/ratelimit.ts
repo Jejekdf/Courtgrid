@@ -1,11 +1,13 @@
 import { Redis } from "@upstash/redis";
 import { Ratelimit } from "@upstash/ratelimit";
 
-let ratelimit: Ratelimit | null | undefined;
+type Bucket = "default" | "list";
+
+const ratelimits: Partial<Record<Bucket, Ratelimit>> = {};
 
 let warned = false;
 
-function getRateLimiter(): Ratelimit | null {
+function getRateLimiter(bucket: Bucket = "default"): Ratelimit | null {
   if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
     if (!warned) {
       console.warn("[ratelimit] UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN not set — rate limiting disabled.");
@@ -14,16 +16,22 @@ function getRateLimiter(): Ratelimit | null {
     return null;
   }
 
-  if (!ratelimit) {
-    ratelimit = new Ratelimit({
+  if (!ratelimits[bucket]) {
+    // Separate limits per bucket (Upstash multi-limiter pattern) — distinct prefix
+    // keeps counters isolated in Redis. "default" (3/15m) guards sensitive flows
+    // (auth, contact, availability); "list" (30/15m) is a looser public catalog read.
+    ratelimits[bucket] = new Ratelimit({
       redis: Redis.fromEnv(),
-      limiter: Ratelimit.slidingWindow(3, "15 m"),
+      limiter:
+        bucket === "list"
+          ? Ratelimit.slidingWindow(30, "15 m")
+          : Ratelimit.slidingWindow(3, "15 m"),
       analytics: true,
-      prefix: "ratelimit",
+      prefix: bucket === "list" ? "ratelimit:list" : "ratelimit",
     });
   }
 
-  return ratelimit;
+  return ratelimits[bucket];
 }
 
 /**
@@ -32,7 +40,20 @@ function getRateLimiter(): Ratelimit | null {
  * Returns `{ success: true }` when Redis env is missing (rate limiting disabled).
  */
 export async function checkRateLimit(identifier: string): Promise<{ success: boolean }> {
-  const rateLimiter = getRateLimiter();
+  return runRateLimit(getRateLimiter("default"), identifier);
+}
+
+/**
+ * Looser rate limit for high-frequency public read endpoints (e.g. court catalog list).
+ */
+export async function checkRateLimitRelaxed(identifier: string): Promise<{ success: boolean }> {
+  return runRateLimit(getRateLimiter("list"), identifier);
+}
+
+async function runRateLimit(
+  rateLimiter: Ratelimit | null,
+  identifier: string
+): Promise<{ success: boolean }> {
   if (!rateLimiter) {
     return { success: true };
   }
