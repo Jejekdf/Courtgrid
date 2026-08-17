@@ -4,7 +4,6 @@ import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { MapPin, Mail, Phone, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -116,9 +115,6 @@ export default function Footer() {
               <span>•</span>
               <span className="text-zinc-500">{t("standard")}</span>
             </p>
-          </div>
-          <div className="mt-6 flex justify-center md:justify-start">
-            <LanguageSwitcher />
           </div>
         </div>
       </div>
