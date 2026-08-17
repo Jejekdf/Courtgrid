@@ -84,7 +84,17 @@ export function Header() {
   const userImage = session?.user?.image || null;
   const userName = session?.user?.name || "";
 
-  const userButtonsElement = isLoggedIn ? (
+  const loadingButtonsElement = (
+    <div className="flex items-center gap-2" aria-hidden>
+      <span className="h-9 w-16 rounded-lg bg-zinc-100 animate-pulse" />
+      <span className="h-9 w-16 rounded-lg bg-zinc-200 animate-pulse" />
+    </div>
+  );
+
+  const userButtonsElement =
+    status === "loading" ? (
+      loadingButtonsElement
+    ) : isLoggedIn ? (
     <Link
       href={dashboardHref}
       className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-lg transition-colors shadow-xs outline-none w-full sm:w-auto cursor-pointer min-h-11"
