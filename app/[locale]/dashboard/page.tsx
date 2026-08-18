@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/features/auth/dal";
 import { getCustomerReservationsDAL } from "@/features/reservations/dal";
 import CustomerDashboardContent from "@/components/dashboard/CustomerDashboardContent";
-import { format } from "date-fns";
 
 export const metadata: Metadata = {
   title: "Dashboard Pelanggan | CourtGrid",

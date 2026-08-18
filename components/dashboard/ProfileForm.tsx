@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { updateProfile, uploadAvatarAction } from "@/features/auth/actions";
 import { Save, User, Mail, Camera, Loader2 } from "lucide-react";
+import Image from "next/image";
 import { createUpdateProfileSchema, type UpdateProfileInput } from "@/lib/zod";
 import { useTranslations } from "next-intl";
 
@@ -106,9 +107,12 @@ export default function ProfileForm({
           className="relative group shrink-0 cursor-pointer"
         >
           {avatarPreview ? (
-            <img
+            <Image
               src={avatarPreview}
               alt="Avatar"
+              width={64}
+              height={64}
+              unoptimized
               className="w-16 h-16 rounded-2xl object-cover border border-zinc-200 shadow-xs"
             />
           ) : (

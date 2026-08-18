@@ -13,8 +13,8 @@ export const useBoundStore = create<BoundStore>()(
   immer(
     devtools(
       (...a) => ({
-        booking: createBookingSlice(...a),
-        adminReservations: createAdminReservationsSlice(...a),
+        booking: createBookingSlice(a[0]),
+        adminReservations: createAdminReservationsSlice(a[0], a[1]),
       }),
       { name: "courtgrid" }
     )

@@ -100,7 +100,7 @@ export function Header() {
       className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-lg transition-colors shadow-xs outline-none w-full sm:w-auto cursor-pointer min-h-11"
     >
       {userImage ? (
-        <img src={userImage} alt={userName} className="w-4 h-4 rounded-full object-cover" />
+        <Image src={userImage} alt={userName} width={16} height={16} className="w-4 h-4 rounded-full object-cover" />
       ) : (
         <LayoutDashboard className="w-4 h-4 text-emerald-400" />
       )}

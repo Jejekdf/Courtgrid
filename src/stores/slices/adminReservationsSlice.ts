@@ -1,4 +1,3 @@
-import type { StateCreator } from "zustand";
 import { getAllReservations, adminDeleteReservation, adminScanTicket, adminCheckInReservation } from "@/features/admin/actions";
 import { toast } from "sonner";
 
@@ -57,7 +56,7 @@ const initialScanner = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const createAdminReservationsSlice = (set: any, get: any, api: any): AdminReservationsSlice => ({
+export const createAdminReservationsSlice = (set: any, get: any): AdminReservationsSlice => ({
   filter: "all",
   page: 1,
   totalPages: 1,

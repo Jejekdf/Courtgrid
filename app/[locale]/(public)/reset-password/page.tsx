@@ -2,6 +2,7 @@
 
 import { Link } from "@/i18n/navigation";
 import { Quote } from "lucide-react";
+import Image from "next/image";
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
 import { Suspense } from "react";
 import { useTranslations } from "next-intl";
@@ -24,7 +25,7 @@ export default function ResetPasswordPage() {
           {/* Header Branding */}
           <div className="flex flex-col space-y-3">
             <Link href="/" className="flex items-center gap-2.5 mb-2 group w-max outline-none [-webkit-tap-highlight-color:transparent]">
-              <img src="/icon.ico" alt="CourtGrid Logo" className="w-8 h-8 rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
+              <Image src="/icon.ico" alt="CourtGrid Logo" width={32} height={32} className="w-8 h-8 rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
               <span className="text-xl font-bold tracking-tight text-zinc-950">CourtGrid</span>
             </Link>
             <h1 className="text-3xl font-bold tracking-tight text-zinc-950">

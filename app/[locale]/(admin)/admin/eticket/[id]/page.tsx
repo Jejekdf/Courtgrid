@@ -3,7 +3,6 @@ import { auth } from "@/auth";
 import { redirect, notFound } from "next/navigation";
 import { AppUser } from "@/auth.config";
 import { getReservationDetailsDAL } from "@/features/reservations/dal";
-import { id } from "date-fns/locale";
 import PrintButton from "@/components/ui/PrintButton";
 import { ArrowLeft, ShieldCheck, Calendar, Clock, Receipt, Mail, Phone } from "lucide-react";
 import Link from "next/link";

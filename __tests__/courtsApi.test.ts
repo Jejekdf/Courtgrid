@@ -113,7 +113,7 @@ function resetMocks() {
   lastCacheKey = "";
 }
 
-const validUuid = "123e4567-e89b-12d3-a456-426614174000";
+const validCuid = "cmsm88anl0003kh4vphd3ce5z";
 
 // === Pure Schema Tests ===
 
@@ -126,7 +126,7 @@ test("courtsQuerySchema rejects calendar-invalid dates", () => {
 });
 
 test("courtsQuerySchema validates courtId, search length, and type enum", () => {
-  assert.equal(courtsQuerySchema.safeParse({ courtId: validUuid }).success, true);
+  assert.equal(courtsQuerySchema.safeParse({ courtId: validCuid }).success, true);
   assert.equal(courtsQuerySchema.safeParse({ courtId: "not-a-uuid" }).success, false);
   assert.equal(courtsQuerySchema.safeParse({ search: "a".repeat(50) }).success, true);
   assert.equal(courtsQuerySchema.safeParse({ search: "a".repeat(51) }).success, false);
@@ -140,7 +140,7 @@ test("courtsQuerySchema validates courtId, search length, and type enum", () => 
 test("GET /api/courts?date=2026-99-99&courtId=<uuid> → 400", async () => {
   resetMocks();
   const res = await GET(
-    new Request(`http://localhost:3000/api/courts?date=2026-99-99&courtId=${validUuid}`)
+    new Request(`http://localhost:3000/api/courts?date=2026-99-99&courtId=${validCuid}`)
   );
   assert.equal(res.status, 400);
   const json = (await res.json()) as { error: string };
@@ -150,7 +150,7 @@ test("GET /api/courts?date=2026-99-99&courtId=<uuid> → 400", async () => {
 test("GET /api/courts?date=2026-02-30&courtId=<uuid> → 400", async () => {
   resetMocks();
   const res = await GET(
-    new Request(`http://localhost:3000/api/courts?date=2026-02-30&courtId=${validUuid}`)
+    new Request(`http://localhost:3000/api/courts?date=2026-02-30&courtId=${validCuid}`)
   );
   assert.equal(res.status, 400);
   const json = (await res.json()) as { error: string };
@@ -160,7 +160,7 @@ test("GET /api/courts?date=2026-02-30&courtId=<uuid> → 400", async () => {
 test("GET /api/courts?date=2026-08-18&courtId=<uuid> + court exists + checkRateLimit success → 200 { data } with Cache-Control: no-store", async () => {
   resetMocks();
   const res = await GET(
-    new Request(`http://localhost:3000/api/courts?date=2026-08-18&courtId=${validUuid}`)
+    new Request(`http://localhost:3000/api/courts?date=2026-08-18&courtId=${validCuid}`)
   );
   assert.equal(res.status, 200);
   assert.equal(res.headers.get("cache-control"), "no-store");
@@ -174,7 +174,7 @@ test("GET /api/courts?courtId=<uuid> (court tak ada) → 404 { error: 'Lapangan 
   resetMocks();
   activeCourtExists = false;
   const res = await GET(
-    new Request(`http://localhost:3000/api/courts?courtId=${validUuid}`)
+    new Request(`http://localhost:3000/api/courts?courtId=${validCuid}`)
   );
   assert.equal(res.status, 404);
   const json = (await res.json()) as { error: string };
@@ -185,7 +185,7 @@ test("GET /api/courts?courtId=<uuid>&date=2026-08-18 + checkRateLimit fail → 4
   resetMocks();
   rateLimitSuccess = false;
   const res = await GET(
-    new Request(`http://localhost:3000/api/courts?courtId=${validUuid}&date=2026-08-18`)
+    new Request(`http://localhost:3000/api/courts?courtId=${validCuid}&date=2026-08-18`)
   );
   assert.equal(res.status, 429);
   const json = (await res.json()) as { error: string };
@@ -244,7 +244,7 @@ test("IP anti-spoofing: prefers x-real-ip over x-forwarded-for", async () => {
 test("Rate limit bucket separation: avail bucket vs list bucket", async () => {
   resetMocks();
   await GET(
-    new Request(`http://localhost:3000/api/courts?courtId=${validUuid}&date=2026-08-18`, {
+    new Request(`http://localhost:3000/api/courts?courtId=${validCuid}&date=2026-08-18`, {
       headers: { "x-real-ip": "10.0.0.5" },
     })
   );

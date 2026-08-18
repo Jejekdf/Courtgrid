@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarCheck, DollarSign, Box, Clock, Wallet } from "lucide-react";
+import { CalendarCheck, Box, Clock, Wallet } from "lucide-react";
 
 interface DashboardStatsProps {
   totalReservations: number;

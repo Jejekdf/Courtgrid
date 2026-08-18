@@ -9,18 +9,8 @@ import {
   type AvailabilitySlot,
 } from "@/lib/api/courts";
 import { courtKeys } from "@/lib/query-keys";
+import { getJakartaNow } from "@/lib/timezone";
 import { SlotCell } from "./SlotCell";
-
-const JAKARTA_OFFSET_MS = 7 * 60 * 60 * 1000;
-
-function getJakartaDate(): { dateStr: string; hour: number } {
-  const now = Date.now() + JAKARTA_OFFSET_MS;
-  const d = new Date(now);
-  const y = d.getUTCFullYear();
-  const m = String(d.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(d.getUTCDate()).padStart(2, "0");
-  return { dateStr: `${y}-${m}-${day}`, hour: d.getUTCHours() };
-}
 
 function addDays(dateStr: string, days: number): string {
   const d = new Date(dateStr + "T00:00:00Z");
@@ -40,7 +30,7 @@ export default function AvailabilityGrid({
   courtId,
   pricePerHour,
 }: Props) {
-  const { dateStr: todayStr } = getJakartaDate();
+  const { dateStr: todayStr } = getJakartaNow();
   const [selectedDate, setSelectedDate] = useState(todayStr);
   const [selectedHour, setSelectedHour] = useState<number | null>(null);
 

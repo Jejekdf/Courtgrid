@@ -1,5 +1,4 @@
 import { format } from "date-fns";
-import type { StateCreator } from "zustand";
 import { getCourts, getCourtAvailability } from "@/features/courts/actions";
 
 export type Court = { id: string; name: string; type: string; pricePerHour: number };
@@ -44,7 +43,7 @@ const initialBookingState: BookingState = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const createBookingSlice = (set: any, get: any, api: any): BookingSlice => ({
+export const createBookingSlice = (set: any): BookingSlice => ({
   ...initialBookingState,
   actions: {
     loadCourts: async () => {

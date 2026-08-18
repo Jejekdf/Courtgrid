@@ -5,7 +5,6 @@ import { getCustomerReservationsDAL } from "@/features/reservations/dal";
 import { CalendarPlus } from "lucide-react";
 import ReservationList from "@/components/dashboard/ReservationList";
 import Link from "next/link";
-import { format } from "date-fns";
 import PageHeader from "@/components/ui/PageHeader";
 
 export const metadata: Metadata = {

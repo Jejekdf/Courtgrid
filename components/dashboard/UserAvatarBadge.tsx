@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 interface UserAvatarBadgeProps {
   userName: string;
@@ -15,9 +16,11 @@ export function UserAvatarBadge({
     <Link href="/dashboard/settings">
       <div className="flex items-center gap-2.5 p-1 pr-2 hover:bg-zinc-100 rounded-lg transition-colors border border-transparent hover:border-zinc-200">
         {userImage ? (
-          <img
+          <Image
             src={userImage}
             alt={userName}
+            width={28}
+            height={28}
             className="w-7 h-7 rounded-full object-cover shrink-0"
           />
         ) : (

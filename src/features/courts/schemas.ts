@@ -3,7 +3,7 @@ import { z } from "zod";
 const isoDate = /^\d{4}-\d{2}-\d{2}$/;
 
 export const courtsQuerySchema = z.object({
-  courtId: z.uuid().optional(),
+  courtId: z.string().cuid().optional(),
   date: z
     .string()
     .regex(isoDate)
