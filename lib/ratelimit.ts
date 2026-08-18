@@ -1,7 +1,7 @@
 import { Redis } from "@upstash/redis";
 import { Ratelimit } from "@upstash/ratelimit";
 
-type Bucket = "default" | "list";
+type Bucket = "default" | "list" | "availability";
 
 const ratelimits: Partial<Record<Bucket, Ratelimit>> = {};
 
@@ -20,14 +20,24 @@ function getRateLimiter(bucket: Bucket = "default"): Ratelimit | null {
     // Separate limits per bucket (Upstash multi-limiter pattern) — distinct prefix
     // keeps counters isolated in Redis. "default" (3/15m) guards sensitive flows
     // (auth, contact, availability); "list" (30/15m) is a looser public catalog read.
+    // "availability" (60/1m) is looser still: toggling the schedule grid on several
+    // courts fires one request per court+date, so a tight bucket would throttle
+    // normal browsing.
     ratelimits[bucket] = new Ratelimit({
       redis: Redis.fromEnv(),
       limiter:
         bucket === "list"
           ? Ratelimit.slidingWindow(30, "15 m")
-          : Ratelimit.slidingWindow(3, "15 m"),
+          : bucket === "availability"
+            ? Ratelimit.slidingWindow(60, "1 m")
+            : Ratelimit.slidingWindow(3, "15 m"),
       analytics: true,
-      prefix: bucket === "list" ? "ratelimit:list" : "ratelimit",
+      prefix:
+        bucket === "list"
+          ? "ratelimit:list"
+          : bucket === "availability"
+            ? "ratelimit:availability"
+            : "ratelimit",
     });
   }
 
@@ -48,6 +58,14 @@ export async function checkRateLimit(identifier: string): Promise<{ success: boo
  */
 export async function checkRateLimitRelaxed(identifier: string): Promise<{ success: boolean }> {
   return runRateLimit(getRateLimiter("list"), identifier);
+}
+
+/**
+ * Rate limit for the court availability grid. Looser than the default bucket
+ * because toggling the schedule on several courts fires one request per court+date.
+ */
+export async function checkRateLimitAvailability(identifier: string): Promise<{ success: boolean }> {
+  return runRateLimit(getRateLimiter("availability"), identifier);
 }
 
 async function runRateLimit(

@@ -30,6 +30,10 @@ require.cache[ratelimitPath] = {
       lastRateLimitIdentifier = identifier;
       return { success: rateLimitSuccess };
     },
+    checkRateLimitAvailability: async (identifier: string) => {
+      lastRateLimitIdentifier = identifier;
+      return { success: rateLimitSuccess };
+    },
   },
 } as unknown as NodeModule;
 

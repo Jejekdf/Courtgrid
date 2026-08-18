@@ -7,7 +7,7 @@ import {
 } from "@/features/courts/dal";
 import { courtsQuerySchema } from "@/features/courts/schemas";
 import { getOrSetCache } from "@/lib/redis";
-import { checkRateLimit, checkRateLimitRelaxed } from "@/lib/ratelimit";
+import { checkRateLimitRelaxed, checkRateLimitAvailability } from "@/lib/ratelimit";
 
 export async function GET(request: Request) {
   let headerList: Headers;
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
   const { courtId, date, search, type } = parsed.data;
 
   if (courtId || date) {
-    const { success } = await checkRateLimit(`public:courts:avail:${ip}`);
+    const { success } = await checkRateLimitAvailability(`public:courts:avail:${ip}`);
     if (!success) {
       return NextResponse.json(
         { error: "Terlalu banyak permintaan. Silakan coba lagi nanti." },
