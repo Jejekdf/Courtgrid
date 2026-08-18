@@ -15,9 +15,7 @@ export type SettingsDTO = {
 };
 
 /**
- * Data Access Layer: Get Global Settings (singleton row).
- *
- * Admin-only. Serializes the Setting row to a DTO (STYLE-4).
+ * The single global settings row. Admin-only.
  */
 export const getSettingsDAL = cache(async (): Promise<SettingsDTO | null> => {
   await verifyAdminSession();

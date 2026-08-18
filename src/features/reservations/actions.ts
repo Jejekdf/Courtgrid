@@ -21,21 +21,21 @@ import { uploadPaymentProof, getPaymentProofSignedUrl } from "@/lib/supabase/sto
 import { getTranslations } from "next-intl/server";
 
 /**
- * Server Action: Create Reservation & Stripe Checkout Session (RFC-011 / F6 / F7)
+ * Creates a reservation and redirects the user to Stripe Checkout for the down payment.
  */
 export async function createReservationAction(rawInput: unknown) {
   const t = await getTranslations("validation");
 
-  // Layer 1: Strict Zod Validation (DM-7)
-  const validation = createReservationSchema(t).safeParse(rawInput);
-  if (!validation.success) {
+  // 1. Validate every field again on the server.
+  const bookingInput = createReservationSchema(t).safeParse(rawInput);
+  if (!bookingInput.success) {
     return {
       success: false,
-      error: validation.error.issues[0].message,
+      error: bookingInput.error.issues[0].message,
     };
   }
 
-  // Layer 2: Auth verification (SEC-2, STYLE-3)
+  // 2. Make sure the user is logged in.
   let user;
   try {
     user = await verifyUserSession();
@@ -46,30 +46,30 @@ export async function createReservationAction(rawInput: unknown) {
     };
   }
 
-  // Layer 3: Server-side timezone/past-date re-check (RFC-003, AC-TZ-3)
-  const { courtId, dateStr, startTime, endTime, voucherCode } = validation.data;
+  // 3. Reject dates/hours that have already passed (Asia/Jakarta, not the client's clock).
+  const { courtId, dateStr, startTime, endTime, voucherCode } = bookingInput.data;
   const tzError = validateBookingTime(dateStr, startTime, t);
   if (tzError) {
     return { success: false, error: tzError };
   }
 
-  // Layer 4: Court exists + active (DM-5, 404 explicit — user req)
+  // 4. The court must exist and be active.
   const court = await prisma.court.findUnique({
     where: { id: courtId },
     select: { id: true, name: true, pricePerHour: true, isActive: true },
   });
 
   if (!court) {
-    // Lapangan tidak ditemukan
+    // Court not found
     return { success: false, error: t("courtNotFound") };
   }
 
   if (!court.isActive) {
-    // Lapangan ini sedang tidak aktif
+    // Court is currently inactive
     return { success: false, error: t("courtInactive") };
   }
 
-  // Layer 5: Server-side price recompute & optional Voucher discount (PAY-1, PAY-6 / RFC-014)
+  // 5. Recompute the price server-side (never trust client numbers), then apply a voucher if given.
   const startHour = parseInt(startTime.split(":")[0], 10);
   const endHour = parseInt(endTime.split(":")[0], 10);
   const duration = endHour - startHour;
@@ -110,17 +110,18 @@ export async function createReservationAction(rawInput: unknown) {
   const startDateTime = new Date(`${dateStr}T${startTime}:00.000Z`);
   const endDateTime = new Date(`${dateStr}T${endTime}:00.000Z`);
 
-  // Layer 5b: DP percentage from Setting (PAY-1, F18 AC) — default 50%.
+  // 5b. Down-payment percentage from Settings (default 50%).
   const setting = await prisma.setting.findUnique({ where: { id: 1 } });
   const dpPercentage = setting?.dpPercentage ?? 50;
 
   const dpAmount = computeDeposit(finalTotalPrice, dpPercentage);
 
-  // Layer 6: Atomic overlap check + create (DM-4, F6)
+  // 6. Check for overlap inside a transaction so the slot can't be double-booked,
+  //    then create the reservation and its payment record together.
   let reservationId: string;
   try {
     const reservation = await prisma.$transaction(async (tx) => {
-      // Atomic overlap query — half-open interval [start, end)
+      // Half-open interval [start, end): adjacent slots don't collide.
       const overlap = await tx.reservation.findFirst({
         where: {
           courtId,
@@ -164,14 +165,14 @@ export async function createReservationAction(rawInput: unknown) {
       return { success: false, error: error.message };
     }
     if (error && typeof error === "object" && "code" in error && error.code === "P2002") {
-      // baru saja dipesan
+      // Caught by the DB unique constraint — someone else just booked this slot.
       return { success: false, error: t("doubleBookedRace") };
     }
     console.error("Create reservation action error:", error);
     return { success: false, error: t("bookingServerError") };
   }
 
-  // Layer 7: Stripe Checkout session (RFC-012 / F7)
+  // 7. Create the Stripe Checkout session and attach it to the reservation.
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   let checkoutSession;
   try {
@@ -208,7 +209,7 @@ export async function createReservationAction(rawInput: unknown) {
     return { success: false, error: t("stripeError") };
   }
 
-  // Layer 8: Fire-and-forget email + explicit cache invalidation
+  // 8. Confirmation email is fire-and-forget; then invalidate caches and revalidate the affected routes.
   resend.emails.send({
     ...bookingConfirmationEmail({
       userName: user.name,
@@ -234,7 +235,7 @@ export async function createReservationAction(rawInput: unknown) {
   revalidatePath("/admin");
   revalidatePath("/admin/reservations");
 
-  // Layer 9: typed result
+  // 9. Return the checkout URL so the client can redirect.
   return { success: true, url: checkoutSession.url };
 }
 
@@ -246,7 +247,7 @@ class DoubleBookingError extends Error {
 }
 
 /**
- * Server Action: Cancel Pending Reservation
+ * Cancels a reservation while it is still unpaid.
  */
 export async function cancelReservationAction(rawInput: unknown) {
   const t = await getTranslations("validation");

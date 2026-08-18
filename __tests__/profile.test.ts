@@ -3,11 +3,11 @@ import fs from "node:fs";
 import path from "node:path";
 
 /**
- * Profile settings tests (RFC-008, F10, AC-PROF-1/2/3, SEC-3, SEC-5).
+ * Profile settings tests (AC-PROF-1/2/3).
  *
  * Split into:
  * - Pure validation tests against the real updateProfileSchema (AC-PROF-3)
- * - Source-structure tests on actions/profile.ts (AC-PROF-1/2, SEC-3)
+ * - Source-structure tests on actions/profile.ts (AC-PROF-1/2)
  * - Source-structure tests on DAL / storage / settings page
  */
 
@@ -98,7 +98,7 @@ test("image string → passthrough", () => {
   }
 });
 
-// --- AC-PROF-2 (SEC-3): action derives userId from session, never input ---
+// --- AC-PROF-2: action derives userId from session, never input ---
 
 test("updateProfile is a server action ('use server')", () => {
   assert.ok(actionsSrc.includes('"use server"'), "should be a server action");
@@ -123,10 +123,10 @@ test("id derived from session.user.id", () => {
   assert.ok(actionsSrc.includes("auth()"), "should call auth() for the session");
 });
 
-test("unauth → typed 'Unauthorized' failure (SEC-2)", () => {
+test("unauth → typed failure (SEC-2)", () => {
   assert.ok(
-    actionsSrc.includes(`error: "Unauthorized"`),
-    'should return { success: false, error: "Unauthorized" }',
+    actionsSrc.includes('t("unauthorized")'),
+    'should return { success: false, error: t("unauthorized") }',
   );
 });
 
@@ -173,8 +173,8 @@ test("persists name/email/image via updateUserProfileDAL(session.user.id, …)",
 
 test("email-uniqueness guard blocks other accounts (IDOR-safe)", () => {
   assert.ok(
-    actionsSrc.includes("Email sudah digunakan oleh akun lain."),
-    'should return id-ID "Email sudah digunakan oleh akun lain."',
+    actionsSrc.includes('t("emailInUse")'),
+    'should return the emailInUse i18n key',
   );
   assert.ok(
     actionsSrc.includes("existingUser.id !== session.user.id"),
@@ -182,10 +182,10 @@ test("email-uniqueness guard blocks other accounts (IDOR-safe)", () => {
   );
 });
 
-test("id-ID success feedback reflects (AC-PROF-1)", () => {
+test("success feedback reflects profile update (AC-PROF-1)", () => {
   assert.ok(
-    actionsSrc.includes("Profil akun berhasil diperbarui."),
-    'should return id-ID "Profil akun berhasil diperbarui."',
+    actionsSrc.includes('t("profileUpdateSuccess")'),
+    'should return the profileUpdateSuccess i18n key',
   );
 });
 
@@ -200,18 +200,18 @@ test("revalidates affected routes (header/dashboard/settings)", () => {
 
 // --- AC-PROF-3: avatar upload guards & session-scoped path ---
 
-test("uploadAvatarAction: file wajib / image/* / cap 2MB (id-ID)", () => {
+test("uploadAvatarAction: file required / image/* / cap 2MB", () => {
   assert.ok(
-    actionsSrc.includes("File gambar wajib diisi."),
-    'should require a file ("File gambar wajib diisi.")',
+    actionsSrc.includes('t("imageRequired")'),
+    'should require a file (imageRequired key)',
   );
   assert.ok(
-    actionsSrc.includes("File harus berupa gambar (JPG/PNG/WebP)."),
-    'should reject non-image types ("File harus berupa gambar …")',
+    actionsSrc.includes('t("imageInvalidType")'),
+    'should reject non-image types (imageInvalidType key)',
   );
   assert.ok(
-    actionsSrc.includes("Ukuran file maksimal 2MB."),
-    'should enforce the 2MB cap ("Ukuran file maksimal 2MB.")',
+    actionsSrc.includes('t("imageTooLarge")'),
+    'should enforce the 2MB cap (imageTooLarge key)',
   );
 });
 

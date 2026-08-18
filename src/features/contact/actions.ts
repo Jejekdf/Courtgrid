@@ -7,8 +7,7 @@ import { getTranslations } from "next-intl/server";
 import { buildContactSchema } from "@/features/contact/schemas";
 
 /**
- * Server Action: Send contact message via Resend (F22).
- * Rate-limited per IP (SEC-6).
+ * Sends a contact-form message via Resend, rate-limited per IP.
  */
 export async function sendContactAction(rawInput: unknown) {
   const t = await getTranslations("validation");

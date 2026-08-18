@@ -78,21 +78,21 @@ export const checkActiveCourtExistsDAL = cache(
 );
 
 /**
- * Data Access Layer: Generate full 14-slot availability grid for a court+date.
+ * Full 14-slot availability grid for a court+date.
  *
  * Always returns exactly 14 slots (08:00–21:00). Each slot is classified:
  *   PAST  — hour ≤ current Jakarta hour and date is today
  *   BOOKED — overlaps a PENDING/DP_PAID/DONE reservation
  *   FREE  — all others
  *
- * Ghost-cancel (PAY-3) runs before the query so released slots appear FREE.
+ * Ghost-cancel runs before the query so released slots appear FREE.
  */
 export const getCourtAvailabilityDAL = cache(
   async (courtId: string, dateStr: string): Promise<AvailabilitySlotDTO[]> => {
     const { dateStr: todayStr, hour: currentHour } = getJakartaNow();
     const isToday = dateStr === todayStr;
 
-    // Ghost-booking cleanup (PAY-3, FIX-H4): single owner rule throttled via Redis
+    // Ghost-booking cleanup, throttled to once every 5 minutes via Redis.
     const redis = getRedisClient();
     let shouldRunCancel = true;
     if (redis) {

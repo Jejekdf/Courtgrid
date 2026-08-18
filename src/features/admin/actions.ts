@@ -90,12 +90,10 @@ import { buildCourtSchema, type CreateCourtInput } from "@/features/admin/schema
 import type { SchemaTranslator } from "@/lib/zod";
 
 /**
- * Verifies that the current session belongs to an admin user.
+ * Checks that the current session belongs to an admin.
  *
- * Returns a typed success object instead of throwing to allow server actions
- * to return controlled `{ success: false, error }` responses.
- *
- * @returns Admin check result.
+ * Returns a typed failure instead of throwing so server actions can respond
+ * with a controlled `{ success: false, error }` object.
  */
 async function checkAdmin() {
   const session = await auth();
@@ -108,7 +106,7 @@ async function checkAdmin() {
 }
 
 /**
- * Parses and validates the court form (SEC-8: all server inputs go through Zod).
+ * Validates court form fields against the Zod schema.
  */
 function parseCourtForm(
   formData: FormData,
@@ -134,15 +132,9 @@ function parseCourtForm(
 
 
 /**
- * Returns paginated admin reservations with optional daily or monthly filtering.
+ * Paginated admin reservations, optionally scoped to today or this month.
  *
- * Filters apply to reservation `startTime`. The response shape is intentionally
- * paginated so the client can render table navigation without re-fetching all rows.
- *
- * @param filter - Time range filter applied to reservations.
- * @param page - Current page number, starting at 1.
- * @param pageSize - Number of reservations per page.
- * @returns Paginated reservations metadata and rows.
+ * The payload is paginated so the client table can page without re-fetching everything.
  */
 export async function getAllReservations(
   filter: "daily" | "monthly" | "all" = "all",
@@ -157,7 +149,7 @@ export async function getAllReservations(
   let dateFilter = {};
 
   if (filter === "daily") {
-    // DM-2 / RFC-018: day boundary must be Asia/Jakarta, not server-local TZ.
+    // Day boundary must be Asia/Jakarta, not server-local TZ.
     const { start, end } = jakartaDayBounds(getJakartaNow().dateStr);
     dateFilter = { date: { gte: start, lt: end } };
   } else if (filter === "monthly") {
@@ -203,9 +195,6 @@ export async function getAllReservations(
 
 /**
  * Hard-deletes a reservation by ID.
- *
- * @param id - Reservation ID.
- * @returns Success indicator.
  */
 export async function adminDeleteReservation(id: string) {
   const adminCheck = await checkAdmin();
@@ -225,9 +214,7 @@ export async function adminDeleteReservation(id: string) {
 // =======================
 
 /**
- * Lists all courts ordered by newest first.
- *
- * @returns Lightweight court records used by admin management UI.
+ * Lists all courts, newest first.
  */
 export async function adminGetCourts(): Promise<AdminCourtRow[]> {
   const adminCheck = await checkAdmin();
@@ -238,10 +225,7 @@ export async function adminGetCourts(): Promise<AdminCourtRow[]> {
 }
 
 /**
- * Creates a new court record from form data.
- *
- * @param formData - Multipart form with court fields.
- * @returns Success result or admin auth validation error.
+ * Creates a new court from form data.
  */
 export async function adminCreateCourt(formData: FormData) {
   const adminCheck = await checkAdmin();
@@ -281,11 +265,7 @@ export async function adminCreateCourt(formData: FormData) {
 }
 
 /**
- * Updates an existing court record by ID.
- *
- * @param id - Target court ID.
- * @param formData - Multipart form with updated court fields.
- * @returns Success result or admin auth validation error.
+ * Updates an existing court by ID.
  */
 export async function adminUpdateCourt(id: string, formData: FormData) {
   const adminCheck = await checkAdmin();
@@ -319,10 +299,7 @@ export async function adminUpdateCourt(id: string, formData: FormData) {
 }
 
 /**
- * Deletes a court record by ID.
- *
- * @param id - Target court ID.
- * @returns Success result or admin auth validation error.
+ * Deletes a court by ID.
  */
 export async function adminDeleteCourt(id: string) {
   const adminCheck = await checkAdmin();
@@ -335,11 +312,7 @@ export async function adminDeleteCourt(id: string) {
 }
 
 /**
- * Toggles the active status of a court.
- *
- * @param id - Target court ID.
- * @param formData - Expects `isActive` field as stringified boolean.
- * @returns Success result or admin auth validation error.
+ * Toggles whether a court is listed as active.
  */
 export async function adminToggleCourtActive(id: string, formData: FormData) {
   const adminCheck = await checkAdmin();
@@ -358,9 +331,6 @@ export async function adminToggleCourtActive(id: string, formData: FormData) {
 
 /**
  * Permanently deletes a customer account.
- *
- * @param id - Customer user ID.
- * @returns Success result or admin auth validation error.
  */
 export async function adminDeleteCustomer(id: string) {
   const adminCheck = await checkAdmin();
@@ -383,14 +353,11 @@ export async function adminDeleteCustomer(id: string) {
 }
 
 /**
- * Toggles a user's role between ADMIN and CUSTOMER.
+ * Swaps a user's role between ADMIN and CUSTOMER.
  *
- * Enforces PRD §3 / SEC-2: exactly ONE Super Admin (no admin-creation UI).
- * Promoting a CUSTOMER to ADMIN is rejected; demoting an ADMIN is allowed
- * only when another ADMIN account would still exist.
- *
- * @param id - Target user ID.
- * @returns Success result with the new role, or an error if the user is not found.
+ * Only demotion is supported: exactly one Super Admin must always remain, and
+ * there is no UI to promote a customer. Demotion is allowed only while another
+ * admin would still exist.
  */
 export async function adminToggleUserRole(id: string) {
   const adminCheck = await checkAdmin();
@@ -419,12 +386,7 @@ export async function adminToggleUserRole(id: string) {
 }
 
 /**
- * Returns paginated customers with search support via the admin DAL.
- *
- * @param search - Optional case-insensitive search query.
- * @param page - Page number starting from 1.
- * @param pageSize - Number of customers per page.
- * @returns Paginated customers payload.
+ * Paginated customers with optional name/email search.
  */
 export async function getAdminPaginatedCustomersAction(search?: string, page = 1, pageSize = 10): Promise<PaginatedCustomersResult> {
   const adminCheck = await checkAdmin();
@@ -440,13 +402,8 @@ export async function getAdminPaginatedCustomersAction(search?: string, page = 1
 // =======================
 
 /**
- * Looks up a reservation by ID for ticket scanning.
- *
- * Returns the reservation with related user, court, and payment data
- * so staff can verify identity and booking details before check-in.
- *
- * @param reservationId - Reservation identifier to scan.
- * @returns Reservation lookup result.
+ * Looks up a reservation by ID for ticket scanning, with user/court/payment
+ * details so staff can verify identity and booking before check-in.
  */
 export async function adminScanTicket(reservationId: string) {
   const adminCheck = await checkAdmin();
@@ -493,13 +450,9 @@ export async function adminScanTicket(reservationId: string) {
 }
 
 /**
- * Marks a reservation as completed after successful on-site check-in.
+ * Marks a reservation as DONE after on-site check-in.
  *
- * Prevents check-in for canceled reservations and revalidates affected
- * admin and dashboard caches after status change.
- *
- * @param reservationId - Reservation identifier to check in.
- * @returns Check-in outcome.
+ * Rejects canceled reservations and revalidates the affected caches.
  */
 export async function adminCheckInReservation(reservationId: string) {
   const adminCheck = await checkAdmin();

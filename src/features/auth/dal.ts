@@ -20,11 +20,9 @@ export type UserDTO = {
 };
 
 /**
- * Data Access Layer: Get currently authenticated user with DTO sanitization.
+ * Returns the currently authenticated user, sanitized for client-facing code.
  *
- * Uses `cache()` to prevent duplicate database hits within the same request.
- *
- * @returns Sanitized user DTO or `null` when unauthenticated.
+ * `cache()` dedupes DB hits within the same request.
  */
 export const getCurrentUser = cache(async (): Promise<UserDTO | null> => {
   const session = await auth();
@@ -46,7 +44,7 @@ export const getCurrentUser = cache(async (): Promise<UserDTO | null> => {
 
   if (!user) return null;
 
-  // DTO Sanitization: Never expose passwordHash to client layers
+  // Never leak passwordHash to client layers.
   return {
     id: user.id,
     name: user.name,
@@ -59,14 +57,9 @@ export const getCurrentUser = cache(async (): Promise<UserDTO | null> => {
 });
 
 /**
- * Data Access Layer: Verify user ownership / RBAC access.
+ * Returns the current user, optionally enforcing a required role.
  *
- * Optionally enforces a required role and throws descriptive errors
- * when the session is missing or the role does not match.
- *
- * @param requiredRole - Optional role constraint.
- * @returns Sanitized user DTO.
- * @throws When unauthenticated or role-mismatched.
+ * Throws when the session is missing or the role does not match.
  */
 export const verifyUserSession = cache(async (requiredRole?: "ADMIN" | "CUSTOMER") => {
   const user = await getCurrentUser();
@@ -82,13 +75,7 @@ export const verifyUserSession = cache(async (requiredRole?: "ADMIN" | "CUSTOMER
 });
 
 /**
- * Data Access Layer: Update user profile.
- *
- * Updates at minimum `name` and `email`, and optionally `image` if provided.
- *
- * @param userId - Target user ID.
- * @param data - Partial profile payload.
- * @returns Updated user record.
+ * Updates a user's profile: name and email always, image only when provided.
  */
 export const updateUserProfileDAL = cache(async (userId: string, data: { name: string; email: string; image?: string }) => {
   return prisma.user.update({
@@ -102,13 +89,7 @@ export const updateUserProfileDAL = cache(async (userId: string, data: { name: s
 });
 
 /**
- * Data Access Layer: Change user password.
- *
- * Expects `passwordHash` to already be hashed before calling this DAL.
- *
- * @param userId - Target user ID.
- * @param passwordHash - Bcrypt-hashed password string.
- * @returns Updated user record.
+ * Replaces a user's password hash. The new value must already be hashed.
  */
 export const changePasswordDAL = cache(async (userId: string, passwordHash: string) => {
   return prisma.user.update({

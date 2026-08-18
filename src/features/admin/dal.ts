@@ -30,18 +30,14 @@ export type AdminStatsDTO = {
 };
 
 /**
- * Data Access Layer: Admin RBAC Guard
- *
- * Ensures the current user has the ADMIN role before any admin DAL call proceeds.
+ * Ensures the current user is an admin before any admin DAL call proceeds.
  */
 export const verifyAdminSession = cache(async () => {
   return verifyUserSession("ADMIN");
 });
 
 /**
- * Data Access Layer: Get Admin Dashboard Statistics with React cache()
- *
- * Computes totals and a 7-day revenue series in parallel for the admin dashboard.
+ * 7-day revenue series for the admin dashboard, computed in parallel.
  */
 export const getAdminRevenueChartDAL = cache(async (): Promise<AdminStatsDTO["revenueChart"]> => {
   await verifyAdminSession();
@@ -50,7 +46,7 @@ export const getAdminRevenueChartDAL = cache(async (): Promise<AdminStatsDTO["re
   const chart: AdminStatsDTO["revenueChart"] = [];
 
   for (let i = 6; i >= 0; i--) {
-    // DM-2 / RFC-019: revenue windows computed in Asia/Jakarta, stored as UTC.
+    // Revenue windows computed in Asia/Jakarta, stored as UTC.
     const dayDate = new Date(todayStr + "T00:00:00.000Z");
     dayDate.setUTCDate(dayDate.getUTCDate() - i);
     const dayStr = dayDate.toISOString().slice(0, 10);
@@ -79,9 +75,7 @@ export const getAdminRevenueChartDAL = cache(async (): Promise<AdminStatsDTO["re
 });
 
 /**
- * Data Access Layer: Get Admin Dashboard Statistics with React cache()
- *
- * Aggregates totals, recent reservations, and a 7-day revenue chart.
+ * Aggregates dashboard totals, recent reservations, and the revenue chart.
  */
 export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> => {
   await verifyAdminSession();
@@ -139,7 +133,7 @@ export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> 
 });
 
 /**
- * Data Access Layer: Get Paginated Reservations for Admin.
+ * Paginated reservations for the admin list, with optional day/month scope.
  */
 export const getAdminPaginatedReservationsDAL = cache(
   async (filter: "daily" | "monthly" | "all" = "all", page = 1, pageSize = 10) => {
@@ -208,9 +202,7 @@ export type CustomerDTO = {
 };
 
 /**
- * Data Access Layer: Get Paginated Customers for Admin.
- *
- * Supports case-insensitive search across customer names and emails.
+ * Paginated customers with case-insensitive name/email search.
  */
 export const getAdminPaginatedCustomersDAL = cache(
   async (search?: string, page = 1, pageSize = 10) => {

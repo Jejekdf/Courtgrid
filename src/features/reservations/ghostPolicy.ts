@@ -5,7 +5,7 @@ export type GhostCandidate = {
 };
 
 /**
- * Pure ghost-booking auto-cancel policy (PAY-3, FIX-H4).
+ * Pure ghost-booking auto-cancel policy.
  *
  * Mirrors the single owner rule implemented in `ghostCancel.ts`:
  * cancel a reservation only when it is PENDING, has no live Stripe session

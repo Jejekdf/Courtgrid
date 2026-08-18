@@ -3,7 +3,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 
 /**
- * Single owner rule for ghost-booking auto-cancel (PAY-3, FIX-H4).
+ * Single owner rule for ghost-booking auto-cancel.
  *
  * Cancels PENDING reservations where:
  *   createdAt < now - auto_cancel_timeout AND stripe_session_id IS NULL

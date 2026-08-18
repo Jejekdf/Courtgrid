@@ -1,21 +1,21 @@
 /**
- * RFC-011 / DM-4: Pure helpers for strict double-booking validation.
+ * Pure helpers for double-booking validation.
  *
  * No server-only imports — testable via plain node.
  */
 
 /**
- * Statuses considered "active" when checking double-booking overlap (DM-4).
+ * Statuses treated as "active" when checking double-booking overlap.
  * PENDING  — unpaid slot held for checkout
  * DP_PAID  — 50% DP paid; reservation in use
  */
 export const ACTIVE_BOOKING_STATUSES = ["PENDING", "DP_PAID"] as const;
 
 /**
- * Check whether two half-open intervals [aStart, aEnd) and [bStart, bEnd) overlap.
+ * Whether two half-open intervals [aStart, aEnd) and [bStart, bEnd) overlap.
  *
- * Half-open semantics: two adjacent slots where aEnd === bStart are NOT overlapping.
- * This is the correct predicate for hourly time slots.
+ * Half-open semantics: two adjacent slots where aEnd === bStart are NOT
+ * overlapping — the correct predicate for hourly time slots.
  */
 export function intervalsOverlap(
   aStart: Date,
@@ -27,8 +27,7 @@ export function intervalsOverlap(
 }
 
 /**
- * Compute deposit amount (PAY-1): ceil(totalPrice * dpPercentage / 100).
- * dpPercentage comes from `Setting.dpPercentage` (default 50).
+ * Down payment = ceil(totalPrice * dpPercentage / 100), dpPercentage default 50.
  * Pure math; no DB.
  */
 export function computeDeposit(totalPrice: number, dpPercentage: number = 50): number {

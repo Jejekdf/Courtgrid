@@ -3,9 +3,9 @@ import fs from "node:fs";
 import path from "node:path";
 
 /**
- * Ghost-cancel tests (RFC-004, FIX-H4, AC-GHOST-1..4).
+ * Ghost-cancel tests (AC-GHOST-1..4).
  *
- * Source-structure validation: verifies the PAY-3 predicate logic
+ * Source-structure validation: verifies the auto-cancel predicate logic
  * is correctly implemented in the owner module.
  */
 

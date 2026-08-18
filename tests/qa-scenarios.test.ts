@@ -45,7 +45,7 @@ test("AC-LOGIN-2: wrong password is rejected, no session", async () => {
   const hash = await bcrypt.hash("Rahasia123!", 10);
   assert.equal(await verifyCredentialsPassword({ passwordHash: hash }, "salah-password"), false);
   assert.equal(await verifyCredentialsPassword(null, "Rahasia123!"), false);
-  // OAuth-only account (SEC-5): no passwordHash → credential login impossible
+  // OAuth-only account: no passwordHash → credential login impossible
   assert.equal(await verifyCredentialsPassword({ passwordHash: null }, "Rahasia123!"), false);
 });
 

@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 /**
- * Double-booking tests (RFC-011, F6, DM-4, AC-BOOK-1/2/4/5).
+ * Double-booking tests (AC-BOOK-1/2/4/5).
  *
  * Split into:
  * - Pure logic tests (intervalsOverlap, computeDeposit)
@@ -71,7 +71,7 @@ test("disjoint — later: [10,11) vs [8,9) → false", () => {
   assert.equal(intervalsOverlap(d(10), d(11), d(8), d(9)), false);
 });
 
-// --- computeDeposit (PAY-1) ---
+// --- computeDeposit ---
 
 test("computeDeposit: even total → half", () => {
   assert.equal(computeDeposit(200000), 100000);
@@ -103,14 +103,14 @@ const actionsPath = path.join(
 );
 const actionsSrc = fs.readFileSync(actionsPath, "utf-8");
 
-test("action catches P2002 and returns 'baru saja dipesan' (AC-BOOK-4)", () => {
+test("action catches P2002 and returns a friendly double-booking message (AC-BOOK-4)", () => {
   assert.ok(
     actionsSrc.includes('"P2002"'),
     'should check error.code === "P2002"',
   );
   assert.ok(
-    actionsSrc.includes("baru saja dipesan"),
-    'should return friendly "baru saja dipesan" message',
+    actionsSrc.includes("doubleBookedRace"),
+    'should return the double-booked race message',
   );
 });
 
@@ -159,11 +159,11 @@ test("action creates Reservation(PENDING) + Payment(PENDING) in one transaction 
 
 test("action verifies court exists and isActive (404 explicit)", () => {
   assert.ok(
-    actionsSrc.includes("Lapangan tidak ditemukan"),
-    'should return "Lapangan tidak ditemukan" when court missing',
+    actionsSrc.includes("courtNotFound"),
+    'should return "courtNotFound" when court missing',
   );
   assert.ok(
-    actionsSrc.includes("Lapangan ini sedang tidak aktif"),
+    actionsSrc.includes("courtInactive"),
     'should return inactive message when court !isActive',
   );
 });

@@ -37,7 +37,7 @@ export async function POST(req: Request) {
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
 
-    // FIX-M4 / SEC-4: Hanya proses jika pembayaran benar-benar berhasil
+    // Only fulfill when the payment actually went through.
     if (session.payment_status !== "paid") {
       console.warn(`Webhook FIX-M4: unpaid session ${session.id} — no state change`);
       return NextResponse.json({ received: true });
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
     }
 
     try {
-      // FIX-M4 / AC-PAY-3: Idempotent — hanya update jika masih PENDING
+      // Idempotent — only update if the reservation is still PENDING.
       const existingReservation = await prisma.reservation.findUnique({
         where: { id: reservationId },
         select: { status: true },

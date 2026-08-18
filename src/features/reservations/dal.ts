@@ -57,7 +57,7 @@ async function resolvePaymentProofUrl(value: string | null | undefined): Promise
 import { getOrSetCache } from "@/lib/redis";
 
 /**
- * Data Access Layer: Get customer reservations with strict IDOR protection and Redis caching
+ * Customer reservations with IDOR protection and Redis caching.
  */
 export const getCustomerReservationsDAL = cache(async (): Promise<ReservationDTO[]> => {
   const user = await verifyUserSession();
@@ -79,7 +79,7 @@ export const getCustomerReservationsDAL = cache(async (): Promise<ReservationDTO
       },
     });
 
-    // DTO Sanitization (STYLE-4: serialize DateTime to ISO string at DAL boundary)
+    // Serialize DateTime to ISO string at the DAL boundary.
     return Promise.all(
       reservations.map(async (res) => ({
         id: res.id,
@@ -99,7 +99,7 @@ export const getCustomerReservationsDAL = cache(async (): Promise<ReservationDTO
 });
 
 /**
- * Data Access Layer: Get single reservation details for E-Ticket with ownership verification
+ * Single reservation details for the E-Ticket, with ownership verification.
  */
 export const getReservationDetailsDAL = cache(async (reservationId: string): Promise<ReservationDetailDTO | null> => {
   const user = await verifyUserSession();
@@ -123,7 +123,7 @@ export const getReservationDetailsDAL = cache(async (reservationId: string): Pro
 
   if (!res) return null;
 
-  // Strict IDOR & RBAC Protection: Ensure only owner or Admin can access
+  // Only the owner or an admin may view this ticket.
   if (res.userId !== user.id && user.role !== "ADMIN") {
     throw new Error("Forbidden: Anda tidak memiliki hak akses untuk tiket ini.");
   }

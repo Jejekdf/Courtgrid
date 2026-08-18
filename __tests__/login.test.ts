@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 /**
- * Login tests (RFC-006, F3/F4, AC-LOGIN-1/2, AC-AUTH-1, SEC-1, SEC-8).
+ * Login tests (AC-LOGIN-1/2, AC-AUTH-1).
  *
  * Split into:
  * - Pure behavioral tests against real loginSchema and authConfig
@@ -165,8 +165,8 @@ test("success redirects by role: ADMIN → /admin, customer → /dashboard (AC-L
 
 test("invalid credentials → id-ID error (AC-LOGIN-2)", () => {
   assert.ok(
-    actionsSrc.includes("Email atau password yang Anda masukkan salah."),
-    'should return id-ID "Email atau password yang Anda masukkan salah." on failure',
+    actionsSrc.includes('t("invalidCredentials")'),
+    'should return the invalidCredentials i18n key on failure',
   );
 });
 
@@ -200,7 +200,7 @@ test("no client-supplied userId — auth state not controllable by input", () =>
   );
 });
 
-// --- auth.ts Credentials authorize (SEC-1, AC-AUTH-2) ---
+// --- auth.ts Credentials authorize (AC-AUTH-2) ---
 
 test("authorize guards with loginSchema.safeParse(credentials)", () => {
   assert.ok(

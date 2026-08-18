@@ -10,9 +10,7 @@ import { revalidatePath } from "next/cache";
 
 
 /**
- * Returns all active courts sorted by name.
- *
- * @returns Active court records or an empty array on failure.
+ * All active courts, sorted by name. Returns an empty array on failure.
  */
 export async function getCourts(): Promise<ActiveCourtDTO[]> {
   try {
@@ -24,15 +22,10 @@ export async function getCourts(): Promise<ActiveCourtDTO[]> {
 }
 
 /**
- * Returns booked time slots for a court on a specific date.
+ * Booked time slots for a court on a given date.
  *
- * Delegates ghost-booking cleanup to `autoCancelGhostBookings()` (PAY-3, FIX-H4):
- * cancels stale PENDING reservations older than `Setting.autoCancelTimeout`
- * (default 15 min) that have no attached Stripe session.
- *
- * @param courtId - Court identifier.
- * @param dateStr - ISO date string for the requested day.
- * @returns Array of time slots with status metadata.
+ * Runs the ghost-booking cleanup first so stale, unpaid PENDING reservations
+ * (older than `Setting.autoCancelTimeout`, no Stripe session) release their slots.
  */
 type AvailabilitySlot = { startTime: string; endTime: string; status: string };
 
@@ -40,7 +33,7 @@ export async function getCourtAvailability(courtId: string, dateStr: string): Pr
   try {
     const date = new Date(dateStr);
 
-    // Ghost-booking cleanup (PAY-3, FIX-H4): single owner rule
+    // Ghost-booking cleanup: single owner rule.
     await autoCancelGhostBookings();
 
     const reservations = await prisma.reservation.findMany({

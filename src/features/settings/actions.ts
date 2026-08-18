@@ -8,9 +8,7 @@ import { z } from "zod";
 
 
 /**
- * Validates that the current session belongs to an admin user.
- *
- * @returns Admin check result object.
+ * Checks that the current session belongs to an admin.
  */
 async function checkAdmin() {
   const session = await auth();
@@ -22,13 +20,10 @@ async function checkAdmin() {
 }
 
 /**
- * Updates or creates the global venue settings record.
+ * Updates (or creates) the global venue settings record.
  *
- * Only accessible by admins. Revalidates the admin settings, dashboard,
- * and public home pages so the UI reflects updated settings immediately.
- *
- * @param formData - Expected fields: `venueName`, `operationalHours`, `contactPhone`, `dpPercentage`, `autoCancelTimeout`, `notifyEmail`.
- * @returns Update outcome with a user-facing message or error.
+ * Admin-only. Revalidates the settings, admin dashboard, and public home
+ * pages so the UI reflects new values immediately.
  */
 export async function updateAdminSettings(formData: FormData) {
   try {
@@ -37,7 +32,7 @@ export async function updateAdminSettings(formData: FormData) {
       return { success: false, error: adminCheck.error };
     }
 
-    // Validation via Zod (F18 AC: invalid ranges must be rejected).
+    // Validate ranges via Zod (invalid values must be rejected).
     const settingsSchema = z.object({
       venueName: z.string().min(1, "Nama venue wajib diisi.").max(100),
       operationalHours: z.string().min(1, "Jam operasional wajib diisi.").max(100),
@@ -62,8 +57,8 @@ export async function updateAdminSettings(formData: FormData) {
 
     const { venueName, operationalHours, contactPhone, dpPercentage, autoCancelTimeout, notifyEmail } = parsed.data;
 
-    // --- PROSES SIMPAN KE DATABASE ---
-    // Menggunakan upsert: update jika pengaturan sudah ada, buat baru jika belum.
+    // --- SAVE TO DATABASE ---
+    // Upsert: update if the settings row exists, create it otherwise.
     await prisma.setting.upsert({
       where: { id: 1 },
       update: {
@@ -85,7 +80,7 @@ export async function updateAdminSettings(formData: FormData) {
       },
     });
 
-    // Menghapus cache Next.js agar perubahan langsung terlihat di UI
+    // Clear the Next.js cache so the UI reflects changes immediately.
     revalidatePath("/admin/settings");
     revalidatePath("/admin");
     revalidatePath("/");
@@ -105,11 +100,7 @@ export async function updateAdminSettings(formData: FormData) {
 }
 
 /**
- * Fetches the current global venue settings.
- *
- * Only accessible by admins.
- *
- * @returns Settings payload or descriptive error.
+ * Fetches the current global venue settings. Admin-only.
  */
 export async function getSettingsAction() {
   try {

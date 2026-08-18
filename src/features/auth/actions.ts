@@ -31,14 +31,14 @@ async function clientIp(): Promise<string> {
 }
 
 /**
- * Represents the return type for login server actions.
+ * Result shape for login server actions.
  */
 export type LoginResult =
   | { success: true; redirectTo: string }
   | { success: false; error: string };
 
 /**
- * Authenticates a user using email/password credentials via NextAuth v5.
+ * Signs a user in with email/password via NextAuth v5.
  */
 export async function authenticate(
   prevState: string | undefined,
@@ -75,7 +75,7 @@ export async function authenticate(
       redirect: false,
     });
   } catch {
-    // Email atau password yang Anda masukkan salah.
+    // Wrong email or password.
     return { success: false, error: t("invalidCredentials") };
   }
 
@@ -83,7 +83,7 @@ export async function authenticate(
   const isSuccess = resolved !== "" && !resolved.includes("error=");
 
   if (!isSuccess) {
-    // Email atau password yang Anda masukkan salah.
+    // Wrong email or password.
     return { success: false, error: t("invalidCredentials") };
   }
 
@@ -97,11 +97,11 @@ export async function authenticate(
 export const login = authenticate;
 
 /**
- * Registers a new customer account.
+ * Creates a new customer account.
  */
 export async function registerUser(formData: FormData) {
   const t = await getTranslations("validation");
-  const rawData = {
+  const registerInput = {
     nama: formData.get("nama") as string,
     email: formData.get("email") as string,
     no_hp: formData.get("no_hp") as string,
@@ -109,7 +109,7 @@ export async function registerUser(formData: FormData) {
     confirmPassword: formData.get("confirmPassword") as string,
   };
 
-  const validated = createRegisterSchema(t).safeParse(rawData);
+  const validated = createRegisterSchema(t).safeParse(registerInput);
 
   if (!validated.success) {
     return {
@@ -166,7 +166,7 @@ export async function updateProfile(formData: FormData) {
   const t = await getTranslations("validation");
   const session = await auth();
   if (!session || !session.user || !session.user.id) {
-    // error: "Unauthorized"
+    // Not logged in.
     return { success: false, error: t("unauthorized") };
   }
 
@@ -188,7 +188,7 @@ export async function updateProfile(formData: FormData) {
     if (email !== session.user.email) {
       const existingUser = await prisma.user.findUnique({ where: { email } });
       if (existingUser && existingUser.id !== session.user.id) {
-        // Email sudah digunakan oleh akun lain.
+        // Email is already used by another account.
         return { success: false, error: t("emailInUse") };
       }
     }
@@ -199,7 +199,7 @@ export async function updateProfile(formData: FormData) {
     revalidatePath("/");
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/settings");
-    // Profil akun berhasil diperbarui.
+    // Profile updated successfully.
     return { success: true, message: t("profileUpdateSuccess") };
   } catch (error) {
     console.error("Update profile error:", error);
@@ -263,17 +263,17 @@ export async function uploadAvatarAction(formData: FormData) {
 
   const file = formData.get("file") as File | null;
   if (!file || file.size === 0) {
-    // File gambar wajib diisi.
+    // Avatar image is required.
     return { success: false, error: t("imageRequired") };
   }
 
   if (!file.type.startsWith("image/")) {
-    // File harus berupa gambar (JPG/PNG/WebP).
+    // Must be an image (JPG/PNG/WebP).
     return { success: false, error: t("imageInvalidType") };
   }
 
   if (file.size > 2 * 1024 * 1024) {
-    // Ukuran file maksimal 2MB.
+    // Cap avatar size at 2MB.
     return { success: false, error: t("imageTooLarge") };
   }
 
