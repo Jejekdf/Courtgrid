@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -40,7 +40,7 @@ export default function RegisterForm() {
     defaultValues: { nama: "", email: "", no_hp: "", password: "", confirmPassword: "" },
   });
 
-  const watchPassword = form.watch("password", "");
+  const watchPassword = useWatch({ control: form.control, name: "password", defaultValue: "" });
 
   // Real-time password criteria verification
   const passwordCriteria = [

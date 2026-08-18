@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -40,7 +40,7 @@ export default function LoginForm() {
     defaultValues: { email: "", password: "" },
   });
 
-  const password = form.watch("password", "");
+  const password = useWatch({ control: form.control, name: "password", defaultValue: "" });
 
   useEffect(() => {
     const errorParam = searchParams.get("error");
@@ -71,7 +71,7 @@ export default function LoginForm() {
 
       if (result && typeof result === "object" && result.success) {
         toast.success(t("toastSuccess"));
-        window.location.href = result.redirectTo;
+        window.location.assign(result.redirectTo);
         return;
       }
 

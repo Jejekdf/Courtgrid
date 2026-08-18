@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,7 @@ export default function PasswordForm() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors, isSubmitting, isValid },
   } = useForm<UpdatePasswordInput>({
     resolver: zodResolver(createUpdatePasswordSchema(tVal)),
@@ -32,8 +32,8 @@ export default function PasswordForm() {
     },
   });
 
-  const newPassword = watch("newPassword", "");
-  const confirmPassword = watch("confirmPassword", "");
+  const newPassword = useWatch({ control, name: "newPassword", defaultValue: "" });
+  const confirmPassword = useWatch({ control, name: "confirmPassword", defaultValue: "" });
 
   const requirements = [
     { label: "Minimal 8 karakter", met: newPassword.length >= 8 },
