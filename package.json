@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "vercel-build": "prisma generate && next build",
     "lint": "eslint",
     "db:test": "tsx scripts/test-db.ts",
     "db:studio": "prisma studio",

@@ -31,6 +31,7 @@ create index if not exists slot_change_created_at_idx
 create or replace function public.notify_slot_change()
 returns trigger
 language plpgsql
+set search_path = ''
 as $$
 declare
   v_court text;
