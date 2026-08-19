@@ -48,7 +48,7 @@ export default function AdminTopbar({
           <button
             onClick={onToggleSidebar}
             className="hidden md:flex p-2 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors"
-            title={isSidebarOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+            aria-label={isSidebarOpen ? "Tutup Sidebar" : "Buka Sidebar"}
           >
             {isSidebarOpen ? (
               <PanelLeftClose className="w-4 h-4" />

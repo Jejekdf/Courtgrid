@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { CheckCircle2, XCircle } from "lucide-react";
 
 export interface RequirementItem {

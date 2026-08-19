@@ -1,0 +1,10 @@
+.codegraph
+.next
+node_modules
+*.log
+.env
+.env.local
+.vercel
+tests
+__tests__
+coverage

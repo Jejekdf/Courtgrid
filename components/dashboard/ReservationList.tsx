@@ -7,6 +7,16 @@ import { toast } from "sonner";
 import { useCopyToClipboard } from "react-use";
 import { cancelReservationAction } from "@/features/reservations/actions";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   ReservationFilters,
   type ReservationFilterType,
 } from "./reservations/ReservationFilters";
@@ -31,6 +41,8 @@ export default function ReservationList({
 }) {
   const [filter, setFilter] = useState<ReservationFilterType>("ALL");
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+  const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
   const [, copyToClipboard] = useCopyToClipboard();
 
   const cancelMutation = useMutation({
@@ -61,13 +73,8 @@ export default function ReservationList({
   });
 
   const handleCancelBooking = (resId: string) => {
-    if (
-      confirm(
-        "Apakah Anda yakin ingin membatalkan pesanan pending ini? Slot lapangan akan dilepas kembali."
-      )
-    ) {
-      cancelMutation.mutate(resId);
-    }
+    setPendingCancelId(resId);
+    setIsCancelDialogOpen(true);
   };
 
   if (reservations.length === 0) {
@@ -138,6 +145,29 @@ export default function ReservationList({
           </table>
         </div>
       </div>
+
+      <AlertDialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Batalkan Pesanan</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin membatalkan pesanan pending ini? Slot lapangan akan dilepas kembali.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Kembali</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={() => {
+                if (pendingCancelId) cancelMutation.mutate(pendingCancelId);
+                setIsCancelDialogOpen(false);
+              }}
+            >
+              Ya, Batalkan
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

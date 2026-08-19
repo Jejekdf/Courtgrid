@@ -9,6 +9,16 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { adminKeys } from "@/lib/query-keys";
 
 type Customer = {
@@ -26,6 +36,8 @@ export default function AdminCustomersPage() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string | null } | null>(null);
 
   // Debounce search query changes by 300ms (react-use, same as CourtCatalog).
   useDebounce(
@@ -55,9 +67,8 @@ export default function AdminCustomersPage() {
   });
 
   const handleDelete = (userId: string, name: string | null) => {
-    if (confirm(`Apakah Anda yakin ingin menghapus pelanggan ${name || "ini"}? Seluruh riwayat reservasi pelanggan ini juga akan terhapus.`)) {
-      deleteMutation.mutate(userId);
-    }
+    setPendingDelete({ id: userId, name });
+    setIsDeleteDialogOpen(true);
   };
 
   return (
@@ -151,7 +162,7 @@ export default function AdminCustomersPage() {
                         <button
                           onClick={() => handleDelete(user.id, user.name)}
                           className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-md transition-colors"
-                          title="Hapus Akun Pelanggan"
+                          aria-label="Hapus Akun Pelanggan"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -190,6 +201,29 @@ export default function AdminCustomersPage() {
           </div>
         )}
       </div>
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hapus Pelanggan</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin menghapus pelanggan {pendingDelete?.name || "ini"}? Seluruh riwayat reservasi pelanggan ini juga akan terhapus. Tindakan ini tidak dapat dibatalkan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={() => {
+                if (pendingDelete) deleteMutation.mutate(pendingDelete.id);
+                setIsDeleteDialogOpen(false);
+              }}
+            >
+              Hapus
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

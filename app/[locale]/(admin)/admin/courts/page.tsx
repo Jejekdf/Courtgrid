@@ -18,6 +18,16 @@ import {
   DialogDescription,
   DialogClose,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 
 type Court = {
@@ -37,6 +47,7 @@ export default function AdminCourtsPage() {
   const [tab, setTab] = useState<TabFilter>("all");
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState<string | null>(null);
 
@@ -167,9 +178,8 @@ export default function AdminCourtsPage() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm("Apakah Anda yakin ingin menghapus lapangan ini?")) {
-      deleteMutation.mutate(id);
-    }
+    setCurrentId(id);
+    setIsDeleteDialogOpen(true);
   };
 
   const handleToggleActive = (court: Court) => {
@@ -359,14 +369,14 @@ export default function AdminCourtsPage() {
                       <button
                         onClick={() => handleOpenEdit(court)}
                         className="p-1.5 text-zinc-600 hover:text-zinc-950 transition-colors border border-zinc-200 rounded-md"
-                        title="Edit Lapangan"
+                        aria-label="Edit Lapangan"
                       >
                         <Pencil className="h-3.5 w-3.5" />
                       </button>
                       <button
                         onClick={() => handleDelete(court.id)}
                         className="p-1.5 text-red-600 hover:bg-red-50 transition-colors border border-red-200 rounded-md"
-                        title="Hapus Lapangan"
+                        aria-label="Hapus Lapangan"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
@@ -377,6 +387,29 @@ export default function AdminCourtsPage() {
             ))
         )}
       </div>
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hapus Lapangan</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin menghapus lapangan ini? Tindakan ini tidak dapat dibatalkan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={() => {
+                if (currentId) deleteMutation.mutate(currentId);
+                setIsDeleteDialogOpen(false);
+              }}
+            >
+              Hapus
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -3,12 +3,13 @@
 -- Adds a PII-free `slot_change` table fed by a trigger on `reservations`, and
 -- exposes it through Supabase Realtime (`supabase_realtime` publication).
 --
--- NOTE — deliberately NO RLS on this table: Supabase Realtime does NOT deliver
--- postgres_changes events for RLS-enabled tables, even with an open policy for
--- the subscriber role (verified empirically; RLS ON = events suppressed, RLS
--- OFF = events flow). The table carries only court_id + date_key (already
--- public via availability), is not exposed through PostgREST (no grants), and
--- is read exclusively by the Realtime service.
+-- RLS is ENABLED with a SELECT-only policy for anon/authenticated. Supabase
+-- Realtime does deliver postgres_changes for RLS-enabled tables as long as the
+-- subscriber role has a SELECT policy (verified against modern Supabase).
+-- Enabling RLS blocks anon/authenticated INSERT/UPDATE/DELETE on this table —
+-- only the trigger (owned by the Prisma role, which bypasses RLS) can write.
+-- The table carries only court_id + date_key (already public via availability)
+-- and is not exposed through PostgREST (no grants).
 --
 -- Single owner of the "something changed" signal = the DB trigger. Covers all
 -- reservation writes (create, cancel, webhook, ghost-cancel, admin) with zero

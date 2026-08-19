@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
 
   return {
-    title: `E-Ticket #${reservation.id.slice(0, 8)} — ${reservation.court?.name ?? ""} | CourtGrid`,
+    title: `E-Ticket #${reservation.id.slice(0, 8)} – ${reservation.court?.name ?? ""} | CourtGrid`,
     description: `Detail e-ticket reservasi lapangan di CourtGrid.`,
   };
 }
