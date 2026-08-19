@@ -102,6 +102,117 @@ export default async function TermsPage({
         </div>
       ),
     },
+    {
+      id: "definisi",
+      title: t("s4Title"),
+      content: (
+        <div className="space-y-4">
+          <p className="text-base text-zinc-600 leading-relaxed">
+            {t("s4Desc")}
+          </p>
+          <ul className="divide-y divide-zinc-200 border-y border-zinc-200">
+            <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{t("s4Item1")}</span>
+            </li>
+            <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{t("s4Item2")}</span>
+            </li>
+            <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{t("s4Item3")}</span>
+            </li>
+            <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{t("s4Item4")}</span>
+            </li>
+          </ul>
+        </div>
+      ),
+    },
+    {
+      id: "akun-pengguna",
+      title: t("s5Title"),
+      content: (
+        <div className="space-y-4">
+          <p className="text-base text-zinc-600 leading-relaxed">
+            {t("s5Desc")}
+          </p>
+          <ul className="divide-y divide-zinc-200 border-y border-zinc-200">
+            <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{t("s5Item1")}</span>
+            </li>
+            <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{t("s5Item2")}</span>
+            </li>
+            <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{t("s5Item3")}</span>
+            </li>
+          </ul>
+        </div>
+      ),
+    },
+    {
+      id: "batasan-tanggung-jawab",
+      title: t("s6Title"),
+      content: (
+        <div className="space-y-4">
+          <p className="text-base text-zinc-600 leading-relaxed">
+            {t("s6Desc")}
+          </p>
+          <ul className="divide-y divide-zinc-200 border-y border-zinc-200">
+            <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{t("s6Item1")}</span>
+            </li>
+            <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{t("s6Item2")}</span>
+            </li>
+            <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{t("s6Item3")}</span>
+            </li>
+          </ul>
+        </div>
+      ),
+    },
+    {
+      id: "perubahan-ketentuan",
+      title: t("s7Title"),
+      content: (
+        <div className="space-y-4">
+          <p className="text-base text-zinc-600 leading-relaxed">
+            {t("s7Desc")}
+          </p>
+          <ul className="divide-y divide-zinc-200 border-y border-zinc-200">
+            <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{t("s7Item1")}</span>
+            </li>
+            <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{t("s7Item2")}</span>
+            </li>
+          </ul>
+        </div>
+      ),
+    },
+    {
+      id: "kontak",
+      title: t("s8Title"),
+      content: (
+        <div className="space-y-4">
+          <p className="text-base text-zinc-600 leading-relaxed">
+            {t("s8Desc")}
+          </p>
+        </div>
+      ),
+    },
   ];
 
   return (

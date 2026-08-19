@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useDebounce, useClickAway } from "react-use";
+import { useDebounce } from "react-use";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { courtKeys } from "@/lib/query-keys";
 import { getCourts } from "@/features/courts/actions";
+import { Popover, PopoverContent } from "@/components/ui/popover";
 
 export function UserQuickSearch() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,8 +36,6 @@ export function UserQuickSearch() {
       )
     : [];
 
-  useClickAway(searchRef, () => setIsSearchOpen(false), ["mousedown"]);
-
   return (
     <div ref={searchRef} className="relative w-full max-w-xs sm:max-w-sm">
       <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -52,10 +51,15 @@ export function UserQuickSearch() {
         className="w-full pl-8 pr-3 py-1.5 text-sm bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-950 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 transition-colors"
       />
 
-      {/* Search Results Dropdown */}
-      {isSearchOpen && debouncedQuery.trim().length > 0 && (
-        <div className="absolute right-0 left-0 top-full mt-1.5 bg-white border border-zinc-200 rounded-xl shadow-xl p-3 space-y-2 z-50 text-sm max-h-80 overflow-y-auto">
-          {searchResults.length > 0 ? (
+      <Popover open={isSearchOpen} onOpenChange={setIsSearchOpen}>
+        <PopoverContent
+          anchor={searchRef}
+          side="bottom"
+          align="start"
+          sideOffset={6}
+          className="w-[var(--anchor-width)] p-3 space-y-2 max-h-80 overflow-y-auto"
+        >
+          {debouncedQuery.trim().length > 0 && searchResults.length > 0 ? (
             searchResults.map((c) => (
               <Link
                 key={c.id}
@@ -77,8 +81,8 @@ export function UserQuickSearch() {
               Tidak ada lapangan yang cocok.
             </div>
           )}
-        </div>
-      )}
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }

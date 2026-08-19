@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import type { AvailabilitySlot, SlotStatus } from "@/lib/api/courts";
 
 function slotLabel(status: SlotStatus): string {

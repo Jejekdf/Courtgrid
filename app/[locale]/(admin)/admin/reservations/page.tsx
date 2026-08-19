@@ -7,6 +7,16 @@ import { format } from "date-fns";
 import { Printer, Filter, Trash2 } from "lucide-react";
 import AdminHeader from "@/components/admin/AdminHeader";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { adminKeys } from "@/lib/query-keys";
 import { toast } from "sonner";
 
@@ -26,6 +36,8 @@ export default function AdminReservationsPage() {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState<"daily" | "monthly" | "all">("all");
   const [page, setPage] = useState(1);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   // TanStack Query Integration for Admin Reservations
   const { data, isLoading, isFetching } = useQuery({
@@ -52,9 +64,8 @@ export default function AdminReservationsPage() {
   });
 
   const handleDelete = (id: string) => {
-    if (confirm("Apakah Anda yakin ingin menghapus reservasi/status pending ini dari database?")) {
-      deleteMutation.mutate(id);
-    }
+    setPendingDeleteId(id);
+    setIsDeleteDialogOpen(true);
   };
 
   const handlePrint = () => {
@@ -101,7 +112,7 @@ export default function AdminReservationsPage() {
       <div className="bg-white rounded-xl border border-zinc-200 shadow-xs overflow-hidden print:shadow-none print:border-none print:p-0">
         <div className="hidden print:block mb-8 text-center">
           <h2 className="text-2xl font-bold text-zinc-950 uppercase">CourtGrid Official Report</h2>
-          <p className="text-sm text-zinc-500">Laporan Reservasi Lapangan — Periode: {filter.toUpperCase()}</p>
+          <p className="text-sm text-zinc-500">Laporan Reservasi Lapangan – Periode: {filter.toUpperCase()}</p>
         </div>
 
         <div className="overflow-x-auto">
@@ -211,6 +222,29 @@ export default function AdminReservationsPage() {
           .print\\:hidden { display: none !important; }
         }
       `}} />
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hapus Reservasi</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin menghapus reservasi/status pending ini dari database? Tindakan ini tidak dapat dibatalkan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={() => {
+                if (pendingDeleteId) deleteMutation.mutate(pendingDeleteId);
+                setIsDeleteDialogOpen(false);
+              }}
+            >
+              Hapus
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { Clock, MapPin, CalendarPlus, ChevronRight, CalendarCheck, ShieldCheck, Activity } from "lucide-react";
 import ReservationList, { type ReservationRow } from "@/components/dashboard/ReservationList";

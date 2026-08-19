@@ -23,7 +23,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <AdminSidebar isOpen={isMobileOpen} onClose={() => setIsMobileOpen(false)} />
       )}
       
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 h-dvh overflow-hidden">
         <AdminTopbar
           onMenuClick={() => setIsMobileOpen(true)}
           isSidebarOpen={isDesktopOpen}

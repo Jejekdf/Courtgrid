@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { format, addDays } from "date-fns";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Loader2 } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { createReservationAction } from "@/features/reservations/actions";

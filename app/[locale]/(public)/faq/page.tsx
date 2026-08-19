@@ -41,6 +41,31 @@ export default async function FAQPage({
         { q: t("q5"), a: t("a5") },
       ],
     },
+    {
+      category: t("categoryAccount"),
+      items: [
+        { q: t("q6"), a: t("a6") },
+        { q: t("q7"), a: t("a7") },
+        { q: t("q8"), a: t("a8") },
+      ],
+    },
+    {
+      category: t("categoryTicket"),
+      items: [
+        { q: t("q9"), a: t("a9") },
+        { q: t("q10"), a: t("a10") },
+        { q: t("q11"), a: t("a11") },
+      ],
+    },
+    {
+      category: t("categoryPolicy"),
+      items: [
+        { q: t("q12"), a: t("a12") },
+        { q: t("q13"), a: t("a13") },
+        { q: t("q14"), a: t("a14") },
+        { q: t("q15"), a: t("a15") },
+      ],
+    },
   ];
 
   return (

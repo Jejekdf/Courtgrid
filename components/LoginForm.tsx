@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { toast } from "sonner";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { login } from "@/features/auth/actions";

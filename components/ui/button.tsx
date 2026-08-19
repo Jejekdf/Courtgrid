@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -55,7 +56,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         type={type}
         disabled={disabled || isLoading}
-        className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+        className={cn(baseStyles, variants[variant], sizes[size], className)}
         {...props}
       >
         {isLoading ? (

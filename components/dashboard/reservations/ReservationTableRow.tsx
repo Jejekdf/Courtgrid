@@ -43,7 +43,7 @@ export function ReservationTableRow({
             type="button"
             onClick={() => onCopyId(res.id)}
             className="p-1 text-zinc-400 hover:text-zinc-950 rounded transition-colors cursor-pointer"
-            title="Salin ID Booking"
+            aria-label="Salin ID Booking"
           >
             {copiedId === res.id ? (
               <Check className="w-3 h-3 text-emerald-600" />

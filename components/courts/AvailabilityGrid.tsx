@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarDays, Clock, Loader2, AlertTriangle } from "lucide-react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import {
   fetchAvailability,
   type AvailabilitySlot,
