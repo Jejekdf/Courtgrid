@@ -71,8 +71,7 @@ components/
 src/features/            # Feature slices: actions.ts, dal.ts, schemas.ts
 ├── auth/                ├── reservations/
 ├── courts/              ├── admin/
-├── contact/             ├── notifications/
-└── settings/
+└── settings/            └── notifications/
 lib/                     # Singletons: prisma, stripe, resend, ratelimit, timezone
 prisma/                  # schema.prisma, migrations, seed.ts
 tests/                   # Unit & integration tests
