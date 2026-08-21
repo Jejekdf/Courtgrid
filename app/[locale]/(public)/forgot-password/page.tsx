@@ -44,7 +44,7 @@ export default function ForgotPasswordPage() {
 
       {/* Right Panel: Visual Showcase (Hidden on Mobile) */}
       <div className="hidden lg:flex w-1/2 bg-zinc-950 relative overflow-hidden flex-col justify-between p-12 lg:p-24 border-l border-zinc-800">
-        <div className="absolute inset-0 bg-[url('/futsal1.png')] bg-cover bg-center opacity-30 mix-blend-luminosity transition-transform duration-1000 hover-fine:scale-105" />
+        <div className="absolute inset-0 bg-[url('/futsal1.webp')] bg-cover bg-center opacity-30 mix-blend-luminosity transition-transform duration-1000 hover-fine:scale-105" />
         <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/60 to-transparent" />
         <div className="absolute inset-0 bg-linear-to-r from-zinc-950 via-transparent to-transparent opacity-80" />
         

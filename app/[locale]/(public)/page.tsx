@@ -22,7 +22,7 @@ export default async function Home({
           <div className="relative z-10 max-w-7xl mx-auto px-6 space-y-12">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
               <div className="space-y-2">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-400">{t("facilityStandard")}</span>
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">{t("facilityStandard")}</span>
                 <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-950">
                   {t("facilityTitle")}
                 </h2>
@@ -46,7 +46,7 @@ export default async function Home({
                   <span className="text-[11px] font-mono uppercase font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
                     {t("futsalBadge")}
                   </span>
-                  <span className="text-sm text-zinc-400 font-mono">{t("futsalStandard")}</span>
+                  <span className="text-sm text-zinc-500 font-mono">{t("futsalStandard")}</span>
                 </div>
                 <div>
                   <h3 className="text-2xl font-extrabold text-zinc-950 mb-2">{t("futsalTitle")}</h3>
@@ -66,7 +66,7 @@ export default async function Home({
                   <span className="text-[11px] font-mono uppercase font-bold text-sky-800 bg-sky-50 px-3 py-1 rounded-full border border-sky-200">
                     {t("badmintonBadge")}
                   </span>
-                  <span className="text-sm text-zinc-400 font-mono">{t("badmintonStandard")}</span>
+                  <span className="text-sm text-zinc-500 font-mono">{t("badmintonStandard")}</span>
                 </div>
                 <div>
                   <h3 className="text-2xl font-extrabold text-zinc-950 mb-2">{t("badmintonTitle")}</h3>
@@ -88,7 +88,7 @@ export default async function Home({
           <div className="max-w-7xl mx-auto px-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-400">{t("commitmentBadge")}</span>
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">{t("commitmentBadge")}</span>
                 <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-950 leading-tight">
                   {t("commitmentTitle")}
                 </h2>

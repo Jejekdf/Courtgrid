@@ -264,7 +264,7 @@ export default function AdminCourtsPage() {
                   label="Atau Link URL Gambar (Opsional)"
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="https://example.com/court.jpg atau /futsal1.png"
+                  placeholder="https://example.com/court.jpg atau /futsal1.webp"
                 />
 
                 <div className="flex items-center space-x-2 pt-1 pb-1">
