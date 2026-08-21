@@ -10,6 +10,16 @@ CourtGrid is a premium sports venue reservation platform for CourtGrid Sport Cen
 - E-ticket with QR code for check-in
 - Indonesian (id) and English (en) locales
 
+## Links
+- [Home](https://courtgrid-one.vercel.app/)
+- [Courts](https://courtgrid-one.vercel.app/courts)
+- [FAQ](https://courtgrid-one.vercel.app/faq)
+- [About](https://courtgrid-one.vercel.app/about)
+- [Terms](https://courtgrid-one.vercel.app/terms)
+- [Privacy](https://courtgrid-one.vercel.app/privacy)
+- [Login](https://courtgrid-one.vercel.app/login)
+- [Register](https://courtgrid-one.vercel.app/register)
+
 ## Contact
 - Address: Jl. Sisingamangaraja No. 12, Kebayoran Baru, Jakarta Selatan
 - Phone: +62 877 4628 8262
