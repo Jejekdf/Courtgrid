@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/sonner";
 const heading = Be_Vietnam_Pro({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["500", "600", "700", "800"],
 });
 
 const body = Albert_Sans({
