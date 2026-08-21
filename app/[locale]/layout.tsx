@@ -15,6 +15,7 @@ const heading = Be_Vietnam_Pro({
 const body = Albert_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const mono = IBM_Plex_Mono({

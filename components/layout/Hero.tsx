@@ -11,10 +11,10 @@ export default function Hero() {
   const t = useTranslations("hero");
 
   const images = [
-    "/futsal1.png",
-    "/badminton1.png",
-    "/futsal2.png",
-    "/badminton2.png",
+    { src: "/futsal1.webp", alt: "Futsal Court", priority: true },
+    { src: "/badminton1.webp", alt: "Badminton Court" },
+    { src: "/futsal2.webp", alt: "Futsal Arena" },
+    { src: "/badminton2.webp", alt: "Badminton Pro Court" },
   ];
 
   return (
@@ -110,15 +110,16 @@ export default function Hero() {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
           className="mt-16 w-full max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
         >
-          {images.map((src, idx) => (
+          {images.map((img, idx) => (
             <div 
               key={idx} 
               className={`relative rounded-2xl overflow-hidden shadow-xs border border-zinc-200/80 aspect-video md:aspect-4/5 bg-zinc-100 ${idx % 2 !== 0 ? 'md:translate-y-6' : ''}`}
             >
               <Image 
-                src={src} 
-                alt={t("courtShowcaseAlt")} 
-                fill 
+                src={img.src} 
+                alt={img.alt}
+                fill
+                priority={img.priority}
                 className="object-cover transition-transform duration-500 hover-fine:scale-105" 
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
               />

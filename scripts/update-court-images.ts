@@ -3,11 +3,11 @@ import { prisma } from '../lib/prisma';
 
 async function updateCourtImages() {
   const updates = [
-    { name: "Futsal Court A", imageUrl: "/futsal_arena_modern.jpg" },
-    { name: "Futsal Court B", imageUrl: "/futsal2.png" },
-    { name: "Badminton Court 1", imageUrl: "/badminton_court_pro.jpg" },
-    { name: "Badminton Court 2", imageUrl: "/badminton2.png" },
-    { name: "Badminton Court 3", imageUrl: "/badminton3.png" },
+    { name: "Futsal Court A", imageUrl: "/futsal_arena_modern.webp" },
+    { name: "Futsal Court B", imageUrl: "/futsal2.webp" },
+    { name: "Badminton Court 1", imageUrl: "/badminton_court_pro.webp" },
+    { name: "Badminton Court 2", imageUrl: "/badminton2.webp" },
+    { name: "Badminton Court 3", imageUrl: "/badminton3.webp" },
   ];
 
   for (const item of updates) {

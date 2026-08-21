@@ -50,7 +50,7 @@ export default function RegisterPage() {
       {/* Left Panel: Visual Showcase (Hidden on Mobile) */}
       <div className="hidden lg:flex w-1/2 bg-zinc-950 relative overflow-hidden flex-col justify-between p-12 lg:p-20 border-r border-zinc-900">
         {/* Background Image with Overlay */}
-        <div className="absolute inset-0 bg-[url('/badminton1.png')] bg-cover bg-center opacity-30 mix-blend-luminosity transition-transform duration-700 hover-fine:scale-105" />
+        <div className="absolute inset-0 bg-[url('/badminton1.webp')] bg-cover bg-center opacity-30 mix-blend-luminosity transition-transform duration-700 hover-fine:scale-105" />
         <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/70 to-transparent" />
         
         {/* Anti-Slop Pill */}

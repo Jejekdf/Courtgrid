@@ -1,0 +1,16 @@
+# CourtGrid
+
+CourtGrid is a premium sports venue reservation platform for CourtGrid Sport Center in South Jakarta.
+
+## Features
+- Real-time court availability and booking
+- Down payment via Stripe Checkout
+- Customer dashboard with reservation management
+- Admin panel for venue and reservation management
+- E-ticket with QR code for check-in
+- Indonesian (id) and English (en) locales
+
+## Contact
+- Address: Jl. Sisingamangaraja No. 12, Kebayoran Baru, Jakarta Selatan
+- Phone: +62 877 4628 8262
+- Email: info@courtgrid.com

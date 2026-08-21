@@ -75,7 +75,7 @@ export default async function AboutPage({
                 key={idx}
                 className="p-4 sm:p-5 bg-white rounded-2xl border border-zinc-200/80 shadow-xs space-y-1.5 hover:border-zinc-400 transition-[border-color,box-shadow]"
               >
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 block">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500 block">
                   {item.sub}
                 </span>
                 <p className={`font-heading text-2xl font-extrabold tracking-tight ${item.color}`}>{item.value}</p>
@@ -121,7 +121,7 @@ export default async function AboutPage({
         {/* Pillars Grid */}
         <section className="space-y-8">
           <div className="space-y-2">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-400 block">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500 block">
               {t("pillarsDesc")}
             </span>
             <h2 className="font-heading text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950">
