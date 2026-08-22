@@ -8,6 +8,9 @@ import {
 } from "@/components/ui/accordion";
 import { HelpCircle } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import Breadcrumb from "@/components/layout/Breadcrumb";
+
+const BASE_URL = "https://courtgrid-one.vercel.app";
 
 export async function generateMetadata({
   params,
@@ -19,6 +22,13 @@ export async function generateMetadata({
   return {
     title: t("metaTitle"),
     description: t("metaDesc"),
+    alternates: {
+      canonical: `${BASE_URL}/${locale}/faq`,
+      languages: {
+        id: `${BASE_URL}/id/faq`,
+        en: `${BASE_URL}/en/faq`,
+      },
+    },
   };
 }
 
@@ -29,6 +39,7 @@ export default async function FAQPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale: locale as "id" | "en", namespace: "faq" });
+  const th = await getTranslations({ locale: locale as "id" | "en", namespace: "header" });
 
   const faqCategories = [
     {
@@ -68,9 +79,35 @@ export default async function FAQPage({
     },
   ];
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqCategories.flatMap((cat) =>
+      cat.items.map((item) => ({
+        "@type": "Question",
+        name: item.q,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: item.a,
+        },
+      }))
+    ),
+  };
+
+  const breadcrumbItems = [
+    { label: th("navBeranda"), href: "/" },
+    { label: t("metaTitle") },
+  ];
+
   return (
     <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 bg-[var(--background)] text-zinc-950">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <PageWrapper className="max-w-4xl mx-auto space-y-10">
+        <Breadcrumb items={breadcrumbItems} />
+
         {/* Page Header */}
         <header className="border-b border-zinc-200/80 pb-6 space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-600 shadow-xs">
@@ -113,3 +150,4 @@ export default async function FAQPage({
     </div>
   );
 }
+

@@ -2,6 +2,9 @@ import { Metadata } from "next";
 import PageWrapper from "@/components/ui/PageWrapper";
 import { Shield, CheckCircle2, Clock } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import Breadcrumb from "@/components/layout/Breadcrumb";
+
+const BASE_URL = "https://courtgrid-one.vercel.app";
 
 export async function generateMetadata({
   params,
@@ -13,8 +16,16 @@ export async function generateMetadata({
   return {
     title: t("metaTitle"),
     description: t("metaDesc"),
+    alternates: {
+      canonical: `${BASE_URL}/${locale}/privacy`,
+      languages: {
+        id: `${BASE_URL}/id/privacy`,
+        en: `${BASE_URL}/en/privacy`,
+      },
+    },
   };
 }
+
 
 export default async function PrivacyPage({
   params,
@@ -23,8 +34,15 @@ export default async function PrivacyPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale: locale as "id" | "en", namespace: "privacy" });
+  const th = await getTranslations({ locale: locale as "id" | "en", namespace: "header" });
+
+  const breadcrumbItems = [
+    { label: th("navBeranda"), href: "/" },
+    { label: t("metaTitle") },
+  ];
 
   const summaryItems = [
+
     t("summaryItem1"),
     t("summaryItem2"),
     t("summaryItem3"),
@@ -202,8 +220,10 @@ export default async function PrivacyPage({
   return (
     <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 bg-[var(--background)] text-zinc-950">
       <PageWrapper className="max-w-4xl mx-auto space-y-10">
+        <Breadcrumb items={breadcrumbItems} />
         {/* Document Header */}
         <header className="border-b border-zinc-200/80 pb-8 space-y-4">
+
           <div className="flex flex-wrap items-center gap-2">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-600">
               <Shield className="w-3.5 h-3.5 text-zinc-950" />

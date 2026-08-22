@@ -1,7 +1,91 @@
+import type { Metadata } from "next";
 import Hero from "@/components/layout/Hero";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight, CheckCircle2, ShieldCheck, Zap, Award } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+
+const BASE_URL = "https://courtgrid-one.vercel.app";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale: locale as "id" | "en", namespace: "landing" });
+  return {
+    title: t("metaTitle"),
+    description: t("metaDesc"),
+    alternates: {
+      canonical: `${BASE_URL}/${locale}`,
+      languages: {
+        id: `${BASE_URL}/id`,
+        en: `${BASE_URL}/en`,
+        "x-default": BASE_URL,
+      },
+    },
+  };
+}
+
+// JSON-LD structured data for the sports venue (schema.org/SportsActivityLocation).
+// Static — does not depend on locale because business details are location-specific.
+const localBusinessJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SportsActivityLocation",
+  name: "CourtGrid Sport Center",
+  image: `${BASE_URL}/og-image.png`,
+  url: BASE_URL,
+  telephone: "+6287746288262",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Jl. Sisingamangaraja No. 12",
+    addressLocality: "Kebayoran Baru",
+    addressRegion: "Jakarta Selatan",
+    addressCountry: "ID",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: -6.2447,
+    longitude: 106.7958,
+  },
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "07:00",
+      closes: "23:00",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Saturday", "Sunday"],
+      opens: "06:00",
+      closes: "23:00",
+    },
+  ],
+  priceRange: "Rp 50.000 - Rp 150.000",
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Court Catalog",
+    itemListElement: [
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Futsal Court",
+          description: "Synthetic turf futsal court — national standard",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Badminton Court",
+          description: "PVC anti-slip badminton court — BWF standard",
+        },
+      },
+    ],
+  },
+};
 
 export default async function Home({
   params,
@@ -13,9 +97,14 @@ export default async function Home({
 
   return (
     <div className="flex flex-col bg-[var(--background)] text-zinc-950 min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+      />
       <main className="flex-1 w-full">
         {/* Main Hero Component with Framer Motion */}
         <Hero />
+
 
         {/* Section 2: Lapangan & Fasilitas */}
         <section id="courts" className="relative py-24 scroll-mt-20 overflow-hidden bg-zinc-50/70 border-t border-zinc-200/80">
