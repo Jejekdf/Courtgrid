@@ -106,7 +106,7 @@ export default async function FAQPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       <PageWrapper className="max-w-4xl mx-auto space-y-10">
-        <Breadcrumb items={breadcrumbItems} />
+        <Breadcrumb items={breadcrumbItems} locale={locale} />
 
         {/* Page Header */}
         <header className="border-b border-zinc-200/80 pb-6 space-y-3">

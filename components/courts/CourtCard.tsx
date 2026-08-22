@@ -42,20 +42,23 @@ export default function CourtCard({
       <div className="p-6 space-y-4 flex-1 flex flex-col">
         <div className="space-y-1">
           <h3 className="text-base font-extrabold text-zinc-950">{court.name}</h3>
-          <span className="inline-flex items-center gap-1.5 text-sm text-zinc-400 font-mono">
-            <MapPin className="w-3.5 h-3.5 text-zinc-400" />
+          <span className="inline-flex items-center gap-1.5 text-sm text-zinc-600 font-mono">
+            <MapPin className="w-3.5 h-3.5 text-zinc-500" aria-hidden="true" />
             {court.venue?.name || "GOR CourtGrid Arena"}
           </span>
         </div>
 
         <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
-          <span className="text-sm text-zinc-400 font-mono">Tarif Per Jam</span>
+          <span className="text-sm text-zinc-600 font-mono">Tarif Per Jam</span>
           <span className="font-extrabold text-zinc-950 font-mono text-sm">
             Rp {court.pricePerHour.toLocaleString("id-ID")}
           </span>
         </div>
 
         <button
+          type="button"
+          aria-expanded={showAvailability}
+          aria-controls={`court-schedule-${court.id}`}
           onClick={() => setShowAvailability((v) => !v)}
           className="flex items-center justify-center gap-2 w-full min-h-11 py-2.5 text-sm font-bold font-mono text-white bg-zinc-950 hover:bg-zinc-800 rounded-xl transition-colors shadow-xs cursor-pointer"
         >
@@ -63,6 +66,7 @@ export default function CourtCard({
           <motion.span
             animate={{ rotate: showAvailability ? 180 : 0 }}
             transition={{ duration: 0.2 }}
+            aria-hidden="true"
           >
             <ChevronDown className="h-4 w-4" />
           </motion.span>
@@ -72,6 +76,7 @@ export default function CourtCard({
       <AnimatePresence>
         {showAvailability && (
           <motion.div
+            id={`court-schedule-${court.id}`}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
