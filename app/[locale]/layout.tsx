@@ -40,11 +40,21 @@ export async function generateMetadata({
   return {
     metadataBase: new URL(BASE_URL),
     title: {
-      default: "CourtGrid - Premium Sports Reservation",
+      default: "CourtGrid - Reservasi Futsal & Badminton",
       template: "%s | CourtGrid",
     },
     description:
       "Platform booking venue olahraga terpercaya dengan sistem Anti-Palkor.",
+    icons: {
+      icon: [
+        { url: "/icon.ico" },
+        { url: "/icon.ico", sizes: "32x32" },
+        { url: "/icon.ico", sizes: "192x192" },
+      ],
+      apple: [
+        { url: "/icon.ico", sizes: "180x180" },
+      ],
+    },
     openGraph: {
       title: "CourtGrid - Premium Sports Reservation",
       description:

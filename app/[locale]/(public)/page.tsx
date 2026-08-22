@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Hero from "@/components/layout/Hero";
 import { Link } from "@/i18n/navigation";
-import { ArrowRight, CheckCircle2, ShieldCheck, Zap, Award } from "lucide-react";
+import { ArrowRight, CheckCircle2, ShieldCheck, Zap, Award, CalendarDays, Lock, CreditCard, QrCode } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 const BASE_URL = "https://courtgrid-one.vercel.app";
@@ -237,7 +237,58 @@ export default async function Home({
           </div>
         </section>
 
-        {/* Section 4: Callout Booking */}
+        {/* Section 4: Reservation Guide (How It Works) */}
+        <section className="relative py-20 bg-zinc-50/70 border-t border-zinc-200/80">
+          <div className="max-w-7xl mx-auto px-6 space-y-12">
+            <div className="text-center max-w-2xl mx-auto space-y-3">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                {t("guideBadge")}
+              </span>
+              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-950">
+                {t("guideTitle")}
+              </h2>
+              <p className="text-sm text-zinc-600 font-mono">
+                {t("guideDesc")}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="p-6 bg-[var(--background)] border border-zinc-200/80 rounded-2xl space-y-3 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-950">
+                  <CalendarDays className="w-5 h-5 text-emerald-600" aria-hidden="true" />
+                </div>
+                <h3 className="font-heading text-base font-bold text-zinc-950">{t("step1Title")}</h3>
+                <p className="text-xs text-zinc-600 font-mono leading-relaxed">{t("step1Desc")}</p>
+              </div>
+
+              <div className="p-6 bg-[var(--background)] border border-zinc-200/80 rounded-2xl space-y-3 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-950">
+                  <Lock className="w-5 h-5 text-zinc-950" aria-hidden="true" />
+                </div>
+                <h3 className="font-heading text-base font-bold text-zinc-950">{t("step2Title")}</h3>
+                <p className="text-xs text-zinc-600 font-mono leading-relaxed">{t("step2Desc")}</p>
+              </div>
+
+              <div className="p-6 bg-[var(--background)] border border-zinc-200/80 rounded-2xl space-y-3 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-950">
+                  <CreditCard className="w-5 h-5 text-emerald-600" aria-hidden="true" />
+                </div>
+                <h3 className="font-heading text-base font-bold text-zinc-950">{t("step3Title")}</h3>
+                <p className="text-xs text-zinc-600 font-mono leading-relaxed">{t("step3Desc")}</p>
+              </div>
+
+              <div className="p-6 bg-[var(--background)] border border-zinc-200/80 rounded-2xl space-y-3 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-950">
+                  <QrCode className="w-5 h-5 text-zinc-950" aria-hidden="true" />
+                </div>
+                <h3 className="font-heading text-base font-bold text-zinc-950">{t("step4Title")}</h3>
+                <p className="text-xs text-zinc-600 font-mono leading-relaxed">{t("step4Desc")}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 5: Callout Booking */}
         <section className="relative py-24 bg-[var(--background)] border-t border-zinc-200">
           <div className="max-w-7xl mx-auto px-6">
             <div className="relative overflow-hidden bg-zinc-950 rounded-3xl p-10 md:p-16 flex flex-col items-center text-center gap-8 shadow-xl">

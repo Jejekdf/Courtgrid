@@ -56,19 +56,27 @@ export default function Footer() {
               <span className="text-xs font-medium uppercase tracking-wider text-zinc-950 mb-1">
                 {t("contactTitle")}
               </span>
-              <address className="not-italic flex flex-col gap-3 text-sm text-zinc-500">
+              <address className="not-italic flex flex-col gap-3 text-sm text-zinc-600">
                 <div className="flex items-start gap-2.5">
-                  <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-zinc-400" />
+                  <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-zinc-500" aria-hidden="true" />
                   <span>{t("address")}</span>
                 </div>
-                <div className="flex items-center gap-2.5">
-                  <Phone className="w-4 h-4 shrink-0 text-zinc-400" />
+                <a
+                  href="tel:+6287746288262"
+                  className="flex items-center gap-2.5 hover:text-zinc-950 transition-colors w-max"
+                  aria-label="Telepon CourtGrid"
+                >
+                  <Phone className="w-4 h-4 shrink-0 text-zinc-500" aria-hidden="true" />
                   <span>+62 877 4628 8262</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <Mail className="w-4 h-4 shrink-0 text-zinc-400" />
+                </a>
+                <a
+                  href="mailto:info@courtgrid.com"
+                  className="flex items-center gap-2.5 hover:text-zinc-950 transition-colors w-max"
+                  aria-label="Email CourtGrid"
+                >
+                  <Mail className="w-4 h-4 shrink-0 text-zinc-500" aria-hidden="true" />
                   <span>info@courtgrid.com</span>
-                </div>
+                </a>
               </address>
             </div>
 
@@ -82,7 +90,7 @@ export default function Footer() {
                   <Link
                     key={i}
                     href={href}
-                    className="w-max text-sm text-zinc-500 hover:text-zinc-950 transition-colors"
+                    className="w-max text-sm text-zinc-600 hover:text-zinc-950 transition-colors"
                   >
                     {title}
                   </Link>
@@ -100,7 +108,7 @@ export default function Footer() {
                   <Link
                     key={i}
                     href={href}
-                    className="w-max text-sm text-zinc-500 hover:text-zinc-950 transition-colors"
+                    className="w-max text-sm text-zinc-600 hover:text-zinc-950 transition-colors"
                   >
                     {title}
                   </Link>
