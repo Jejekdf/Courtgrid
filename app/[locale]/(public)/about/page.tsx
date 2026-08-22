@@ -76,7 +76,7 @@ export default async function AboutPage({
   return (
     <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 bg-background text-zinc-950">
       <PageWrapper className="max-w-5xl mx-auto space-y-16">
-        <Breadcrumb items={breadcrumbItems} />
+        <Breadcrumb items={breadcrumbItems} locale={locale} />
         {/* Modern Hero */}
         <header className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 items-center">
 

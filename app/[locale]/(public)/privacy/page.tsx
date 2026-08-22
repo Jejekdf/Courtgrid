@@ -220,7 +220,7 @@ export default async function PrivacyPage({
   return (
     <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 bg-[var(--background)] text-zinc-950">
       <PageWrapper className="max-w-4xl mx-auto space-y-10">
-        <Breadcrumb items={breadcrumbItems} />
+        <Breadcrumb items={breadcrumbItems} locale={locale} />
         {/* Document Header */}
         <header className="border-b border-zinc-200/80 pb-8 space-y-4">
 

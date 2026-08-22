@@ -85,21 +85,21 @@ export default function Hero() {
           className="mt-16 md:mt-20 grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-12 pt-8 border-t border-zinc-200/80 w-full max-w-3xl mx-auto"
         >
           <div className="flex flex-col items-center text-center gap-1.5">
-            <Zap className="w-5 h-5 text-zinc-950 mb-1" aria-hidden />
+            <Zap className="w-5 h-5 text-zinc-950 mb-1" aria-hidden="true" />
             <span className="text-xl font-extrabold text-zinc-950 font-mono">{t("statRealtime")}</span>
-            <span className="text-xs font-mono font-bold text-zinc-500 uppercase tracking-wider">{t("statRealtimeDesc")}</span>
+            <span className="text-xs font-mono font-bold text-zinc-600 uppercase tracking-wider">{t("statRealtimeDesc")}</span>
           </div>
 
           <div className="flex flex-col items-center text-center gap-1.5">
-            <ShieldCheck className="w-5 h-5 text-emerald-600 mb-1" aria-hidden />
+            <ShieldCheck className="w-5 h-5 text-emerald-600 mb-1" aria-hidden="true" />
             <span className="text-xl font-extrabold text-zinc-950 font-mono">{t("statGuarantee")}</span>
-            <span className="text-xs font-mono font-bold text-zinc-500 uppercase tracking-wider">{t("statGuaranteeDesc")}</span>
+            <span className="text-xs font-mono font-bold text-zinc-600 uppercase tracking-wider">{t("statGuaranteeDesc")}</span>
           </div>
 
           <div className="flex flex-col items-center text-center gap-1.5 col-span-2 md:col-span-1">
-            <CalendarDays className="w-5 h-5 text-zinc-950 mb-1" aria-hidden />
+            <CalendarDays className="w-5 h-5 text-zinc-950 mb-1" aria-hidden="true" />
             <span className="text-xl font-extrabold text-zinc-950 font-mono">{t("statCourts")}</span>
-            <span className="text-xs font-mono font-bold text-zinc-500 uppercase tracking-wider">{t("statCourtsDesc")}</span>
+            <span className="text-xs font-mono font-bold text-zinc-600 uppercase tracking-wider">{t("statCourtsDesc")}</span>
           </div>
         </motion.div>
 

@@ -159,15 +159,19 @@ export function Header() {
           </div>
 
           <button
+            type="button"
             className="sm:hidden flex items-center justify-center w-11 h-11 text-zinc-700 hover:text-zinc-950 focus:outline-none transition-colors outline-none cursor-pointer"
             onClick={toggleMenu}
+            aria-expanded={isOpen}
+            aria-controls="mobile-navigation"
             aria-label={isOpen ? t("closeMenu") : t("openMenu")}
           >
-            {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {isOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
           </button>
         </div>
 
         <div
+          id="mobile-navigation"
           className={`sm:hidden flex flex-col items-center w-full transition-[max-height,opacity] ease-in-out duration-300 overflow-hidden
             ${isOpen ? "max-h-250 opacity-100 pt-5 pb-2" : "max-h-0 opacity-0 pt-0 pointer-events-none"}`}
         >
