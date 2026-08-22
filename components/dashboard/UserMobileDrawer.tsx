@@ -45,7 +45,7 @@ export function UserMobileDrawer() {
             className="font-bold text-base text-zinc-950 flex items-center gap-2"
           >
             <Image
-              src="/icon.ico"
+              src="/logo.svg"
               alt="CourtGrid"
               width={24}
               height={24}

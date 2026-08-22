@@ -47,12 +47,11 @@ export async function generateMetadata({
       "Platform booking venue olahraga terpercaya dengan sistem Anti-Palkor.",
     icons: {
       icon: [
-        { url: "/icon.ico" },
+        { url: "/logo.svg", type: "image/svg+xml" },
         { url: "/icon.ico", sizes: "32x32" },
-        { url: "/icon.ico", sizes: "192x192" },
       ],
       apple: [
-        { url: "/icon.ico", sizes: "180x180" },
+        { url: "/logo.svg", sizes: "180x180" },
       ],
     },
     openGraph: {

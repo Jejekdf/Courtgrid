@@ -18,7 +18,7 @@ export default function RegisterPage() {
           {/* Header Branding */}
           <div className="flex flex-col space-y-3">
             <Link href="/" className="flex items-center gap-2.5 mb-2 group w-max outline-none">
-              <Image src="/icon.ico" alt="CourtGrid Logo" width={32} height={32} priority className="rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
+              <Image src="/logo.svg" alt="CourtGrid Logo" width={32} height={32} priority className="rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
               <span className="text-xl font-extrabold tracking-tight text-zinc-950">CourtGrid</span>
             </Link>
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-950">
