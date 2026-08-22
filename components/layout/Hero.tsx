@@ -25,49 +25,29 @@ export default function Hero() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 pt-28 pb-20 md:pt-36 md:pb-28 flex flex-col items-center text-center">
         
         {/* Anti-Slop Clean Pill Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 mb-8 shadow-xs"
-        >
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 mb-8 shadow-xs">
           <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
           <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-950">
             {t("badge")}
           </span>
-        </motion.div>
+        </div>
 
-        {/* Hero Headline */}
-        <motion.h1
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-950 max-w-5xl leading-[1.1] mb-6"
-        >
+        {/* Hero Headline (Direct SSR LCP Paint) */}
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-950 max-w-5xl leading-[1.1] mb-6">
           {t("headline")}
-        </motion.h1>
+        </h1>
 
         {/* Hero Subheadline */}
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-          className="text-base md:text-lg text-zinc-500 max-w-2xl leading-relaxed mb-10 font-sans"
-        >
+        <p className="text-base md:text-lg text-zinc-600 max-w-2xl leading-relaxed mb-10 font-sans">
           {t("subheadline")}
-        </motion.p>
+        </p>
 
         {/* CTA Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-          className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto"
-        >
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <Link href="/dashboard/book" className="w-full sm:w-auto">
             <Button size="lg" className="w-full sm:w-auto text-sm font-bold min-h-11 h-12 px-6 bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl shadow-xs cursor-pointer group">
               <span>{t("checkSchedule")}</span>
-              <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover-fine:translate-x-1 text-white" />
+              <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover-fine:translate-x-1 text-white" aria-hidden="true" />
             </Button>
           </Link>
           <Link href="/register" className="w-full sm:w-auto">
@@ -75,7 +55,7 @@ export default function Hero() {
               {t("registerAccount")}
             </Button>
           </Link>
-        </motion.div>
+        </div>
 
         {/* Trust Indicators / Quick Stats */}
         <motion.div

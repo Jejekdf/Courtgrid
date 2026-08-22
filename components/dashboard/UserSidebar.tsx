@@ -35,7 +35,7 @@ export function UserSidebar({ isSidebarOpen = true }: UserSidebarProps) {
       {/* Brand Header */}
       <div className="flex h-16 items-center border-b border-zinc-200 px-6 shrink-0 bg-zinc-50/50">
         <Link href="/dashboard" className="font-bold text-base text-zinc-950 tracking-tight flex items-center gap-2">
-          <Image src="/icon.ico" alt="CourtGrid Logo" width={24} height={24} priority className="rounded-md object-contain" />
+          <Image src="/logo.svg" alt="CourtGrid Logo" width={24} height={24} priority className="rounded-md object-contain" />
           <span>CourtGrid</span>
         </Link>
       </div>

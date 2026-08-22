@@ -29,7 +29,7 @@ export default function Footer() {
           <div className="md:col-span-4 lg:col-span-4 flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-2.5 group w-max outline-none">
               <Image
-                src="/icon.ico"
+                src="/logo.svg"
                 alt="CourtGrid Logo"
                 width={32}
                 height={32}

@@ -30,7 +30,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       {/* Brand Header */}
       <div className="h-16 flex items-center justify-between px-6 border-b border-zinc-900 shrink-0">
         <Link href="/admin" className="flex items-center gap-2.5 outline-none">
-          <Image src="/icon.ico" alt="CourtGrid Logo" width={24} height={24} priority className="rounded-md object-contain" />
+          <Image src="/logo.svg" alt="CourtGrid Logo" width={24} height={24} priority className="rounded-md object-contain" />
           <span className="font-bold tracking-tight text-base">CourtGrid Admin</span>
         </Link>
         <button className="md:hidden text-zinc-400 hover:text-white" onClick={onClose} aria-label="Tutup menu">

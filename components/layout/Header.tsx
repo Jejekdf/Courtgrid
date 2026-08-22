@@ -63,7 +63,7 @@ export function Header() {
 
   const logoElement = (
     <Link href="/" className="flex items-center gap-2.5 group shrink-0 outline-none">
-      <Image src="/icon.ico" alt="CourtGrid Logo" width={28} height={28} priority className="rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
+      <Image src="/logo.svg" alt="CourtGrid Logo" width={28} height={28} priority className="rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
       <span className="font-heading text-zinc-950 font-extrabold tracking-tight text-base sm:text-lg">
         CourtGrid
       </span>
