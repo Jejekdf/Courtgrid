@@ -1,14 +1,11 @@
-"use client";
-
-import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { ArrowRight, CalendarDays, Zap, ShieldCheck } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
-export default function Hero() {
-  const t = useTranslations("hero");
+export default async function Hero() {
+  const t = await getTranslations("hero");
 
   const images = [
     { src: "/futsal1.webp", alt: "Futsal Court", priority: true },
@@ -58,14 +55,9 @@ export default function Hero() {
         </div>
 
         {/* Trust Indicators / Quick Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-          className="mt-16 md:mt-20 grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-12 pt-8 border-t border-zinc-200/80 w-full max-w-3xl mx-auto"
-        >
+        <div className="mt-16 md:mt-20 grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-12 pt-8 border-t border-zinc-200/80 w-full max-w-3xl mx-auto">
           <div className="flex flex-col items-center text-center gap-1.5">
-            <Zap className="w-5 h-5 text-zinc-950 mb-1" aria-hidden="true" />
+            <Zap className="w-5 h-5 text-emerald-600 mb-1" aria-hidden="true" />
             <span className="text-xl font-extrabold text-zinc-950 font-mono">{t("statRealtime")}</span>
             <span className="text-xs font-mono font-bold text-zinc-600 uppercase tracking-wider">{t("statRealtimeDesc")}</span>
           </div>
@@ -81,15 +73,10 @@ export default function Hero() {
             <span className="text-xl font-extrabold text-zinc-950 font-mono">{t("statCourts")}</span>
             <span className="text-xs font-mono font-bold text-zinc-600 uppercase tracking-wider">{t("statCourtsDesc")}</span>
           </div>
-        </motion.div>
+        </div>
 
         {/* Visual Showcase - Courts */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
-          className="mt-16 w-full max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
-        >
+        <div className="mt-16 w-full max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {images.map((img, idx) => (
             <div 
               key={idx} 
@@ -108,7 +95,7 @@ export default function Hero() {
               </div>
             </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
