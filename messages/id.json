@@ -132,6 +132,8 @@
     }
   },
   "landing": {
+    "metaTitle": "CourtGrid - Reservasi Arena Futsal & Badminton Premium",
+    "metaDesc": "Platform booking lapangan futsal dan badminton terpercaya di Jakarta. Sistem Anti-Palkor dengan verifikasi DP otomatis via Stripe. Pesan sekarang!",
     "facilityStandard": "Standard Fasilitas",
     "facilityTitle": "Arena & Fasilitas Premium",
     "facilityDesc": "Pilihan spesifikasi lapangan futsal dan badminton berstandar nasional dengan perawatan berkala.",

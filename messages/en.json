@@ -132,6 +132,8 @@
     }
   },
   "landing": {
+    "metaTitle": "CourtGrid - Premium Futsal & Badminton Court Reservation",
+    "metaDesc": "Trusted futsal and badminton court booking platform in Jakarta. Anti-double-booking system with automatic DP verification via Stripe. Book now!",
     "facilityStandard": "Facility Standard",
     "facilityTitle": "Premium Arena & Facilities",
     "facilityDesc": "National standard futsal and badminton court specifications with regular maintenance.",

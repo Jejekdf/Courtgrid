@@ -3,6 +3,9 @@ import PageWrapper from "@/components/ui/PageWrapper";
 import { Zap, ShieldCheck, Building2, ArrowUpRight, Award } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
+import Breadcrumb from "@/components/layout/Breadcrumb";
+
+const BASE_URL = "https://courtgrid-one.vercel.app";
 
 export async function generateMetadata({
   params,
@@ -14,8 +17,22 @@ export async function generateMetadata({
   return {
     title: t("metaTitle"),
     description: t("metaDesc"),
+    alternates: {
+      canonical: `${BASE_URL}/${locale}/about`,
+      languages: {
+        id: `${BASE_URL}/id/about`,
+        en: `${BASE_URL}/en/about`,
+      },
+    },
+    openGraph: {
+      title: t("metaTitle"),
+      description: t("metaDesc"),
+      url: `${BASE_URL}/${locale}/about`,
+      images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    },
   };
 }
+
 
 export default async function AboutPage({
   params,
@@ -24,6 +41,12 @@ export default async function AboutPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale: locale as "id" | "en", namespace: "about" });
+  const th = await getTranslations({ locale: locale as "id" | "en", namespace: "header" });
+
+  const breadcrumbItems = [
+    { label: th("navBeranda"), href: "/" },
+    { label: t("metaTitle") },
+  ];
 
   const stats = [
     { label: t("stats.arenasLabel"), value: t("stats.arenas"), sub: t("stats.arenasSub"), color: "text-emerald-600" },
@@ -53,8 +76,10 @@ export default async function AboutPage({
   return (
     <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 bg-background text-zinc-950">
       <PageWrapper className="max-w-5xl mx-auto space-y-16">
+        <Breadcrumb items={breadcrumbItems} />
         {/* Modern Hero */}
         <header className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 items-center">
+
           <div className="md:col-span-7 space-y-5">
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200 bg-white text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-600 shadow-xs w-max">
               <Award className="w-3.5 h-3.5 text-emerald-600" />
