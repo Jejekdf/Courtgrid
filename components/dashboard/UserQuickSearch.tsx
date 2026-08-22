@@ -57,7 +57,7 @@ export function UserQuickSearch() {
           side="bottom"
           align="start"
           sideOffset={6}
-          className="w-[var(--anchor-width)] p-3 space-y-2 max-h-80 overflow-y-auto"
+          className="w-(--anchor-width) p-3 space-y-2 max-h-80 overflow-y-auto"
         >
           {debouncedQuery.trim().length > 0 && searchResults.length > 0 ? (
             searchResults.map((c) => (

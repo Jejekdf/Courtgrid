@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryState, parseAsString } from "nuqs";
 import { format, addDays } from "date-fns";
 import { motion } from "motion/react";
 import { Loader2 } from "lucide-react";
@@ -35,16 +36,18 @@ export type Court = {
 export default function CustomerBookingWorkspace() {
   const router = useRouter();
   const tVal = useTranslations("validation");
+  const [paymentStatus, setPaymentStatus] = useQueryState("payment", parseAsString);
+  const [urlCourtId] = useQueryState("courtId", parseAsString);
 
   const [selectedDate, setSelectedDate] = useState<string>(
     format(new Date(), "yyyy-MM-dd")
   );
-  const [selectedCourtId, setSelectedCourtId] = useState<string | null>(null);
+  const [selectedCourtId, setSelectedCourtId] = useState<string | null>(urlCourtId);
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
   const [voucherCode, setVoucherCode] = useState("");
   const [showPreviewModal, setShowPreviewModal] = useState(false);
 
-  // 1. TanStack Query: Fetch Active Courts
+  // Fetch active courts for selector
   const { data: courts = [], isLoading: isLoadingCourts } = useQuery({
     queryKey: courtKeys.all,
     queryFn: async () => {
@@ -53,7 +56,7 @@ export default function CustomerBookingWorkspace() {
     },
   });
 
-  // Auto select first court
+  // Fallback to first available court if none explicitly chosen
   const activeCourt = useMemo(() => {
     if (selectedCourtId) {
       return courts.find((c) => c.id === selectedCourtId) || courts[0] || null;
@@ -63,7 +66,7 @@ export default function CustomerBookingWorkspace() {
 
   const activeCourtId = activeCourt?.id || "";
 
-  // 2. TanStack Query: Fetch Availability
+  // Fetch slot availability for selected court and date
   const { data: availability = [], isLoading: isLoadingAvailability } = useQuery(
     {
       queryKey: courtKeys.availability(activeCourtId, selectedDate),
@@ -98,7 +101,7 @@ export default function CustomerBookingWorkspace() {
     });
   };
 
-  // Determine slot status (PAST / PENDING / DP_PAID / AVAILABLE)
+  // Determine whether each hourly slot is in the past, pending, paid, or available
   const getSlotStatus = useMemo(() => {
     const todayStr = format(new Date(), "yyyy-MM-dd");
     const currentHour = new Date().getHours();
@@ -123,7 +126,7 @@ export default function CustomerBookingWorkspace() {
     };
   }, [availability, selectedDate]);
 
-  // 3. TanStack Mutation: Create Reservation Action
+  // Submit reservation and proceed to Stripe checkout
   const bookingMutation = useMutation({
     mutationFn: async () => {
       if (selectedTimeSlots.length === 0 || !activeCourt)
@@ -171,16 +174,16 @@ export default function CustomerBookingWorkspace() {
   });
 
   useEffect(() => {
-    const url = new URL(window.location.href);
-    const status = url.searchParams.get("payment");
-    if (status === "success") {
+    if (paymentStatus === "success") {
       toast.success("Pembayaran DP Berhasil! E-Ticket telah terbit.");
+      setPaymentStatus(null);
       router.replace("/dashboard/reservations");
-    } else if (status === "cancel") {
+    } else if (paymentStatus === "cancel") {
       toast.error("Pembayaran dibatalkan.");
+      setPaymentStatus(null);
       router.replace("/dashboard/book");
     }
-  }, [router]);
+  }, [paymentStatus, router, setPaymentStatus]);
 
   if (isLoadingCourts) {
     return (

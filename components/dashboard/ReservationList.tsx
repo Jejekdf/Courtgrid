@@ -1,11 +1,14 @@
+
 "use client";
 
 import { useState } from "react";
+import { useQueryState } from "nuqs";
 import { useMutation } from "@tanstack/react-query";
 import { QrCode } from "lucide-react";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "react-use";
 import { cancelReservationAction } from "@/features/reservations/actions";
+import { reservationListParsers } from "@/lib/search-params";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,10 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  ReservationFilters,
-  type ReservationFilterType,
-} from "./reservations/ReservationFilters";
+import { ReservationFilters } from "./reservations/ReservationFilters";
 import { ReservationTableRow } from "./reservations/ReservationTableRow";
 
 export type ReservationRow = {
@@ -39,7 +39,7 @@ export default function ReservationList({
 }: {
   reservations: ReservationRow[];
 }) {
-  const [filter, setFilter] = useState<ReservationFilterType>("ALL");
+  const [filter, setFilter] = useQueryState("status", reservationListParsers.status.withOptions({ shallow: true }));
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);

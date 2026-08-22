@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useQueryState } from "nuqs";
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { useDebounce } from "react-use";
 import { adminDeleteCustomer, getAdminPaginatedCustomersAction } from "@/features/admin/actions";
@@ -20,6 +21,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { adminKeys } from "@/lib/query-keys";
+import { adminCustomersParsers } from "@/lib/search-params";
 
 type Customer = {
   id: string;
@@ -33,24 +35,32 @@ type Customer = {
 
 export default function AdminCustomersPage() {
   const queryClient = useQueryClient();
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [page, setPage] = useState(1);
+  const [search, setSearch] = useQueryState("search", adminCustomersParsers.search.withOptions({ shallow: true }));
+  const [page, setPage] = useQueryState("page", adminCustomersParsers.page.withOptions({ shallow: true }));
+  const [searchDraft, setSearchDraft] = useState(search);
+  const [lastUrlSearch, setLastUrlSearch] = useState(search);
+  if (lastUrlSearch !== search) {
+    setLastUrlSearch(search);
+    setSearchDraft(search);
+  }
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string | null } | null>(null);
 
-  // Debounce search query changes by 300ms (react-use, same as CourtCatalog).
+  // Debounce search query changes by 300ms
   useDebounce(
     () => {
-      setDebouncedSearch(search);
+      if (searchDraft !== search) {
+        setSearch(searchDraft || null);
+        setPage(1);
+      }
     },
     300,
-    [search]
+    [searchDraft, search, setSearch, setPage]
   );
 
   const { data, isPending, isFetching } = useQuery({
-    queryKey: adminKeys.customers(debouncedSearch, page),
-    queryFn: () => getAdminPaginatedCustomersAction(debouncedSearch, page, 10),
+    queryKey: adminKeys.customers(search, page),
+    queryFn: () => getAdminPaginatedCustomersAction(search, page, 10),
     placeholderData: keepPreviousData,
   });
 
@@ -86,11 +96,8 @@ export default function AdminCustomersPage() {
         <div className="w-full md:w-72">
           <div className="relative">
             <Input
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
+              value={searchDraft}
+              onChange={(e) => setSearchDraft(e.target.value)}
               placeholder="Cari nama atau email..."
               containerClassName="w-full"
               leftIcon={<Search className="w-4 h-4 text-zinc-400" />}

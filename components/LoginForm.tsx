@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Link } from "@/i18n/navigation";
-import { useSearchParams } from "next/navigation";
+import { useQueryState, parseAsString } from "nuqs";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "motion/react";
@@ -29,7 +29,7 @@ const easeCustom = [0.16, 1, 0.3, 1] as const;
 const inputLabelClass = "text-xs font-medium uppercase tracking-wider text-zinc-500";
 
 export default function LoginForm() {
-  const searchParams = useSearchParams();
+  const [errorParam] = useQueryState("error", parseAsString);
   const [showPassword, setShowPassword] = useState(false);
   const t = useTranslations("auth.login");
   const tVal = useTranslations("validation");
@@ -43,7 +43,6 @@ export default function LoginForm() {
   const password = useWatch({ control: form.control, name: "password", defaultValue: "" });
 
   useEffect(() => {
-    const errorParam = searchParams.get("error");
     if (errorParam === "OAuthAccountNotLinked") {
       toast.error(t("toastOAuthNotLinked"));
     } else if (errorParam === "CallbackRouteError" || errorParam === "Configuration") {
@@ -51,7 +50,7 @@ export default function LoginForm() {
     } else if (errorParam) {
       toast.error(t("toastAuthError"));
     }
-  }, [searchParams, t]);
+  }, [errorParam, t]);
 
   const requirements = [
     { label: t("reqMin"), met: password.length >= 8 },

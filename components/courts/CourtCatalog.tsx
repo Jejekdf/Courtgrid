@@ -1,14 +1,14 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useDebounce } from "react-use";
-import { useRouter } from "@/i18n/navigation";
-import { useSearchParams } from "next/navigation";
+import { useQueryStates } from "nuqs";
 import { useQuery } from "@tanstack/react-query";
 import { RotateCcw, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { fetchCourts, isCourtType, type CourtFilters, type CourtType } from "@/lib/api/courts";
+import { fetchCourts, type CourtFilters, type CourtType } from "@/lib/api/courts";
 import { courtKeys } from "@/lib/query-keys";
+import { courtCatalogParsers } from "@/lib/search-params";
 import { Input } from "@/components/ui/input";
 import CourtCard from "./CourtCard";
 import CourtState from "./CourtState";
@@ -17,18 +17,16 @@ type TabFilter = "ALL" | CourtType;
 
 export default function CourtCatalog() {
   const t = useTranslations("courts");
-  const router = useRouter();
-  const searchParams = useSearchParams();
+
+  const [{ search, type: tab }, setQueryParams] = useQueryStates(courtCatalogParsers, {
+    shallow: true,
+  });
 
   const tabs: { value: TabFilter; label: string }[] = [
     { value: "ALL", label: t("tabAll") },
     { value: "FUTSAL", label: t("tabFutsal") },
     { value: "BADMINTON", label: t("tabBadminton") },
   ];
-
-  const search = searchParams.get("search") ?? "";
-  const tabParam = searchParams.get("type");
-  const tab: TabFilter = isCourtType(tabParam) ? tabParam : "ALL";
 
   const [searchDraft, setSearchDraft] = useState(search);
   const [lastUrlSearch, setLastUrlSearch] = useState(search);
@@ -37,31 +35,19 @@ export default function CourtCatalog() {
     setSearchDraft(search);
   }
 
-  const updateParams = useCallback(
-    (patch: { search?: string; type?: TabFilter }) => {
-      const params = new URLSearchParams(searchParams.toString());
-      const nextSearch = patch.search ?? search;
-      const nextType = patch.type ?? tab;
-      if (nextSearch) params.set("search", nextSearch);
-      else params.delete("search");
-      if (nextType !== "ALL") params.set("type", nextType);
-      else params.delete("type");
-      router.replace(`/courts${params.toString() ? `?${params.toString()}` : ""}`);
-    },
-    [router, searchParams, search, tab]
-  );
-
   useDebounce(
     () => {
-      if (searchDraft !== search) updateParams({ search: searchDraft });
+      if (searchDraft !== search) {
+        setQueryParams({ search: searchDraft || null });
+      }
     },
     300,
-    [searchDraft, search, updateParams]
+    [searchDraft, search, setQueryParams]
   );
 
   const filters: CourtFilters = {
     search,
-    ...(tab === "ALL" ? {} : { type: tab }),
+    ...(tab === "ALL" ? {} : { type: tab as CourtType }),
   };
 
   const { data, isPending, isError, isFetching, refetch } = useQuery({
@@ -96,7 +82,7 @@ export default function CourtCatalog() {
               key={tabItem.value}
               role="tab"
               aria-selected={tab === tabItem.value}
-              onClick={() => updateParams({ type: tabItem.value })}
+              onClick={() => setQueryParams({ type: tabItem.value })}
               className={`px-4 min-h-11 py-2.5 rounded-xl text-sm font-mono font-bold transition-colors cursor-pointer ${
                 tab === tabItem.value
                   ? "bg-zinc-950 text-white shadow-xs"
@@ -141,7 +127,7 @@ export default function CourtCatalog() {
           type="empty"
           onReset={() => {
             setSearchDraft("");
-            updateParams({ search: "", type: "ALL" });
+            setQueryParams({ search: null, type: "ALL" });
           }}
         />
       ) : (

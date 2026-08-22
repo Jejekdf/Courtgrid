@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useQueryState } from "nuqs";
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { getAllReservations, adminDeleteReservation } from "@/features/admin/actions";
 import { format } from "date-fns";
@@ -18,6 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { adminKeys } from "@/lib/query-keys";
+import { adminReservationsParsers } from "@/lib/search-params";
 import { toast } from "sonner";
 
 type ReservationDetail = {
@@ -34,12 +36,12 @@ type ReservationDetail = {
 
 export default function AdminReservationsPage() {
   const queryClient = useQueryClient();
-  const [filter, setFilter] = useState<"daily" | "monthly" | "all">("all");
-  const [page, setPage] = useState(1);
+  const [filter, setFilter] = useQueryState("filter", adminReservationsParsers.filter.withOptions({ shallow: true }));
+  const [page, setPage] = useQueryState("page", adminReservationsParsers.page.withOptions({ shallow: true }));
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
-  // TanStack Query Integration for Admin Reservations
+  // Fetch reservations matching current filter and page
   const { data, isLoading, isFetching } = useQuery({
     queryKey: [...adminKeys.reservations(filter), page],
     queryFn: async () => {
@@ -54,7 +56,7 @@ export default function AdminReservationsPage() {
   const reservations = data?.reservations ?? [];
   const totalPages = data?.totalPages ?? 1;
 
-  // Mutation for deleting reservation
+  // Mutation for deleting reservation and invalidating cache
   const deleteMutation = useMutation({
     mutationFn: (id: string) => adminDeleteReservation(id),
     onSuccess: (_, id) => {

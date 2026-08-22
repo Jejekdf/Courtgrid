@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useQueryState } from "nuqs";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { adminGetCourts, adminCreateCourt, adminUpdateCourt, adminDeleteCourt, adminToggleCourtActive } from "@/features/admin/actions";
 import { uploadCourtImageAction } from "@/features/courts/actions";
 import { courtKeys } from "@/lib/query-keys";
+import { adminCourtsParsers } from "@/lib/search-params";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Pencil, Trash2, CheckCircle2, Power, Search, Upload, Image as ImageIcon } from "lucide-react";
@@ -39,12 +41,10 @@ type Court = {
   imageUrl?: string | null;
 };
 
-type TabFilter = "all" | "active" | "inactive";
-
 export default function AdminCourtsPage() {
   const queryClient = useQueryClient();
-  const [search, setSearch] = useState("");
-  const [tab, setTab] = useState<TabFilter>("all");
+  const [tab, setTab] = useQueryState("tab", adminCourtsParsers.tab.withOptions({ shallow: true }));
+  const [search, setSearch] = useQueryState("search", adminCourtsParsers.search.withOptions({ shallow: true }));
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -60,7 +60,7 @@ export default function AdminCourtsPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
 
-  // TanStack Query for Courts
+  // Fetch court list for admin management
   const { data: courts = [], isLoading } = useQuery({
     queryKey: courtKeys.all,
     queryFn: async () => {
@@ -70,7 +70,6 @@ export default function AdminCourtsPage() {
     staleTime: 10000,
   });
 
-  // Mutations
   const deleteMutation = useMutation({
     mutationFn: (id: string) => adminDeleteCourt(id),
     onSuccess: (result) => {

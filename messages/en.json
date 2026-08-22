@@ -12,8 +12,8 @@
     "closeMenu": "Close Menu"
   },
   "footer": {
-    "tagline": "A professional futsal & badminton arena rental platform. Free from double-booking with 24/7 automatic down-payment verification.",
-    "antiPalkor": "System Anti-Palkor Active",
+    "tagline": "Professional futsal & badminton court reservation platform. Guaranteed accurate schedules with 24/7 automatic down-payment verification.",
+    "antiPalkor": "Verified Real-Time System",
     "servicesTitle": "Services & Legal",
     "navigationTitle": "Public Navigation",
     "contactTitle": "GOR Contact",
@@ -29,7 +29,7 @@
     "rights": "All rights reserved."
   },
   "auth": {
-    "antiPalkor": "Anti-Palkor Verified",
+    "antiPalkor": "Verified Schedule",
     "guaranteeSchedule": "100% Guaranteed Schedule",
     "login": {
       "title": "Welcome Back",
@@ -37,7 +37,7 @@
       "formLoading": "Loading sign-in form...",
       "noAccount": "Don't have an account?",
       "registerLink": "Create New Account",
-      "quote": "CourtGrid makes our team's schedule management far more professional. The 50% down-payment ensures our schedule is never canceled again.",
+      "quote": "CourtGrid makes our team's schedule management far more professional. The 50% down-payment ensures our schedule is always secure and guaranteed.",
       "quoteAuthor": "Ahmad Tariq",
       "quoteRole": "FC Garuda Captain",
       "email": "Email Address",
@@ -184,7 +184,7 @@
     "ctaButton": "Check Real-Time Court Availability"
   },
   "hero": {
-    "badge": "Real-Time Anti-Palkor 2.0 System",
+    "badge": "Real-Time Reservation System",
     "headline": "Book Your Favorite Sports Court Without Double-Booking Risk",
     "subheadline": "The most complete futsal and badminton court reservation platform. 100% schedule accuracy guarantee with 50% DP via Stripe & QRIS.",
     "checkSchedule": "Check Court Schedule",
@@ -192,7 +192,7 @@
     "statRealtime": "Real-time",
     "statRealtimeDesc": "Slot Instantly Locked",
     "statGuarantee": "100%",
-    "statGuaranteeDesc": "No-Show / Conflict Free",
+    "statGuaranteeDesc": "Guaranteed Accurate Schedule",
     "statCourts": "5 Courts",
     "statCourtsDesc": "Futsal & Badminton",
     "courtShowcaseAlt": "GOR CourtGrid Arena"

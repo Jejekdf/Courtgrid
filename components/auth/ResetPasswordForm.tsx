@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useQueryState, parseAsString } from "nuqs";
 import { useRouter } from "@/i18n/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,11 +27,10 @@ const easeCustom = [0.16, 1, 0.3, 1] as const;
 const inputLabelClass = "text-xs font-medium uppercase tracking-wider text-zinc-500";
 
 export default function ResetPasswordForm() {
-  const searchParams = useSearchParams();
+  const [token] = useQueryState("token", parseAsString);
   const router = useRouter();
   const t = useTranslations("auth.reset");
   const tVal = useTranslations("validation");
-  const token = searchParams.get("token");
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
