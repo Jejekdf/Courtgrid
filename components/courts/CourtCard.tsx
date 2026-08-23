@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { MapPin, ChevronDown, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { useTranslations } from "next-intl";
 import type { Court } from "@/lib/api/courts";
 import AvailabilityGrid from "./AvailabilityGrid";
 
@@ -14,6 +15,7 @@ export default function CourtCard({
   court: Court;
   priority?: boolean;
 }) {
+  const t = useTranslations("courts");
   const [showAvailability, setShowAvailability] = useState(false);
 
   return (
@@ -30,11 +32,11 @@ export default function CourtCard({
           />
         ) : (
           <div className="flex items-center justify-center h-full text-xs font-mono text-zinc-400">
-            Foto Arena CourtGrid
+            {t("cardImageFallback")}
           </div>
         )}
-        <div className="absolute top-3 right-3 px-2.5 py-1 bg-zinc-950/90 text-white rounded-full text-[11px] font-mono font-bold uppercase tracking-wider border border-zinc-700 shadow-xs flex items-center gap-1">
-          <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+        <div className="absolute top-3 right-3 px-2.5 py-1 bg-zinc-950/90 text-white rounded-full text-[0.6875rem] font-mono font-bold uppercase tracking-wider border border-zinc-700 shadow-xs flex items-center gap-1">
+          <CheckCircle2 className="size-3 text-emerald-400" />
           <span>{court.type}</span>
         </div>
       </div>
@@ -43,13 +45,13 @@ export default function CourtCard({
         <div className="space-y-1">
           <h3 className="text-base font-extrabold text-zinc-950">{court.name}</h3>
           <span className="inline-flex items-center gap-1.5 text-sm text-zinc-600 font-mono">
-            <MapPin className="w-3.5 h-3.5 text-zinc-500" aria-hidden="true" />
+            <MapPin className="size-3.5 text-zinc-500" aria-hidden="true" />
             {court.venue?.name || "GOR CourtGrid Arena"}
           </span>
         </div>
 
         <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
-          <span className="text-sm text-zinc-600 font-mono">Tarif Per Jam</span>
+          <span className="text-sm text-zinc-600 font-mono">{t("perHour")}</span>
           <span className="font-extrabold text-zinc-950 font-mono text-sm">
             Rp {court.pricePerHour.toLocaleString("id-ID")}
           </span>
@@ -62,7 +64,7 @@ export default function CourtCard({
           onClick={() => setShowAvailability((v) => !v)}
           className="flex items-center justify-center gap-2 w-full min-h-11 py-2.5 text-sm font-bold font-mono text-white bg-zinc-950 hover:bg-zinc-800 rounded-xl transition-colors shadow-xs cursor-pointer"
         >
-          <span>{showAvailability ? "Sembunyikan Jadwal" : "Cek Ketersediaan Jam"}</span>
+          <span>{showAvailability ? t("hideSchedule") : t("showSchedule")}</span>
           <motion.span
             animate={{ rotate: showAvailability ? 180 : 0 }}
             transition={{ duration: 0.2 }}

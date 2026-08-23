@@ -5,6 +5,7 @@ import { Menu, LogOut } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { signOut } from "next-auth/react";
 import {
@@ -15,14 +16,15 @@ import {
 } from "@/components/ui/sheet";
 
 const mobileNavItems = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/dashboard/reservations", label: "Riwayat Booking" },
-  { href: "/dashboard/book", label: "Pesan Lapangan" },
-  { href: "/dashboard/settings", label: "Pengaturan Profil" },
-];
+  { href: "/dashboard", label: "dashboard" },
+  { href: "/dashboard/reservations", label: "history" },
+  { href: "/dashboard/book", label: "book" },
+  { href: "/dashboard/settings", label: "settings" },
+] as const;
 
 export function UserMobileDrawer() {
   const pathname = usePathname();
+  const t = useTranslations("dashboard.nav");
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const handleLogout = () => {
@@ -32,13 +34,13 @@ export function UserMobileDrawer() {
   return (
     <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
       <SheetTrigger
-        className="md:hidden flex items-center justify-center w-11 h-11 -ml-3 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
-        aria-label="Buka menu"
+        className="md:hidden flex items-center justify-center size-11 -ml-3 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
+        aria-label={t("openMenu")}
       >
-        <Menu className="w-5 h-5" />
+        <Menu className="size-5" />
       </SheetTrigger>
       <SheetContent side="left" className="w-64 p-0">
-        <SheetTitle className="sr-only">Navigasi Pelanggan</SheetTitle>
+        <SheetTitle className="sr-only">{t("sheetTitle")}</SheetTitle>
         <div className="flex h-16 items-center justify-between border-b border-zinc-200 px-6 bg-zinc-50/50">
           <Link
             href="/dashboard"
@@ -70,7 +72,7 @@ export function UserMobileDrawer() {
                     : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
                 )}
               >
-                {item.label}
+                {t(item.label)}
               </Link>
             );
           })}
@@ -84,7 +86,7 @@ export function UserMobileDrawer() {
             className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
           >
             <LogOut className="h-4 w-4" />
-            Keluar Sistem
+            {t("logout")}
           </button>
         </div>
       </SheetContent>

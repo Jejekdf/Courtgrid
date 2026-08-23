@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { adminKeys } from "@/lib/query-keys";
 import { adminCustomersParsers } from "@/lib/search-params";
+import { useTranslations } from "next-intl";
 
 type Customer = {
   id: string;
@@ -34,6 +35,7 @@ type Customer = {
 };
 
 export default function AdminCustomersPage() {
+  const t = useTranslations("admin.customers");
   const queryClient = useQueryClient();
   const [search, setSearch] = useQueryState("search", adminCustomersParsers.search.withOptions({ shallow: true }));
   const [page, setPage] = useQueryState("page", adminCustomersParsers.page.withOptions({ shallow: true }));
@@ -86,10 +88,10 @@ export default function AdminCustomersPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-zinc-950 flex items-center gap-2.5">
-            Manajemen Pelanggan
+            {t("title")}
           </h1>
           <p className="text-zinc-500 mt-1 text-sm">
-            Pantau dan kelola data akun pelanggan terdaftar di platform CourtGrid.
+            {t("desc")}
           </p>
         </div>
 
@@ -98,9 +100,9 @@ export default function AdminCustomersPage() {
             <Input
               value={searchDraft}
               onChange={(e) => setSearchDraft(e.target.value)}
-              placeholder="Cari nama atau email..."
+              placeholder={t("searchPlaceholder")}
               containerClassName="w-full"
-              leftIcon={<Search className="w-4 h-4 text-zinc-400" />}
+              leftIcon={<Search className="size-4 text-zinc-400" />}
             />
           </div>
         </div>
@@ -111,25 +113,25 @@ export default function AdminCustomersPage() {
           <table className="w-full text-left text-sm">
             <thead className="bg-zinc-50 border-b border-zinc-200 text-xs uppercase font-semibold text-zinc-500">
               <tr>
-                <th className="px-6 py-4">Pelanggan</th>
-                <th className="px-6 py-4">Email</th>
-                <th className="px-6 py-4">Total Booking</th>
-                <th className="px-6 py-4">Total Spent</th>
-                <th className="px-6 py-4">Terakhir Booking</th>
-                <th className="px-6 py-4 text-center">Aksi</th>
+                <th className="px-6 py-4">{t("colCustomer")}</th>
+                <th className="px-6 py-4">{t("colEmail")}</th>
+                <th className="px-6 py-4">{t("colBookings")}</th>
+                <th className="px-6 py-4">{t("colSpent")}</th>
+                <th className="px-6 py-4">{t("colLastBooking")}</th>
+                <th className="px-6 py-4 text-center">{t("colAction")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100">
               {isPending ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
-                    Memuat data pelanggan...
+                    {t("loading")}
                   </td>
                 </tr>
               ) : customers.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-zinc-500 bg-zinc-50/50">
-                    {search ? "Tidak ditemukan pelanggan dengan kata kunci tersebut." : "Belum ada pelanggan terdaftar."}
+                    {search ? t("emptySearch") : t("empty")}
                   </td>
                 </tr>
               ) : (
@@ -137,25 +139,25 @@ export default function AdminCustomersPage() {
                   <tr key={user.id} className="hover:bg-zinc-50/80 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-zinc-100 border border-zinc-200 font-bold text-zinc-700 flex items-center justify-center text-xs">
+                        <div className="size-9 rounded-full bg-zinc-100 border border-zinc-200 font-bold text-zinc-700 flex items-center justify-center text-xs">
                           {user.name ? user.name.slice(0, 2).toUpperCase() : "US"}
                         </div>
                         <div>
-                          <div className="font-semibold text-zinc-950">{user.name || "Tanpa Nama"}</div>
+                          <div className="font-semibold text-zinc-950">{user.name || t("noName")}</div>
                           <div className="text-xs text-zinc-400 font-mono">ID: {user.id.slice(0, 8)}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-zinc-600">
                       <div className="flex items-center gap-1.5">
-                        <Mail className="w-3.5 h-3.5 text-zinc-400" />
+                        <Mail className="size-3.5 text-zinc-400" />
                         <span>{user.email}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-center">
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-zinc-100 text-zinc-700 border border-zinc-200">
-                        <CalendarCheck className="w-3 h-3 text-emerald-600" />
-                        {user.totalBookings} Booking
+                        <CalendarCheck className="size-3 text-emerald-600" />
+                        {t("bookingsCount", { count: user.totalBookings })}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-zinc-700 font-medium">
@@ -169,9 +171,9 @@ export default function AdminCustomersPage() {
                         <button
                           onClick={() => handleDelete(user.id, user.name)}
                           className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-md transition-colors"
-                          aria-label="Hapus Akun Pelanggan"
+                          aria-label={t("deleteAria")}
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="size-4" />
                         </button>
                       </div>
                     </td>
@@ -184,8 +186,7 @@ export default function AdminCustomersPage() {
         {totalPages > 1 && (
           <div className="px-6 py-4 bg-zinc-50/50 border-t border-zinc-200 flex items-center justify-between">
             <div className="text-sm text-zinc-500">
-              Halaman <span className="font-semibold text-zinc-950">{page}</span> dari{" "}
-              <span className="font-semibold text-zinc-950">{totalPages}</span>
+              {t("pageOf", { page, total: totalPages })}
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -194,7 +195,7 @@ export default function AdminCustomersPage() {
                 disabled={page <= 1 || isFetching}
                 onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
               >
-                Sebelumnya
+                {t("prevBtn")}
               </Button>
               <Button
                 variant="outline"
@@ -202,7 +203,7 @@ export default function AdminCustomersPage() {
                 disabled={page >= totalPages || isFetching}
                 onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
               >
-                Selanjutnya
+                {t("nextBtn")}
               </Button>
             </div>
           </div>
@@ -212,13 +213,13 @@ export default function AdminCustomersPage() {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Hapus Pelanggan</AlertDialogTitle>
+            <AlertDialogTitle>{t("deleteTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Apakah Anda yakin ingin menghapus pelanggan {pendingDelete?.name || "ini"}? Seluruh riwayat reservasi pelanggan ini juga akan terhapus. Tindakan ini tidak dapat dibatalkan.
+              {t("deleteDesc", { name: pendingDelete?.name || "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancelBtn")}</AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               onClick={() => {
@@ -226,7 +227,7 @@ export default function AdminCustomersPage() {
                 setIsDeleteDialogOpen(false);
               }}
             >
-              Hapus
+              {t("deleteConfirmBtn")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

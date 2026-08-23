@@ -74,15 +74,15 @@ export default async function AboutPage({
   ];
 
   return (
-    <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 bg-background text-zinc-950">
+    <div className="min-h-dvh pt-8 pb-20 px-4 sm:px-6 bg-background text-zinc-950">
       <PageWrapper className="max-w-5xl mx-auto space-y-16">
         <Breadcrumb items={breadcrumbItems} locale={locale} />
         {/* Modern Hero */}
         <header className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 items-center">
 
           <div className="md:col-span-7 space-y-5">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200 bg-white text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-600 shadow-xs w-max">
-              <Award className="w-3.5 h-3.5 text-emerald-600" />
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200 bg-white text-[0.6875rem] font-mono font-bold uppercase tracking-wider text-zinc-600 shadow-xs w-max">
+              <Award className="size-3.5 text-emerald-600" />
               {t("badge")}
             </span>
             <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-950 leading-[1.1]">
@@ -100,7 +100,7 @@ export default async function AboutPage({
                 key={idx}
                 className="p-4 sm:p-5 bg-white rounded-2xl border border-zinc-200/80 shadow-xs space-y-1.5 hover:border-zinc-400 transition-[border-color,box-shadow]"
               >
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500 block">
+                <span className="text-[0.625rem] font-mono font-bold uppercase tracking-wider text-zinc-500 block">
                   {item.sub}
                 </span>
                 <p className={`font-heading text-2xl font-extrabold tracking-tight ${item.color}`}>{item.value}</p>
@@ -139,7 +139,7 @@ export default async function AboutPage({
             className="inline-flex items-center justify-center rounded-xl text-sm font-bold font-mono bg-white text-zinc-950 hover:bg-zinc-100 min-h-11 h-12 px-6 shrink-0 transition-colors cursor-pointer gap-1.5 shadow-xs"
           >
             <span>{t("ctaButton")}</span>
-            <ArrowUpRight className="w-4 h-4" />
+            <ArrowUpRight className="size-4" />
           </Link>
         </section>
 
@@ -163,7 +163,7 @@ export default async function AboutPage({
                   className="p-6 bg-background border border-zinc-200/80 rounded-2xl space-y-4 shadow-xs hover:border-zinc-400 transition-[border-color,box-shadow] group"
                 >
                   <div className="p-2.5 w-max bg-zinc-100 rounded-xl text-zinc-950 group-hover-fine:bg-zinc-950 group-hover-fine:text-white transition-colors">
-                    <Icon className="w-5 h-5" />
+                    <Icon className="size-5" />
                   </div>
                   <h3 className="font-heading text-lg font-bold tracking-tight text-zinc-950">{p.title}</h3>
                   <p className="text-sm text-zinc-600 leading-relaxed">{p.desc}</p>

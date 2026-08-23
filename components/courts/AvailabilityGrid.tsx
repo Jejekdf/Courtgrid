@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarDays, Clock, Loader2, AlertTriangle } from "lucide-react";
 import { AnimatePresence } from "motion/react";
+import { useTranslations } from "next-intl";
 import {
   fetchAvailability,
   type AvailabilitySlot,
@@ -30,6 +31,7 @@ export default function AvailabilityGrid({
   courtId,
   pricePerHour,
 }: Props) {
+  const t = useTranslations("courts");
   const { dateStr: todayStr } = getJakartaNow();
   const [selectedDate, setSelectedDate] = useState(todayStr);
   const [selectedHour, setSelectedHour] = useState<number | null>(null);
@@ -53,7 +55,7 @@ export default function AvailabilityGrid({
             htmlFor={`date-${courtId}`}
             className="text-sm font-semibold text-zinc-700"
           >
-            Pilih Tanggal
+            {t("pickDate")}
           </label>
           <input
             id={`date-${courtId}`}
@@ -70,26 +72,26 @@ export default function AvailabilityGrid({
         </div>
         <div className="flex items-center gap-1.5 text-sm text-zinc-500">
           <Clock className="h-3.5 w-3.5" />
-          <span>Rp {pricePerHour.toLocaleString("id-ID")}/jam</span>
+          <span>{t("perHourShort", { price: `Rp ${pricePerHour.toLocaleString("id-ID")}` })}</span>
         </div>
       </div>
 
       {isPending ? (
         <div className="flex items-center justify-center py-8 gap-2 text-sm text-zinc-500">
           <Loader2 className="h-4 w-4 animate-spin" />
-          <span>Memuat ketersediaan...</span>
+          <span>{t("loadingAvailability")}</span>
         </div>
       ) : isError ? (
         <div className="flex flex-col items-center justify-center py-8 gap-2">
           <AlertTriangle className="h-5 w-5 text-red-500" />
           <span className="text-sm text-red-600">
-            Gagal memuat ketersediaan.
+            {t("availabilityError")}
           </span>
           <button
             onClick={() => refetch()}
             className="text-sm font-medium text-emerald-600 hover:underline"
           >
-            Coba lagi
+            {t("retry")}
           </button>
         </div>
       ) : (
@@ -111,13 +113,13 @@ export default function AvailabilityGrid({
 
       {!isPending && !isError && freeCount === 0 && (
         <p className="text-center text-sm text-zinc-400 pt-1">
-          Tidak ada jam tersedia untuk tanggal ini.
+          {t("noSlotsAvailable")}
         </p>
       )}
 
       {!isPending && !isError && freeCount > 0 && (
         <p className="text-center text-sm text-zinc-400 pt-1">
-          {freeCount} jam tersedia dari 14 slot.
+          {t("slotsAvailable", { count: freeCount, total: slots.length })}
         </p>
       )}
     </div>

@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 export type ReservationFilterType = "ALL" | "DP_PAID" | "PENDING" | "CANCELED";
 
 interface ReservationFiltersProps {
@@ -11,28 +13,29 @@ export function ReservationFilters({
   onFilterChange,
   totalCount,
 }: ReservationFiltersProps) {
+  const t = useTranslations("dashboard.reservations");
   const filterButtons: { type: ReservationFilterType; label: string; activeClass: string; inactiveClass: string }[] = [
     {
       type: "ALL",
-      label: `Semua (${totalCount})`,
+      label: t("filterAll", { count: totalCount }),
       activeClass: "bg-zinc-950 text-white shadow-xs",
       inactiveClass: "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-950",
     },
     {
       type: "DP_PAID",
-      label: "DP Verified",
+      label: t("filterDpPaid"),
       activeClass: "bg-zinc-950 text-white shadow-xs",
       inactiveClass: "bg-emerald-50 text-emerald-800 hover:bg-emerald-100",
     },
     {
       type: "PENDING",
-      label: "Pending",
+      label: t("filterPending"),
       activeClass: "bg-zinc-950 text-white shadow-xs",
       inactiveClass: "bg-amber-50 text-amber-800 hover:bg-amber-100",
     },
     {
       type: "CANCELED",
-      label: "Dibatalkan",
+      label: t("filterCanceled"),
       activeClass: "bg-zinc-950 text-white shadow-xs",
       inactiveClass: "bg-red-50 text-red-800 hover:bg-red-100",
     },

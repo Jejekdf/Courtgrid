@@ -3,6 +3,7 @@
 import { format, addDays } from "date-fns";
 import { id } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 
 interface BookingDateSelectorProps {
@@ -20,14 +21,15 @@ export function BookingDateSelector({
   tomorrowStr,
   dayAfterTomorrowStr,
 }: BookingDateSelectorProps) {
+  const t = useTranslations("dashboard.bookingFlow");
   return (
     <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-zinc-950 text-white flex items-center justify-center font-bold text-sm shrink-0">
-          <CalendarIcon className="w-5 h-5" />
+        <div className="size-10 rounded-xl bg-zinc-950 text-white flex items-center justify-center font-bold text-sm shrink-0">
+          <CalendarIcon className="size-5" />
         </div>
         <div>
-          <h2 className="text-sm font-bold text-zinc-950">Tentukan Tanggal Main</h2>
+          <h2 className="text-sm font-bold text-zinc-950">{t("dateTitle")}</h2>
           <p className="text-sm text-zinc-500 font-mono">
             {format(new Date(selectedDate), "EEEE, dd MMMM yyyy", { locale: id })}
           </p>
@@ -45,7 +47,7 @@ export function BookingDateSelector({
               : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-950"
           }`}
         >
-          Hari Ini
+          {t("today")}
         </button>
         <button
           type="button"
@@ -56,7 +58,7 @@ export function BookingDateSelector({
               : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-950"
           }`}
         >
-          Besok
+          {t("tomorrow")}
         </button>
         <button
           type="button"
@@ -67,7 +69,7 @@ export function BookingDateSelector({
               : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-950"
           }`}
         >
-          Lusa
+          {t("dayAfter")}
         </button>
         <Input
           type="date"

@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckCircle2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { Court } from "@/components/dashboard/CustomerBookingWorkspace";
 
 interface CourtSelectorProps {
@@ -14,15 +15,16 @@ export function CourtSelector({
   activeCourt,
   onSelectCourt,
 }: CourtSelectorProps) {
+  const t = useTranslations("dashboard.bookingFlow");
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-zinc-950 uppercase tracking-wider font-mono flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-          1. Pilih Lapangan Arena
+          <span className="size-2 rounded-full bg-emerald-500 animate-ping" />
+          {t("step1")}
         </h3>
         <span className="text-sm text-zinc-500 font-mono">
-          {courts.length} Arena Aktif
+          {t("activeArenas", { count: courts.length })}
         </span>
       </div>
 
@@ -42,14 +44,14 @@ export function CourtSelector({
             >
               {/* Selected Badge */}
               {isSelected && (
-                <div className="absolute top-3 right-3 px-2.5 py-1 bg-zinc-950 text-white rounded-full text-[11px] font-mono font-bold flex items-center gap-1 shadow-xs">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>DIPILIH</span>
+                <div className="absolute top-3 right-3 px-2.5 py-1 bg-zinc-950 text-white rounded-full text-[0.6875rem] font-mono font-bold flex items-center gap-1 shadow-xs">
+                  <CheckCircle2 className="size-3.5 text-emerald-400" />
+                  <span>{t("selectedBadge")}</span>
                 </div>
               )}
 
               <div className="space-y-2">
-                <span className="inline-block px-2.5 py-0.5 bg-zinc-100 text-zinc-700 border border-zinc-200 text-[11px] font-mono font-bold uppercase tracking-wider rounded-md">
+                <span className="inline-block px-2.5 py-0.5 bg-zinc-100 text-zinc-700 border border-zinc-200 text-[0.6875rem] font-mono font-bold uppercase tracking-wider rounded-md">
                   {court.type}
                 </span>
                 <h4 className="font-extrabold text-zinc-950 text-lg group-hover:text-emerald-700 transition-colors">
@@ -58,7 +60,7 @@ export function CourtSelector({
               </div>
 
               <div className="mt-5 pt-3 border-t border-zinc-100 flex items-center justify-between">
-                <span className="text-sm text-zinc-500 font-mono">Tarif Per Jam</span>
+                <span className="text-sm text-zinc-500 font-mono">{t("perHour")}</span>
                 <span className="text-base font-extrabold text-zinc-950">
                   Rp {court.pricePerHour.toLocaleString("id-ID")}
                 </span>

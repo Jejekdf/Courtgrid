@@ -8,6 +8,7 @@ import { updateAdminSettings, getSettingsAction } from "@/features/settings/acti
 import { toast } from "sonner";
 import { Save, CheckCircle2 } from "lucide-react";
 import AdminHeader from "@/components/admin/AdminHeader";
+import { useTranslations } from "next-intl";
 import { adminKeys } from "@/lib/query-keys";
 
 type Settings = {
@@ -21,6 +22,7 @@ type Settings = {
 };
 
 export default function AdminSettingsPage() {
+  const t = useTranslations("admin.settings");
   const [loading, setLoading] = useState(false);
 
   const [venueName, setVenueName] = useState("SM Sport Center - CourtGrid");
@@ -67,45 +69,45 @@ export default function AdminSettingsPage() {
     if (res.success) {
       toast.success(res.message);
     } else {
-      toast.error(res.error || "Gagal menyimpan pengaturan.");
+      toast.error(res.error || t("saveFailed"));
     }
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto text-zinc-950">
+    <div className="space-y-8 max-w-7xl 2xl:max-w-[88rem] mx-auto text-zinc-950">
       {/* Reusable Admin Header Component */}
       <AdminHeader
-        title="Pengaturan"
-        description="Konfigurasi parameter operasional arena, minimal uang muka (DP), dan durasi auto-cancel booking."
+        title={t("title")}
+        description={t("desc")}
       />
 
       <form onSubmit={handleSave} className="space-y-8 divide-y divide-zinc-200">
         {/* Section 1: Profil Venue */}
         <div className="pt-2 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <h2 className="text-sm font-bold text-zinc-950">Profil Arena</h2>
+            <h2 className="text-sm font-bold text-zinc-950">{t("venueSection")}</h2>
             <p className="text-sm text-zinc-500 mt-1 leading-relaxed">
-              Nama tempat dan kontak resmi yang ditampilkan pada katalog publik serta e-ticket.
+              {t("venueSectionDesc")}
             </p>
           </div>
           <div className="md:col-span-2 space-y-4 bg-white p-5 border border-zinc-200 rounded-xl shadow-xs">
             <Input
-              label="Nama Venue / Sports Center"
+              label={t("venueNameLabel")}
               value={venueName}
               onChange={(e) => setVenueName(e.target.value)}
-              placeholder="Contoh: SM Sport Center - CourtGrid"
+              placeholder={t("venueNamePlaceholder")}
               required
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
-                label="Jam Operasional"
+                label={t("hoursLabel")}
                 value={operationalHours}
                 onChange={(e) => setOperationalHours(e.target.value)}
                 placeholder="08:00 - 23:00 WIB"
                 required
               />
               <Input
-                label="Kontak Customer Service"
+                label={t("phoneLabel")}
                 value={contactPhone}
                 onChange={(e) => setContactPhone(e.target.value)}
                 placeholder="+62 812-3456-7890"
@@ -118,15 +120,15 @@ export default function AdminSettingsPage() {
         {/* Section 2: Kebijakan DP & Ghost Booking */}
         <div className="pt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <h2 className="text-sm font-bold text-zinc-950">Kebijakan DP & Auto-Cancel</h2>
+            <h2 className="text-sm font-bold text-zinc-950">{t("policySection")}</h2>
             <p className="text-sm text-zinc-500 mt-1 leading-relaxed">
-              Minimal persentase DP online Stripe dan durasi rilis otomatis slot menggantung (FIX-H4).
+              {t("policySectionDesc")}
             </p>
           </div>
           <div className="md:col-span-2 space-y-4 bg-white p-5 border border-zinc-200 rounded-xl shadow-xs">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
-                label="Minimal DP (%)"
+                label={t("dpLabel")}
                 type="number"
                 value={dpPercentage}
                 onChange={(e) => setDpPercentage(e.target.value)}
@@ -135,7 +137,7 @@ export default function AdminSettingsPage() {
                 required
               />
               <Input
-                label="Timeout Auto-Cancel (Menit)"
+                label={t("timeoutLabel")}
                 type="number"
                 value={autoCancelTimeout}
                 onChange={(e) => setAutoCancelTimeout(e.target.value)}
@@ -145,9 +147,15 @@ export default function AdminSettingsPage() {
               />
             </div>
             <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-sm text-zinc-600 flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <div className="leading-relaxed">
-                Reservasi <code className="font-mono font-semibold text-zinc-900">PENDING</code> tanpa Checkout Stripe yang melewati <strong className="text-zinc-900">{autoCancelTimeout} menit</strong> otomatis dibatalkan sistem.
+                {t.rich("autoCancelHint", {
+                  minutes: autoCancelTimeout,
+                  code: (chunks) => (
+                    <code className="font-mono font-semibold text-zinc-900">{chunks}</code>
+                  ),
+                  strong: (chunks) => <strong className="text-zinc-900">{chunks}</strong>,
+                })}
               </div>
             </div>
           </div>
@@ -156,14 +164,14 @@ export default function AdminSettingsPage() {
         {/* Section 3: Notifikasi Admin */}
         <div className="pt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <h2 className="text-sm font-bold text-zinc-950">Notifikasi System</h2>
+            <h2 className="text-sm font-bold text-zinc-950">{t("notifSection")}</h2>
             <p className="text-sm text-zinc-500 mt-1 leading-relaxed">
-              Alamat email penerima konfirmasi transaksi masuk dari sistem.
+              {t("notifSectionDesc")}
             </p>
           </div>
           <div className="md:col-span-2 space-y-4 bg-white p-5 border border-zinc-200 rounded-xl shadow-xs">
             <Input
-              label="Email Notifikasi Admin"
+              label={t("emailLabel")}
               type="email"
               value={notifyEmail}
               onChange={(e) => setNotifyEmail(e.target.value)}
@@ -179,9 +187,9 @@ export default function AdminSettingsPage() {
             isLoading={loading}
             disabled={loading}
             className="bg-zinc-950 hover:bg-zinc-800 text-white font-semibold px-5 h-10 text-sm rounded-lg shadow-xs"
-            leftIcon={<Save className="w-4 h-4" />}
+            leftIcon={<Save className="size-4" />}
           >
-            {loading ? "Menyimpan..." : "Simpan Perubahan"}
+            {loading ? t("savingBtn") : t("saveBtn")}
           </Button>
         </div>
       </form>

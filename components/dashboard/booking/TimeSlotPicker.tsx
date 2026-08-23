@@ -1,6 +1,7 @@
 "use client";
 
 import { Clock, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface TimeSlotPickerProps {
   courtName: string;
@@ -21,30 +22,31 @@ export function TimeSlotPicker({
   getSlotStatus,
   onToggleSlot,
 }: TimeSlotPickerProps) {
+  const t = useTranslations("dashboard.bookingFlow");
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <h3 className="text-sm font-bold text-zinc-950 uppercase tracking-wider font-mono flex items-center gap-2">
-          <Clock className="w-4 h-4 text-zinc-600" />
-          2. Pilih Jam Main ({courtName})
+          <Clock className="size-4 text-zinc-600" />
+          {t("step2", { court: courtName })}
         </h3>
 
         {/* Status Legend */}
-        <div className="flex items-center gap-3 text-[11px] font-semibold text-zinc-500 font-mono">
+        <div className="flex items-center gap-3 text-[0.6875rem] font-semibold text-zinc-500 font-mono">
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-xs bg-white border border-zinc-300"></span>{" "}
-            Kosong
+            <span className="size-2.5 rounded-xs bg-white border border-zinc-300"></span>{" "}
+            {t("legendFree")}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-xs bg-emerald-600"></span> Dipilih
+            <span className="size-2.5 rounded-xs bg-emerald-600"></span> {t("legendSelected")}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-xs bg-amber-100 border border-amber-300"></span>{" "}
-            Terisi
+            <span className="size-2.5 rounded-xs bg-amber-100 border border-amber-300"></span>{" "}
+            {t("legendTaken")}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-xs bg-zinc-200 opacity-60"></span>{" "}
-            Lewat
+            <span className="size-2.5 rounded-xs bg-zinc-200 opacity-60"></span>{" "}
+            {t("legendPast")}
           </span>
         </div>
       </div>
@@ -93,14 +95,14 @@ export function TimeSlotPicker({
                 className={btnClasses}
               >
                 <span className="font-mono text-sm">{time}</span>
-                <span className="text-[11px] block leading-tight mt-0.5 font-mono opacity-80">
+                <span className="text-[0.6875rem] block leading-tight mt-0.5 font-mono opacity-80">
                   {isPast
-                    ? "Lewat"
+                    ? t("legendPast")
                     : isSelected
-                    ? "Dipilih"
+                    ? t("legendSelected")
                     : status === "PENDING" || status === "DP_PAID"
-                    ? "Terisi"
-                    : "Kosong"}
+                    ? t("legendTaken")
+                    : t("legendFree")}
                 </span>
               </button>
             );

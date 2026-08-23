@@ -169,7 +169,7 @@ export default function LoginForm() {
             size="default"
             isLoading={form.formState.isSubmitting}
             className="w-full mt-2"
-            leftIcon={<LogIn className="w-4 h-4 text-white" />}
+            leftIcon={<LogIn className="size-4 text-white" />}
           >
             {t("submit")}
           </Button>

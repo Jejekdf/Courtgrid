@@ -1,4 +1,7 @@
+"use client";
+
 import { CalendarX } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface Reservation {
   id: string;
@@ -11,36 +14,37 @@ interface Reservation {
 }
 
 export default function RecentReservationsTable({ reservations = [] }: { reservations?: Reservation[] }) {
+  const t = useTranslations("admin.dashboard");
   const getStatusBadge = (status: Reservation["status"]) => {
     switch (status) {
       case "DP_PAID":
-        return <span className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-md">DP Paid</span>;
+        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-md">{t("statusDpPaid")}</span>;
       case "PENDING":
-        return <span className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 rounded-md">Pending</span>;
+        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 rounded-md">{t("statusPending")}</span>;
       case "DONE":
-        return <span className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 border border-zinc-200 rounded-md">Lunas</span>;
+        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 border border-zinc-200 rounded-md">{t("statusDone")}</span>;
       case "CANCELED":
-        return <span className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-red-50 text-red-600 border border-red-200 rounded-md">Canceled</span>;
+        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-red-50 text-red-600 border border-red-200 rounded-md">{t("statusCanceled")}</span>;
     }
   };
 
   return (
     <div className="bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
       <div className="px-6 py-5 border-b border-zinc-200 flex items-center justify-between">
-        <h3 className="text-lg font-medium tracking-tight text-zinc-950">Reservasi Terbaru</h3>
+        <h3 className="text-lg font-medium tracking-tight text-zinc-950">{t("recentTitle")}</h3>
         <button className="text-sm font-medium text-zinc-950 hover:text-zinc-700 transition-colors">
-          Lihat Semua &rarr;
+          {t("viewAll")} &rarr;
         </button>
       </div>
 
       {reservations.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
-          <div className="w-12 h-12 bg-zinc-50 rounded-full flex items-center justify-center mb-4">
-            <CalendarX className="w-6 h-6 text-zinc-400" />
+          <div className="size-12 bg-zinc-50 rounded-full flex items-center justify-center mb-4">
+            <CalendarX className="size-6 text-zinc-400" />
           </div>
-          <h4 className="text-base font-semibold text-zinc-950 mb-1">Tidak Ada Data</h4>
+          <h4 className="text-base font-semibold text-zinc-950 mb-1">{t("emptyTitle")}</h4>
           <p className="text-sm text-zinc-500 max-w-sm mx-auto">
-            Belum ada data reservasi pelanggan saat ini. Pesanan baru akan otomatis muncul di sini.
+            {t("emptyDesc")}
           </p>
         </div>
       ) : (

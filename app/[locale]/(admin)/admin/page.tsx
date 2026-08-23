@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import AdminHeader from "@/components/admin/AdminHeader";
 import DashboardStats from "@/components/admin/DashboardStats";
 import RecentReservationsTable from "@/components/admin/RecentReservationsTable";
@@ -31,34 +32,35 @@ type Stats = {
   }>;
 };
 
-async function fetchAdminStats(router: ReturnType<typeof useRouter>): Promise<Stats> {
+async function fetchAdminStats(router: ReturnType<typeof useRouter>, statsFailed: string): Promise<Stats> {
   const res = await getAdminStatsAction();
   if (!res.success) {
     if (res.unauthorized) {
       router.replace("/");
       throw new Error("Unauthorized");
     }
-    throw new Error(res.error || "Gagal mengambil data statistik");
+    throw new Error(res.error || statsFailed);
   }
   return res.data;
 }
 
 export default function AdminDashboardPage() {
   const router = useRouter();
+  const t = useTranslations("admin.dashboard");
 
   const { data: stats, isLoading, isError, refetch } = useQuery({
     queryKey: adminKeys.stats(),
-    queryFn: () => fetchAdminStats(router),
+    queryFn: () => fetchAdminStats(router, t("statsFailed")),
     refetchInterval: 5000,
     staleTime: 4000,
   });
 
   if (isLoading) {
     return (
-      <div className="space-y-6 max-w-7xl mx-auto">
+      <div className="space-y-6 max-w-7xl 2xl:max-w-[88rem] mx-auto">
         <AdminHeader
-          title="Dashboard"
-          description="Memuat statistik operasional..."
+          title={t("title")}
+          description={t("loadingDesc")}
         />
         <div className="animate-pulse space-y-4">
           <div className="h-24 bg-zinc-100 rounded-xl" />
@@ -70,13 +72,13 @@ export default function AdminDashboardPage() {
 
   if (isError || !stats) {
     return (
-      <div className="space-y-6 max-w-7xl mx-auto">
+      <div className="space-y-6 max-w-7xl 2xl:max-w-[88rem] mx-auto">
         <AdminHeader
-          title="Dashboard"
-          description="Gagal memuat statistik server."
+          title={t("title")}
+          description={t("errorDesc")}
           actions={
             <button onClick={() => refetch()} className="px-3 py-1.5 text-sm font-semibold bg-zinc-950 text-white rounded-lg">
-              Coba Lagi
+              {t("retry")}
             </button>
           }
         />
@@ -85,11 +87,11 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto text-zinc-950">
+    <div className="space-y-8 max-w-7xl 2xl:max-w-[88rem] mx-auto text-zinc-950">
       {/* Reusable Admin Header Component */}
       <AdminHeader
-        title="Dashboard"
-        description="Pantau statistik harian, pendapatan, dan aktivitas reservasi terbaru Anda."
+        title={t("title")}
+        description={t("desc")}
       />
 
       <DashboardStats
@@ -106,8 +108,8 @@ export default function AdminDashboardPage() {
           const isValidDate = res.date && !isNaN(new Date(res.date).getTime());
           return {
             id: res.id,
-            customerName: res.userName || "Pelanggan",
-            courtName: res.courtName || "Lapangan",
+            customerName: res.userName || t("defaultCustomer"),
+            courtName: res.courtName || t("defaultCourt"),
             date: isValidDate ? new Date(res.date).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }) : "-",
             time: res.startTime ? `${res.startTime} - ${res.endTime} WIB` : "-",
             status: (res.status || "PENDING") as "PENDING" | "DP_PAID" | "DONE" | "CANCELED",

@@ -1,19 +1,25 @@
 import { Metadata } from "next";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getCustomerReservationsDAL } from "@/features/reservations/dal";
 import { CalendarPlus } from "lucide-react";
 import ReservationList from "@/components/dashboard/ReservationList";
 import Link from "next/link";
 import PageHeader from "@/components/ui/PageHeader";
 
-export const metadata: Metadata = {
-  title: "Riwayat Booking | CourtGrid User Portal",
-  description: "Daftar riwayat pemesanan lapangan Anda di CourtGrid.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.reservations");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDesc"),
+  };
+}
 
 export default async function CustomerReservationsPage() {
   const session = await auth();
+  const t = await getTranslations("dashboard.reservations");
+  const tHome = await getTranslations("dashboard.home");
 
   if (!session || !session.user || !session.user.id) {
     redirect("/login");
@@ -38,16 +44,16 @@ export default async function CustomerReservationsPage() {
   }));
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto text-zinc-950">
+    <div className="space-y-8 max-w-7xl 2xl:max-w-[88rem] mx-auto text-zinc-950">
       {/* Unified Page Header Component */}
       <PageHeader
-        title="Riwayat Booking Lapangan"
-        description="Pantau seluruh data reservasi, jadwal main, E-Ticket QR, dan verifikasi pelunasan DP 50% via Stripe."
+        title={t("pageTitle")}
+        description={t("pageDesc")}
         actions={
           <Link href="/dashboard/book">
             <button className="px-4 py-2 text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0">
-              <CalendarPlus className="w-4 h-4" />
-              <span>Pesan Lapangan Baru</span>
+              <CalendarPlus className="size-4" />
+              <span>{tHome("newBooking")}</span>
             </button>
           </Link>
         }
@@ -57,11 +63,11 @@ export default async function CustomerReservationsPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
-            Semua Transaksi ({reservations.length})
+            {t("allCount", { count: reservations.length })}
           </span>
-          <span className="text-sm text-zinc-500 font-sans">Status Otomatis via Stripe</span>
+          <span className="text-sm text-zinc-500 font-sans">{t("stripeAuto")}</span>
         </div>
-        
+
         <ReservationList reservations={reservations} />
       </div>
     </div>

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { adminKeys } from "@/lib/query-keys";
 import { adminReservationsParsers } from "@/lib/search-params";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 type ReservationDetail = {
@@ -35,6 +36,8 @@ type ReservationDetail = {
 };
 
 export default function AdminReservationsPage() {
+  const t = useTranslations("admin.reservations");
+  const tDash = useTranslations("admin.dashboard");
   const queryClient = useQueryClient();
   const [filter, setFilter] = useQueryState("filter", adminReservationsParsers.filter.withOptions({ shallow: true }));
   const [page, setPage] = useQueryState("page", adminReservationsParsers.page.withOptions({ shallow: true }));
@@ -61,7 +64,7 @@ export default function AdminReservationsPage() {
     mutationFn: (id: string) => adminDeleteReservation(id),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: adminKeys.all });
-      toast.success(`Reservasi ${id.slice(0, 8)} berhasil dihapus.`);
+      toast.success(t("deletedToast", { id: id.slice(0, 8) }));
     },
   });
 
@@ -75,12 +78,12 @@ export default function AdminReservationsPage() {
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto text-zinc-950">
+    <div className="space-y-8 max-w-7xl 2xl:max-w-[88rem] mx-auto text-zinc-950">
       {/* Reusable Admin Header Component */}
       <div className="print:hidden">
         <AdminHeader
-          title="Reservasi"
-          description="Pantau seluruh riwayat sewa arena, cetak laporan resmi, dan lakukan pembersihan data pending."
+          title={t("title")}
+          description={t("desc")}
           actions={
             <div className="flex items-center space-x-3">
               <div className="flex items-center bg-white border border-zinc-200 rounded-lg px-2.5 py-1.5 shadow-xs">
@@ -93,9 +96,9 @@ export default function AdminReservationsPage() {
                   }}
                   className="bg-transparent text-sm text-zinc-950 font-medium focus:outline-none cursor-pointer"
                 >
-                  <option value="all">Semua Waktu</option>
-                  <option value="daily">Hari Ini</option>
-                  <option value="monthly">Bulan Ini</option>
+                  <option value="all">{t("filterAllTime")}</option>
+                  <option value="daily">{t("filterToday")}</option>
+                  <option value="monthly">{t("filterMonthly")}</option>
                 </select>
               </div>
               <button
@@ -103,7 +106,7 @@ export default function AdminReservationsPage() {
                 className="px-3.5 py-2 text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0"
               >
                 <Printer className="h-3.5 w-3.5" />
-                <span>Cetak Laporan</span>
+                <span>{t("printReport")}</span>
               </button>
             </div>
           }
@@ -114,39 +117,39 @@ export default function AdminReservationsPage() {
       <div className="bg-white rounded-xl border border-zinc-200 shadow-xs overflow-hidden print:shadow-none print:border-none print:p-0">
         <div className="hidden print:block mb-8 text-center">
           <h2 className="text-2xl font-bold text-zinc-950 uppercase">CourtGrid Official Report</h2>
-          <p className="text-sm text-zinc-500">Laporan Reservasi Lapangan – Periode: {filter.toUpperCase()}</p>
+          <p className="text-sm text-zinc-500">{t("reportPeriod", { period: filter.toUpperCase() })}</p>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs print:text-xs">
-            <thead className="bg-zinc-50/70 border-b border-zinc-200 text-[11px] uppercase font-mono tracking-wider text-zinc-500 print:bg-transparent">
+            <thead className="bg-zinc-50/70 border-b border-zinc-200 text-[0.6875rem] uppercase font-mono tracking-wider text-zinc-500 print:bg-transparent">
               <tr>
-                <th className="px-4 py-3 print:px-2">ID & Tanggal</th>
-                <th className="px-4 py-3 print:px-2">Pelanggan</th>
-                <th className="px-4 py-3 print:px-2">Lapangan & Jam</th>
-                <th className="px-4 py-3 print:px-2">Total Harga</th>
-                <th className="px-4 py-3 print:px-2">Status Pembayaran</th>
-                <th className="px-4 py-3 print:hidden text-right">Aksi</th>
+                <th className="px-4 py-3 print:px-2">{t("colIdDate")}</th>
+                <th className="px-4 py-3 print:px-2">{t("colCustomer")}</th>
+                <th className="px-4 py-3 print:px-2">{t("colCourtTime")}</th>
+                <th className="px-4 py-3 print:px-2">{t("colTotal")}</th>
+                <th className="px-4 py-3 print:px-2">{t("colPaymentStatus")}</th>
+                <th className="px-4 py-3 print:hidden text-right">{t("colAction")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100">
               {isLoading ? (
                 <tr>
                   <td colSpan={6} className="px-4 py-8 text-center text-xs text-zinc-400">
-                    Memuat data reservasi...
+                    {t("loading")}
                   </td>
                 </tr>
               ) : !Array.isArray(reservations) || reservations.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-4 py-8 text-center text-xs text-zinc-400">
-                    Tidak ada data reservasi untuk kriteria ini.
+                    {t("empty")}
                   </td>
                 </tr>
               ) : (
                 reservations.map((res) => (
                   <tr key={res.id} className="hover:bg-zinc-50/50 transition-colors print:hover:bg-transparent">
                     <td className="px-4 py-3.5 print:px-2 text-zinc-700">
-                      <div className="text-[11px] text-zinc-400 font-mono mb-0.5">{res.id.slice(0,8)}</div>
+                      <div className="text-[0.6875rem] text-zinc-400 font-mono mb-0.5">{res.id.slice(0,8)}</div>
                       <div className="font-semibold text-zinc-950">{res.date ? format(new Date(res.date), "dd MMM yyyy") : "-"}</div>
                     </td>
                     <td className="px-4 py-3.5 print:px-2">
@@ -154,7 +157,7 @@ export default function AdminReservationsPage() {
                       <div className="text-xs text-zinc-400">{res.user?.email || "-"}</div>
                     </td>
                     <td className="px-4 py-3.5 print:px-2 text-zinc-700">
-                      <div className="font-semibold text-zinc-950">{res.court?.name || "Lapangan"}</div>
+                      <div className="font-semibold text-zinc-950">{res.court?.name || tDash("defaultCourt")}</div>
                       <div className="text-xs text-zinc-400 font-mono">{res.startTime} - {res.endTime} WIB</div>
                     </td>
                     <td className="px-4 py-3.5 print:px-2 font-semibold text-zinc-950">
@@ -162,11 +165,11 @@ export default function AdminReservationsPage() {
                     </td>
                     <td className="px-4 py-3.5 print:px-2">
                       {res.status === "DP_PAID" || res.payment?.status === "VERIFIED" ? (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          DP PAID (Stripe)
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[0.6875rem] font-mono font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          {t("dpPaidBadge")}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[0.6875rem] font-mono font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200">
                           {res.status}
                         </span>
                       )}
@@ -175,10 +178,10 @@ export default function AdminReservationsPage() {
                       <button
                         onClick={() => handleDelete(res.id)}
                         className="inline-flex items-center gap-1 px-2.5 py-1 text-sm text-red-600 hover:bg-red-50 border border-red-200 rounded-md transition-colors cursor-pointer"
-                        title="Hapus data reservasi"
+                        title={t("deleteBtnTitle")}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
-                        <span>Hapus</span>
+                        <span>{t("deleteBtn")}</span>
                       </button>
                     </td>
                   </tr>
@@ -193,8 +196,7 @@ export default function AdminReservationsPage() {
       {totalPages > 1 && (
         <div className="print:hidden flex flex-col sm:flex-row items-center justify-between gap-3 px-4 sm:px-6 py-4 bg-white border border-zinc-200 rounded-xl shadow-xs">
           <div className="text-sm text-zinc-500">
-            Halaman <span className="font-semibold text-zinc-950">{page}</span> dari{" "}
-            <span className="font-semibold text-zinc-950">{totalPages}</span>
+            {t("pageOf", { page, total: totalPages })}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -203,7 +205,7 @@ export default function AdminReservationsPage() {
               disabled={page <= 1 || isFetching}
               onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
             >
-              Sebelumnya
+              {t("prevBtn")}
             </Button>
             <Button
               variant="outline"
@@ -211,7 +213,7 @@ export default function AdminReservationsPage() {
               disabled={page >= totalPages || isFetching}
               onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
             >
-              Selanjutnya
+              {t("nextBtn")}
             </Button>
           </div>
         </div>
@@ -228,13 +230,13 @@ export default function AdminReservationsPage() {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Hapus Reservasi</AlertDialogTitle>
+            <AlertDialogTitle>{t("deleteTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Apakah Anda yakin ingin menghapus reservasi/status pending ini dari database? Tindakan ini tidak dapat dibatalkan.
+              {t("deleteDesc")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancelBtn")}</AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               onClick={() => {
@@ -242,7 +244,7 @@ export default function AdminReservationsPage() {
                 setIsDeleteDialogOpen(false);
               }}
             >
-              Hapus
+              {t("deleteBtn")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

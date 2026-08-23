@@ -11,7 +11,7 @@ export default function RegisterPage() {
   const ta = useTranslations("auth");
 
   return (
-    <main className="min-h-screen w-full flex flex-row-reverse bg-background text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
+    <main className="min-h-dvh w-full flex flex-row-reverse bg-background text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
       {/* Right Panel: Auth Form */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 sm:px-12 md:px-16 xl:px-24 relative py-12">
         <div className="w-full max-w-md mx-auto space-y-8">
@@ -55,7 +55,7 @@ export default function RegisterPage() {
         
         {/* Anti-Slop Pill */}
         <div className="relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 w-max shadow-xs">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <ShieldCheck className="size-4 text-emerald-400" />
           <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">
             {ta("guaranteeSchedule")}
           </span>
@@ -63,13 +63,13 @@ export default function RegisterPage() {
 
         {/* Testimonial Quote Content */}
         <div className="relative z-10 flex flex-col justify-end max-w-lg space-y-6">
-          <Quote className="text-emerald-400 w-10 h-10 opacity-80" />
+          <Quote className="text-emerald-400 size-10 opacity-80" />
           <blockquote className="space-y-4">
             <p className="text-xl lg:text-2xl font-extrabold leading-tight text-white font-sans">
               &ldquo;{t("quote")}&rdquo;
             </p>
             <footer className="flex items-center gap-3 pt-2">
-              <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white font-mono font-bold text-sm">
+              <div className="size-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white font-mono font-bold text-sm">
                 BW
               </div>
               <div>

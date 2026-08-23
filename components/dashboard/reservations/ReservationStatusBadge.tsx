@@ -20,7 +20,7 @@ export function ReservationStatusBadge({ status }: ReservationStatusBadgeProps) 
 
   return (
     <span
-      className={`px-2.5 py-1 rounded-md text-[11px] font-mono font-bold uppercase tracking-wider border ${getBadgeClass()}`}
+      className={`px-2.5 py-1 rounded-md text-[0.6875rem] font-mono font-bold uppercase tracking-wider border ${getBadgeClass()}`}
     >
       {status.replace("_", " ")}
     </span>
@@ -38,8 +38,8 @@ export function PaymentStatusBadge({
 }: PaymentStatusBadgeProps) {
   if (isVerified) {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[0.6875rem] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+        <CheckCircle2 className="size-3 text-emerald-600" />
         VERIFIED (50% DP)
       </span>
     );
@@ -47,14 +47,14 @@ export function PaymentStatusBadge({
 
   if (reservationStatus === "CANCELED") {
     return (
-      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-red-50 text-red-700 border border-red-200">
+      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[0.6875rem] font-mono font-bold bg-red-50 text-red-700 border border-red-200">
         HANGUS / BATAL
       </span>
     );
   }
 
   return (
-    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-amber-50 text-amber-800 border border-amber-200">
+    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[0.6875rem] font-mono font-bold bg-amber-50 text-amber-800 border border-amber-200">
       UNPAID
     </span>
   );

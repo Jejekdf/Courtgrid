@@ -1,19 +1,24 @@
 import { Metadata } from "next";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { User, Key, ShieldCheck } from "lucide-react";
 import ProfileForm from "@/components/dashboard/ProfileForm";
 import PasswordForm from "@/components/dashboard/PasswordForm";
 import PageHeader from "@/components/ui/PageHeader";
 
-export const metadata: Metadata = {
-  title: "Profil & Keamanan | CourtGrid",
-  description: "Kelola profil pengguna dan keamanan kata sandi akun Anda.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.settings");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDesc"),
+  };
+}
 
 export default async function CustomerSettingsPage() {
   const session = await auth();
+  const t = await getTranslations("dashboard.settings");
 
   if (!session || !session.user || !session.user.id) {
     redirect("/login");
@@ -31,23 +36,23 @@ export default async function CustomerSettingsPage() {
   const isOAuth = user.accounts.length > 0;
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto text-zinc-950">
+    <div className="space-y-8 max-w-7xl 2xl:max-w-[88rem] mx-auto text-zinc-950">
       {/* Clean Shared PageHeader */}
       <PageHeader
-        title="Pengaturan Profil & Keamanan"
-        description="Perbarui identitas akun pengguna, foto profil, dan kata sandi Anda."
+        title={t("pageTitle")}
+        description={t("pageDesc")}
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         {/* Profile Card */}
         <div className="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-xs space-y-5">
           <div className="flex items-center gap-2.5 border-b border-zinc-100 pb-4">
-            <div className="w-8 h-8 rounded-lg bg-zinc-950 text-white flex items-center justify-center font-bold text-xs">
-              <User className="w-4 h-4" />
+            <div className="size-8 rounded-lg bg-zinc-950 text-white flex items-center justify-center font-bold text-xs">
+              <User className="size-4" />
             </div>
             <div>
-              <h2 className="text-sm font-extrabold text-zinc-950">Informasi Pengguna</h2>
-              <p className="text-sm text-zinc-400 font-sans">Identitas & Foto Profil</p>
+              <h2 className="text-sm font-extrabold text-zinc-950">{t("profileTitle")}</h2>
+              <p className="text-sm text-zinc-400 font-sans">{t("profileSub")}</p>
             </div>
           </div>
           <ProfileForm user={{ name: user.name || "", email: user.email || "", image: user.image || "" }} />
@@ -57,12 +62,12 @@ export default async function CustomerSettingsPage() {
         {!isOAuth ? (
           <div className="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-xs space-y-5">
             <div className="flex items-center gap-2.5 border-b border-zinc-100 pb-4">
-              <div className="w-8 h-8 rounded-lg bg-zinc-950 text-white flex items-center justify-center font-bold text-xs">
-                <Key className="w-4 h-4" />
+              <div className="size-8 rounded-lg bg-zinc-950 text-white flex items-center justify-center font-bold text-xs">
+                <Key className="size-4" />
               </div>
               <div>
-                <h2 className="text-sm font-extrabold text-zinc-950">Keamanan Kata Sandi</h2>
-                <p className="text-sm text-zinc-400 font-sans">Pembaruan Password Berkala</p>
+                <h2 className="text-sm font-extrabold text-zinc-950">{t("passwordTitle")}</h2>
+                <p className="text-sm text-zinc-400 font-sans">{t("passwordSub")}</p>
               </div>
             </div>
             <PasswordForm />
@@ -70,18 +75,18 @@ export default async function CustomerSettingsPage() {
         ) : (
           <div className="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-xs space-y-4">
             <div className="flex items-center gap-2.5 border-b border-zinc-100 pb-4">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">
-                <ShieldCheck className="w-4 h-4" />
+              <div className="size-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">
+                <ShieldCheck className="size-4" />
               </div>
               <div>
-                <h2 className="text-sm font-extrabold text-zinc-950">Penyedia Otentikasi (OAuth)</h2>
-                <p className="text-sm text-zinc-400 font-mono">Google / Facebook Single Sign-On</p>
+                <h2 className="text-sm font-extrabold text-zinc-950">{t("oauthTitle")}</h2>
+                <p className="text-sm text-zinc-400 font-mono">{t("oauthSub")}</p>
               </div>
             </div>
             <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-2">
-              <span className="text-xs font-bold text-zinc-950 block">Google / Facebook Connected</span>
+              <span className="text-xs font-bold text-zinc-950 block">{t("oauthConnected")}</span>
               <p className="text-sm text-zinc-500 leading-relaxed font-mono">
-                Anda terhubung melalui akun SSO. Keamanan kata sandi dikelola langsung oleh penyedia autentikasi eksternal Anda.
+                {t("oauthDesc")}
               </p>
             </div>
           </div>

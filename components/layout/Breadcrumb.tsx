@@ -46,7 +46,7 @@ export default function Breadcrumb({ items, locale = "id" }: BreadcrumbProps) {
             return (
               <li key={index} className="flex items-center gap-1.5">
                 {index > 0 && (
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500 shrink-0" aria-hidden="true" />
+                  <ChevronRight className="size-3.5 text-zinc-500 shrink-0" aria-hidden="true" />
                 )}
                 {item.href && !isLast ? (
                   <Link

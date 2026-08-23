@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Menu, PanelLeftClose, PanelLeft } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import { adminGetNotifications } from "@/features/admin/actions";
 import { adminKeys } from "@/lib/query-keys";
@@ -20,6 +21,7 @@ export default function AdminTopbar({
   onToggleSidebar,
 }: AdminTopbarProps) {
   const { data: session } = useSession();
+  const t = useTranslations("admin.topbar");
 
   const userName = session?.user?.name || "Admin";
   const userInitial = userName.charAt(0).toUpperCase();
@@ -38,9 +40,9 @@ export default function AdminTopbar({
         <button
           onClick={onMenuClick}
           className="md:hidden p-2 -ml-2 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors"
-          aria-label="Buka menu"
+          aria-label={t("openSidebar")}
         >
-          <Menu className="w-5 h-5" />
+          <Menu className="size-5" />
         </button>
 
         {/* Desktop Sidebar Toggle Button */}
@@ -48,12 +50,12 @@ export default function AdminTopbar({
           <button
             onClick={onToggleSidebar}
             className="hidden md:flex p-2 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors"
-            aria-label={isSidebarOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+            aria-label={isSidebarOpen ? t("closeSidebar") : t("openSidebar")}
           >
             {isSidebarOpen ? (
-              <PanelLeftClose className="w-4 h-4" />
+              <PanelLeftClose className="size-4" />
             ) : (
-              <PanelLeft className="w-4 h-4" />
+              <PanelLeft className="size-4" />
             )}
           </button>
         )}
@@ -69,7 +71,7 @@ export default function AdminTopbar({
         <div className="h-4 w-px bg-zinc-200 hidden sm:block" />
 
         <div className="flex items-center gap-2.5 p-1 pr-2 hover:bg-zinc-100 rounded-lg transition-colors border border-transparent hover:border-zinc-200">
-          <div className="w-7 h-7 rounded-full bg-zinc-950 flex items-center justify-center text-white text-xs font-bold shrink-0">
+          <div className="size-7 rounded-full bg-zinc-950 flex items-center justify-center text-white text-xs font-bold shrink-0">
             {userInitial}
           </div>
           <div className="hidden sm:flex flex-col items-start">
@@ -77,7 +79,7 @@ export default function AdminTopbar({
               {userName}
             </span>
             <span className="text-xs text-zinc-400 mt-0.5 leading-none font-mono">
-              Superadmin
+              {t("superadminRole")}
             </span>
           </div>
         </div>

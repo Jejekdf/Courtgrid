@@ -100,7 +100,7 @@ export default async function FAQPage({
   ];
 
   return (
-    <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 bg-[var(--background)] text-zinc-950">
+    <div className="min-h-dvh pt-8 pb-20 px-4 sm:px-6 bg-[var(--background)] text-zinc-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
@@ -110,8 +110,8 @@ export default async function FAQPage({
 
         {/* Page Header */}
         <header className="border-b border-zinc-200/80 pb-6 space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-600 shadow-xs">
-            <HelpCircle className="w-3.5 h-3.5 text-zinc-950" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 text-[0.6875rem] font-mono font-bold uppercase tracking-wider text-zinc-600 shadow-xs">
+            <HelpCircle className="size-3.5 text-zinc-950" />
             <span>{t("badge")}</span>
           </div>
           <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950">

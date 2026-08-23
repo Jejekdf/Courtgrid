@@ -241,7 +241,7 @@ export default function RegisterForm() {
             size="default"
             isLoading={form.formState.isSubmitting}
             className="w-full mt-2"
-            leftIcon={<UserPlus className="w-4 h-4 text-white" />}
+            leftIcon={<UserPlus className="size-4 text-white" />}
           >
             {t("submit")}
           </Button>

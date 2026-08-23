@@ -18,12 +18,14 @@ export default function ProfileForm({
 }: {
   user: { name: string; email: string; image: string };
 }) {
+  const tVal = useTranslations("validation");
+  const tForm = useTranslations("dashboard.forms");
+  const tAuth = useTranslations("auth");
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(user.image || null);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const tVal = useTranslations("validation");
 
   const {
     register,
@@ -62,12 +64,12 @@ export default function ProfileForm({
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error("File harus berupa gambar (JPG/PNG/WebP).");
+      toast.error(tVal("imageInvalidType"));
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      toast.error("Ukuran file maksimal 2MB.");
+      toast.error(tVal("imageTooLarge"));
       return;
     }
 
@@ -113,18 +115,18 @@ export default function ProfileForm({
               width={64}
               height={64}
               unoptimized
-              className="w-16 h-16 rounded-2xl object-cover border border-zinc-200 shadow-xs"
+              className="size-16 rounded-2xl object-cover border border-zinc-200 shadow-xs"
             />
           ) : (
-            <div className="w-16 h-16 rounded-2xl bg-zinc-950 text-white font-bold flex items-center justify-center text-base shadow-xs">
+            <div className="size-16 rounded-2xl bg-zinc-950 text-white font-bold flex items-center justify-center text-base shadow-xs">
               {userInitial}
             </div>
           )}
           <div className="absolute inset-0 rounded-2xl bg-black/40 opacity-0 group-hover-fine:opacity-100 flex items-center justify-center transition-opacity">
             {isUploadingAvatar ? (
-              <Loader2 className="w-5 h-5 text-white animate-spin" />
+              <Loader2 className="size-5 text-white animate-spin" />
             ) : (
-              <Camera className="w-5 h-5 text-white" />
+              <Camera className="size-5 text-white" />
             )}
           </div>
         </button>
@@ -138,31 +140,31 @@ export default function ProfileForm({
         <div>
           <p className="text-sm font-extrabold text-zinc-950">{user.name || "Pelanggan"}</p>
           <p className="text-sm text-zinc-400 font-mono">{user.email}</p>
-          <p className="text-sm text-zinc-400 mt-1 font-mono">Klik foto untuk mengunggah avatar</p>
+          <p className="text-sm text-zinc-400 mt-1 font-mono">{tForm("avatarHint")}</p>
         </div>
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="name" className="text-xs font-medium uppercase tracking-wider text-zinc-500 font-mono">Nama Lengkap</Label>
+        <Label htmlFor="name" className="text-xs font-medium uppercase tracking-wider text-zinc-500 font-mono">{tForm("fullName")}</Label>
         <Input
           id="name"
           {...register("name")}
-          placeholder="Masukkan Nama Lengkap Anda"
+          placeholder={tAuth("register.namaPlaceholder")}
           error={errors.name?.message}
-          leftIcon={<User className="w-4 h-4 text-zinc-400" />}
+          leftIcon={<User className="size-4 text-zinc-400" />}
           className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
         />
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-zinc-500 font-mono">Alamat Email</Label>
+        <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-zinc-500 font-mono">{tForm("email")}</Label>
         <Input
           id="email"
           type="email"
           {...register("email")}
           placeholder="nama@email.com"
           error={errors.email?.message}
-          leftIcon={<Mail className="w-4 h-4 text-zinc-400" />}
+          leftIcon={<Mail className="size-4 text-zinc-400" />}
           className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
         />
       </div>
@@ -176,9 +178,9 @@ export default function ProfileForm({
         isLoading={loading || isSubmitting}
         disabled={loading || isSubmitting || !isValid}
         className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold h-11 text-sm rounded-xl shadow-xs cursor-pointer"
-        leftIcon={<Save className="w-4 h-4 text-white" />}
+        leftIcon={<Save className="size-4 text-white" />}
       >
-        Simpan Profil
+        {tForm("saveProfile")}
       </Button>
     </form>
   );

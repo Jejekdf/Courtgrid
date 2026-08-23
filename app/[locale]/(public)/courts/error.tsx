@@ -12,7 +12,7 @@ export default function CourtsError({
 }) {
   console.error("Courts page error:", error);
   return (
-    <div className="max-w-7xl mx-auto px-6 py-24">
+    <div className="max-w-7xl 2xl:max-w-[88rem] mx-auto px-6 py-24">
       <div className="flex flex-col items-center justify-center text-center gap-4 bg-zinc-50/50 border border-dashed border-zinc-200 rounded-2xl py-16 px-6">
         <div className="h-12 w-12 rounded-xl bg-red-100 text-red-600 flex items-center justify-center">
           <AlertTriangle className="h-6 w-6" />

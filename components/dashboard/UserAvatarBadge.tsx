@@ -21,10 +21,10 @@ export function UserAvatarBadge({
             alt={userName}
             width={28}
             height={28}
-            className="w-7 h-7 rounded-full object-cover shrink-0"
+            className="size-7 rounded-full object-cover shrink-0"
           />
         ) : (
-          <div className="w-7 h-7 rounded-full bg-zinc-950 flex items-center justify-center text-white text-xs font-bold shrink-0">
+          <div className="size-7 rounded-full bg-zinc-950 flex items-center justify-center text-white text-xs font-bold shrink-0">
             {userInitial}
           </div>
         )}

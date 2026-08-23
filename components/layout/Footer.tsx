@@ -23,7 +23,7 @@ export default function Footer() {
 
   return (
     <footer className="w-full bg-white border-t border-zinc-200/80 mt-auto text-zinc-950">
-      <div className="max-w-7xl mx-auto px-6 py-12 md:py-16">
+      <div className="max-w-7xl 2xl:max-w-[88rem] mx-auto px-6 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
           {/* Brand Column */}
           <div className="md:col-span-4 lg:col-span-4 flex flex-col gap-4">
@@ -43,8 +43,8 @@ export default function Footer() {
               {t("tagline")}
             </p>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-200 bg-emerald-50 w-max">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="text-[11px] font-mono font-bold text-emerald-800 uppercase tracking-wider">
+              <ShieldCheck className="size-3.5 text-emerald-600" />
+              <span className="text-[0.6875rem] font-mono font-bold text-emerald-800 uppercase tracking-wider">
                 {t("antiPalkor")}
               </span>
             </div>
@@ -58,7 +58,7 @@ export default function Footer() {
               </span>
               <address className="not-italic flex flex-col gap-3 text-sm text-zinc-600">
                 <div className="flex items-start gap-2.5">
-                  <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-zinc-500" aria-hidden="true" />
+                  <MapPin className="size-4 mt-0.5 shrink-0 text-zinc-500" aria-hidden="true" />
                   <span>{t("address")}</span>
                 </div>
                 <a
@@ -66,7 +66,7 @@ export default function Footer() {
                   className="flex items-center gap-2.5 hover:text-zinc-950 transition-colors w-max"
                   aria-label="Telepon CourtGrid"
                 >
-                  <Phone className="w-4 h-4 shrink-0 text-zinc-500" aria-hidden="true" />
+                  <Phone className="size-4 shrink-0 text-zinc-500" aria-hidden="true" />
                   <span>+62 877 4628 8262</span>
                 </a>
                 <a
@@ -74,7 +74,7 @@ export default function Footer() {
                   className="flex items-center gap-2.5 hover:text-zinc-950 transition-colors w-max"
                   aria-label="Email CourtGrid"
                 >
-                  <Mail className="w-4 h-4 shrink-0 text-zinc-500" aria-hidden="true" />
+                  <Mail className="size-4 shrink-0 text-zinc-500" aria-hidden="true" />
                   <span>info@courtgrid.com</span>
                 </a>
               </address>

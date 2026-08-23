@@ -9,7 +9,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-zinc-50/50">
+    <div className="flex h-svh overflow-hidden bg-zinc-50/50">
       <UserSidebar isSidebarOpen={isSidebarOpen} />
       <div className="flex flex-1 flex-col overflow-hidden">
         <UserTopbar

@@ -60,15 +60,15 @@ export default async function TermsPage({
           </p>
           <ul className="divide-y divide-zinc-200 border-y border-zinc-200">
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s1Item1")}</span>
             </li>
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s1Item2")}</span>
             </li>
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s1Item3")}</span>
             </li>
           </ul>
@@ -87,11 +87,11 @@ export default async function TermsPage({
           </p>
           <ul className="divide-y divide-zinc-200 border-y border-zinc-200">
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s2Item1")}</span>
             </li>
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s2Item2")}</span>
             </li>
           </ul>
@@ -108,11 +108,11 @@ export default async function TermsPage({
           </p>
           <ul className="divide-y divide-zinc-200 border-y border-zinc-200">
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s3Item1")}</span>
             </li>
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s3Item2")}</span>
             </li>
           </ul>
@@ -129,19 +129,19 @@ export default async function TermsPage({
           </p>
           <ul className="divide-y divide-zinc-200 border-y border-zinc-200">
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s4Item1")}</span>
             </li>
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s4Item2")}</span>
             </li>
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s4Item3")}</span>
             </li>
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s4Item4")}</span>
             </li>
           </ul>
@@ -158,15 +158,15 @@ export default async function TermsPage({
           </p>
           <ul className="divide-y divide-zinc-200 border-y border-zinc-200">
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s5Item1")}</span>
             </li>
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s5Item2")}</span>
             </li>
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s5Item3")}</span>
             </li>
           </ul>
@@ -183,15 +183,15 @@ export default async function TermsPage({
           </p>
           <ul className="divide-y divide-zinc-200 border-y border-zinc-200">
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s6Item1")}</span>
             </li>
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s6Item2")}</span>
             </li>
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s6Item3")}</span>
             </li>
           </ul>
@@ -208,11 +208,11 @@ export default async function TermsPage({
           </p>
           <ul className="divide-y divide-zinc-200 border-y border-zinc-200">
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s7Item1")}</span>
             </li>
             <li className="py-3 flex items-start gap-3 text-sm text-zinc-700">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0 mt-0.5" />
               <span>{t("s7Item2")}</span>
             </li>
           </ul>
@@ -233,19 +233,19 @@ export default async function TermsPage({
   ];
 
   return (
-    <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 bg-[var(--background)] text-zinc-950">
+    <div className="min-h-dvh pt-8 pb-20 px-4 sm:px-6 bg-[var(--background)] text-zinc-950">
       <PageWrapper className="max-w-4xl mx-auto space-y-10">
         <Breadcrumb items={breadcrumbItems} locale={locale} />
         {/* Document Header */}
         <header className="border-b border-zinc-200/80 pb-8 space-y-4">
 
           <div className="flex flex-wrap items-center gap-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-600">
-              <FileText className="w-3.5 h-3.5 text-zinc-950" />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 text-[0.6875rem] font-mono font-bold uppercase tracking-wider text-zinc-600">
+              <FileText className="size-3.5 text-zinc-950" />
               <span>{t("badge")}</span>
             </div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 text-[11px] font-mono text-zinc-600">
-              <Clock className="w-3.5 h-3.5 text-zinc-500" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 text-[0.6875rem] font-mono text-zinc-600">
+              <Clock className="size-3.5 text-zinc-500" />
               <span>{t("readingTime")}</span>
             </div>
             <div className="text-xs font-medium uppercase tracking-wider text-zinc-500 py-1.5">
@@ -269,7 +269,7 @@ export default async function TermsPage({
             <ul className="space-y-2">
               {summaryItems.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2.5 text-sm text-zinc-600">
-                  <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 mt-2 shrink-0" />
+                  <span className="size-1.5 rounded-full bg-zinc-400 mt-2 shrink-0" />
                   <span>{item}</span>
                 </li>
               ))}

@@ -10,7 +10,7 @@ export default function ForgotPasswordPage() {
   const t = useTranslations("auth.forgot");
 
   return (
-    <main className="min-h-screen w-full flex bg-white text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
+    <main className="min-h-dvh w-full flex bg-white text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
       {/* Left Panel: Form */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-16 md:px-24 xl:px-32 relative">
         <Link 
@@ -24,7 +24,7 @@ export default function ForgotPasswordPage() {
           {/* Header Branding */}
           <div className="flex flex-col space-y-3">
             <Link href="/" className="flex items-center gap-2.5 mb-2 group w-max outline-none">
-              <Image src="/logo.svg" alt="CourtGrid Logo" width={32} height={32} className="w-8 h-8 rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
+              <Image src="/logo.svg" alt="CourtGrid Logo" width={32} height={32} className="size-8 rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
               <span className="text-xl font-extrabold tracking-tight text-zinc-950">CourtGrid</span>
             </Link>
             <h1 className="text-3xl font-bold tracking-tight text-zinc-950">
@@ -51,13 +51,13 @@ export default function ForgotPasswordPage() {
         <div className="absolute top-[20%] right-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-500/20 blur-[100px] pointer-events-none" />
 
         <div className="relative z-10 flex flex-col justify-end h-full max-w-xl">
-          <Quote className="text-emerald-500 w-12 h-12 mb-6 opacity-80" />
+          <Quote className="text-emerald-500 size-12 mb-6 opacity-80" />
           <blockquote className="space-y-6">
             <p className="text-2xl lg:text-3xl font-medium leading-tight text-white">
               &ldquo;{t("quote")}&rdquo;
             </p>
             <footer className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-zinc-800 border-2 border-zinc-700 flex items-center justify-center text-white font-bold text-lg">
+              <div className="size-12 rounded-full bg-zinc-800 border-2 border-zinc-700 flex items-center justify-center text-white font-bold text-lg">
                 CG
               </div>
               <div>

@@ -26,10 +26,10 @@ export default async function PaymentCancelPage({
   const t = await getTranslations({ locale: locale as "id" | "en", namespace: "cancel" });
 
   return (
-    <main className="min-h-screen w-full flex items-center justify-center bg-[var(--background)] px-4">
+    <main className="min-h-dvh w-full flex items-center justify-center bg-[var(--background)] px-4">
       <div className="max-w-md w-full space-y-6 text-center">
-        <div className="mx-auto w-16 h-16 rounded-full bg-red-100/80 flex items-center justify-center">
-          <XCircle className="w-8 h-8 text-red-600" />
+        <div className="mx-auto size-16 rounded-full bg-red-100/80 flex items-center justify-center">
+          <XCircle className="size-8 text-red-600" />
         </div>
         <div className="space-y-2">
           <h1 className="text-2xl font-extrabold text-zinc-950 tracking-tight">

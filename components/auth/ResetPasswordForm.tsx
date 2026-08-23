@@ -50,7 +50,7 @@ export default function ResetPasswordForm() {
   if (!token) {
     return (
       <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 flex items-start gap-2">
-        <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+        <AlertCircle className="size-5 shrink-0 mt-0.5" />
         <p>{t("toastInvalidToken")}</p>
       </div>
     );

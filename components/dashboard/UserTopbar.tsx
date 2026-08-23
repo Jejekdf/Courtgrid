@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PanelLeftClose, PanelLeft } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import NotificationCenter, {
   type NotificationItem,
@@ -20,13 +21,15 @@ export function UserTopbar({
   onToggleSidebar,
 }: UserTopbarProps) {
   const { data: session } = useSession();
+  const tToggle = useTranslations("dashboard.topbar");
+  const tHome = useTranslations("dashboard.home");
 
   // Notification State
   const [notifications] = useState<NotificationItem[]>([
     {
       id: "notif-1",
-      title: "Pemesanan Lapangan",
-      message: "Cek jadwal main terbaru dan E-Ticket QR Anda.",
+      title: tHome("notifTitle"),
+      message: tHome("notifMessage"),
       time: new Date().toISOString(),
       link: "/dashboard/reservations",
     },
@@ -47,12 +50,12 @@ export function UserTopbar({
           <button
             onClick={onToggleSidebar}
             className="hidden md:flex p-2 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
-            aria-label={isSidebarOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+            aria-label={isSidebarOpen ? tToggle("closeSidebar") : tToggle("openSidebar")}
           >
             {isSidebarOpen ? (
-              <PanelLeftClose className="w-4 h-4" />
+              <PanelLeftClose className="size-4" />
             ) : (
-              <PanelLeft className="w-4 h-4" />
+              <PanelLeft className="size-4" />
             )}
           </button>
         )}

@@ -1,0 +1,12 @@
+{
+  // Tailwind v4: @import "tailwindcss", @theme, @custom-variant are valid
+  // VS Code built-in CSS linter doesn't know them → silence unknownAtRules
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "less.lint.unknownAtRules": "ignore",
+  // Tailwind IntelliSense v4 (Brase) — ensure v4 config picked up via postcss
+  "tailwindCSS.experimental.configFile": null,
+  "editor.quickSuggestions": {
+    "strings": true
+  }
+}

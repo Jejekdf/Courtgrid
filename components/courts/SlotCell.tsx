@@ -1,18 +1,8 @@
 "use client";
 
 import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
 import type { AvailabilitySlot, SlotStatus } from "@/lib/api/courts";
-
-function slotLabel(status: SlotStatus): string {
-  switch (status) {
-    case "PAST":
-      return "Lewat";
-    case "BOOKED":
-      return "Terisi";
-    case "FREE":
-      return "Tersedia";
-  }
-}
 
 function slotStyle(status: SlotStatus, isSelected: boolean): string {
   if (status === "FREE") {
@@ -31,7 +21,15 @@ interface SlotCellProps {
 }
 
 export function SlotCell({ slot, isSelected, onSelect }: SlotCellProps) {
+  const t = useTranslations("courts");
   const isDisabled = slot.status !== "FREE";
+
+  const statusLabel =
+    slot.status === "PAST"
+      ? t("slotPast")
+      : slot.status === "BOOKED"
+        ? t("slotBooked")
+        : t("slotFree");
 
   return (
     <motion.button
@@ -46,10 +44,10 @@ export function SlotCell({ slot, isSelected, onSelect }: SlotCellProps) {
         slot.status,
         isSelected
       )}`}
-      aria-label={`${slot.startTime} - ${slotLabel(slot.status)}`}
+      aria-label={`${slot.startTime} - ${statusLabel}`}
     >
       <span className="font-semibold tabular-nums">{slot.startTime}</span>
-      <span className="text-[11px] opacity-75">{slotLabel(slot.status)}</span>
+      <span className="text-[0.6875rem] opacity-75">{statusLabel}</span>
     </motion.button>
   );
 }

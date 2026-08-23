@@ -1,6 +1,7 @@
 "use client";
 
 import { CalendarCheck, Box, Clock, Wallet } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface DashboardStatsProps {
   totalReservations: number;
@@ -15,6 +16,7 @@ export default function DashboardStats({
   activeCourts,
   pendingCount = 0,
 }: DashboardStatsProps) {
+  const t = useTranslations("admin.dashboard");
   const formattedRevenue = new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
@@ -24,27 +26,27 @@ export default function DashboardStats({
 
   const stats = [
     {
-      title: "Total Reservasi",
+      title: t("statReservations"),
       value: totalReservations.toString(),
-      sub: "Semua Status",
+      sub: t("statReservationsSub"),
       icon: CalendarCheck,
     },
     {
-      title: "Total Pendapatan",
+      title: t("statRevenue"),
       value: formattedRevenue,
-      sub: "DP Paid & Lunas",
+      sub: t("statRevenueSub"),
       icon: Wallet,
     },
     {
-      title: "Lapangan Aktif",
+      title: t("statCourts"),
       value: activeCourts.toString(),
-      sub: "Siap Disewa",
+      sub: t("statCourtsSub"),
       icon: Box,
     },
     {
-      title: "Menunggu DP",
+      title: t("statPending"),
       value: pendingCount.toString(),
-      sub: "Status Pending",
+      sub: t("statPendingSub"),
       icon: Clock,
     },
   ];
@@ -59,10 +61,10 @@ export default function DashboardStats({
             className="p-4 bg-zinc-50 rounded-xl border border-zinc-200 space-y-1"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+              <span className="text-[0.6875rem] font-mono font-bold uppercase tracking-wider text-zinc-400">
                 {stat.sub}
               </span>
-              <Icon className="w-4 h-4 text-zinc-950" />
+              <Icon className="size-4 text-zinc-950" />
             </div>
             <p className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950">
               {stat.value}

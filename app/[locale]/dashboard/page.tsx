@@ -1,14 +1,18 @@
 import { Metadata } from "next";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/features/auth/dal";
 import { getCustomerReservationsDAL } from "@/features/reservations/dal";
 import CustomerDashboardContent from "@/components/dashboard/CustomerDashboardContent";
 
-export const metadata: Metadata = {
-  title: "Dashboard Pelanggan | CourtGrid",
-  description: "Area kerja dan dasbor pelanggan CourtGrid.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.home");
+  return {
+    title: `${t("metaTitle")} | CourtGrid`,
+    description: t("metaDesc"),
+  };
+}
 
 export default async function CustomerDashboardPage() {
   const session = await auth();

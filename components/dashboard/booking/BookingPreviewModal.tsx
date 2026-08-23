@@ -3,6 +3,7 @@
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { ShieldCheck } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -40,6 +41,7 @@ export function BookingPreviewModal({
   onConfirm,
   isLoading,
 }: BookingPreviewModalProps) {
+  const t = useTranslations("dashboard.bookingFlow");
   if (!activeCourt || selectedTimeSlots.length === 0) return null;
 
   const sortedSlots = [...selectedTimeSlots].sort();
@@ -54,55 +56,55 @@ export function BookingPreviewModal({
       <DialogContent className="sm:max-w-md rounded-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-lg font-extrabold text-zinc-950">
-            <ShieldCheck className="w-5 h-5 text-emerald-600" />
-            <span>Konfirmasi & Pratinjau Booking</span>
+            <ShieldCheck className="size-5 text-emerald-600" />
+            <span>{t("previewTitle")}</span>
           </DialogTitle>
           <DialogDescription className="text-sm text-zinc-500">
-            Periksa kembali rincian reservasi lapangan Anda sebelum melanjutkan ke pembayaran DP 50% via Stripe.
+            {t("previewDesc")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-5 pt-2">
           <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4 space-y-2.5 text-sm">
             <div className="flex justify-between border-b border-zinc-200/60 pb-2">
-              <span className="text-zinc-500 font-mono">Arena Lapangan:</span>
+              <span className="text-zinc-500 font-mono">{t("courtLabel")}</span>
               <span className="font-bold text-zinc-950">
                 {activeCourt.name} ({activeCourt.type})
               </span>
             </div>
             <div className="flex justify-between border-b border-zinc-200/60 pb-2">
-              <span className="text-zinc-500 font-mono">Tanggal Main:</span>
+              <span className="text-zinc-500 font-mono">{t("dateLabel")}</span>
               <span className="font-bold text-zinc-950 font-mono">
                 {format(new Date(selectedDate), "EEEE, dd MMMM yyyy", { locale: id })}
               </span>
             </div>
             <div className="flex justify-between border-b border-zinc-200/60 pb-2">
-              <span className="text-zinc-500 font-mono">Jam Sesi:</span>
+              <span className="text-zinc-500 font-mono">{t("sessionLabel")}</span>
               <span className="font-mono font-bold text-zinc-950">
                 {startSlot} - {`${endHour}:00`} WIB
               </span>
             </div>
             {voucherCode.trim() && (
               <div className="flex justify-between border-b border-zinc-200/60 pb-2">
-                <span className="text-zinc-500 font-mono">Voucher Diskon:</span>
+                <span className="text-zinc-500 font-mono">{t("voucherApplied")}</span>
                 <span className="font-mono font-bold text-emerald-600">
                   {voucherCode.trim()}
                 </span>
               </div>
             )}
             <div className="flex justify-between pt-1 text-sm font-bold text-zinc-950">
-              <span>Total Biaya Sewa:</span>
+              <span>{t("totalLabel")}</span>
               <span>Rp {totalPrice.toLocaleString("id-ID")}</span>
             </div>
           </div>
 
           <div className="bg-zinc-950 text-white rounded-xl p-4 space-y-2">
             <div className="flex justify-between items-center text-sm font-bold text-emerald-400 font-mono">
-              <span>Wajib DP 50% (Stripe Online):</span>
+              <span>{t("dpStripeLabel")}</span>
               <span>Rp {dpAmount.toLocaleString("id-ID")}</span>
             </div>
             <div className="flex justify-between items-center text-sm text-zinc-300 pt-1 border-t border-zinc-800 font-mono">
-              <span>Sisa Pelunasan di GOR:</span>
+              <span>{t("cashRemaining")}</span>
               <span className="font-bold text-zinc-200">
                 Rp {remainingCash.toLocaleString("id-ID")}
               </span>
@@ -115,7 +117,7 @@ export function BookingPreviewModal({
               onClick={() => onOpenChange(false)}
               className="flex-1 text-sm cursor-pointer rounded-xl"
             >
-              Batal / Kembali
+              {t("backBtn")}
             </Button>
             <Button
               onClick={onConfirm}
@@ -123,7 +125,7 @@ export function BookingPreviewModal({
               disabled={isLoading}
               className="flex-1 bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-sm cursor-pointer rounded-xl"
             >
-              Lanjut Bayar DP
+              {t("payNowBtn")}
             </Button>
           </div>
         </div>

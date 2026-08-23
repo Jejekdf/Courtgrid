@@ -56,7 +56,7 @@ export default function CourtCatalog() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-16 space-y-10 text-zinc-950">
+    <div className="max-w-7xl 2xl:max-w-[88rem] mx-auto px-6 py-16 space-y-10 text-zinc-950">
       {/* Header Catalog */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
         <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
@@ -100,7 +100,7 @@ export default function CourtCatalog() {
             onChange={(e) => setSearchDraft(e.target.value)}
             placeholder={t("searchPlaceholder")}
             containerClassName="w-full sm:w-72"
-            leftIcon={<Search className="w-4 h-4 text-zinc-400" />}
+            leftIcon={<Search className="size-4 text-zinc-400" />}
             className="h-11 text-sm bg-zinc-50 border-zinc-200 rounded-xl"
           />
           <button

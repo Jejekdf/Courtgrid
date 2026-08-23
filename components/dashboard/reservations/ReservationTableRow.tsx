@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { safeFormatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { XCircle, ArrowUpRight, Copy, Check } from "lucide-react";
@@ -22,6 +23,7 @@ export function ReservationTableRow({
   onCancel,
   isCancelling,
 }: ReservationTableRowProps) {
+  const t = useTranslations("dashboard.reservations");
   const payStatus = res.payment?.status || "PENDING";
   const isVerified = res.status === "DP_PAID" || payStatus === "VERIFIED";
 
@@ -30,7 +32,7 @@ export function ReservationTableRow({
       <td className="px-5 py-4 font-bold text-zinc-950">
         <div className="flex items-center gap-2">
           <span
-            className={`w-2 h-2 rounded-full ${
+            className={`size-2 rounded-full ${
               isVerified
                 ? "bg-emerald-500"
                 : res.status === "PENDING"
@@ -43,12 +45,12 @@ export function ReservationTableRow({
             type="button"
             onClick={() => onCopyId(res.id)}
             className="p-1 text-zinc-400 hover:text-zinc-950 rounded transition-colors cursor-pointer"
-            aria-label="Salin ID Booking"
+            aria-label={t("copyId")}
           >
             {copiedId === res.id ? (
-              <Check className="w-3 h-3 text-emerald-600" />
+              <Check className="size-3 text-emerald-600" />
             ) : (
-              <Copy className="w-3 h-3" />
+              <Copy className="size-3" />
             )}
           </button>
         </div>
@@ -81,9 +83,9 @@ export function ReservationTableRow({
               disabled={isCancelling}
               onClick={() => onCancel(res.id)}
               className="text-sm px-2.5 rounded-lg cursor-pointer"
-              leftIcon={<XCircle className="w-3 h-3" />}
+              leftIcon={<XCircle className="size-3" />}
             >
-              Batalkan
+              {t("cancelBtn")}
             </Button>
           )}
           {isVerified ? (
@@ -91,12 +93,12 @@ export function ReservationTableRow({
               href={`/dashboard/reservations/${res.id}`}
               className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-bold bg-zinc-950 text-white hover:bg-zinc-800 transition-colors shadow-xs"
             >
-              <span>E-Ticket</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <span>{t("eticketBtn")}</span>
+              <ArrowUpRight className="size-3.5" />
             </Link>
           ) : res.status === "CANCELED" ? (
             <span className="text-sm text-zinc-400 font-mono px-2 py-1 bg-zinc-100 rounded-md">
-              Expired
+              {t("expiredBadge")}
             </span>
           ) : null}
         </div>

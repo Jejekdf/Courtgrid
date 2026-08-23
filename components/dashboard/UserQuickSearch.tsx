@@ -5,11 +5,13 @@ import { useDebounce } from "react-use";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { courtKeys } from "@/lib/query-keys";
 import { getCourts } from "@/features/courts/actions";
 import { Popover, PopoverContent } from "@/components/ui/popover";
 
 export function UserQuickSearch() {
+  const t = useTranslations("dashboard.search");
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -38,7 +40,7 @@ export function UserQuickSearch() {
 
   return (
     <div ref={searchRef} className="relative w-full max-w-xs sm:max-w-sm">
-      <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
+      <Search className="size-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
       <input
         type="text"
         value={searchTerm}
@@ -47,7 +49,7 @@ export function UserQuickSearch() {
           setIsSearchOpen(true);
         }}
         onFocus={() => setIsSearchOpen(true)}
-        placeholder="Cari arena futsal & badminton..."
+        placeholder={t("placeholder")}
         className="w-full pl-8 pr-3 py-1.5 text-sm bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-950 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 transition-colors"
       />
 
@@ -78,7 +80,7 @@ export function UserQuickSearch() {
             ))
           ) : (
             <div className="text-center py-4 text-zinc-400">
-              Tidak ada lapangan yang cocok.
+              {t("noResults")}
             </div>
           )}
         </PopoverContent>

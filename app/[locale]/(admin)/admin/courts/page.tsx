@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Plus, Pencil, Trash2, CheckCircle2, Power, Search, Upload, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import AdminHeader from "@/components/admin/AdminHeader";
+import { useTranslations } from "next-intl";
 import {
   Dialog,
   DialogContent,
@@ -42,6 +43,7 @@ type Court = {
 };
 
 export default function AdminCourtsPage() {
+  const t = useTranslations("admin.courts");
   const queryClient = useQueryClient();
   const [tab, setTab] = useQueryState("tab", adminCourtsParsers.tab.withOptions({ shallow: true }));
   const [search, setSearch] = useQueryState("search", adminCourtsParsers.search.withOptions({ shallow: true }));
@@ -75,9 +77,9 @@ export default function AdminCourtsPage() {
     onSuccess: (result) => {
       if (result.success) {
         queryClient.invalidateQueries({ queryKey: courtKeys.all });
-        toast.success("Lapangan berhasil dihapus.");
+        toast.success(t("deletedToast"));
       } else {
-        toast.error(result.error || "Gagal menghapus lapangan.");
+        toast.error(result.error || t("deletedFailToast"));
       }
     },
   });
@@ -90,7 +92,7 @@ export default function AdminCourtsPage() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: courtKeys.all });
-      toast.success(`Lapangan ${variables.court.name} berhasil ${variables.isActive ? "diaktifkan" : "dinonaktifkan"}.`);
+      toast.success(variables.isActive ? t("activatedToast", { name: variables.court.name }) : t("deactivatedToast", { name: variables.court.name }));
     },
   });
 
@@ -128,11 +130,11 @@ export default function AdminCourtsPage() {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (!file.type.startsWith("image/")) {
-        toast.error("File harus berupa gambar (JPG/PNG).");
+        toast.error(t("imageInvalidToast"));
         return;
       }
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Ukuran file maksimal 5MB.");
+        toast.error(t("imageTooLargeToast"));
         return;
       }
       setSelectedFile(file);
@@ -153,7 +155,7 @@ export default function AdminCourtsPage() {
       if (uploadRes.success && uploadRes.url) {
         finalImageUrl = uploadRes.url;
       } else {
-        toast.error(uploadRes.error || "Gagal mengupload file gambar.");
+        toast.error(uploadRes.error || t("uploadFailToast"));
         return;
       }
     }
@@ -173,7 +175,7 @@ export default function AdminCourtsPage() {
 
     setIsDialogOpen(false);
     queryClient.invalidateQueries({ queryKey: courtKeys.all });
-    toast.success(isEditing ? "Lapangan berhasil diperbarui." : "Lapangan berhasil ditambahkan.");
+    toast.success(isEditing ? t("updatedToast") : t("addedToast"));
   };
 
   const handleDelete = (id: string) => {
@@ -186,11 +188,11 @@ export default function AdminCourtsPage() {
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto text-zinc-950">
+    <div className="space-y-8 max-w-7xl 2xl:max-w-[88rem] mx-auto text-zinc-950">
       {/* Reusable Admin Header Component */}
       <AdminHeader
-        title="Lapangan"
-        description="Kelola data arena futsal dan badminton, harga sewa per jam, serta upload foto arena."
+        title={t("title")}
+        description={t("desc")}
         actions={
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <button
@@ -198,28 +200,28 @@ export default function AdminCourtsPage() {
               className="px-4 py-2 text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0"
             >
               <Plus className="h-4 w-4" />
-              <span>Tambah Lapangan</span>
+              <span>{t("addCourt")}</span>
             </button>
             <DialogContent className="sm:max-w-106.25">
               <DialogHeader>
-                <DialogTitle className="text-base font-bold text-zinc-950">{isEditing ? "Edit Lapangan" : "Tambah Lapangan Baru"}</DialogTitle>
+                <DialogTitle className="text-base font-bold text-zinc-950">{isEditing ? t("editDialogTitle") : t("addDialogTitle")}</DialogTitle>
                 <DialogDescription className="text-sm text-zinc-500">
-                  Isi formulir atau upload file gambar langsung dari perangkat Anda.
+                  {t("formDesc")}
                 </DialogDescription>
               </DialogHeader>
 
               <form onSubmit={handleSubmit} className="space-y-4 mt-2">
                 <Input
-                  label="Nama Lapangan"
+                  label={t("nameLabel")}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Cth: Lapangan Futsal A"
+                  placeholder={t("namePlaceholder")}
                   required
                 />
 
                 <div className="space-y-1.5 w-full text-left">
                   <label className="block text-xs font-medium uppercase tracking-wider text-zinc-500">
-                    Tipe Arena
+                    {t("typeLabel")}
                   </label>
                   <select
                     value={type}
@@ -232,23 +234,23 @@ export default function AdminCourtsPage() {
                 </div>
 
                 <Input
-                  label="Harga Per Jam (IDR)"
+                  label={t("priceLabel")}
                   type="number"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
-                  placeholder="Cth: 150000"
+                  placeholder={t("pricePlaceholder")}
                   required
                 />
 
                 {/* Upload File Section */}
                 <div className="space-y-1.5 w-full text-left">
                   <label className="block text-xs font-medium uppercase tracking-wider text-zinc-500">
-                    Upload Foto Arena (Pilih File)
+                    {t("uploadLabel")}
                   </label>
                   <div className="flex items-center gap-2">
                     <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2 border border-zinc-200 rounded-lg bg-zinc-50 hover:bg-zinc-100 transition-colors cursor-pointer text-sm font-medium text-zinc-700">
-                      <Upload className="w-4 h-4 text-zinc-500" />
-                      <span>{selectedFile ? selectedFile.name : "Pilih File Foto..."}</span>
+                      <Upload className="size-4 text-zinc-500" />
+                      <span>{selectedFile ? selectedFile.name : t("chooseFile")}</span>
                       <input
                         type="file"
                         accept="image/*"
@@ -260,10 +262,10 @@ export default function AdminCourtsPage() {
                 </div>
 
                 <Input
-                  label="Atau Link URL Gambar (Opsional)"
+                  label={t("urlLabel")}
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="https://example.com/court.jpg atau /futsal1.webp"
+                  placeholder={t("urlPlaceholder")}
                 />
 
                 <div className="flex items-center space-x-2 pt-1 pb-1">
@@ -275,14 +277,14 @@ export default function AdminCourtsPage() {
                     className="h-4 w-4 rounded border-zinc-300 text-zinc-950 focus:ring-zinc-950 cursor-pointer"
                   />
                   <label htmlFor="isActive" className="text-sm font-medium text-zinc-700 cursor-pointer">
-                    Lapangan Aktif (Tersedia untuk disewa)
+                    {t("activeCheckbox")}
                   </label>
                 </div>
 
                 <div className="flex justify-end gap-2 pt-4 border-t border-zinc-100">
-                  <DialogClose render={<Button type="button" variant="outline" size="sm" className="text-sm">Batal</Button>} />
+                  <DialogClose render={<Button type="button" variant="outline" size="sm" className="text-sm">{t("cancelBtn")}</Button>} />
                   <Button type="submit" size="sm" isLoading={uploadingImage} disabled={uploadingImage} className="bg-zinc-950 text-white text-sm font-semibold" leftIcon={isEditing ? <CheckCircle2 className="h-3.5 w-3.5"/> : <Plus className="h-3.5 w-3.5"/>}>
-                    {uploadingImage ? "Uploading..." : isEditing ? "Simpan Perubahan" : "Simpan Lapangan"}
+                    {uploadingImage ? t("uploadingBtn") : isEditing ? t("saveChangesBtn") : t("saveCourtBtn")}
                   </Button>
                 </div>
               </form>
@@ -295,22 +297,22 @@ export default function AdminCourtsPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-1.5 bg-zinc-50 border border-zinc-200 rounded-lg p-1">
           <button onClick={() => setTab("all")} className={`px-3 py-1.5 rounded-md text-sm font-semibold transition-colors ${tab === "all" ? "bg-zinc-950 text-white" : "text-zinc-600 hover:bg-zinc-200/50"}`}>
-            Semua ({courts.length})
+            {t("tabAll", { count: courts.length })}
           </button>
           <button onClick={() => setTab("active")} className={`px-3 py-1.5 rounded-md text-sm font-semibold transition-colors ${tab === "active" ? "bg-emerald-600 text-white" : "text-emerald-700 hover:bg-emerald-50"}`}>
-            Aktif
+            {t("tabActive")}
           </button>
           <button onClick={() => setTab("inactive")} className={`px-3 py-1.5 rounded-md text-sm font-semibold transition-colors ${tab === "inactive" ? "bg-red-600 text-white" : "text-red-700 hover:bg-red-50"}`}>
-            Nonaktif
+            {t("tabInactive")}
           </button>
         </div>
         <div className="relative w-full sm:w-64">
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari nama lapangan..."
+            placeholder={t("searchPlaceholder")}
             containerClassName="w-full"
-            leftIcon={<Search className="w-4 h-4 text-zinc-400" />}
+            leftIcon={<Search className="size-4 text-zinc-400" />}
           />
         </div>
       </div>
@@ -318,10 +320,10 @@ export default function AdminCourtsPage() {
       {/* Baseline Grid Layout */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {isLoading ? (
-          <div className="col-span-full text-center text-sm text-zinc-400 py-12">Memuat data arena...</div>
+          <div className="col-span-full text-center text-sm text-zinc-400 py-12">{t("loading")}</div>
         ) : filteredCourts.length === 0 ? (
           <div className="col-span-full text-center text-xs text-zinc-400 bg-zinc-50/50 border border-dashed border-zinc-200 rounded-xl py-12">
-            Belum ada data lapangan yang sesuai.
+            {t("emptyList")}
           </div>
         ) : (
           filteredCourts
@@ -333,7 +335,7 @@ export default function AdminCourtsPage() {
                     <Image src={court.imageUrl} alt={court.name} fill className="object-cover" sizes="(min-width: 1024px) 33vw,(min-width: 640px) 50vw,100vw" />
                   ) : (
                     <div className="text-sm text-zinc-400 font-mono flex items-center gap-1">
-                      <ImageIcon className="w-3.5 h-3.5" />
+                      <ImageIcon className="size-3.5" />
                       <span>No Image</span>
                     </div>
                   )}
@@ -342,17 +344,17 @@ export default function AdminCourtsPage() {
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <h3 className="text-sm font-bold text-zinc-950">{court.name}</h3>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-bold uppercase tracking-wider bg-zinc-100 text-zinc-600 border border-zinc-200">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[0.6875rem] font-mono font-bold uppercase tracking-wider bg-zinc-100 text-zinc-600 border border-zinc-200">
                         {court.type}
                       </span>
                     </div>
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono font-bold uppercase tracking-wider ${court.isActive ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
-                      {court.isActive ? "Aktif" : "Nonaktif"}
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[0.6875rem] font-mono font-bold uppercase tracking-wider ${court.isActive ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
+                      {court.isActive ? t("tabActive") : t("inactiveBadge")}
                     </span>
                   </div>
                   <div className="text-sm text-zinc-600">
                     <div className="flex justify-between">
-                      <span className="text-zinc-400">Harga per jam</span>
+                      <span className="text-zinc-400">{t("perHour")}</span>
                       <span className="font-bold text-zinc-950">Rp {court.pricePerHour.toLocaleString("id-ID")}</span>
                     </div>
                   </div>
@@ -361,21 +363,21 @@ export default function AdminCourtsPage() {
                       onClick={() => handleToggleActive(court)}
                       className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md border text-sm font-semibold transition-colors border-zinc-200 text-zinc-700 hover:bg-zinc-100"
                     >
-                      <Power className={`w-3.5 h-3.5 ${court.isActive ? "text-red-600" : "text-emerald-600"}`} />
-                      <span>{court.isActive ? "Nonaktifkan" : "Aktifkan"}</span>
+                      <Power className={`size-3.5 ${court.isActive ? "text-red-600" : "text-emerald-600"}`} />
+                      <span>{court.isActive ? t("deactivateBtn") : t("activateBtn")}</span>
                     </button>
                     <div className="flex items-center gap-1.5">
                       <button
                         onClick={() => handleOpenEdit(court)}
                         className="p-1.5 text-zinc-600 hover:text-zinc-950 transition-colors border border-zinc-200 rounded-md"
-                        aria-label="Edit Lapangan"
+                        aria-label={t("editAria")}
                       >
                         <Pencil className="h-3.5 w-3.5" />
                       </button>
                       <button
                         onClick={() => handleDelete(court.id)}
                         className="p-1.5 text-red-600 hover:bg-red-50 transition-colors border border-red-200 rounded-md"
-                        aria-label="Hapus Lapangan"
+                        aria-label={t("deleteAria")}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
@@ -390,13 +392,13 @@ export default function AdminCourtsPage() {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Hapus Lapangan</AlertDialogTitle>
+            <AlertDialogTitle>{t("deleteTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Apakah Anda yakin ingin menghapus lapangan ini? Tindakan ini tidak dapat dibatalkan.
+              {t("deleteDesc")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancelBtn")}</AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               onClick={() => {
@@ -404,7 +406,7 @@ export default function AdminCourtsPage() {
                 setIsDeleteDialogOpen(false);
               }}
             >
-              Hapus
+              {t("deleteConfirmBtn")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

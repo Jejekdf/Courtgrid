@@ -1,4 +1,7 @@
+"use client";
+
 import { AlertTriangle, RotateCcw, SearchX } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 
 type Props =
@@ -7,13 +10,15 @@ type Props =
   | { type: "empty"; onReset: () => void };
 
 export default function CourtState(props: Props) {
+  const t = useTranslations("courts");
+
   if (props.type === "loading") {
     return (
       <div
         className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
         role="status"
         aria-busy="true"
-        aria-label="Memuat daftar lapangan"
+        aria-label={t("stateLoadingAria")}
       >
         {Array.from({ length: 6 }).map((_, i) => (
           <div
@@ -43,14 +48,14 @@ export default function CourtState(props: Props) {
         </div>
         <div className="space-y-1">
           <h3 className="text-sm font-semibold text-zinc-950">
-            Gagal memuat daftar lapangan
+            {t("stateErrorTitle")}
           </h3>
           <p className="text-sm text-zinc-500 max-w-sm">
-            Tidak dapat mengambil data dari server. Silakan coba lagi.
+            {t("stateErrorDesc")}
           </p>
         </div>
         <Button onClick={props.onRetry} leftIcon={<RotateCcw className="h-4 w-4" />}>
-          Coba lagi
+          {t("retry")}
         </Button>
       </div>
     );
@@ -66,14 +71,14 @@ export default function CourtState(props: Props) {
       </div>
       <div className="space-y-1">
         <h3 className="text-sm font-semibold text-zinc-950">
-          Tidak ada lapangan yang cocok
+          {t("stateEmptyTitle")}
         </h3>
         <p className="text-sm text-zinc-500 max-w-sm">
-          Coba ubah kata kunci pencarian atau filter yang Anda pilih.
+          {t("stateEmptyDesc")}
         </p>
       </div>
       <Button onClick={props.onReset} variant="outline">
-        Reset pencarian
+        {t("resetSearch")}
       </Button>
     </div>
   );

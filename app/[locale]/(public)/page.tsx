@@ -96,7 +96,7 @@ export default async function Home({
   const t = await getTranslations({ locale: locale as "id" | "en", namespace: "landing" });
 
   return (
-    <div className="flex flex-col bg-[var(--background)] text-zinc-950 min-h-screen">
+    <div className="flex flex-col bg-[var(--background)] text-zinc-950 min-h-dvh">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
@@ -108,7 +108,7 @@ export default async function Home({
 
         {/* Section 2: Lapangan & Fasilitas */}
         <section id="courts" className="relative py-24 scroll-mt-20 overflow-hidden bg-zinc-50/70 border-t border-zinc-200/80">
-          <div className="relative z-10 max-w-7xl mx-auto px-6 space-y-12">
+          <div className="relative z-10 max-w-7xl 2xl:max-w-[88rem] mx-auto px-6 space-y-12">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
               <div className="space-y-2">
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-600">{t("facilityStandard")}</span>
@@ -124,7 +124,7 @@ export default async function Home({
                 className="inline-flex items-center text-sm font-bold font-mono text-zinc-950 hover:text-zinc-600 gap-1.5 group cursor-pointer min-h-11 py-2"
               >
                 <span>{t("viewAllCourts")}</span>
-                <ArrowRight className="w-4 h-4 transform group-hover-fine:translate-x-1 transition-transform" aria-hidden="true" />
+                <ArrowRight className="size-4 transform group-hover-fine:translate-x-1 transition-transform" aria-hidden="true" />
               </Link>
             </div>
 
@@ -132,7 +132,7 @@ export default async function Home({
               {/* Futsal Card */}
               <div className="p-8 bg-[var(--background)] border border-zinc-200/80 rounded-3xl space-y-6 shadow-xs hover:border-zinc-400 transition-[border-color,box-shadow] group">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-mono uppercase font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                  <span className="text-[0.6875rem] font-mono uppercase font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
                     {t("futsalBadge")}
                   </span>
                   <span className="text-sm text-zinc-600 font-mono">{t("futsalStandard")}</span>
@@ -144,15 +144,15 @@ export default async function Home({
                   </p>
                 </div>
                 <div className="pt-4 flex flex-wrap items-center gap-6 text-xs font-mono font-bold text-zinc-700 border-t border-zinc-100">
-                  <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" aria-hidden="true" /> {t("futsalFeature1")}</span>
-                  <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" aria-hidden="true" /> {t("futsalFeature2")}</span>
+                  <span className="flex items-center gap-2"><CheckCircle2 className="size-4 text-emerald-600 shrink-0" aria-hidden="true" /> {t("futsalFeature1")}</span>
+                  <span className="flex items-center gap-2"><CheckCircle2 className="size-4 text-emerald-600 shrink-0" aria-hidden="true" /> {t("futsalFeature2")}</span>
                 </div>
               </div>
 
               {/* Badminton Card */}
               <div className="p-8 bg-[var(--background)] border border-zinc-200/80 rounded-3xl space-y-6 shadow-xs hover:border-zinc-400 transition-[border-color,box-shadow] group">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-mono uppercase font-bold text-sky-800 bg-sky-50 px-3 py-1 rounded-full border border-sky-200">
+                  <span className="text-[0.6875rem] font-mono uppercase font-bold text-sky-800 bg-sky-50 px-3 py-1 rounded-full border border-sky-200">
                     {t("badmintonBadge")}
                   </span>
                   <span className="text-sm text-zinc-600 font-mono">{t("badmintonStandard")}</span>
@@ -164,8 +164,8 @@ export default async function Home({
                   </p>
                 </div>
                 <div className="pt-4 flex flex-wrap items-center gap-6 text-xs font-mono font-bold text-zinc-700 border-t border-zinc-100">
-                  <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-600 shrink-0" aria-hidden="true" /> {t("badmintonFeature1")}</span>
-                  <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-600 shrink-0" aria-hidden="true" /> {t("badmintonFeature2")}</span>
+                  <span className="flex items-center gap-2"><CheckCircle2 className="size-4 text-sky-600 shrink-0" aria-hidden="true" /> {t("badmintonFeature1")}</span>
+                  <span className="flex items-center gap-2"><CheckCircle2 className="size-4 text-sky-600 shrink-0" aria-hidden="true" /> {t("badmintonFeature2")}</span>
                 </div>
               </div>
             </div>
@@ -174,7 +174,7 @@ export default async function Home({
 
         {/* Section 3: About Us & Guarantees */}
         <section id="about" className="relative py-24 bg-[var(--background)] border-t border-zinc-200/80">
-          <div className="max-w-7xl mx-auto px-6">
+          <div className="max-w-7xl 2xl:max-w-[88rem] mx-auto px-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-600">{t("commitmentBadge")}</span>
@@ -188,14 +188,14 @@ export default async function Home({
                 <div className="grid grid-cols-2 gap-6 pt-4 border-t border-zinc-100">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <ShieldCheck className="w-5 h-5 text-emerald-600" aria-hidden="true" />
+                      <ShieldCheck className="size-5 text-emerald-600" aria-hidden="true" />
                       <p className="text-lg font-extrabold text-zinc-950 font-mono">{t("guaranteedTitle")}</p>
                     </div>
                     <p className="text-sm text-zinc-600 font-mono">{t("guaranteedDesc")}</p>
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <Zap className="w-5 h-5 text-zinc-950" aria-hidden="true" />
+                      <Zap className="size-5 text-zinc-950" aria-hidden="true" />
                       <p className="text-lg font-extrabold text-zinc-950 font-mono">{t("instantStripeTitle")}</p>
                     </div>
                     <p className="text-sm text-zinc-600 font-sans">{t("instantStripeDesc")}</p>
@@ -207,7 +207,7 @@ export default async function Home({
               <div className="bg-zinc-950 text-white rounded-3xl p-8 shadow-xl space-y-6">
                 <div className="flex items-center gap-3 border-b border-zinc-800 pb-4">
                   <div className="text-emerald-400">
-                    <Award className="w-6 h-6" aria-hidden="true" />
+                    <Award className="size-6" aria-hidden="true" />
                   </div>
                   <div>
                     <h3 className="text-base font-extrabold">{t("officialStandardTitle")}</h3>
@@ -239,7 +239,7 @@ export default async function Home({
 
         {/* Section 4: Reservation Guide (How It Works) */}
         <section className="relative py-20 bg-zinc-50/70 border-t border-zinc-200/80">
-          <div className="max-w-7xl mx-auto px-6 space-y-12">
+          <div className="max-w-7xl 2xl:max-w-[88rem] mx-auto px-6 space-y-12">
             <div className="text-center max-w-2xl mx-auto space-y-3">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
                 {t("guideBadge")}
@@ -254,32 +254,32 @@ export default async function Home({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="p-6 bg-[var(--background)] border border-zinc-200/80 rounded-2xl space-y-3 shadow-xs">
-                <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-950">
-                  <CalendarDays className="w-5 h-5 text-emerald-600" aria-hidden="true" />
+                <div className="size-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-950">
+                  <CalendarDays className="size-5 text-emerald-600" aria-hidden="true" />
                 </div>
                 <h3 className="font-heading text-base font-bold text-zinc-950">{t("step1Title")}</h3>
                 <p className="text-xs text-zinc-600 font-mono leading-relaxed">{t("step1Desc")}</p>
               </div>
 
               <div className="p-6 bg-[var(--background)] border border-zinc-200/80 rounded-2xl space-y-3 shadow-xs">
-                <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-950">
-                  <Lock className="w-5 h-5 text-zinc-950" aria-hidden="true" />
+                <div className="size-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-950">
+                  <Lock className="size-5 text-zinc-950" aria-hidden="true" />
                 </div>
                 <h3 className="font-heading text-base font-bold text-zinc-950">{t("step2Title")}</h3>
                 <p className="text-xs text-zinc-600 font-mono leading-relaxed">{t("step2Desc")}</p>
               </div>
 
               <div className="p-6 bg-[var(--background)] border border-zinc-200/80 rounded-2xl space-y-3 shadow-xs">
-                <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-950">
-                  <CreditCard className="w-5 h-5 text-emerald-600" aria-hidden="true" />
+                <div className="size-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-950">
+                  <CreditCard className="size-5 text-emerald-600" aria-hidden="true" />
                 </div>
                 <h3 className="font-heading text-base font-bold text-zinc-950">{t("step3Title")}</h3>
                 <p className="text-xs text-zinc-600 font-mono leading-relaxed">{t("step3Desc")}</p>
               </div>
 
               <div className="p-6 bg-[var(--background)] border border-zinc-200/80 rounded-2xl space-y-3 shadow-xs">
-                <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-950">
-                  <QrCode className="w-5 h-5 text-zinc-950" aria-hidden="true" />
+                <div className="size-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-950">
+                  <QrCode className="size-5 text-zinc-950" aria-hidden="true" />
                 </div>
                 <h3 className="font-heading text-base font-bold text-zinc-950">{t("step4Title")}</h3>
                 <p className="text-xs text-zinc-600 font-mono leading-relaxed">{t("step4Desc")}</p>
@@ -290,7 +290,7 @@ export default async function Home({
 
         {/* Section 5: Callout Booking */}
         <section className="relative py-24 bg-[var(--background)] border-t border-zinc-200">
-          <div className="max-w-7xl mx-auto px-6">
+          <div className="max-w-7xl 2xl:max-w-[88rem] mx-auto px-6">
             <div className="relative overflow-hidden bg-zinc-950 rounded-3xl p-10 md:p-16 flex flex-col items-center text-center gap-8 shadow-xl">
               <div className="relative z-10 space-y-4 max-w-2xl">
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400">{t("onlineBookingBadge")}</span>

@@ -28,9 +28,9 @@ export function PasswordRequirements({ requirements }: PasswordRequirementsProps
           }`}
         >
           {req.met ? (
-            <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+            <CheckCircle2 className="size-3.5 shrink-0" />
           ) : (
-            <XCircle className="w-3.5 h-3.5 shrink-0" />
+            <XCircle className="size-3.5 shrink-0" />
           )}
           <span>{req.label}</span>
         </div>

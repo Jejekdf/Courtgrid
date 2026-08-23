@@ -15,7 +15,7 @@ export default function PrintButton() {
     <Button
       variant="outline"
       onClick={handlePrint}
-      leftIcon={<Printer className="w-4 h-4" />}
+      leftIcon={<Printer className="size-4" />}
       className="!print:hidden"
     >
       Cetak / Download PDF

@@ -100,9 +100,9 @@ export function Header() {
       className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-lg transition-colors shadow-xs outline-none w-full sm:w-auto cursor-pointer min-h-11"
     >
       {userImage ? (
-        <Image src={userImage} alt={userName} width={16} height={16} className="w-4 h-4 rounded-full object-cover" />
+        <Image src={userImage} alt={userName} width={16} height={16} className="size-4 rounded-full object-cover" />
       ) : (
-        <LayoutDashboard className="w-4 h-4 text-emerald-400" />
+        <LayoutDashboard className="size-4 text-emerald-400" />
       )}
       <span>{dashboardText}</span>
     </Link>
@@ -124,7 +124,7 @@ export function Header() {
   );
 
   return (
-    <div className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+    <div className="fixed top-[max(1rem,env(safe-area-inset-top))] left-0 right-0 z-50 flex justify-center px-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pointer-events-none">
       <header
         className={`pointer-events-auto
           flex flex-col items-center
@@ -142,11 +142,11 @@ export function Header() {
                 key={link.href}
                 href={link.href}
                 className={`relative text-sm font-medium outline-none transition-colors py-1.5
-                  after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-zinc-950 after:transition-[width] after:duration-300
+                  after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-zinc-950 after:origin-left after:transition-transform after:duration-200 after:ease-out
                   ${
                     checkIsActive(link.href)
-                      ? "text-zinc-950 font-semibold after:w-full"
-                      : "text-zinc-600 hover:text-zinc-950 after:w-0 hover:after:w-full"
+                      ? "text-zinc-950 font-semibold after:scale-x-100"
+                      : "text-zinc-600 hover:text-zinc-950 after:scale-x-0 hover:after:scale-x-100"
                   }`}
               >
                 {link.label}
@@ -160,19 +160,19 @@ export function Header() {
 
           <button
             type="button"
-            className="sm:hidden flex items-center justify-center w-11 h-11 text-zinc-700 hover:text-zinc-950 focus:outline-none transition-colors outline-none cursor-pointer"
+            className="sm:hidden flex items-center justify-center size-11 text-zinc-700 hover:text-zinc-950 focus:outline-none transition-colors outline-none cursor-pointer"
             onClick={toggleMenu}
             aria-expanded={isOpen}
             aria-controls="mobile-navigation"
             aria-label={isOpen ? t("closeMenu") : t("openMenu")}
           >
-            {isOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
+            {isOpen ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}
           </button>
         </div>
 
         <div
           id="mobile-navigation"
-          className={`sm:hidden flex flex-col items-center w-full transition-[max-height,opacity] ease-in-out duration-300 overflow-hidden
+          className={`sm:hidden flex flex-col items-center w-full transition-[max-height,opacity] ease-out duration-200 overflow-hidden
             ${isOpen ? "max-h-250 opacity-100 pt-5 pb-2" : "max-h-0 opacity-0 pt-0 pointer-events-none"}`}
         >
           <nav onClick={closeMenu} className="flex flex-col items-center space-y-1 w-full">

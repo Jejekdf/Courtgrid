@@ -36,6 +36,7 @@ export type Court = {
 export default function CustomerBookingWorkspace() {
   const router = useRouter();
   const tVal = useTranslations("validation");
+  const tFlow = useTranslations("dashboard.book");
   const [paymentStatus, setPaymentStatus] = useQueryState("payment", parseAsString);
   const [urlCourtId] = useQueryState("courtId", parseAsString);
 
@@ -156,41 +157,41 @@ export default function CustomerBookingWorkspace() {
       });
 
       if (!result.success) {
-        throw new Error(result.error || "Gagal memproses booking.");
+        throw new Error(result.error || tFlow("failFallback"));
       }
       return result;
     },
     onSuccess: (result) => {
       if (result.url) {
-        toast.success("Mengarahkan ke pembayaran DP (Stripe)...");
+        toast.success(tFlow("redirectToast"));
         router.replace(result.url);
       }
     },
     onError: (err) => {
-      toast.error("Pemesanan Gagal", {
-        description: err instanceof Error ? err.message : "Terjadi kesalahan.",
+      toast.error(tFlow("failTitle"), {
+        description: err instanceof Error ? err.message : tFlow("failFallback"),
       });
     },
   });
 
   useEffect(() => {
     if (paymentStatus === "success") {
-      toast.success("Pembayaran DP Berhasil! E-Ticket telah terbit.");
+      toast.success(tFlow("successToast"));
       setPaymentStatus(null);
       router.replace("/dashboard/reservations");
     } else if (paymentStatus === "cancel") {
-      toast.error("Pembayaran dibatalkan.");
+      toast.error(tFlow("cancelToast"));
       setPaymentStatus(null);
       router.replace("/dashboard/book");
     }
-  }, [paymentStatus, router, setPaymentStatus]);
+  }, [paymentStatus, router, setPaymentStatus, tFlow]);
 
   if (isLoadingCourts) {
     return (
       <div className="flex flex-col items-center justify-center py-32 space-y-3">
         <Loader2 className="h-8 w-8 animate-spin text-zinc-950" />
         <p className="text-sm text-zinc-500 font-mono">
-          Memuat daftar arena & ketersediaan...
+          {tFlow("loadingCourts")}
         </p>
       </div>
     );
@@ -211,7 +212,7 @@ export default function CustomerBookingWorkspace() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
-      className="space-y-8 max-w-7xl mx-auto text-zinc-950"
+      className="space-y-8 max-w-7xl 2xl:max-w-[88rem] mx-auto text-zinc-950"
     >
       <BookingDateSelector
         selectedDate={selectedDate}
