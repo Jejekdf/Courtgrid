@@ -7,6 +7,13 @@ const scriptSrc = isDev ? "'self' 'unsafe-inline' 'unsafe-eval'" : "'self' 'unsa
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   allowedDevOrigins: ["local-origin.dev", "*.local-origin.dev", "localhost", "*.localhost"],
+  experimental: {
+    serverActions: {
+      // Upload actions carry raw image files up to the 5MB app-level cap;
+      // form encoding inflates the payload past 1MB default.
+      bodySizeLimit: "8mb",
+    },
+  },
   async headers() {
     return [
       {
@@ -49,9 +56,21 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "*.supabase.co",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "platform-lookaside.fbsbx.com",
       },
     ],
+    // Dev boxes on NAT64/DNS64 (64:ff9b::/96) resolve public hosts to
+    // synthetic IPv6 addresses that the SSRF guard treats as private,
+    // which 400s every remote image. Production DNS is unaffected.
+    dangerouslyAllowLocalIP: isDev,
   },
 };
 
