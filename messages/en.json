@@ -862,6 +862,7 @@
     "courtInactive": "This court is currently inactive.",
     "voucherInvalid": "Voucher code is invalid or inactive.",
     "voucherExpired": "Voucher code has expired.",
+    "voucherAlreadyUsed": "This voucher code has no redemptions left.",
     "voucherMinSpend": "Minimum transaction for this voucher is Rp {minSpend}.",
     "doubleBooked": "This time slot is already booked. Please choose another time.",
     "doubleBookedRace": "This time slot was just booked. Please choose another time.",

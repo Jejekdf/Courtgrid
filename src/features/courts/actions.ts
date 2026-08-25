@@ -69,6 +69,12 @@ export async function uploadCourtImageAction(formData: FormData) {
     return { success: false, error: "Akses khusus Superadmin." };
   }
 
+  const { checkRateLimitRelaxed } = await import("@/lib/ratelimit");
+  const { success: allowed } = await checkRateLimitRelaxed(`court_img:${session.user.id}`);
+  if (!allowed) {
+    return { success: false, error: "Terlalu banyak upload. Coba lagi nanti." };
+  }
+
   const file = formData.get("file") as File | null;
   if (!file) {
     return { success: false, error: "Pilih file gambar untuk diupload." };

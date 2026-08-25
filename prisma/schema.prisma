@@ -134,6 +134,8 @@ model Voucher {
   minSpend    Int      @default(0) @map("min_spend")
   expiresAt   DateTime @map("expires_at")
   isActive    Boolean  @default(true) @map("is_active")
+  // How many non-canceled reservations may redeem this code. Default 1 = single-use.
+  maxUses     Int      @default(1) @map("max_uses")
 
   createdAt    DateTime      @default(now()) @map("created_at")
   reservations Reservation[]

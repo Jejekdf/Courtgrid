@@ -134,7 +134,25 @@ export async function createReservationAction(rawInput: unknown) {
       });
 
       if (overlap) {
-        throw new DoubleBookingError(t("doubleBooked"));
+        throw new ReservationGuardError(t("doubleBooked"));
+      }
+
+      // Voucher redemption limit: count prior non-canceled usages inside this
+      // transaction so two concurrent checkouts can't exceed max_uses.
+      if (appliedVoucherId) {
+        const [usedCount, voucher] = await Promise.all([
+          tx.reservation.count({
+            where: { voucherId: appliedVoucherId, status: { not: "CANCELED" } },
+          }),
+          tx.voucher.findUnique({
+            where: { id: appliedVoucherId },
+            select: { maxUses: true },
+          }),
+        ]);
+
+        if (voucher && usedCount >= voucher.maxUses) {
+          throw new ReservationGuardError(t("voucherAlreadyUsed"));
+        }
       }
 
       // No overlap — create reservation + payment atomically
@@ -161,7 +179,7 @@ export async function createReservationAction(rawInput: unknown) {
 
     reservationId = reservation.id;
   } catch (error) {
-    if (error instanceof DoubleBookingError) {
+    if (error instanceof ReservationGuardError) {
       return { success: false, error: error.message };
     }
     if (error && typeof error === "object" && "code" in error && error.code === "P2002") {
@@ -239,10 +257,14 @@ export async function createReservationAction(rawInput: unknown) {
   return { success: true, url: checkoutSession.url };
 }
 
-class DoubleBookingError extends Error {
+/**
+ * Thrown inside the booking transaction when a guard (slot overlap,
+ * exhausted voucher) rejects the reservation with a user-facing message.
+ */
+class ReservationGuardError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "DoubleBookingError";
+    this.name = "ReservationGuardError";
   }
 }
 
@@ -263,14 +285,22 @@ export async function cancelReservationAction(rawInput: unknown) {
     return { success: false, error: t("reservationNotFound") };
   }
 
-  if (reservation.status !== "PENDING") {
+  // Atomic guard on status: if the webhook flips the reservation to DP_PAID
+  // between the check above and this write, the update matches nothing and a
+  // paid booking is never wiped by a cancel.
+  const updated = await prisma.reservation.updateMany({
+    where: { id: reservationId, status: "PENDING" },
+    data: { status: "CANCELED" },
+  });
+
+  if (updated.count === 0) {
     return { success: false, error: t("cancelOnlyPending") };
   }
 
-  await prisma.reservation.update({
-    where: { id: reservationId },
-    data: { status: "CANCELED" },
-  });
+  const { invalidateCache } = await import("@/lib/redis");
+  if (reservation.userId) {
+    await invalidateCache(`customer:${reservation.userId}:reservations`, "admin:dashboard:stats");
+  }
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/reservations");
@@ -285,6 +315,12 @@ export async function uploadPaymentProofAction(formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) {
     return { success: false, error: t("unauthorized") };
+  }
+
+  const { checkRateLimitRelaxed } = await import("@/lib/ratelimit");
+  const { success: allowed } = await checkRateLimitRelaxed(`proof_upload:${session.user.id}`);
+  if (!allowed) {
+    return { success: false, error: t("rateLimitResetSubmit") };
   }
 
   const reservationId = formData.get("reservationId") as string;

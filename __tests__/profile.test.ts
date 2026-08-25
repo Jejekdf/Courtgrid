@@ -251,9 +251,10 @@ test("uploadAvatar uses 'avatars' bucket", () => {
   );
 });
 
-test("uploadAvatar path is `${userId}/avatar.*` with upsert", () => {
+test("uploadAvatar path is `${userId}/avatar.webp` with upsert", () => {
   assert.ok(
-    storageSrc.includes("`${userId}/avatar.${extension}`"),
+    // Sharp re-encodes every avatar to WebP, so the extension is fixed.
+    storageSrc.includes("`${userId}/avatar.webp`"),
     "should scope path to the owning userId",
   );
   assert.ok(

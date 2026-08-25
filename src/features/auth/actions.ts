@@ -261,6 +261,12 @@ export async function uploadAvatarAction(formData: FormData) {
     return { success: false, error: t("unauthorized") };
   }
 
+  const { checkRateLimitRelaxed } = await import("@/lib/ratelimit");
+  const { success: allowed } = await checkRateLimitRelaxed(`avatar_upload:${session.user.id}`);
+  if (!allowed) {
+    return { success: false, error: t("rateLimitResetSubmit") };
+  }
+
   const file = formData.get("file") as File | null;
   if (!file || file.size === 0) {
     // Avatar image is required.

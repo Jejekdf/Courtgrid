@@ -862,6 +862,7 @@
     "courtInactive": "Lapangan ini sedang tidak aktif.",
     "voucherInvalid": "Kode voucher tidak valid atau tidak aktif.",
     "voucherExpired": "Kode voucher telah kedaluwarsa.",
+    "voucherAlreadyUsed": "Kode voucher sudah habis kuotanya.",
     "voucherMinSpend": "Minimal transaksi untuk voucher ini adalah Rp {minSpend}.",
     "doubleBooked": "Slot waktu ini sudah dipesan. Silakan pilih jam lain.",
     "doubleBookedRace": "Slot waktu ini baru saja dipesan. Silakan pilih jam lain.",
