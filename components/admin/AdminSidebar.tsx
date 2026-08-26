@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { signOut } from "next-auth/react";
-import { LayoutDashboard, CalendarDays, Box, Settings, LogOut, X } from "lucide-react";
+import { LayoutDashboard, CalendarDays, Box, Settings, LogOut, X, Tag } from "lucide-react";
 
 interface AdminSidebarProps {
   isOpen: boolean;
@@ -20,6 +20,7 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
     { href: "/admin", label: "overview", icon: LayoutDashboard },
     { href: "/admin/reservations", label: "reservations", icon: CalendarDays },
     { href: "/admin/courts", label: "courts", icon: Box },
+    { href: "/admin/vouchers", label: "vouchers", icon: Tag },
     { href: "/admin/settings", label: "settings", icon: Settings },
   ] as const;
 
