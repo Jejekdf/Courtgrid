@@ -26,15 +26,16 @@ Reservations follow a strict lifecycle (`PENDING → DP_PAID → DONE`, with `CA
 
 ## ✨ Features
 
-- **Authentication** — Email/password with bcrypt + Google & Facebook OAuth via NextAuth v5
-- **Reservation engine** — Court catalog, per-hour availability grid, and atomic double-booking prevention (half-open `[start, end)` intervals)
-- **Payments** — 50% down payment through Stripe Checkout, verified by signed webhook (`payment_status === "paid"`)
-- **Customer dashboard** — Booking history, payment status, e-ticket, profile & password management
-- **Admin panel** — Dashboard stats, courts CRUD, reservation management, customer management, e-ticket scanning, venue settings
+- **Authentication** — Email/password with bcrypt + Google & Facebook OAuth via NextAuth v5 (JWT, role on token)
+- **Reservation engine** — Court catalog, per-hour availability grid, and atomic double-booking prevention (half-open `[start, end)` + `@@unique` backstop)
+- **Payments** — 50% down payment through Stripe Checkout, verified by signed webhook (`payment_status === "paid"`); voucher codes with `maxUses` guard and description
+- **Customer dashboard** — Booking history, payment status, e-ticket QR, profile & password management
+- **Admin panel** — Dashboard stats, courts CRUD (sharp WebP 1600px), reservation management, customer management, voucher management (`maxUses`/`description`), e-ticket scanning, venue settings
 - **Email notifications** — Booking confirmation, payment success, password reset (Resend)
-- **Ghost-booking cleanup** — Auto-cancels stale `PENDING` reservations that never opened a Stripe session
-- **Rate limiting** — Upstash Redis on auth & password endpoints
-- **RBAC** — Route-level guards in middleware (proxy): `/admin` for admins, `/dashboard` for customers
+- **Ghost-booking cleanup** — Auto-cancels stale `PENDING` without Stripe session (single owner `autoCancelGhostBookings`)
+- **Rate limiting & cache** — Upstash Redis on auth, password & search; Redis cache for customer reservations
+- **RBAC** — Server-side guards (`verifyUserSession`) + middleware proxy: `/admin` for admins, `/dashboard` for customers
+- **i18n** — `next-intl` id/en (817+ keys), casual `kamu` tone
 
 ## 🛠 Tech Stack
 
@@ -47,34 +48,35 @@ Reservations follow a strict lifecycle (`PENDING → DP_PAID → DONE`, with `CA
 | Auth | [NextAuth v5](https://next-auth.js.org) (beta) + bcryptjs |
 | Payments | [Stripe](https://stripe.com) Checkout + webhooks |
 | Email | [Resend](https://resend.com) |
-| UI | Tailwind CSS v4, [shadcn/ui](https://ui.shadcn.com), Framer Motion, Recharts |
-| State | Zustand, TanStack Query |
+| UI | Tailwind CSS v4, [shadcn/ui](https://ui.shadcn.com) (Base UI + Radix), Framer Motion (`motion/react`), Recharts |
+| State | Zustand, TanStack Query 5 |
 | Validation | [Zod](https://zod.dev) v4 |
-| Cache & Rate Limit | Upstash Redis |
+| Cache & Rate Limit | Upstash Redis (also `pnpm onlyBuiltDependencies` for sharp) |
+| i18n | `next-intl` 4 + `nuqs` search params |
+| Images | `sharp` 0.35 WebP (1600 court / 512 avatar / 2000 proof, `serverExternalPackages`) |
 | Testing | `node:test` + `tsx` |
 
 ## 📁 Project Structure
 
 ```
-app/
-├── (public)/            # Landing, courts, login, register, auth pages, info pages
-├── (admin)/admin/       # Admin panel
+app/[locale]/
+├── (public)/            # Landing, courts, login, register, info pages (id/en)
+├── (admin)/admin/       # Admin panel (courts, reservations, customers, vouchers, settings, eticket)
 ├── dashboard/           # Customer dashboard & booking workspace
 └── api/                 # Route handlers: auth, courts, webhook
 components/
-├── ui/                  # shadcn/ui primitives
+├── ui/                  # shadcn/ui primitives (Base UI + Radix)
 ├── layout/              # Header, Footer, Hero
 ├── admin/               # Admin components
 ├── dashboard/           # Customer components
 ├── courts/              # Catalog & availability grid
 └── auth/                # Auth forms
 src/features/            # Feature slices: actions.ts, dal.ts, schemas.ts
-├── auth/                ├── reservations/
-├── courts/              ├── admin/
-└── settings/            └── notifications/
-lib/                     # Singletons: prisma, stripe, resend, ratelimit, timezone
+├── auth/  reservations/  courts/  admin/  vouchers/  settings/
+lib/                     # Singletons: prisma, stripe, resend, ratelimit, timezone, redis, supabase/storage (sharp 1600/512/2000 WebP)
 prisma/                  # schema.prisma, migrations, seed.ts
-tests/                   # Unit & integration tests
+messages/                # id.json & en.json (817+ keys, next-intl)
+tests/ & __tests__/      # Unit & integration tests (node:test + tsx)
 ```
 
 Data access flows through a **DAL layer** (`src/features/**/dal.ts`) — components never touch raw Prisma rows.
@@ -84,7 +86,7 @@ Data access flows through a **DAL layer** (`src/features/**/dal.ts`) — compone
 ### Prerequisites
 
 - Node.js ≥ 20
-- npm ≥ 10
+- pnpm ≥ 9.12.3 (`corepack enable` if needed)
 - [Stripe CLI](https://docs.stripe.com/stripe-cli) (for local webhook testing)
 - Accounts: Supabase, Stripe (test mode), Resend
 
@@ -93,22 +95,22 @@ Data access flows through a **DAL layer** (`src/features/**/dal.ts`) — compone
 ```bash
 git clone https://github.com/Jejekdf/Courtgrid.git
 cd Courtgrid
-npm install
+pnpm install
 cp .env.example .env      # fill in credentials
 ```
 
 ### Database
 
 ```bash
-npx prisma generate
-npx prisma db push        # sync schema to Supabase
-npx prisma db seed        # admin account + 5 courts
+pnpm prisma generate
+pnpm prisma migrate status   # must be "up to date" — never migrate reset on pooler
+pnpm prisma db seed          # admin account + 5 courts (SEED_DEMO=true for demo bookings)
 ```
 
 ### Run
 
 ```bash
-npm run dev               # http://localhost:3000
+pnpm dev               # http://localhost:3000
 ```
 
 In a second terminal, forward Stripe webhooks locally:
@@ -139,20 +141,22 @@ Copy the displayed `whsec_...` secret into `.env` as `STRIPE_WEBHOOK_SECRET`.
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAMA` | ❌ | Seed super admin |
 | `SEED_DEMO` | ❌ | `"true"` to seed demo data |
 
-## 🗺 Routes
+## 🗺 Routes (prefixed with `/id` or `/en`)
 
 | URL | Description |
 |-----|-------------|
 | `/` | Landing page |
-| `/courts` | Court catalog & availability |
+| `/courts` | Court catalog & availability (public, with `?search` & `?type`) |
 | `/login` · `/register` | Sign in / create account |
 | `/forgot-password` · `/reset-password` | Password recovery |
 | `/dashboard` | Customer dashboard |
-| `/dashboard/book` | Booking workspace |
+| `/dashboard/book` | Booking workspace (`?courtId=` preselect) |
 | `/dashboard/reservations` | Booking history & e-tickets |
 | `/dashboard/settings` | Profile & password |
 | `/admin` | Admin dashboard |
-| `/admin/courts` · `/admin/reservations` · `/admin/customers` · `/admin/settings` | Admin management |
+| `/admin/courts` · `/admin/reservations` · `/admin/customers` · `/admin/vouchers` · `/admin/settings` · `/admin/eticket/[id]` | Admin management |
+
+Topbar search: customer `?courtId` shortcut, admin `?search` + `/eticket/[id]` deep link. Notifications poll every 30s.
 
 ## 🧪 Testing
 
@@ -171,33 +175,34 @@ Coverage highlights (Acceptance Criteria from the PRD):
 - **PAY-1** — deposit = `ceil(total * dp%)`, default 50%
 - **FIX-H4** — ghost-cancel: stale `PENDING` without Stripe session is canceled; live checkout is never released
 
-## ☁️ Deployment
+## ☁️ Deployment (Vercel)
 
-Deploy on [Netlify](https://www.netlify.com):
+This repo is deployed on **Vercel** (`warmindo` team, `courtgrid` project):
 
-1. Push the repo to GitHub.
-2. Netlify → **Add new site** → **Import from Git** → select `Jejekdf/Courtgrid`.
-3. Build command: `npm run build` (Next.js auto-detected).
-4. Add every environment variable from `.env` in the Netlify dashboard.
-5. Deploy.
+1. Push to `main` → Vercel auto-builds via `pnpm install` (uses `pnpm-lock.yaml` + `pnpm-workspace.yaml` `onlyBuiltDependencies` for `sharp`) then `pnpm vercel-build` (`prisma generate && next build` with Turbopack).
+2. Add every variable from `.env.example` in Vercel → Settings → Environment Variables.
+3. Deploy.
 
 Post-deploy checklist:
 
-- Set `AUTH_URL` and `NEXT_PUBLIC_APP_URL` to your Netlify domain.
-- Register `/api/webhook` in the [Stripe Dashboard](https://dashboard.stripe.com/webhooks).
+- Set `AUTH_URL` and `NEXT_PUBLIC_APP_URL` to your Vercel domain.
+- Register `/api/webhook` in the [Stripe Dashboard](https://dashboard.stripe.com/webhooks) (`whsec_...`).
 - Verify your sending domain in the [Resend Dashboard](https://resend.com/domains).
+- Ensure Supabase buckets `court-images` and `avatars` are **Public** (for `getPublicUrl`) and `payment-proofs` stays private.
+- Check `pnpm` is detected (presence of `pnpm-lock.yaml`); `sharp` must show no `allow-scripts` warning beyond the 7 expected.
 
 ## 📜 Scripts
 
 | Command | Purpose |
 |---------|---------|
-| `npm run dev` | Start dev server |
-| `npm run build` | Production build |
-| `npm run start` | Run production build |
-| `npm run lint` | ESLint |
-| `npm test` | Run unit tests |
-| `npm run db:studio` | Prisma Studio |
-| `npm run db:test` | Verify DB connection |
+| `pnpm dev` | Start dev server |
+| `pnpm build` | Production build (also `vercel-build`) |
+| `pnpm start` | Run production build |
+| `pnpm lint` | ESLint |
+| `pnpm test` | Run unit tests |
+| `pnpm db:studio` | Prisma Studio |
+| `pnpm db:test` | Verify DB connection |
+| `pnpm prisma migrate status` | Must be up to date — never `migrate reset` on pooler |
 
 ## 📄 License
 

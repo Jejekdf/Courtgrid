@@ -502,6 +502,13 @@ export async function adminGlobalSearch(query: string): Promise<GlobalSearchResu
     return { success: false as const, error: adminCheck.error, reservations: [], courts: [] };
   }
 
+  const { checkRateLimitRelaxed } = await import("@/lib/ratelimit");
+  const session = await auth();
+  const { success: allowed } = await checkRateLimitRelaxed(`admin_search:${session?.user?.id || "anon"}`);
+  if (!allowed) {
+    return { success: true as const, reservations: [], courts: [] };
+  }
+
   const cleanQuery = query.trim();
   if (!cleanQuery) {
     return { success: true as const, reservations: [], courts: [] };

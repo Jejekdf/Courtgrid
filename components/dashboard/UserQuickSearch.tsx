@@ -25,9 +25,10 @@ export function UserQuickSearch() {
     [searchTerm]
   );
 
-  const { data: courts = [] } = useQuery({
+  const { data: courts = [], isFetching: isCourtsFetching } = useQuery({
     queryKey: courtKeys.list({}),
     queryFn: () => getCourts(),
+    enabled: isSearchOpen,
   });
 
   const searchResults = debouncedQuery.trim()
@@ -37,6 +38,8 @@ export function UserQuickSearch() {
           c.type.toLowerCase().includes(debouncedQuery.toLowerCase())
       )
     : [];
+
+  const hasQuery = debouncedQuery.trim().length > 0;
 
   return (
     <div ref={searchRef} className="relative w-full max-w-xs sm:max-w-sm">
@@ -49,7 +52,13 @@ export function UserQuickSearch() {
           setIsSearchOpen(true);
         }}
         onFocus={() => setIsSearchOpen(true)}
+        onBlur={() => setTimeout(() => setIsSearchOpen(false), 150)}
         placeholder={t("placeholder")}
+        aria-label={t("placeholder")}
+        aria-expanded={isSearchOpen}
+        aria-controls="user-search-results"
+        role="combobox"
+        autoComplete="off"
         className="w-full pl-8 pr-3 py-1.5 text-sm bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-950 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 transition-colors"
       />
 
@@ -59,14 +68,21 @@ export function UserQuickSearch() {
           side="bottom"
           align="start"
           sideOffset={6}
-          className="w-(--anchor-width) p-3 space-y-2 max-h-80 overflow-y-auto"
+          className="w-[var(--anchor-width)] p-3 space-y-2 max-h-80 overflow-y-auto"
+          id="user-search-results"
+          role="listbox"
         >
-          {debouncedQuery.trim().length > 0 && searchResults.length > 0 ? (
+          {!hasQuery ? (
+            <div className="text-center py-4 text-sm text-zinc-400">{t("idleHint")}</div>
+          ) : isCourtsFetching ? (
+            <div className="text-center py-4 text-sm text-zinc-400">Memuat...</div>
+          ) : searchResults.length > 0 ? (
             searchResults.map((c) => (
               <Link
                 key={c.id}
-                href="/dashboard/book"
+                href={`/dashboard/book?courtId=${c.id}`}
                 onClick={() => setIsSearchOpen(false)}
+                role="option"
                 className="flex items-center justify-between p-2 hover:bg-zinc-50 rounded-lg transition-colors border border-transparent hover:border-zinc-200"
               >
                 <div>
@@ -79,7 +95,7 @@ export function UserQuickSearch() {
               </Link>
             ))
           ) : (
-            <div className="text-center py-4 text-zinc-400">
+            <div className="text-center py-4 text-sm text-zinc-400">
               {t("noResults")}
             </div>
           )}

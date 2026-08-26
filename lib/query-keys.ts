@@ -17,3 +17,8 @@ export const adminKeys = {
   notifications: () => [...adminKeys.all, "notifications"] as const,
   search: (query: string) => [...adminKeys.all, "search", query] as const,
 };
+
+export const customerKeys = {
+  all: ["customer"] as const,
+  notifications: () => [...customerKeys.all, "notifications"] as const,
+};

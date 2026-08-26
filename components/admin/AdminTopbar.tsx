@@ -30,6 +30,7 @@ export default function AdminTopbar({
     queryKey: adminKeys.notifications(),
     queryFn: adminGetNotifications,
     select: (res) => (res.success ? res.notifications : []),
+    refetchInterval: 30_000,
   });
   const notifications = notifData;
 

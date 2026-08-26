@@ -450,7 +450,8 @@
     },
     "search": {
       "placeholder": "Search futsal & badminton courts...",
-      "noResults": "No matching courts."
+      "noResults": "No matching courts.",
+      "idleHint": "Type a court name to search..."
     },
     "home": {
       "metaTitle": "Customer Dashboard",
@@ -621,6 +622,8 @@
       "pendingBadge": "{count} PENDING",
       "emptyNotifications": "No new notifications.",
       "searchPlaceholder": "Search reservation ID, customer, arena...",
+      "searchIdleHint": "Type to search reservations or courts...",
+      "searchNoResults": "No matching data.",
       "superadminRole": "Superadmin"
     },
     "dashboard": {

@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { PanelLeftClose, PanelLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
-import NotificationCenter, {
-  type NotificationItem,
-} from "@/components/ui/NotificationCenter";
+import { useQuery } from "@tanstack/react-query";
+import { customerGetNotifications } from "@/features/reservations/actions";
+import { customerKeys } from "@/lib/query-keys";
+import NotificationCenter from "@/components/ui/NotificationCenter";
 import { UserMobileDrawer } from "./UserMobileDrawer";
 import { UserQuickSearch } from "./UserQuickSearch";
 import { UserAvatarBadge } from "./UserAvatarBadge";
@@ -22,18 +22,13 @@ export function UserTopbar({
 }: UserTopbarProps) {
   const { data: session } = useSession();
   const tToggle = useTranslations("dashboard.topbar");
-  const tHome = useTranslations("dashboard.home");
 
-  // Notification State
-  const [notifications] = useState<NotificationItem[]>([
-    {
-      id: "notif-1",
-      title: tHome("notifTitle"),
-      message: tHome("notifMessage"),
-      time: new Date().toISOString(),
-      link: "/dashboard/reservations",
-    },
-  ]);
+  const { data: notifications = [] } = useQuery({
+    queryKey: customerKeys.notifications(),
+    queryFn: customerGetNotifications,
+    select: (res) => (res.success ? res.notifications : []),
+    refetchInterval: 30_000,
+  });
 
   const userName = session?.user?.name || "Pelanggan";
   const userImage = session?.user?.image || null;

@@ -51,6 +51,8 @@ export function AdminQuickSearch() {
   const searchResults = searchQuery.data;
   const isSearching = searchQuery.isFetching;
 
+  const hasQuery = searchTerm.trim().length > 0;
+
   return (
     <div ref={searchRef} className="relative w-full max-w-xs sm:max-w-sm">
       <Search className="size-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -62,7 +64,13 @@ export function AdminQuickSearch() {
           setIsSearchOpen(true);
         }}
         onFocus={() => setIsSearchOpen(true)}
+        onBlur={() => setTimeout(() => setIsSearchOpen(false), 150)}
         placeholder={t("searchPlaceholder")}
+        aria-label={t("searchPlaceholder")}
+        aria-expanded={isSearchOpen}
+        aria-controls="admin-search-results"
+        role="combobox"
+        autoComplete="off"
         className="w-full pl-8 pr-3 py-1.5 text-sm bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-950 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-950 focus:border-zinc-950 transition-colors"
       />
 
@@ -73,27 +81,31 @@ export function AdminQuickSearch() {
           align="start"
           sideOffset={6}
           className="w-[var(--anchor-width)] p-3 space-y-3 max-h-80 overflow-y-auto"
+          id="admin-search-results"
+          role="listbox"
         >
-          {searchTerm.trim().length > 0 ? (
-            isSearching ? (
-              <div className="text-center py-4 text-zinc-400 font-mono">
-                Mencari di database...
-              </div>
-            ) : searchResults &&
-              (searchResults.reservations.length > 0 ||
-                searchResults.courts.length > 0) ? (
-              <>
-                {searchResults.reservations.length > 0 && (
-                  <div className="space-y-1.5">
-                    <div className="text-[0.6875rem] font-mono font-bold uppercase text-zinc-400 px-1">
-                      Reservasi
-                    </div>
-                    {searchResults.reservations.map(
+          {!hasQuery ? (
+            <div className="text-center py-4 text-sm text-zinc-400">{t("searchIdleHint")}</div>
+          ) : isSearching ? (
+            <div className="text-center py-4 text-zinc-400 font-mono">
+              Mencari di database...
+            </div>
+          ) : searchResults &&
+            (searchResults.reservations.length > 0 ||
+              searchResults.courts.length > 0) ? (
+            <>
+              {searchResults.reservations.length > 0 && (
+                <div className="space-y-1.5">
+                  <div className="text-[0.6875rem] font-mono font-bold uppercase text-zinc-400 px-1">
+                    Reservasi
+                  </div>
+                  {searchResults.reservations.map(
                       (r: SearchResultReservation) => (
                         <Link
                           key={r.id}
-                          href="/admin/reservations"
+                          href={`/admin/eticket/${r.id}`}
                           onClick={() => setIsSearchOpen(false)}
+                          role="option"
                           className="flex items-center justify-between p-2 hover:bg-zinc-50 rounded-lg transition-colors border border-transparent hover:border-zinc-200"
                         >
                           <div>
@@ -122,8 +134,9 @@ export function AdminQuickSearch() {
                     {searchResults.courts.map((c: SearchResultCourt) => (
                       <Link
                         key={c.id}
-                        href="/admin/courts"
+                        href={`/admin/courts?search=${encodeURIComponent(debouncedQuery)}`}
                         onClick={() => setIsSearchOpen(false)}
+                        role="option"
                         className="flex items-center justify-between p-2 hover:bg-zinc-50 rounded-lg transition-colors border border-transparent hover:border-zinc-200"
                       >
                         <div>
@@ -141,15 +154,11 @@ export function AdminQuickSearch() {
                 )}
               </>
             ) : (
-              <div className="text-center py-4 text-zinc-400">
-                Tidak ada data yang cocok.
+              <div className="text-center py-4 text-sm text-zinc-400">
+                {t("searchNoResults")}
               </div>
             )
-          ) : (
-            <div className="text-center py-4 text-zinc-400">
-              Tidak ada data yang cocok.
-            </div>
-          )}
+          }
         </PopoverContent>
       </Popover>
     </div>

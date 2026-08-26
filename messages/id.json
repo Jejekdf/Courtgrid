@@ -450,7 +450,8 @@
     },
     "search": {
       "placeholder": "Cari arena futsal & badminton...",
-      "noResults": "Tidak ada lapangan yang cocok."
+      "noResults": "Tidak ada lapangan yang cocok.",
+      "idleHint": "Ketik nama arena untuk mencari..."
     },
     "home": {
       "metaTitle": "Dashboard Pelanggan",
@@ -621,6 +622,8 @@
       "pendingBadge": "{count} PENDING",
       "emptyNotifications": "Tidak ada notifikasi baru.",
       "searchPlaceholder": "Cari ID reservasi, pelanggan, arena...",
+      "searchIdleHint": "Ketik untuk mencari reservasi atau lapangan...",
+      "searchNoResults": "Tidak ada data yang cocok.",
       "superadminRole": "Superadmin"
     },
     "dashboard": {

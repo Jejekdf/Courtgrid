@@ -366,3 +366,40 @@ export async function uploadPaymentProofAction(formData: FormData) {
     return { success: false, error: t("proofUploadFailed") };
   }
 }
+
+export type CustomerNotificationItem = {
+  id: string;
+  title: string;
+  message: string;
+  time: string;
+  link: string;
+};
+
+export async function customerGetNotifications(): Promise<
+  | { success: false; notifications: never[] }
+  | { success: true; notifications: CustomerNotificationItem[] }
+> {
+  let user;
+  try {
+    user = await verifyUserSession();
+  } catch {
+    return { success: false, notifications: [] };
+  }
+
+  const pending = await prisma.reservation.findMany({
+    where: { userId: user.id, status: "PENDING" },
+    orderBy: { createdAt: "desc" },
+    take: 5,
+    select: { id: true, createdAt: true, court: { select: { name: true } } },
+  });
+
+  const notifications = pending.map((r) => ({
+    id: r.id,
+    title: "Menunggu Pembayaran DP",
+    message: `Reservasi ${r.court?.name || "Lapangan"} menunggu DP`,
+    time: r.createdAt instanceof Date ? r.createdAt.toISOString() : String(r.createdAt),
+    link: "/dashboard/reservations",
+  }));
+
+  return { success: true, notifications };
+}
