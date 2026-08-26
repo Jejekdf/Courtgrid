@@ -180,8 +180,9 @@ Copy the printed webhook signing secret (`whsec_...`) and set it as `STRIPE_WEBH
 | `DATABASE_URL` | ✅ | Supabase PostgreSQL pooled connection URL |
 | `DIRECT_URL` | ✅ | Supabase PostgreSQL direct connection URL |
 | `NEXT_PUBLIC_SUPABASE_URL` | ✅ | Supabase project API URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Supabase anonymous public key |
-| `SUPABASE_SECRET_KEY` | ✅ | Supabase service-role key (used for storage upload bypass) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Supabase anonymous public key (Realtime subscriptions) |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | ✅ | Supabase modern publishable key (Server client) |
+| `SUPABASE_SECRET_KEY` | ✅ | Supabase service-role key (used for storage admin bypass) |
 | `AUTH_URL` | ✅ | Application canonical URL (`http://localhost:3000` for local dev) |
 | `AUTH_SECRET` | ✅ | NextAuth encryption secret (`openssl rand -base64 32`) |
 | `STRIPE_SECRET_KEY` | ✅ | Stripe secret API key (`sk_test_...`) |
@@ -190,12 +191,12 @@ Copy the printed webhook signing secret (`whsec_...`) and set it as `STRIPE_WEBH
 | `RESEND_API_KEY` | ✅ | Resend API key (`re_...`) |
 | `RESEND_FROM_EMAIL` | ✅ | Verified sender email address |
 | `NEXT_PUBLIC_APP_URL` | ✅ | Public application URL |
-| `UPSTASH_REDIS_REST_URL` | ❌ | Upstash Redis REST endpoint for cache & rate limit |
-| `UPSTASH_REDIS_REST_TOKEN` | ❌ | Upstash Redis REST token |
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | ❌ | Google OAuth credentials |
-| `FACEBOOK_CLIENT_ID` / `FACEBOOK_CLIENT_SECRET` | ❌ | Facebook OAuth credentials |
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAMA` | ❌ | Initial Super Admin credentials for seeding |
-| `SEED_DEMO` | ❌ | `"true"` to generate demo bookings on seed |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAMA` | ⚠️ Seed | Required credentials to initialize Super Admin during `pnpm prisma db seed` |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | ❌ | Upstash Redis REST endpoint & token for cache & rate limiting (graceful fallback if absent) |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | ❌ | Google OAuth credentials (optional, fallback to email/password login) |
+| `FACEBOOK_CLIENT_ID` / `FACEBOOK_CLIENT_SECRET` | ❌ | Facebook OAuth credentials (optional, fallback to email/password login) |
+| `SUPABASE_JWKS_URL` | ❌ | Supabase Auth JWKS URL for JWT validation |
+| `SEED_DEMO` | ❌ | `"true"` to generate demo customer & pre-paid bookings on seed |
 
 ---
 
