@@ -84,8 +84,8 @@ export async function uploadCourtImageAction(formData: FormData) {
     return { success: false, error: "File harus format gambar (JPG/PNG/WEBP)." };
   }
 
-  if (file.size > 5 * 1024 * 1024) {
-    return { success: false, error: "Ukuran file maksimal 5MB." };
+  if (file.size > 3 * 1024 * 1024) {
+    return { success: false, error: "Ukuran file maksimal 3MB." };
   }
 
   try {

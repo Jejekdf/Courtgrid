@@ -691,7 +691,7 @@
       "activatedToast": "Lapangan {name} berhasil diaktifkan.",
       "deactivatedToast": "Lapangan {name} berhasil dinonaktifkan.",
       "imageInvalidToast": "File harus berupa gambar (JPG/PNG).",
-      "imageTooLargeToast": "Ukuran file maksimal 5MB.",
+      "imageTooLargeToast": "Ukuran file maksimal 3MB.",
       "uploadFailToast": "Gagal mengupload file gambar.",
       "updatedToast": "Lapangan berhasil diperbarui.",
       "addedToast": "Lapangan berhasil ditambahkan."

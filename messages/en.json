@@ -691,7 +691,7 @@
       "activatedToast": "Court {name} activated successfully.",
       "deactivatedToast": "Court {name} deactivated successfully.",
       "imageInvalidToast": "File must be an image (JPG/PNG).",
-      "imageTooLargeToast": "File size must be under 5MB.",
+      "imageTooLargeToast": "File size must be under 3MB.",
       "uploadFailToast": "Failed to upload image file.",
       "updatedToast": "Court updated successfully.",
       "addedToast": "Court added successfully."

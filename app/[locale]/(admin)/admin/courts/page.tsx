@@ -133,7 +133,7 @@ export default function AdminCourtsPage() {
         toast.error(t("imageInvalidToast"));
         return;
       }
-      if (file.size > 5 * 1024 * 1024) {
+      if (file.size > 3 * 1024 * 1024) {
         toast.error(t("imageTooLargeToast"));
         return;
       }

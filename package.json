@@ -69,5 +69,16 @@
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp",
+      "@prisma/engines",
+      "prisma",
+      "esbuild",
+      "@swc/core",
+      "@parcel/watcher",
+      "unrs-resolver"
+    ]
   }
 }
