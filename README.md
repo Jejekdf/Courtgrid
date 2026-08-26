@@ -2,208 +2,288 @@
 
 # CourtGrid
 
-**Sports Court Reservation Platform** — Futsal & Badminton booking for **SM Sport Center**
+**Sports Court Reservation Platform** — Futsal & Badminton booking system for **SM Sport Center**.
 
-Built with Next.js 16, TypeScript, Supabase PostgreSQL, and Stripe.
+Built with Next.js 16 (App Router), React 19, TypeScript, PostgreSQL (Supabase), Prisma 7, NextAuth v5, and Stripe.
 
-[![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=next.js&logoColor=white)](https://nextjs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-4169E1?logo=postgresql&logoColor=white)](https://supabase.com)
-[![NextAuth](https://img.shields.io/badge/NextAuth-v5-000000?logo=auth0&logoColor=white)](https://next-auth.js.org)
-[![Stripe](https://img.shields.io/badge/Stripe-635BFF?logo=stripe&logoColor=white)](https://stripe.com)
+[![Next.js](https://img.shields.io/badge/Next.js-16.2-000000?logo=next.js&logoColor=white)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=black)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Prisma](https://img.shields.io/badge/Prisma-7.8-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-4169E1?logo=postgresql&logoColor=white)](https://supabase.com)
+[![NextAuth](https://img.shields.io/badge/NextAuth.js-v5_Beta-000000?logo=auth0&logoColor=white)](https://next-auth.js.org)
+[![Stripe](https://img.shields.io/badge/Stripe-Checkout-635BFF?logo=stripe&logoColor=white)](https://stripe.com)
+[![Upstash](https://img.shields.io/badge/Upstash-Redis_%26_Ratelimit-00E599?logo=redis&logoColor=black)](https://upstash.com)
 
 </div>
 
 ---
 
-## Overview
+## 📌 Overview
 
-CourtGrid lets customers find an available futsal or badminton court, reserve a time slot, and pay a **50% down payment** through Stripe Checkout. A dedicated customer dashboard tracks bookings and e-tickets, while a full admin panel manages courts, reservations, customers, and venue settings.
+**CourtGrid** is a full-stack court booking and management platform designed for sports facilities. It enables customers to check real-time court availability, book hourly slots for futsal and badminton, apply discount vouchers, and secure reservations via **50% Down Payment (DP)** through Stripe Checkout.
 
-Reservations follow a strict lifecycle (`PENDING → DP_PAID → DONE`, with `CANCELED` on timeout or self-cancel), enforced server-side with Zod validation, atomic double-booking checks, timezone-aware time slots (Asia/Jakarta), and a Stripe webhook that only fulfills **paid** checkouts.
+The application features role-based access control (RBAC), a customer portal with e-tickets and booking history, and a back-office administration panel for court catalog management, financial reports, voucher controls, and real-time e-ticket QR verification.
 
-## ✨ Features
+---
 
-- **Authentication** — Email/password with bcrypt + Google & Facebook OAuth via NextAuth v5 (JWT, role on token)
-- **Reservation engine** — Court catalog, per-hour availability grid, and atomic double-booking prevention (half-open `[start, end)` + `@@unique` backstop)
-- **Payments** — 50% down payment through Stripe Checkout, verified by signed webhook (`payment_status === "paid"`); voucher codes with `maxUses` guard and description
-- **Customer dashboard** — Booking history, payment status, e-ticket QR, profile & password management
-- **Admin panel** — Dashboard stats, courts CRUD (sharp WebP 1600px), reservation management, customer management, voucher management (`maxUses`/`description`), e-ticket scanning, venue settings
-- **Email notifications** — Booking confirmation, payment success, password reset (Resend)
-- **Ghost-booking cleanup** — Auto-cancels stale `PENDING` without Stripe session (single owner `autoCancelGhostBookings`)
-- **Rate limiting & cache** — Upstash Redis on auth, password & search; Redis cache for customer reservations
-- **RBAC** — Server-side guards (`verifyUserSession`) + middleware proxy: `/admin` for admins, `/dashboard` for customers
-- **i18n** — `next-intl` id/en (817+ keys), casual `kamu` tone
+## 🏗 Key Architecture & Engineering Highlights
+
+- **Atomic Double-Booking Prevention**: Enforces slot availability on half-open intervals `[start_time, end_time)`. Database-level backstop with `@@unique([courtId, date, startTime])` in PostgreSQL catches concurrent race conditions (Prisma `P2002`).
+- **Server-Authoritative Timezone Handling**: All availability computations and past-date/hour validations are strictly evaluated in **Asia/Jakarta (WIB, UTC+7)** on the server.
+- **Single-Owner Ghost Booking Auto-Cancel**: Automated cleanup routine (`autoCancelGhostBookings`) cancels stale `PENDING` bookings that exceed the timeout (`autoCancelTimeout`, default 15 mins) and lack an active `stripeSessionId`, ensuring active checkouts are never prematurely released.
+- **Strict Payment & Webhook Lifecycle**: Reservation state machine: `PENDING → DP_PAID → DONE` or `CANCELED`. Stripe webhooks verify HMAC signatures and fulfill bookings only when `event.type === "checkout.session.completed"` AND `payment_status === "paid"`.
+- **Data Access Layer (DAL) & Server Actions**: All mutations use Next.js Server Actions with Zod schema validation, session authentication, and transactional execution (`$transaction`). Components consume read-only DTOs through `src/features/**/dal.ts` with React `cache()`.
+- **Pre-Upload WebP Image Optimization**: Client uploads (courts, avatars, payment proofs) pass through server-side `sharp` processing pipelines to resize and re-encode to WebP before persistence in Supabase Storage buckets.
+- **Rate Limiting & Performance Caching**: Protected public and auth mutations utilize `@upstash/ratelimit` with Redis sliding window rate-limiting. High-frequency queries leverage Upstash Redis caching.
+- **Dual-Locale Internationalization (i18n)**: Powered by `next-intl` (Indonesian `id-ID` default, English `en-US`), covering all UI surfaces, schemas, and notifications.
+
+---
 
 ## 🛠 Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | [Next.js 16](https://nextjs.org) (App Router, RSC, Server Actions) |
-| Language | TypeScript 5 (strict) |
-| Database | PostgreSQL on [Supabase](https://supabase.com) |
-| ORM | [Prisma 7](https://www.prisma.io) with `@prisma/adapter-pg` |
-| Auth | [NextAuth v5](https://next-auth.js.org) (beta) + bcryptjs |
-| Payments | [Stripe](https://stripe.com) Checkout + webhooks |
-| Email | [Resend](https://resend.com) |
-| UI | Tailwind CSS v4, [shadcn/ui](https://ui.shadcn.com) (Base UI + Radix), Framer Motion (`motion/react`), Recharts |
-| State | Zustand, TanStack Query 5 |
-| Validation | [Zod](https://zod.dev) v4 |
-| Cache & Rate Limit | Upstash Redis (also `pnpm onlyBuiltDependencies` for sharp) |
-| i18n | `next-intl` 4 + `nuqs` search params |
-| Images | `sharp` 0.35 WebP (1600 court / 512 avatar / 2000 proof, `serverExternalPackages`) |
-| Testing | `node:test` + `tsx` |
+| Domain | Technology | Description |
+|---|---|---|
+| **Framework** | [Next.js 16](https://nextjs.org) (App Router) | React Server Components (RSC), Server Actions, Turbopack |
+| **Language** | [TypeScript 5](https://www.typescriptlang.org) | Strict mode typing across all DAL, actions, and schemas |
+| **Frontend UI** | [Tailwind CSS v4](https://tailwindcss.com), [shadcn/ui](https://ui.shadcn.com) | Modern design system, Radix UI & Base UI primitives |
+| **Animations & Charts** | [Motion](https://motion.dev), [Recharts](https://recharts.org) | Fluid UI transitions and admin financial dashboard analytics |
+| **Database & ORM** | [PostgreSQL (Supabase)](https://supabase.com), [Prisma 7](https://www.prisma.io) | Relational database with `@prisma/adapter-pg` driver pooler |
+| **Authentication** | [NextAuth.js v5](https://next-auth.js.org) (Beta) | JWT session strategy, Credentials (bcryptjs), Google & Facebook OAuth |
+| **Payments** | [Stripe](https://stripe.com) | Stripe Checkout Sessions and signed webhook fulfillment |
+| **Storage** | [Supabase Storage](https://supabase.com/storage), [Sharp](https://sharp.pixelplumbing.com) | WebP image optimization for courts, avatars, and payment proofs |
+| **Caching & Rate Limit** | [Upstash Redis](https://upstash.com) | Sliding window rate limiter & customer reservation cache |
+| **Transactional Email** | [Resend](https://resend.com) | Booking confirmation, payment receipts, and password resets |
+| **Validation & State** | [Zod v4](https://zod.dev), [Zustand](https://zustand.docs.pmnd.rs), [TanStack Query 5](https://tanstack.com/query) | Runtime validation, client state, and asynchronous data fetching |
+| **Testing** | Node.js Test Runner (`node:test`) + `tsx` | Unit and integration test suite |
+
+---
 
 ## 📁 Project Structure
 
 ```
-app/[locale]/
-├── (public)/            # Landing, courts, login, register, info pages (id/en)
-├── (admin)/admin/       # Admin panel (courts, reservations, customers, vouchers, settings, eticket)
-├── dashboard/           # Customer dashboard & booking workspace
-└── api/                 # Route handlers: auth, courts, webhook
-components/
-├── ui/                  # shadcn/ui primitives (Base UI + Radix)
-├── layout/              # Header, Footer, Hero
-├── admin/               # Admin components
-├── dashboard/           # Customer components
-├── courts/              # Catalog & availability grid
-└── auth/                # Auth forms
-src/features/            # Feature slices: actions.ts, dal.ts, schemas.ts
-├── auth/  reservations/  courts/  admin/  vouchers/  settings/
-lib/                     # Singletons: prisma, stripe, resend, ratelimit, timezone, redis, supabase/storage (sharp 1600/512/2000 WebP)
-prisma/                  # schema.prisma, migrations, seed.ts
-messages/                # id.json & en.json (817+ keys, next-intl)
-tests/ & __tests__/      # Unit & integration tests (node:test + tsx)
+sport-center-app/
+├── app/
+│   ├── [locale]/
+│   │   ├── (public)/          # Public routes (Landing, /courts, /login, /register, /faq, etc.)
+│   │   ├── (admin)/admin/     # Super Admin portal (/courts, /reservations, /customers, /vouchers, /settings, /eticket)
+│   │   ├── dashboard/         # Customer portal (/book, /reservations, /settings)
+│   │   ├── layout.tsx         # Root locale layout with next-intl provider
+│   │   └── error.tsx          # Global localized error boundary
+│   └── api/
+│       ├── auth/[...nextauth]/# NextAuth API route handler
+│       ├── courts/            # Public courts REST endpoint
+│       └── webhook/           # Stripe signed webhook ingestion endpoint
+├── components/
+│   ├── ui/                    # shadcn/ui & Radix/Base UI components
+│   ├── layout/                # Header, Footer, Hero, Navigation
+│   ├── admin/                 # Admin panels, stats charts, management tables
+│   ├── dashboard/             # Customer reservation cards, e-ticket view
+│   ├── courts/                # Court catalog, slot picker, availability grid
+│   └── auth/                  # Login, registration, password recovery forms
+├── src/
+│   ├── features/              # Modular feature slices (actions.ts, dal.ts, schemas.ts)
+│   │   ├── admin/             # Admin metrics, user management, court ops
+│   │   ├── auth/              # Auth actions, credentials, password reset
+│   │   ├── courts/            # Court fetching, availability engine
+│   │   ├── notifications/     # Notification dispatching
+│   │   ├── reservations/      # Booking workflow, Stripe session creation, auto-cancel
+│   │   ├── settings/          # Venue operational configuration
+│   │   └── vouchers/          # Voucher validation and redemption logic
+│   └── stores/                # Zustand global client state slices
+├── lib/                       # Singletons & Shared Utilities
+│   ├── prisma.ts              # PrismaClient instance with @prisma/adapter-pg
+│   ├── stripe.ts              # Stripe SDK client singleton
+│   ├── resend.ts              # Resend email client singleton
+│   ├── redis.ts               # Upstash Redis client
+│   ├── ratelimit.ts           # Upstash rate limiters
+│   ├── timezone.ts            # Asia/Jakarta date & boundary utilities
+│   ├── zod.ts                 # Localized Zod validation schemas
+│   └── supabase/              # Supabase admin client & Sharp image pipeline
+├── messages/                  # i18n localization dictionary files (id.json, en.json)
+├── prisma/
+│   ├── schema.prisma          # Database models, enums, indexes, constraints
+│   ├── migrations/            # SQL migration history
+│   └── seed.ts                # Database seed script (Venue, Admin, Courts, Demo data)
+├── scripts/                   # Utility and diagnostic scripts (test-db.ts)
+├── tests/ & __tests__/        # Acceptance criteria, timezone, and double-booking tests
+├── .env.example               # Template for environment variables
+└── package.json               # Dependencies and build scripts
 ```
 
-Data access flows through a **DAL layer** (`src/features/**/dal.ts`) — components never touch raw Prisma rows.
+---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js ≥ 20
-- pnpm ≥ 9.12.3 (`corepack enable` if needed)
-- [Stripe CLI](https://docs.stripe.com/stripe-cli) (for local webhook testing)
-- Accounts: Supabase, Stripe (test mode), Resend
+- **Node.js** ≥ 20.x
+- **pnpm** ≥ 9.12.x (`corepack enable` recommended)
+- **PostgreSQL Database** (Supabase instance)
+- **Stripe Account** & [Stripe CLI](https://docs.stripe.com/stripe-cli) (for local webhook testing)
+- **Resend Account** (for transactional emails)
+- **Upstash Redis** (for rate limiting and cache)
 
-### Setup
+### 1. Clone & Install Dependencies
 
 ```bash
 git clone https://github.com/Jejekdf/Courtgrid.git
 cd Courtgrid
 pnpm install
-cp .env.example .env      # fill in credentials
 ```
 
-### Database
+### 2. Configure Environment Variables
+
+Copy the example environment file and provide your credentials:
+
+```bash
+cp .env.example .env
+```
+
+### 3. Database Migration & Seeding
+
+Generate the Prisma client, verify schema status, and run the idempotent seed script:
 
 ```bash
 pnpm prisma generate
-pnpm prisma migrate status   # must be "up to date" — never migrate reset on pooler
-pnpm prisma db seed          # admin account + 5 courts (SEED_DEMO=true for demo bookings)
+pnpm prisma migrate status
+pnpm prisma db seed
 ```
 
-### Run
+> **Note**: Setting `SEED_DEMO="true"` in `.env` seeds a sample customer account and pre-paid bookings for local testing.
+
+### 4. Run Development Server
 
 ```bash
-pnpm dev               # http://localhost:3000
+pnpm dev
 ```
 
-In a second terminal, forward Stripe webhooks locally:
+The application will be accessible at `http://localhost:3000`.
+
+### 5. Listen for Stripe Webhooks (Local Testing)
+
+In a separate terminal, forward Stripe events to your local endpoint:
 
 ```bash
 stripe listen --forward-to localhost:3000/api/webhook
 ```
 
-Copy the displayed `whsec_...` secret into `.env` as `STRIPE_WEBHOOK_SECRET`.
+Copy the printed webhook signing secret (`whsec_...`) and set it as `STRIPE_WEBHOOK_SECRET` in `.env`.
 
-## ⚙️ Environment Variables
+---
+
+## ⚙️ Environment Variables Reference
 
 | Variable | Required | Description |
-|----------|:--------:|-------------|
-| `DATABASE_URL` | ✅ | Supabase PostgreSQL connection string |
-| `DIRECT_URL` | ✅ | Direct connection for Prisma |
-| `AUTH_URL` | ✅ | App URL (local: `http://localhost:3000`) |
-| `AUTH_SECRET` | ✅ | NextAuth secret (`openssl rand -base64 32`) |
-| `STRIPE_SECRET_KEY` | ✅ | `sk_test_...` |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ✅ | `pk_test_...` |
-| `STRIPE_WEBHOOK_SECRET` | ✅ | `whsec_...` |
-| `RESEND_API_KEY` | ✅ | `re_...` |
-| `RESEND_FROM_EMAIL` | ✅ | Sender address |
-| `NEXT_PUBLIC_APP_URL` | ✅ | Public app URL |
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | ❌ | Google OAuth |
-| `FACEBOOK_CLIENT_ID` / `FACEBOOK_CLIENT_SECRET` | ❌ | Facebook OAuth |
-| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | ❌ | Rate limit & cache |
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAMA` | ❌ | Seed super admin |
-| `SEED_DEMO` | ❌ | `"true"` to seed demo data |
+|---|:---:|---|
+| `DATABASE_URL` | ✅ | Supabase PostgreSQL pooled connection URL |
+| `DIRECT_URL` | ✅ | Supabase PostgreSQL direct connection URL |
+| `NEXT_PUBLIC_SUPABASE_URL` | ✅ | Supabase project API URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Supabase anonymous public key |
+| `SUPABASE_SECRET_KEY` | ✅ | Supabase service-role key (used for storage upload bypass) |
+| `AUTH_URL` | ✅ | Application canonical URL (`http://localhost:3000` for local dev) |
+| `AUTH_SECRET` | ✅ | NextAuth encryption secret (`openssl rand -base64 32`) |
+| `STRIPE_SECRET_KEY` | ✅ | Stripe secret API key (`sk_test_...`) |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ✅ | Stripe publishable key (`pk_test_...`) |
+| `STRIPE_WEBHOOK_SECRET` | ✅ | Stripe webhook signing secret (`whsec_...`) |
+| `RESEND_API_KEY` | ✅ | Resend API key (`re_...`) |
+| `RESEND_FROM_EMAIL` | ✅ | Verified sender email address |
+| `NEXT_PUBLIC_APP_URL` | ✅ | Public application URL |
+| `UPSTASH_REDIS_REST_URL` | ❌ | Upstash Redis REST endpoint for cache & rate limit |
+| `UPSTASH_REDIS_REST_TOKEN` | ❌ | Upstash Redis REST token |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | ❌ | Google OAuth credentials |
+| `FACEBOOK_CLIENT_ID` / `FACEBOOK_CLIENT_SECRET` | ❌ | Facebook OAuth credentials |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAMA` | ❌ | Initial Super Admin credentials for seeding |
+| `SEED_DEMO` | ❌ | `"true"` to generate demo bookings on seed |
 
-## 🗺 Routes (prefixed with `/id` or `/en`)
+---
 
-| URL | Description |
-|-----|-------------|
-| `/` | Landing page |
-| `/courts` | Court catalog & availability (public, with `?search` & `?type`) |
-| `/login` · `/register` | Sign in / create account |
-| `/forgot-password` · `/reset-password` | Password recovery |
-| `/dashboard` | Customer dashboard |
-| `/dashboard/book` | Booking workspace (`?courtId=` preselect) |
-| `/dashboard/reservations` | Booking history & e-tickets |
-| `/dashboard/settings` | Profile & password |
-| `/admin` | Admin dashboard |
-| `/admin/courts` · `/admin/reservations` · `/admin/customers` · `/admin/vouchers` · `/admin/settings` · `/admin/eticket/[id]` | Admin management |
+## 🗺 Application Routes & Access Control
 
-Topbar search: customer `?courtId` shortcut, admin `?search` + `/eticket/[id]` deep link. Notifications poll every 30s.
+All user-facing routes are localized under `/[locale]` (`/id` or `/en`).
 
-## 🧪 Testing
+### Public Routes
+- `/` — Landing page with hero, features, court preview, and pricing.
+- `/courts` — Public court catalog with search and type filters.
+- `/login` · `/register` — Authentication entry points.
+- `/forgot-password` · `/reset-password` — Password recovery flow.
+- `/about` · `/faq` · `/terms` · `/privacy` — Informational and legal pages.
+
+### Customer Portal (`Role: CUSTOMER`)
+- `/dashboard` — Overview of upcoming bookings, quick actions, and stats.
+- `/dashboard/book` — Interactive court booking workspace and slot selector.
+- `/dashboard/reservations` — Reservation history, payment status, and digital QR e-tickets.
+- `/dashboard/settings` — Profile details, avatar upload, and password change.
+
+### Super Admin Portal (`Role: ADMIN`)
+- `/admin` — Revenue metrics, booking statistics, and operational overview.
+- `/admin/courts` — Court CRUD management and photo upload.
+- `/admin/reservations` — Complete reservation log, manual status controls, and check-in.
+- `/admin/customers` — Customer directory and booking statistics.
+- `/admin/vouchers` — Promo code creation with usage limits and discount thresholds.
+- `/admin/eticket/[id]` — E-ticket QR verification and check-in scanner.
+- `/admin/settings` — Venue operational hours, contact info, down payment %, and auto-cancel timeout.
+
+---
+
+## 🧪 Testing & Quality Assurance
+
+The test suite validates authentication, business logic boundaries, timezone handling, double-booking prevention, and ghost booking auto-cancellation.
 
 ```bash
-npm run lint          # ESLint
-npx tsc --noEmit      # Type-check
-npm test              # node:test suite
+# Run unit and integration tests
+pnpm test
+
+# Run TypeScript static type check
+npx tsc --noEmit
+
+# Run ESLint validation
+pnpm lint
+
+# Test database connection pool
+pnpm db:test
 ```
 
-Coverage highlights (Acceptance Criteria from the PRD):
+### Verified QA Scenarios
+- **AC-LOGIN-1/2**: Valid credentials yield an authenticated session; invalid credentials return structured error without token generation.
+- **AC-BOOK-1**: Future slot reservations succeed; past dates and elapsed hours in `Asia/Jakarta` are strictly rejected.
+- **Double-Booking Prevention**: Half-open intervals prevent overlapping bookings while allowing contiguous adjacent bookings.
+- **Ghost Reservation Cancellation**: Stale `PENDING` bookings without Stripe sessions are reclaimed after timeout; active checkouts remain protected.
+- **Webhook Gating**: Booking fulfillment only executes when Stripe `payment_status` is verified as `"paid"`.
 
-- **AC-LOGIN-1/2** — correct credentials pass; wrong password rejected with no session
-- **AC-BOOK-1** — valid future booking accepted; past-date / malformed input rejected
-- **FIX-H2** — Asia/Jakarta timezone boundary: rejects past date and today's elapsed hour
-- **F6** — overlapping slots rejected, adjacent slots allowed (half-open intervals)
-- **PAY-1** — deposit = `ceil(total * dp%)`, default 50%
-- **FIX-H4** — ghost-cancel: stale `PENDING` without Stripe session is canceled; live checkout is never released
+---
 
 ## ☁️ Deployment (Vercel)
 
-This repo is deployed on **Vercel** (`warmindo` team, `courtgrid` project):
+1. **Build Command**: Set build command to `pnpm vercel-build` (`prisma generate && next build`).
+2. **Environment Variables**: Add all mandatory variables from `.env.example` into Vercel Project Settings.
+3. **Supabase Storage Configuration**:
+   - Ensure `court-images` and `avatars` buckets are set to **Public**.
+   - Ensure `payment-proofs` bucket is set to **Private** (accessed via signed URLs).
+4. **Stripe Webhook Configuration**:
+   - Register `https://your-domain.com/api/webhook` in the Stripe Dashboard with events: `checkout.session.completed`, `checkout.session.expired`.
+   - Update `STRIPE_WEBHOOK_SECRET` with the production webhook secret.
+5. **Resend Domain Verification**:
+   - Verify your custom domain DNS records in the Resend Dashboard and update `RESEND_FROM_EMAIL`.
 
-1. Push to `main` → Vercel auto-builds via `pnpm install` (uses `pnpm-lock.yaml` + `pnpm-workspace.yaml` `onlyBuiltDependencies` for `sharp`) then `pnpm vercel-build` (`prisma generate && next build` with Turbopack).
-2. Add every variable from `.env.example` in Vercel → Settings → Environment Variables.
-3. Deploy.
+---
 
-Post-deploy checklist:
+## 📜 Available Scripts
 
-- Set `AUTH_URL` and `NEXT_PUBLIC_APP_URL` to your Vercel domain.
-- Register `/api/webhook` in the [Stripe Dashboard](https://dashboard.stripe.com/webhooks) (`whsec_...`).
-- Verify your sending domain in the [Resend Dashboard](https://resend.com/domains).
-- Ensure Supabase buckets `court-images` and `avatars` are **Public** (for `getPublicUrl`) and `payment-proofs` stays private.
-- Check `pnpm` is detected (presence of `pnpm-lock.yaml`); `sharp` must show no `allow-scripts` warning beyond the 7 expected.
+| Command | Action |
+|---|---|
+| `pnpm dev` | Starts the Next.js development server |
+| `pnpm build` | Compiles the production build |
+| `pnpm start` | Starts the production server |
+| `pnpm vercel-build` | Generates Prisma Client and triggers Next.js production build |
+| `pnpm lint` | Runs ESLint analysis |
+| `pnpm test` | Executes the test suite with `node:test` and `tsx` |
+| `pnpm db:test` | Verifies PostgreSQL pooler connection |
+| `pnpm db:studio` | Launches Prisma Studio GUI |
 
-## 📜 Scripts
+---
 
-| Command | Purpose |
-|---------|---------|
-| `pnpm dev` | Start dev server |
-| `pnpm build` | Production build (also `vercel-build`) |
-| `pnpm start` | Run production build |
-| `pnpm lint` | ESLint |
-| `pnpm test` | Run unit tests |
-| `pnpm db:studio` | Prisma Studio |
-| `pnpm db:test` | Verify DB connection |
-| `pnpm prisma migrate status` | Must be up to date — never `migrate reset` on pooler |
+## 📄 License & Attribution
 
-## 📄 License
-
-Created by **Randi Maulana** for competency certification.
+Distributed under the [MIT License](file:///home/randimaulana/Documents/sport-center-app/LICENSE). Developed by **Randi Maulana** for SM Sport Center.
