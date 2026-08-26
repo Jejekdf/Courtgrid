@@ -7,6 +7,7 @@ const scriptSrc = isDev ? "'self' 'unsafe-inline' 'unsafe-eval'" : "'self' 'unsa
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   allowedDevOrigins: ["local-origin.dev", "*.local-origin.dev", "localhost", "*.localhost"],
+  serverExternalPackages: ["sharp"],
   experimental: {
     serverActions: {
       // Upload actions carry raw image files up to the 5MB app-level cap;

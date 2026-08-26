@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-import sharp from "sharp";
 
 export function createAdminClient() {
   return createClient(
@@ -21,6 +20,7 @@ async function optimizeImage(
   maxWidth: number,
   quality: number
 ): Promise<Buffer> {
+  const sharp = (await import("sharp")).default;
   const buffer = Buffer.from(await file.arrayBuffer());
   return sharp(buffer)
     .rotate() // bake EXIF orientation into pixels
