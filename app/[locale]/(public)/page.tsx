@@ -3,6 +3,7 @@ import Hero from "@/components/layout/Hero";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight, CheckCircle2, ShieldCheck, Zap, Award, CalendarDays, Lock, CreditCard, QrCode } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { getActiveCourtsDAL } from "@/features/courts/dal";
 
 const BASE_URL = "https://courtgrid-one.vercel.app";
 
@@ -27,66 +28,6 @@ export async function generateMetadata({
   };
 }
 
-// JSON-LD structured data for the sports venue (schema.org/SportsActivityLocation).
-// Static — does not depend on locale because business details are location-specific.
-const localBusinessJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "SportsActivityLocation",
-  name: "CourtGrid Sport Center",
-  image: `${BASE_URL}/og-image.png`,
-  url: BASE_URL,
-  telephone: "+6287746288262",
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "Jl. Sisingamangaraja No. 12",
-    addressLocality: "Kebayoran Baru",
-    addressRegion: "Jakarta Selatan",
-    addressCountry: "ID",
-  },
-  geo: {
-    "@type": "GeoCoordinates",
-    latitude: -6.2447,
-    longitude: 106.7958,
-  },
-  openingHoursSpecification: [
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      opens: "07:00",
-      closes: "23:00",
-    },
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Saturday", "Sunday"],
-      opens: "06:00",
-      closes: "23:00",
-    },
-  ],
-  priceRange: "Rp 50.000 - Rp 150.000",
-  hasOfferCatalog: {
-    "@type": "OfferCatalog",
-    name: "Court Catalog",
-    itemListElement: [
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "Futsal Court",
-          description: "Synthetic turf futsal court — national standard",
-        },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "Badminton Court",
-          description: "PVC anti-slip badminton court — BWF standard",
-        },
-      },
-    ],
-  },
-};
-
 export default async function Home({
   params,
 }: {
@@ -94,6 +35,67 @@ export default async function Home({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale: locale as "id" | "en", namespace: "landing" });
+  const courts = await getActiveCourtsDAL("", null);
+
+  const futsalCourts = courts.filter((c) => c.type === "FUTSAL");
+  const badmintonCourts = courts.filter((c) => c.type === "BADMINTON");
+
+  const futsalMinPrice =
+    futsalCourts.length > 0 ? Math.min(...futsalCourts.map((c) => c.pricePerHour)) : 150000;
+  const badmintonMinPrice =
+    badmintonCourts.length > 0 ? Math.min(...badmintonCourts.map((c) => c.pricePerHour)) : 50000;
+
+  const allPrices = courts.map((c) => c.pricePerHour);
+  const minOverallPrice = allPrices.length > 0 ? Math.min(...allPrices) : 50000;
+  const maxOverallPrice = allPrices.length > 0 ? Math.max(...allPrices) : 150000;
+
+  const localBusinessJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SportsActivityLocation",
+    name: "CourtGrid Sport Center",
+    image: `${BASE_URL}/og-image.png`,
+    url: BASE_URL,
+    telephone: "+6287746288262",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Jl. Sisingamangaraja No. 12",
+      addressLocality: "Kebayoran Baru",
+      addressRegion: "Jakarta Selatan",
+      addressCountry: "ID",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: -6.2447,
+      longitude: 106.7958,
+    },
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "07:00",
+        closes: "23:00",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Saturday", "Sunday"],
+        opens: "06:00",
+        closes: "23:00",
+      },
+    ],
+    priceRange: `Rp ${minOverallPrice.toLocaleString("id-ID")} - Rp ${maxOverallPrice.toLocaleString("id-ID")}`,
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Court Catalog",
+      itemListElement: courts.map((court) => ({
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: court.name,
+          description: `${court.type === "FUTSAL" ? "Synthetic turf futsal court" : "PVC anti-slip badminton court"} - Rp ${court.pricePerHour.toLocaleString("id-ID")}/jam`,
+        },
+      })),
+    },
+  };
 
   return (
     <div className="flex flex-col bg-[var(--background)] text-zinc-950 min-h-dvh">
@@ -102,9 +104,8 @@ export default async function Home({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
       />
       <main className="flex-1 w-full">
-        {/* Main Hero Component with Framer Motion */}
-        <Hero />
-
+        {/* Main Hero Component with Dynamic Realtime Courts */}
+        <Hero courts={courts} />
 
         {/* Section 2: Lapangan & Fasilitas */}
         <section id="courts" className="relative py-24 scroll-mt-20 overflow-hidden bg-zinc-50/70 border-t border-zinc-200/80">
@@ -133,15 +134,29 @@ export default async function Home({
               <div className="p-8 bg-[var(--background)] border border-zinc-200/80 rounded-3xl space-y-6 shadow-xs hover:border-zinc-400 transition-[border-color,box-shadow] group">
                 <div className="flex items-center justify-between">
                   <span className="text-[0.6875rem] font-mono uppercase font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-                    {t("futsalBadge")}
+                    {t("futsalBadge", { count: futsalCourts.length })}
                   </span>
-                  <span className="text-sm text-zinc-600 font-mono">{t("futsalStandard")}</span>
+                  <span className="text-sm text-emerald-700 font-mono font-bold">
+                    {t("fromPrice", { price: futsalMinPrice.toLocaleString("id-ID") })}
+                  </span>
                 </div>
                 <div>
                   <h3 className="text-2xl font-extrabold text-zinc-950 mb-2">{t("futsalTitle")}</h3>
                   <p className="text-sm text-zinc-600 leading-relaxed font-mono">
                     {t("futsalDesc")}
                   </p>
+                  {futsalCourts.length > 0 && (
+                    <div className="pt-3 flex flex-wrap gap-2">
+                      {futsalCourts.map((court) => (
+                        <span
+                          key={court.id}
+                          className="text-[0.6875rem] font-mono font-semibold px-2.5 py-1 bg-emerald-50/80 text-emerald-900 border border-emerald-200/60 rounded-lg"
+                        >
+                          {court.name}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="pt-4 flex flex-wrap items-center gap-6 text-xs font-mono font-bold text-zinc-700 border-t border-zinc-100">
                   <span className="flex items-center gap-2"><CheckCircle2 className="size-4 text-emerald-600 shrink-0" aria-hidden="true" /> {t("futsalFeature1")}</span>
@@ -153,15 +168,29 @@ export default async function Home({
               <div className="p-8 bg-[var(--background)] border border-zinc-200/80 rounded-3xl space-y-6 shadow-xs hover:border-zinc-400 transition-[border-color,box-shadow] group">
                 <div className="flex items-center justify-between">
                   <span className="text-[0.6875rem] font-mono uppercase font-bold text-sky-800 bg-sky-50 px-3 py-1 rounded-full border border-sky-200">
-                    {t("badmintonBadge")}
+                    {t("badmintonBadge", { count: badmintonCourts.length })}
                   </span>
-                  <span className="text-sm text-zinc-600 font-mono">{t("badmintonStandard")}</span>
+                  <span className="text-sm text-sky-700 font-mono font-bold">
+                    {t("fromPrice", { price: badmintonMinPrice.toLocaleString("id-ID") })}
+                  </span>
                 </div>
                 <div>
                   <h3 className="text-2xl font-extrabold text-zinc-950 mb-2">{t("badmintonTitle")}</h3>
                   <p className="text-sm text-zinc-600 leading-relaxed font-mono">
                     {t("badmintonDesc")}
                   </p>
+                  {badmintonCourts.length > 0 && (
+                    <div className="pt-3 flex flex-wrap gap-2">
+                      {badmintonCourts.map((court) => (
+                        <span
+                          key={court.id}
+                          className="text-[0.6875rem] font-mono font-semibold px-2.5 py-1 bg-sky-50/80 text-sky-900 border border-sky-200/60 rounded-lg"
+                        >
+                          {court.name}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="pt-4 flex flex-wrap items-center gap-6 text-xs font-mono font-bold text-zinc-700 border-t border-zinc-100">
                   <span className="flex items-center gap-2"><CheckCircle2 className="size-4 text-sky-600 shrink-0" aria-hidden="true" /> {t("badmintonFeature1")}</span>

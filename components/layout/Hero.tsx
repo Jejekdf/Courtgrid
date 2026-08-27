@@ -3,16 +3,33 @@ import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { ArrowRight, CalendarDays, Zap, ShieldCheck } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import type { ActiveCourtDTO } from "@/features/courts/dal";
 
-export default async function Hero() {
+export default async function Hero({ courts = [] }: { courts?: ActiveCourtDTO[] }) {
   const t = await getTranslations("hero");
 
-  const images = [
-    { src: "/futsal1.webp", alt: "Futsal Court", priority: true },
-    { src: "/badminton1.webp", alt: "Badminton Court" },
-    { src: "/futsal2.webp", alt: "Futsal Arena" },
-    { src: "/badminton2.webp", alt: "Badminton Pro Court" },
-  ];
+  const courtImages = courts
+    .filter((c): c is ActiveCourtDTO & { imageUrl: string } => Boolean(c.imageUrl))
+    .slice(0, 4)
+    .map((c, idx) => ({
+      src: c.imageUrl,
+      alt: `${c.name} (${c.type})`,
+      name: c.name,
+      type: c.type,
+      priority: idx === 0,
+    }));
+
+  const images =
+    courtImages.length > 0
+      ? courtImages
+      : [
+          { src: "/futsal_arena_modern.webp", alt: "Futsal Court", name: "Futsal Arena", type: "FUTSAL", priority: true },
+          { src: "/badminton_court_pro.webp", alt: "Badminton Court", name: "Badminton Court", type: "BADMINTON", priority: false },
+          { src: "/futsal2.webp", alt: "Futsal Arena", name: "Futsal Court B", type: "FUTSAL", priority: false },
+          { src: "/badminton2.webp", alt: "Badminton Pro Court", name: "Badminton Court 2", type: "BADMINTON", priority: false },
+        ];
+
+  const totalCourts = courts.length > 0 ? courts.length : 5;
 
   return (
     <section className="relative w-full overflow-hidden bg-[var(--background)]">
@@ -70,7 +87,7 @@ export default async function Hero() {
 
           <div className="flex flex-col items-center text-center gap-1.5 col-span-2 md:col-span-1">
             <CalendarDays className="size-5 text-zinc-950 mb-1" aria-hidden="true" />
-            <span className="text-xl font-extrabold text-zinc-950 font-mono">{t("statCourts")}</span>
+            <span className="text-xl font-extrabold text-zinc-950 font-mono">{t("statCourtsCount", { count: totalCourts })}</span>
             <span className="text-xs font-mono font-bold text-zinc-600 uppercase tracking-wider">{t("statCourtsDesc")}</span>
           </div>
         </div>
@@ -90,8 +107,9 @@ export default async function Hero() {
                 className="object-cover transition-transform duration-500 hover-fine:scale-105" 
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
               />
-              <div className="absolute inset-0 bg-linear-to-t from-zinc-950/50 via-transparent to-transparent opacity-0 hover-fine:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">{t("courtShowcaseAlt")}</span>
+              <div className="absolute inset-0 bg-linear-to-t from-zinc-950/75 via-zinc-950/20 to-transparent flex flex-col justify-end p-4">
+                <span className="text-xs font-mono font-bold text-white uppercase tracking-wider truncate">{img.name}</span>
+                <span className="text-[0.6875rem] font-mono text-zinc-300">{img.type}</span>
               </div>
             </div>
           ))}
