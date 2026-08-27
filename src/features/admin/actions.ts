@@ -257,6 +257,8 @@ export async function adminCreateCourt(formData: FormData) {
     });
     await invalidateCache("admin:dashboard:stats");
     revalidatePath("/admin/courts");
+    revalidatePath("/courts");
+    revalidatePath("/");
     return { success: true as const };
   } catch (error) {
     console.error("Error creating court:", error);
@@ -291,6 +293,8 @@ export async function adminUpdateCourt(id: string, formData: FormData) {
       },
     });
     revalidatePath("/admin/courts");
+    revalidatePath("/courts");
+    revalidatePath("/");
     return { success: true as const };
   } catch (error) {
     console.error("Error updating court:", error);
@@ -308,6 +312,8 @@ export async function adminDeleteCourt(id: string) {
   }
   await prisma.court.delete({ where: { id } });
   revalidatePath("/admin/courts");
+  revalidatePath("/courts");
+  revalidatePath("/");
   return { success: true as const };
 }
 
@@ -325,6 +331,8 @@ export async function adminToggleCourtActive(id: string, formData: FormData) {
     data: { isActive },
   });
   revalidatePath("/admin/courts");
+  revalidatePath("/courts");
+  revalidatePath("/");
   return { success: true };
 }
 
