@@ -85,12 +85,12 @@ export default function Footer() {
               <span className="text-xs font-medium uppercase tracking-wider text-zinc-950 mb-1">
                 {t("navigationTitle")}
               </span>
-              <nav aria-label={t("navigationTitle")} className="flex flex-col gap-2.5">
+              <nav aria-label={t("navigationTitle")} className="flex flex-col gap-1.5">
                 {company.map(({ href, title }, i) => (
                   <Link
                     key={i}
                     href={href}
-                    className="w-max text-sm text-zinc-600 hover:text-zinc-950 transition-colors"
+                    className="w-max text-sm text-zinc-600 hover:text-zinc-950 transition-colors py-1 inline-flex items-center"
                   >
                     {title}
                   </Link>
@@ -103,12 +103,12 @@ export default function Footer() {
               <span className="text-xs font-medium uppercase tracking-wider text-zinc-950 mb-1">
                 {t("servicesTitle")}
               </span>
-              <nav aria-label={t("servicesTitle")} className="flex flex-col gap-2.5">
+              <nav aria-label={t("servicesTitle")} className="flex flex-col gap-1.5">
                 {resources.map(({ href, title }, i) => (
                   <Link
                     key={i}
                     href={href}
-                    className="w-max text-sm text-zinc-600 hover:text-zinc-950 transition-colors"
+                    className="w-max text-sm text-zinc-600 hover:text-zinc-950 transition-colors py-1 inline-flex items-center"
                   >
                     {title}
                   </Link>

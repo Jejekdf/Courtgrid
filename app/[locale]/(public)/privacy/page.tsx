@@ -264,29 +264,57 @@ export default async function PrivacyPage({
 
         {/* Content Layout: Sticky Table of Contents & Main Content */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-          {/* Table of Contents (Sidebar) */}
-          <nav aria-label={t("navTitle")} className="md:col-span-4 sticky top-28 space-y-3 p-5 bg-white rounded-xl border border-zinc-200/80 shadow-xs">
-            <span className="text-xs font-medium uppercase tracking-wider text-zinc-500 block">
-              {t("navTitle")}
-            </span>
-            <ul className="space-y-1 text-sm">
-              {sections.map((s) => (
-                <li key={s.id}>
-                  <a
-                    href={`#${s.id}`}
-                    className="block text-zinc-600 hover-fine:text-zinc-950 font-medium transition-colors hover-fine:underline py-1.5"
-                  >
-                    {s.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          {/* Table of Contents: Mobile Collapsible / Desktop Sticky Sidebar */}
+          <aside className="md:col-span-4 md:sticky md:top-28">
+            {/* Mobile Collapsible TOC */}
+            <details className="md:hidden group p-4 bg-white rounded-xl border border-zinc-200/80 shadow-xs">
+              <summary className="flex items-center justify-between cursor-pointer list-none text-xs font-semibold uppercase tracking-wider text-zinc-900 select-none">
+                <span className="flex items-center gap-2">
+                  <Shield className="size-4 text-emerald-600 shrink-0" aria-hidden="true" />
+                  <span>{t("navTitle")} ({sections.length})</span>
+                </span>
+                <span className="text-xs text-zinc-500 font-mono transition-transform duration-200 group-open:rotate-180">▼</span>
+              </summary>
+              <nav aria-label={t("navTitle")} className="pt-3 mt-3 border-t border-zinc-100">
+                <ul className="space-y-1">
+                  {sections.map((s) => (
+                    <li key={s.id}>
+                      <a
+                        href={`#${s.id}`}
+                        className="flex items-center text-sm text-zinc-700 active:text-zinc-950 font-medium transition-colors py-2.5 px-3 rounded-lg active:bg-zinc-100 min-h-11"
+                      >
+                        {s.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </details>
+
+            {/* Desktop Sticky Sidebar TOC */}
+            <nav aria-label={t("navTitle")} className="hidden md:block space-y-3 p-5 bg-white rounded-xl border border-zinc-200/80 shadow-xs">
+              <span className="text-xs font-medium uppercase tracking-wider text-zinc-500 block">
+                {t("navTitle")}
+              </span>
+              <ul className="space-y-1 text-sm">
+                {sections.map((s) => (
+                  <li key={s.id}>
+                    <a
+                      href={`#${s.id}`}
+                      className="block text-zinc-600 hover-fine:text-zinc-950 font-medium transition-colors hover-fine:underline py-1.5"
+                    >
+                      {s.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
 
           {/* Detailed Content Sections */}
           <main className="md:col-span-8 space-y-10">
             {sections.map((s) => (
-              <section id={s.id} key={s.id} className="space-y-4 scroll-mt-28">
+              <section id={s.id} key={s.id} className="space-y-4 scroll-mt-24 sm:scroll-mt-28">
                 <h2 className="font-heading text-2xl font-semibold tracking-tight text-zinc-950">
                   {s.title}
                 </h2>
