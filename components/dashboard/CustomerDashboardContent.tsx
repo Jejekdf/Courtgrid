@@ -49,35 +49,35 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono font-bold text-zinc-500 uppercase">{t("statTotal")}</span>
+            <span className="text-xs font-mono font-bold text-zinc-600 uppercase">{t("statTotal")}</span>
             <div className="size-8 rounded-lg bg-zinc-100 text-zinc-950 flex items-center justify-center font-bold text-xs">
               <CalendarCheck className="size-4" />
             </div>
           </div>
-          <div className="text-2xl font-extrabold text-zinc-950 font-mono">{totalBookings}</div>
-          <p className="text-sm text-zinc-400 font-mono">{t("statTotalSub")}</p>
+          <div className="text-2xl font-extrabold text-zinc-950 font-mono tabular-nums">{totalBookings}</div>
+          <p className="text-sm text-zinc-600 font-mono">{t("statTotalSub")}</p>
         </div>
 
         <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono font-bold text-zinc-500 uppercase">{t("statVerified")}</span>
+            <span className="text-xs font-mono font-bold text-zinc-600 uppercase">{t("statVerified")}</span>
             <div className="size-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-xs">
               <ShieldCheck className="size-4" />
             </div>
           </div>
-          <div className="text-2xl font-extrabold text-zinc-950 font-mono">{activeBookings}</div>
-          <p className="text-sm text-zinc-400 font-mono">{t("statVerifiedSub")}</p>
+          <div className="text-2xl font-extrabold text-zinc-950 font-mono tabular-nums">{activeBookings}</div>
+          <p className="text-sm text-zinc-600 font-mono">{t("statVerifiedSub")}</p>
         </div>
 
         <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono font-bold text-zinc-500 uppercase">{t("accountStatus")}</span>
+            <span className="text-xs font-mono font-bold text-zinc-600 uppercase">{t("accountStatus")}</span>
             <div className="size-8 rounded-lg bg-zinc-950 text-white flex items-center justify-center font-bold text-xs">
               <Activity className="size-4" />
             </div>
           </div>
           <div className="text-sm font-extrabold text-emerald-600 font-mono uppercase">{t("accountActive")}</div>
-          <p className="text-sm text-zinc-400 font-mono">{user.email}</p>
+          <p className="text-sm text-zinc-600 font-mono truncate">{user.email}</p>
         </div>
       </div>
 
@@ -101,7 +101,7 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
             </div>
           </div>
           <Link href="/dashboard/reservations">
-            <button className="px-4 py-2 text-sm font-bold bg-white text-zinc-950 rounded-xl hover:bg-zinc-100 transition-colors inline-flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs">
+            <button className="px-4 py-2.5 min-h-11 text-sm font-bold bg-white text-zinc-950 rounded-xl hover:bg-zinc-100 transition-colors inline-flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs">
               <span>{t("openETicket")}</span>
               <ChevronRight className="size-4" />
             </button>

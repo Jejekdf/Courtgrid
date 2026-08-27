@@ -66,7 +66,7 @@ export function UserMobileDrawer() {
                 href={item.href}
                 onClick={() => setSheetOpen(false)}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  "flex items-center gap-3 rounded-lg px-3.5 py-2.5 min-h-11 text-sm font-medium transition-colors",
                   isActive
                     ? "bg-zinc-950 text-white font-semibold"
                     : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
@@ -83,10 +83,10 @@ export function UserMobileDrawer() {
               setSheetOpen(false);
               handleLogout();
             }}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+            className="flex w-full items-center gap-2 rounded-lg px-3.5 py-2.5 min-h-11 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
           >
             <LogOut className="h-4 w-4" />
-            {t("logout")}
+            <span>{t("logout")}</span>
           </button>
         </div>
       </SheetContent>

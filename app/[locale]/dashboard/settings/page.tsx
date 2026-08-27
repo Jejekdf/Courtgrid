@@ -52,7 +52,7 @@ export default async function CustomerSettingsPage() {
             </div>
             <div>
               <h2 className="text-sm font-extrabold text-zinc-950">{t("profileTitle")}</h2>
-              <p className="text-sm text-zinc-400 font-sans">{t("profileSub")}</p>
+              <p className="text-sm text-zinc-600 font-sans">{t("profileSub")}</p>
             </div>
           </div>
           <ProfileForm user={{ name: user.name || "", email: user.email || "", image: user.image || "" }} />
@@ -67,7 +67,7 @@ export default async function CustomerSettingsPage() {
               </div>
               <div>
                 <h2 className="text-sm font-extrabold text-zinc-950">{t("passwordTitle")}</h2>
-                <p className="text-sm text-zinc-400 font-sans">{t("passwordSub")}</p>
+                <p className="text-sm text-zinc-600 font-sans">{t("passwordSub")}</p>
               </div>
             </div>
             <PasswordForm />
@@ -80,7 +80,7 @@ export default async function CustomerSettingsPage() {
               </div>
               <div>
                 <h2 className="text-sm font-extrabold text-zinc-950">{t("oauthTitle")}</h2>
-                <p className="text-sm text-zinc-400 font-mono">{t("oauthSub")}</p>
+                <p className="text-sm text-zinc-600 font-mono">{t("oauthSub")}</p>
               </div>
             </div>
             <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-2">
