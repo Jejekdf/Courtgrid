@@ -7,6 +7,7 @@ import { paymentSuccessEmail } from "@/lib/emails/templates";
 import Stripe from "stripe";
 import { headers } from "next/headers";
 import { invalidateCache } from "@/lib/redis";
+import { logger } from "@/lib/logger";
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -102,11 +103,11 @@ export async function POST(req: Request) {
           }),
           from: RESEND_FROM_EMAIL,
         }).catch((emailError) => {
-          console.error("Failed to send payment success email:", emailError);
+          logger.error("Webhook:Email", "Failed to send payment success email", emailError, { reservationId });
         });
       }
 
-      console.log(`Payment verified and reservation ${reservationId} updated to DP_PAID.`);
+      logger.info("Webhook:Success", `Payment verified and reservation ${reservationId} updated to DP_PAID.`, { reservationId });
 
       // Invalidate Redis cache for admin stats
       await invalidateCache("admin:dashboard:stats");
@@ -117,7 +118,7 @@ export async function POST(req: Request) {
       revalidatePath("/dashboard");
       revalidatePath("/dashboard/reservations");
     } catch (dbError) {
-      console.error("Database Error updating reservation:", dbError);
+      logger.error("Webhook:Database", "Database Error updating reservation", dbError, { reservationId });
       return NextResponse.json(
         { error: "Database error" },
         { status: 500 }

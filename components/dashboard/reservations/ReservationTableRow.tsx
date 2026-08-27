@@ -25,7 +25,7 @@ export function ReservationTableRow({
 }: ReservationTableRowProps) {
   const t = useTranslations("dashboard.reservations");
   const payStatus = res.payment?.status || "PENDING";
-  const isVerified = res.status === "DP_PAID" || payStatus === "VERIFIED";
+  const isVerified = res.status === "DP_PAID" || res.status === "DONE" || payStatus === "VERIFIED";
 
   return (
     <tr className="hover:bg-zinc-50/60 transition-colors">

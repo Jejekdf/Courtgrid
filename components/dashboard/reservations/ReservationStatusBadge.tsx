@@ -12,7 +12,7 @@ export function ReservationStatusBadge({ status }: ReservationStatusBadgeProps) 
       case "PENDING":
         return "bg-amber-50 text-amber-800 border-amber-200";
       case "DONE":
-        return "bg-zinc-100 text-zinc-700 border-zinc-200";
+        return "bg-sky-50 text-sky-800 border-sky-200";
       default:
         return "bg-red-50 text-red-700 border-red-200";
     }
