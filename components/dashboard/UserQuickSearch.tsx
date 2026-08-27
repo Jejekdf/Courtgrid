@@ -68,6 +68,7 @@ export function UserQuickSearch() {
           side="bottom"
           align="start"
           sideOffset={6}
+          onMouseDown={(e) => e.preventDefault()}
           className="w-[var(--anchor-width)] p-3 space-y-2 max-h-80 overflow-y-auto"
           id="user-search-results"
           role="listbox"
@@ -81,15 +82,18 @@ export function UserQuickSearch() {
               <Link
                 key={c.id}
                 href={`/dashboard/book?courtId=${c.id}`}
-                onClick={() => setIsSearchOpen(false)}
+                onClick={() => {
+                  setIsSearchOpen(false);
+                  setSearchTerm("");
+                }}
                 role="option"
-                className="flex items-center justify-between p-2 hover:bg-zinc-50 rounded-lg transition-colors border border-transparent hover:border-zinc-200"
+                className="flex items-center justify-between p-2 hover:bg-zinc-50 rounded-lg transition-colors border border-transparent hover:border-zinc-200 cursor-pointer"
               >
                 <div>
                   <div className="font-bold text-zinc-950">{c.name}</div>
                   <div className="text-xs text-zinc-400 font-mono">{c.type}</div>
                 </div>
-                <span className="font-bold text-zinc-900">
+                <span className="font-bold text-zinc-900 font-mono text-sm tabular-nums">
                   Rp {c.pricePerHour.toLocaleString("id-ID")}/jam
                 </span>
               </Link>

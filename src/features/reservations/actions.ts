@@ -386,8 +386,16 @@ export async function customerGetNotifications(): Promise<
     return { success: false, notifications: [] };
   }
 
+  const setting = await prisma.setting.findUnique({ where: { id: 1 } });
+  const timeoutMinutes = setting?.autoCancelTimeout ?? 15;
+  const cutoff = new Date(Date.now() - timeoutMinutes * 60 * 1000);
+
   const pending = await prisma.reservation.findMany({
-    where: { userId: user.id, status: "PENDING" },
+    where: {
+      userId: user.id,
+      status: "PENDING",
+      createdAt: { gte: cutoff },
+    },
     orderBy: { createdAt: "desc" },
     take: 5,
     select: { id: true, createdAt: true, court: { select: { name: true } } },

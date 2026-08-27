@@ -44,9 +44,17 @@ export default function CustomerBookingWorkspace() {
     format(new Date(), "yyyy-MM-dd")
   );
   const [selectedCourtId, setSelectedCourtId] = useState<string | null>(urlCourtId);
+  const [prevUrlCourtId, setPrevUrlCourtId] = useState(urlCourtId);
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
   const [voucherCode, setVoucherCode] = useState("");
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+
+  // Sync state during render when URL query param ?courtId= changes via search bar
+  if (urlCourtId !== prevUrlCourtId) {
+    setPrevUrlCourtId(urlCourtId);
+    setSelectedCourtId(urlCourtId);
+    setSelectedTimeSlots([]);
+  }
 
   // Fetch active courts for selector
   const { data: courts = [], isLoading: isLoadingCourts } = useQuery({
