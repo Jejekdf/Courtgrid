@@ -88,7 +88,7 @@ export default async function AboutPage({
             <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-950 leading-[1.1]">
               {t("title")}
             </h1>
-            <p className="text-base text-zinc-600 leading-relaxed max-w-xl">
+            <p className="text-base text-zinc-700 leading-relaxed max-w-xl">
               {t("description")}
             </p>
           </div>
@@ -100,11 +100,11 @@ export default async function AboutPage({
                 key={idx}
                 className="p-4 sm:p-5 bg-white rounded-2xl border border-zinc-200/80 shadow-xs space-y-1.5 hover:border-zinc-400 transition-[border-color,box-shadow]"
               >
-                <span className="text-[0.625rem] font-mono font-bold uppercase tracking-wider text-zinc-500 block">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-600 block">
                   {item.sub}
                 </span>
-                <p className={`font-heading text-2xl font-extrabold tracking-tight ${item.color}`}>{item.value}</p>
-                <p className="text-xs text-zinc-500 font-medium">{item.label}</p>
+                <p className={`font-heading text-2xl font-extrabold tracking-tight tabular-nums ${item.color}`}>{item.value}</p>
+                <p className="text-xs text-zinc-600 font-medium">{item.label}</p>
               </div>
             ))}
           </div>
@@ -117,7 +117,7 @@ export default async function AboutPage({
               {t("storyTitle")}
             </h2>
           </div>
-          <div className="md:col-span-7 space-y-4 text-base text-zinc-600 leading-relaxed">
+          <div className="md:col-span-7 space-y-4 text-base text-zinc-700 leading-relaxed">
             <p>{t("storyP1")}</p>
             <p>{t("storyP2")}</p>
             <p>{t("storyP3")}</p>

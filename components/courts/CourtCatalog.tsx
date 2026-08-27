@@ -65,7 +65,7 @@ export default function CourtCatalog() {
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-zinc-950">
           {t("title")}
         </h1>
-        <p className="text-sm text-zinc-500 leading-relaxed font-mono">
+        <p className="text-sm text-zinc-600 leading-relaxed font-mono">
           {t("description")}
         </p>
       </div>

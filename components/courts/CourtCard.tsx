@@ -20,7 +20,7 @@ export default function CourtCard({
 
   return (
     <div className="bg-white border border-zinc-200/80 rounded-3xl shadow-xs overflow-hidden flex flex-col hover:border-zinc-300 transition-[border-color,box-shadow]">
-      <div className="relative h-48 bg-zinc-100 border-b border-zinc-200/80 overflow-hidden">
+      <div className="relative aspect-16/10 sm:h-48 bg-zinc-100 border-b border-zinc-200/80 overflow-hidden">
         {court.imageUrl ? (
           <Image
             src={court.imageUrl}
@@ -52,7 +52,7 @@ export default function CourtCard({
 
         <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
           <span className="text-sm text-zinc-600 font-mono">{t("perHour")}</span>
-          <span className="font-extrabold text-zinc-950 font-mono text-sm">
+          <span className="font-extrabold text-zinc-950 font-mono text-sm tabular-nums">
             Rp {court.pricePerHour.toLocaleString("id-ID")}
           </span>
         </div>

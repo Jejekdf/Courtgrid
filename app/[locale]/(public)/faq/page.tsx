@@ -117,7 +117,7 @@ export default async function FAQPage({
           <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950">
             {t("title")}
           </h1>
-          <p className="text-sm text-zinc-500 leading-relaxed max-w-xl">
+          <p className="text-sm text-zinc-600 leading-relaxed max-w-xl">
             {t("description")}
           </p>
         </header>
@@ -126,7 +126,7 @@ export default async function FAQPage({
         <main className="space-y-8">
           {faqCategories.map((cat, idx) => (
             <div key={idx} className="space-y-4">
-              <span className="text-xs font-medium uppercase tracking-wider text-zinc-500 block">
+              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-600 block">
                 {cat.category}
               </span>
               <div className="border border-zinc-200/80 rounded-xl p-2 bg-white shadow-xs">
