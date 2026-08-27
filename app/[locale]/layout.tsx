@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { Be_Vietnam_Pro, Albert_Sans, IBM_Plex_Mono } from "next/font/google";
@@ -9,23 +9,29 @@ import { Toaster } from "@/components/ui/sonner";
 const heading = Be_Vietnam_Pro({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+  weight: ["600", "700", "800"],
   display: "swap",
 });
 
 const body = Albert_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
 const mono = IBM_Plex_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: ["500", "600"],
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#09090b",
+};
 
 const BASE_URL = "https://courtgrid-one.vercel.app";
 
@@ -45,6 +51,17 @@ export async function generateMetadata({
     },
     description:
       "Platform booking venue olahraga terpercaya dengan sistem Anti-Palkor.",
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
     icons: {
       icon: [
         { url: "/logo.svg", type: "image/svg+xml" },
@@ -61,11 +78,18 @@ export async function generateMetadata({
       title: "CourtGrid - Premium Sports Reservation",
       description:
         "Platform booking venue olahraga terpercaya dengan sistem Anti-Palkor.",
-      url: BASE_URL,
+      url: `${BASE_URL}/${locale}`,
       siteName: "CourtGrid",
       locale: ogLocale,
       type: "website",
-      images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "CourtGrid Arena & Reservation Platform",
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
@@ -75,7 +99,7 @@ export async function generateMetadata({
       images: ["/og-image.png"],
     },
     alternates: {
-      canonical: BASE_URL,
+      canonical: `${BASE_URL}/${locale}`,
       languages: {
         id: `${BASE_URL}/id`,
         en: `${BASE_URL}/en`,

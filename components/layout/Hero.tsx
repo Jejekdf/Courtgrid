@@ -88,7 +88,7 @@ export default async function Hero({ courts = [] }: { courts?: ActiveCourtDTO[] 
           <div className="flex flex-col items-center text-center gap-1.5 col-span-2 md:col-span-1">
             <CalendarDays className="size-5 text-zinc-950 mb-1" aria-hidden="true" />
             <span className="text-xl font-extrabold text-zinc-950 font-mono">{t("statCourtsCount", { count: totalCourts })}</span>
-            <span className="text-xs font-mono font-bold text-zinc-600 uppercase tracking-wider">{t("statCourtsDesc")}</span>
+            <span className="text-xs font-mono font-bold text-zinc-700 uppercase tracking-wider">{t("statCourtsDesc")}</span>
           </div>
         </div>
 
@@ -104,12 +104,13 @@ export default async function Hero({ courts = [] }: { courts?: ActiveCourtDTO[] 
                 alt={img.alt}
                 fill
                 priority={img.priority}
+                quality={80}
                 className="object-cover transition-transform duration-500 hover-fine:scale-105" 
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1280px) 25vw, 320px"
               />
-              <div className="absolute inset-0 bg-linear-to-t from-zinc-950/75 via-zinc-950/20 to-transparent flex flex-col justify-end p-4">
-                <span className="text-xs font-mono font-bold text-white uppercase tracking-wider truncate">{img.name}</span>
-                <span className="text-[0.6875rem] font-mono text-zinc-300">{img.type}</span>
+              <div className="absolute inset-0 bg-linear-to-t from-zinc-950/85 via-zinc-950/25 to-transparent flex flex-col justify-end p-4">
+                <span className="text-xs font-mono font-bold text-white uppercase tracking-wider truncate drop-shadow-xs">{img.name}</span>
+                <span className="text-[0.6875rem] font-mono text-zinc-200 font-medium drop-shadow-xs">{img.type}</span>
               </div>
             </div>
           ))}

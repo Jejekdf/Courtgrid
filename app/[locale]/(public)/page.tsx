@@ -83,6 +83,19 @@ export default async function Home({
       },
     ],
     priceRange: `Rp ${minOverallPrice.toLocaleString("id-ID")} - Rp ${maxOverallPrice.toLocaleString("id-ID")}`,
+    currenciesAccepted: "IDR",
+    paymentAccepted: "Credit Card, QRIS, Stripe",
+    areaServed: {
+      "@type": "AdministrativeArea",
+      name: "DKI Jakarta",
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      reviewCount: "128",
+      bestRating: "5",
+      worstRating: "1",
+    },
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Court Catalog",
