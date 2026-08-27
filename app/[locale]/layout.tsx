@@ -48,10 +48,13 @@ export async function generateMetadata({
     icons: {
       icon: [
         { url: "/logo.svg", type: "image/svg+xml" },
-        { url: "/icon.ico", sizes: "32x32" },
+        { url: "/icon.png", sizes: "32x32", type: "image/png" },
+        { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+        { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
       ],
+      shortcut: ["/logo.svg"],
       apple: [
-        { url: "/logo.svg", sizes: "180x180" },
+        { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
       ],
     },
     openGraph: {
