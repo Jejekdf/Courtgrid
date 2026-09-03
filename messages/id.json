@@ -505,6 +505,9 @@
       "cancelBack": "Kembali",
       "cancelConfirm": "Ya, Batalkan",
       "cancelBtn": "Batalkan",
+      "payNowBtn": "Lanjut Bayar",
+      "redirectToast": "Mengarahkan ke halaman pembayaran...",
+      "resumePaymentError": "Gagal melanjutkan pembayaran. Coba lagi.",
       "eticketBtn": "E-Ticket",
       "expiredBadge": "Expired"
     },
@@ -728,7 +731,28 @@
       "nextBtn": "Selanjutnya",
       "deleteTitle": "Hapus Reservasi",
       "deleteDesc": "Yakin mau hapus reservasi/status pending ini dari database? Tindakan ini tidak bisa dibatalkan.",
-      "cancelBtn": "Batal"
+      "cancelBtn": "Batal",
+      "verifyTicketBtn": "Verifikasi E-Ticket",
+      "verifyTicketTitle": "Verifikasi E-Ticket & Check-in",
+      "verifyTicketDesc": "Pindai QR code atau masukkan ID Reservasi untuk verifikasi tiket dan konfirmasi pelunasan di venue.",
+      "ticketInputPlaceholder": "Ketik atau paste ID Reservasi...",
+      "searchBtn": "Cari Tiket",
+      "ticketNotFound": "E-Ticket tidak ditemukan.",
+      "unknownCourt": "Lapangan",
+      "statusDone": "Selesai",
+      "customerLabel": "Pelanggan",
+      "scheduleLabel": "Jadwal Main",
+      "totalLabel": "Total Biaya",
+      "dpPaidLabel": "DP Terverifikasi",
+      "payOnsiteLabel": "Sisa Bayar di GOR",
+      "viewFullTicket": "Lihat Halaman Tiket",
+      "alreadyCheckedIn": "Sudah Check-In",
+      "confirmCheckInBtn": "Konfirmasi Check-In",
+      "cannotCheckInPending": "Menunggu pembayaran DP",
+      "checkInSuccess": "Check-in E-Ticket berhasil.",
+      "checkInFailed": "Gagal melakukan check-in.",
+      "eticketBtn": "E-Ticket",
+      "viewTicketTitle": "Lihat E-Ticket"
     },
     "customers": {
       "title": "Manajemen Pelanggan",
@@ -834,7 +858,11 @@
       "paymentStatusLabel": "Status Pembayaran",
       "dpPaidBadge": "DP Lunas",
       "canceledBadge": "DIBATALKAN",
-      "awaitingBadge": "MENUNGGU DP"
+      "awaitingBadge": "MENUNGGU DP",
+      "checkInBtn": "Verifikasi Check-in",
+      "alreadyCheckedIn": "Sudah Check-In",
+      "checkInSuccess": "Check-in E-Ticket berhasil diverifikasi.",
+      "checkInFailed": "Gagal memverifikasi check-in."
     }
   },
   "validation": {

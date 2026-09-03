@@ -15,7 +15,7 @@ import {
 } from "@/features/reservations/schemas";
 import { resend, RESEND_FROM_EMAIL } from "@/lib/resend";
 import { bookingConfirmationEmail } from "@/lib/emails/templates";
-import { validateBookingTime } from "@/lib/timezone";
+import { validateBookingTime, formatSlotHour } from "@/lib/timezone";
 import { auth } from "@/auth";
 import { uploadPaymentProof, getPaymentProofSignedUrl } from "@/lib/supabase/storage";
 import { getTranslations } from "next-intl/server";
@@ -366,4 +366,98 @@ export async function uploadPaymentProofAction(formData: FormData) {
     return { success: false, error: t("proofUploadFailed") };
   }
 }
+
+/**
+ * Resumes payment for an existing PENDING reservation.
+ * Retrieves an active Stripe session or creates a new one if expired.
+ */
+export async function resumeReservationPaymentAction(reservationId: string) {
+  const t = await getTranslations("validation");
+
+  let user;
+  try {
+    user = await verifyUserSession();
+  } catch {
+    return { success: false, error: t("unauthorized") };
+  }
+
+  const reservation = await prisma.reservation.findUnique({
+    where: { id: reservationId },
+    include: {
+      court: { select: { name: true } },
+      payment: { select: { dpAmount: true, status: true } },
+    },
+  });
+
+  if (!reservation || reservation.userId !== user.id) {
+    return { success: false, error: t("reservationNotFound") };
+  }
+
+  if (reservation.status !== "PENDING") {
+    return { success: false, error: t("cancelOnlyPending") };
+  }
+
+  const dateStr =
+    reservation.date instanceof Date
+      ? reservation.date.toISOString().slice(0, 10)
+      : String(reservation.date).slice(0, 10);
+  const startTimeStr = formatSlotHour(reservation.startTime);
+  const endTimeStr = formatSlotHour(reservation.endTime);
+  const tzError = validateBookingTime(dateStr, startTimeStr, t);
+  if (tzError) {
+    return { success: false, error: tzError };
+  }
+
+  const dpAmount =
+    reservation.payment?.dpAmount ?? Math.ceil(reservation.totalPrice / 2);
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+  if (reservation.stripeSessionId) {
+    try {
+      const existingSession = await stripe.checkout.sessions.retrieve(
+        reservation.stripeSessionId
+      );
+      if (existingSession.status === "open" && existingSession.url) {
+        return { success: true, url: existingSession.url };
+      }
+    } catch {
+      // Session expired or unreachable; fall through to generate fresh session
+    }
+  }
+
+  try {
+    const checkoutSession = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      success_url: `${appUrl}/dashboard/book?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${appUrl}/dashboard/book?payment=cancel`,
+      client_reference_id: reservation.id,
+      metadata: { reservationId: reservation.id },
+      line_items: [
+        {
+          price_data: {
+            currency: "idr",
+            product_data: {
+              name: "DP Booking Lapangan CourtGrid",
+              description: `Tanggal: ${dateStr}, Jam: ${startTimeStr} - ${endTimeStr}`,
+            },
+            unit_amount: dpAmount * 100,
+          },
+          quantity: 1,
+        },
+      ],
+    });
+
+    await prisma.reservation.update({
+      where: { id: reservation.id },
+      data: { stripeSessionId: checkoutSession.id },
+    });
+
+    return { success: true, url: checkoutSession.url };
+  } catch (stripeErr) {
+    console.error("Stripe Resume Error:", stripeErr);
+    return { success: false, error: t("stripeError") };
+  }
+}
+
 

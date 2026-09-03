@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { AppUser } from "@/auth.config";
 import { getReservationDetailsDAL } from "@/features/reservations/dal";
 import PrintButton from "@/components/ui/PrintButton";
+import { AdminCheckInButton } from "@/components/admin/eticket/AdminCheckInButton";
 import { ArrowLeft, ShieldCheck, Calendar, Clock, Receipt, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 import { formatRupiah, safeFormatDate } from "@/lib/utils";
@@ -196,7 +197,10 @@ export default async function AdminETicketPage({ params }: { params: Promise<{ i
               </div>
             </div>
 
-            <PrintButton />
+            <div className="flex items-center gap-3">
+              <PrintButton />
+              <AdminCheckInButton reservationId={reservation.id} status={reservation.status} />
+            </div>
           </div>
         </div>
       </div>

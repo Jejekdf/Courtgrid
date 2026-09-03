@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { safeFormatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { XCircle, ArrowUpRight, Copy, Check } from "lucide-react";
+import { XCircle, ArrowUpRight, Copy, Check, CreditCard } from "lucide-react";
 import type { ReservationRow } from "@/components/dashboard/ReservationList";
+import { resumeReservationPaymentAction } from "@/features/reservations/actions";
 import { ReservationStatusBadge, PaymentStatusBadge } from "./ReservationStatusBadge";
 
 interface ReservationTableRowProps {
@@ -24,8 +27,26 @@ export function ReservationTableRow({
   isCancelling,
 }: ReservationTableRowProps) {
   const t = useTranslations("dashboard.reservations");
+  const [isResuming, setIsResuming] = useState(false);
   const payStatus = res.payment?.status || "PENDING";
   const isVerified = res.status === "DP_PAID" || res.status === "DONE" || payStatus === "VERIFIED";
+
+  const handleResumePayment = async () => {
+    setIsResuming(true);
+    try {
+      const result = await resumeReservationPaymentAction(res.id);
+      if (result.success && result.url) {
+        toast.success(t("redirectToast"));
+        window.location.href = result.url;
+      } else {
+        toast.error(result.error || t("resumePaymentError"));
+      }
+    } catch {
+      toast.error(t("resumePaymentError"));
+    } finally {
+      setIsResuming(false);
+    }
+  };
 
   return (
     <tr className="hover:bg-zinc-50/60 transition-colors">
@@ -76,17 +97,29 @@ export function ReservationTableRow({
       <td className="px-5 py-4 text-right">
         <div className="flex items-center justify-end gap-2">
           {res.status === "PENDING" && (
-            <Button
-              variant="destructive"
-              size="sm"
-              isLoading={isCancelling}
-              disabled={isCancelling}
-              onClick={() => onCancel(res.id)}
-              className="text-sm px-2.5 rounded-lg cursor-pointer"
-              leftIcon={<XCircle className="size-3" />}
-            >
-              {t("cancelBtn")}
-            </Button>
+            <>
+              <Button
+                size="sm"
+                isLoading={isResuming}
+                disabled={isResuming || isCancelling}
+                onClick={handleResumePayment}
+                className="text-xs sm:text-sm px-3 rounded-lg bg-zinc-950 text-white hover:bg-zinc-800 transition-colors font-semibold cursor-pointer shadow-xs"
+                leftIcon={<CreditCard className="size-3.5" />}
+              >
+                {t("payNowBtn")}
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                isLoading={isCancelling}
+                disabled={isCancelling || isResuming}
+                onClick={() => onCancel(res.id)}
+                className="text-xs sm:text-sm px-2.5 rounded-lg cursor-pointer"
+                leftIcon={<XCircle className="size-3" />}
+              >
+                {t("cancelBtn")}
+              </Button>
+            </>
           )}
           {isVerified ? (
             <Link

@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useQueryState } from "nuqs";
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { getAllReservations, adminDeleteReservation } from "@/features/admin/actions";
 import { format } from "date-fns";
-import { Printer, Filter, Trash2 } from "lucide-react";
+import { Printer, Filter, Trash2, ShieldCheck, ArrowUpRight } from "lucide-react";
 import AdminHeader from "@/components/admin/AdminHeader";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +23,7 @@ import { adminKeys } from "@/lib/query-keys";
 import { adminReservationsParsers } from "@/lib/search-params";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { TicketVerificationDialog } from "@/components/admin/reservations/TicketVerificationDialog";
 
 type ReservationDetail = {
   id: string;
@@ -43,6 +45,7 @@ export default function AdminReservationsPage() {
   const [page, setPage] = useQueryState("page", adminReservationsParsers.page.withOptions({ shallow: true }));
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [isVerifyOpen, setIsVerifyOpen] = useState(false);
 
   // Fetch reservations matching current filter and page
   const { data, isLoading, isFetching } = useQuery({
@@ -86,6 +89,13 @@ export default function AdminReservationsPage() {
           description={t("desc")}
           actions={
             <div className="flex items-center space-x-3">
+              <button
+                onClick={() => setIsVerifyOpen(true)}
+                className="px-3.5 py-2 text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer"
+              >
+                <ShieldCheck className="h-3.5 w-3.5" />
+                <span>{t("verifyTicketBtn")}</span>
+              </button>
               <div className="flex items-center bg-white border border-zinc-200 rounded-lg px-2.5 py-1.5 shadow-xs">
                 <Filter className="h-3.5 w-3.5 text-zinc-400 mr-1.5" />
                 <select
@@ -175,14 +185,24 @@ export default function AdminReservationsPage() {
                       )}
                     </td>
                     <td className="px-4 py-3.5 print:hidden text-right">
-                      <button
-                        onClick={() => handleDelete(res.id)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 text-sm text-red-600 hover:bg-red-50 border border-red-200 rounded-md transition-colors cursor-pointer"
-                        title={t("deleteBtnTitle")}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                        <span>{t("deleteBtn")}</span>
-                      </button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Link
+                          href={`/admin/eticket/${res.id}`}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-zinc-700 hover:bg-zinc-100 border border-zinc-200 rounded-md transition-colors"
+                          title={t("viewTicketTitle")}
+                        >
+                          <ArrowUpRight className="h-3.5 w-3.5" />
+                          <span>{t("eticketBtn")}</span>
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(res.id)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs text-red-600 hover:bg-red-50 border border-red-200 rounded-md transition-colors cursor-pointer font-semibold"
+                          title={t("deleteBtnTitle")}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                          <span>{t("deleteBtn")}</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -249,6 +269,13 @@ export default function AdminReservationsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Ticket Verification & Check-in Dialog */}
+      <TicketVerificationDialog
+        isOpen={isVerifyOpen}
+        onOpenChange={setIsVerifyOpen}
+        onCheckInSuccess={() => queryClient.invalidateQueries({ queryKey: adminKeys.all })}
+      />
     </div>
   );
 }

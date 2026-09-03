@@ -505,6 +505,9 @@
       "cancelBack": "Go Back",
       "cancelConfirm": "Yes, Cancel It",
       "cancelBtn": "Cancel",
+      "payNowBtn": "Pay Now",
+      "redirectToast": "Redirecting to payment checkout...",
+      "resumePaymentError": "Failed to resume payment. Try again.",
       "eticketBtn": "E-Ticket",
       "expiredBadge": "Expired"
     },
@@ -728,7 +731,28 @@
       "nextBtn": "Next",
       "deleteTitle": "Delete Reservation",
       "deleteDesc": "Delete this reservation/pending status from the database? This action cannot be undone.",
-      "cancelBtn": "Cancel"
+      "cancelBtn": "Cancel",
+      "verifyTicketBtn": "Verify E-Ticket",
+      "verifyTicketTitle": "Verify E-Ticket & Check-in",
+      "verifyTicketDesc": "Scan QR code or enter Reservation ID to verify ticket and confirm on-site settlement.",
+      "ticketInputPlaceholder": "Type or paste Reservation ID...",
+      "searchBtn": "Search Ticket",
+      "ticketNotFound": "E-Ticket not found.",
+      "unknownCourt": "Court",
+      "statusDone": "Completed",
+      "customerLabel": "Customer",
+      "scheduleLabel": "Session Schedule",
+      "totalLabel": "Total Price",
+      "dpPaidLabel": "DP Verified",
+      "payOnsiteLabel": "Balance Due at Venue",
+      "viewFullTicket": "View Ticket Page",
+      "alreadyCheckedIn": "Checked In",
+      "confirmCheckInBtn": "Confirm Check-In",
+      "cannotCheckInPending": "Awaiting down payment",
+      "checkInSuccess": "E-Ticket check-in successful.",
+      "checkInFailed": "Failed to complete check-in.",
+      "eticketBtn": "E-Ticket",
+      "viewTicketTitle": "View E-Ticket"
     },
     "customers": {
       "title": "Customer Management",
@@ -834,7 +858,11 @@
       "paymentStatusLabel": "Payment Status",
       "dpPaidBadge": "DP Verified",
       "canceledBadge": "CANCELED",
-      "awaitingBadge": "AWAITING DP"
+      "awaitingBadge": "AWAITING DP",
+      "checkInBtn": "Verify Check-in",
+      "alreadyCheckedIn": "Checked In",
+      "checkInSuccess": "E-Ticket check-in successfully verified.",
+      "checkInFailed": "Failed to verify check-in."
     }
   },
   "validation": {
