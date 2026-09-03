@@ -53,6 +53,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.2.12",
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4",
     "@tanstack/react-query-devtools": "^5.101.4",
     "@types/node": "^20",
