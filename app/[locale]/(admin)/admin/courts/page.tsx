@@ -332,7 +332,7 @@ export default function AdminCourtsPage() {
               <div key={court.id} className="bg-white border border-zinc-200 rounded-xl shadow-xs overflow-hidden flex flex-col hover:border-zinc-950 transition-colors">
                 <div className="relative h-36 bg-zinc-100 border-b border-zinc-200 flex items-center justify-center overflow-hidden">
                   {court.imageUrl ? (
-                    <Image src={court.imageUrl} alt={court.name} fill className="object-cover" sizes="(min-width: 1024px) 33vw,(min-width: 640px) 50vw,100vw" />
+                    <Image src={court.imageUrl} alt={court.name} fill unoptimized={court.imageUrl.startsWith("http")} className="object-cover" sizes="(min-width: 1024px) 33vw,(min-width: 640px) 50vw,100vw" />
                   ) : (
                     <div className="text-sm text-zinc-400 font-mono flex items-center gap-1">
                       <ImageIcon className="size-3.5" />
