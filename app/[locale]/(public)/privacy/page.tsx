@@ -38,7 +38,7 @@ export default async function PrivacyPage({
 
   const breadcrumbItems = [
     { label: th("navBeranda"), href: "/" },
-    { label: t("metaTitle") },
+    { label: t("title") },
   ];
 
   const summaryItems = [
@@ -219,10 +219,11 @@ export default async function PrivacyPage({
 
   return (
     <div className="min-h-dvh pt-8 pb-20 px-4 sm:px-6 bg-[var(--background)] text-zinc-950">
-      <PageWrapper className="max-w-4xl mx-auto space-y-10">
+      <PageWrapper className="max-w-4xl mx-auto">
         <Breadcrumb items={breadcrumbItems} locale={locale} />
-        {/* Document Header */}
-        <header className="border-b border-zinc-200/80 pb-8 space-y-4">
+        <div className="space-y-10">
+          {/* Document Header */}
+          <header className="border-b border-zinc-200/80 pb-8 space-y-4">
 
           <div className="flex flex-wrap items-center gap-2">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 text-[0.6875rem] font-mono font-bold uppercase tracking-wider text-zinc-600">
@@ -324,6 +325,7 @@ export default async function PrivacyPage({
               </section>
             ))}
           </main>
+        </div>
         </div>
       </PageWrapper>
     </div>

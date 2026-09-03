@@ -27,6 +27,7 @@ export default function CourtCard({
             alt={court.name}
             fill
             priority={priority}
+            unoptimized={court.imageUrl.startsWith("http")}
             className="object-cover transition-transform duration-500 hover-fine:scale-105"
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
           />
@@ -44,14 +45,14 @@ export default function CourtCard({
       <div className="p-6 space-y-4 flex-1 flex flex-col">
         <div className="space-y-1">
           <h3 className="text-base font-extrabold text-zinc-950">{court.name}</h3>
-          <span className="inline-flex items-center gap-1.5 text-sm text-zinc-600 font-mono">
+          <span className="inline-flex items-center gap-1.5 text-sm text-zinc-600 font-sans">
             <MapPin className="size-3.5 text-zinc-500" aria-hidden="true" />
             {court.venue?.name || "GOR CourtGrid Arena"}
           </span>
         </div>
 
         <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
-          <span className="text-sm text-zinc-600 font-mono">{t("perHour")}</span>
+          <span className="text-sm text-zinc-600 font-sans">{t("perHour")}</span>
           <span className="font-extrabold text-zinc-950 font-mono text-sm tabular-nums">
             Rp {court.pricePerHour.toLocaleString("id-ID")}
           </span>
@@ -62,7 +63,7 @@ export default function CourtCard({
           aria-expanded={showAvailability}
           aria-controls={`court-schedule-${court.id}`}
           onClick={() => setShowAvailability((v) => !v)}
-          className="flex items-center justify-center gap-2 w-full min-h-11 py-2.5 text-sm font-bold font-mono text-white bg-zinc-950 hover:bg-zinc-800 rounded-xl transition-colors shadow-xs cursor-pointer"
+          className="flex items-center justify-center gap-2 w-full min-h-11 py-2.5 text-sm font-semibold font-sans text-white bg-zinc-950 hover:bg-zinc-800 rounded-xl transition-colors shadow-xs cursor-pointer"
         >
           <span>{showAvailability ? t("hideSchedule") : t("showSchedule")}</span>
           <motion.span

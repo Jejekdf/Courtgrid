@@ -38,13 +38,6 @@ export default async function Hero({ courts = [] }: { courts?: ActiveCourtDTO[] 
 
       <div className="relative z-10 max-w-7xl 2xl:max-w-[88rem] mx-auto px-6 pt-10 pb-20 md:pt-14 md:pb-28 flex flex-col items-center text-center">
         
-        {/* Anti-Slop Clean Pill Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 mb-8 shadow-xs">
-          <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-950">
-            {t("badge")}
-          </span>
-        </div>
 
         {/* Hero Headline — fluid with clamp, 320→1920 (tailwind ^4 arbitrer, rem locked) */}
         <h1 className="text-[clamp(1.875rem,5vw,3.75rem)] font-bold tracking-tight text-zinc-950 max-w-5xl leading-[1.05] mb-6">
@@ -105,6 +98,7 @@ export default async function Hero({ courts = [] }: { courts?: ActiveCourtDTO[] 
                 fill
                 priority={img.priority}
                 quality={80}
+                unoptimized={img.src.startsWith("http")}
                 className="object-cover transition-transform duration-500 hover-fine:scale-105" 
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1280px) 25vw, 320px"
               />

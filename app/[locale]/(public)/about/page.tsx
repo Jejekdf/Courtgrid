@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import PageWrapper from "@/components/ui/PageWrapper";
-import { Zap, ShieldCheck, Building2, ArrowUpRight, Award } from "lucide-react";
+import { Zap, ShieldCheck, Building2, ArrowUpRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 import Breadcrumb from "@/components/layout/Breadcrumb";
@@ -45,7 +45,7 @@ export default async function AboutPage({
 
   const breadcrumbItems = [
     { label: th("navBeranda"), href: "/" },
-    { label: t("metaTitle") },
+    { label: t("breadcrumbAbout") },
   ];
 
   const stats = [
@@ -75,16 +75,13 @@ export default async function AboutPage({
 
   return (
     <div className="min-h-dvh pt-8 pb-20 px-4 sm:px-6 bg-background text-zinc-950">
-      <PageWrapper className="max-w-5xl mx-auto space-y-16">
+      <PageWrapper className="max-w-5xl mx-auto">
         <Breadcrumb items={breadcrumbItems} locale={locale} />
-        {/* Modern Hero */}
-        <header className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 items-center">
+        <div className="space-y-16">
+          {/* Modern Hero */}
+          <header className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 items-center">
 
           <div className="md:col-span-7 space-y-5">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200 bg-white text-[0.6875rem] font-mono font-bold uppercase tracking-wider text-zinc-600 shadow-xs w-max">
-              <Award className="size-3.5 text-emerald-600" />
-              {t("badge")}
-            </span>
             <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-950 leading-[1.1]">
               {t("title")}
             </h1>
@@ -179,18 +176,19 @@ export default async function AboutPage({
             <h3 className="font-heading text-2xl md:text-3xl font-extrabold tracking-tight text-white leading-tight">
               {t("ctaTitle")}
             </h3>
-            <p className="text-sm md:text-base text-zinc-300 font-mono">
+            <p className="text-sm md:text-base text-zinc-300 font-sans text-pretty">
               {t("ctaDesc")}
             </p>
             <Link
               href="/courts"
-              className="inline-flex items-center justify-center rounded-xl text-sm font-bold font-mono bg-white text-zinc-950 hover:bg-zinc-100 min-h-11 h-12 px-8 transition-colors cursor-pointer shadow-xs"
+              className="inline-flex items-center justify-center rounded-xl text-sm font-semibold font-sans bg-white text-zinc-950 hover:bg-zinc-100 min-h-11 h-12 px-8 transition-colors cursor-pointer shadow-xs"
             >
               <span>{t("ctaButton")}</span>
               <ArrowUpRight className="ml-2 h-4 w-4" />
             </Link>
           </div>
         </section>
+        </div>
       </PageWrapper>
     </div>
   );

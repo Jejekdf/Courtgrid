@@ -56,16 +56,13 @@ export default function CourtCatalog() {
   });
 
   return (
-    <div className="max-w-7xl 2xl:max-w-[88rem] mx-auto px-6 py-16 space-y-10 text-zinc-950">
+    <div className="space-y-8 text-zinc-950">
       {/* Header Catalog */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-          {t("badge")}
-        </span>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-zinc-950">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-zinc-950 text-balance">
           {t("title")}
         </h1>
-        <p className="text-sm text-zinc-600 leading-relaxed font-mono">
+        <p className="text-sm sm:text-base text-zinc-600 leading-relaxed text-pretty">
           {t("description")}
         </p>
       </div>

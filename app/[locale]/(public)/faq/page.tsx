@@ -96,7 +96,7 @@ export default async function FAQPage({
 
   const breadcrumbItems = [
     { label: th("navBeranda"), href: "/" },
-    { label: t("metaTitle") },
+    { label: t("title") },
   ];
 
   return (
@@ -105,11 +105,11 @@ export default async function FAQPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <PageWrapper className="max-w-4xl mx-auto space-y-10">
+      <PageWrapper className="max-w-4xl mx-auto">
         <Breadcrumb items={breadcrumbItems} locale={locale} />
-
-        {/* Page Header */}
-        <header className="border-b border-zinc-200/80 pb-6 space-y-3">
+        <div className="space-y-10">
+          {/* Page Header */}
+          <header className="border-b border-zinc-200/80 pb-6 space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 text-[0.6875rem] font-mono font-bold uppercase tracking-wider text-zinc-600 shadow-xs">
             <HelpCircle className="size-3.5 text-zinc-950" />
             <span>{t("badge")}</span>
@@ -146,6 +146,7 @@ export default async function FAQPage({
             </div>
           ))}
         </main>
+        </div>
       </PageWrapper>
     </div>
   );

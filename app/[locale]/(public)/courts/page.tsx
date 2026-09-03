@@ -39,22 +39,21 @@ export default async function CourtsPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale: locale as "id" | "en", namespace: "courts" });
   const th = await getTranslations({ locale: locale as "id" | "en", namespace: "header" });
 
   const breadcrumbItems = [
     { label: th("navBeranda"), href: "/" },
-    { label: t("metaTitle") },
+    { label: th("navKatalog") },
   ];
 
   return (
-    <div className="min-h-dvh pt-8 pb-4 px-4 sm:px-6 bg-[var(--background)]">
+    <div className="min-h-dvh pt-8 pb-16 px-4 sm:px-6 bg-[var(--background)]">
       <div className="max-w-7xl 2xl:max-w-[88rem] mx-auto">
         <Breadcrumb items={breadcrumbItems} locale={locale} />
+        <Suspense fallback={<CourtState type="loading" />}>
+          <CourtCatalog />
+        </Suspense>
       </div>
-      <Suspense fallback={<CourtState type="loading" />}>
-        <CourtCatalog />
-      </Suspense>
     </div>
   );
 }

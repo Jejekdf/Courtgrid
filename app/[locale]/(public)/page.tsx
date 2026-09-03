@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Hero from "@/components/layout/Hero";
 import { Link } from "@/i18n/navigation";
-import { ArrowRight, CheckCircle2, ShieldCheck, Zap, Award, CalendarDays, Lock, CreditCard, QrCode } from "lucide-react";
+import { ArrowRight, CheckCircle2, ShieldCheck, Zap, CalendarDays, Lock, CreditCard, QrCode } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getActiveCourtsDAL } from "@/features/courts/dal";
 
@@ -217,62 +217,29 @@ export default async function Home({
         {/* Section 3: About Us & Guarantees */}
         <section id="about" className="relative py-24 bg-[var(--background)] border-t border-zinc-200/80">
           <div className="max-w-7xl 2xl:max-w-[88rem] mx-auto px-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              <div className="space-y-6">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-600">{t("commitmentBadge")}</span>
-                <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-950 leading-tight">
-                  {t("commitmentTitle")}
-                </h2>
-                <p className="text-sm text-zinc-600 leading-relaxed font-sans">
-                  {t("commitmentDesc")}
-                </p>
-                
-                <div className="grid grid-cols-2 gap-6 pt-4 border-t border-zinc-100">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <ShieldCheck className="size-5 text-emerald-600" aria-hidden="true" />
-                      <p className="text-lg font-extrabold text-zinc-950 font-mono">{t("guaranteedTitle")}</p>
-                    </div>
-                    <p className="text-sm text-zinc-600 font-mono">{t("guaranteedDesc")}</p>
+            <div className="max-w-3xl space-y-6">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-600">{t("commitmentBadge")}</span>
+              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-950 leading-tight">
+                {t("commitmentTitle")}
+              </h2>
+              <p className="text-base text-zinc-600 leading-relaxed font-sans">
+                {t("commitmentDesc")}
+              </p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-zinc-100">
+                <div className="p-5 rounded-2xl border border-zinc-200/80 bg-zinc-50/50 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="size-5 text-emerald-600" aria-hidden="true" />
+                    <p className="text-lg font-extrabold text-zinc-950 font-mono">{t("guaranteedTitle")}</p>
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <Zap className="size-5 text-zinc-950" aria-hidden="true" />
-                      <p className="text-lg font-extrabold text-zinc-950 font-mono">{t("instantStripeTitle")}</p>
-                    </div>
-                    <p className="text-sm text-zinc-600 font-sans">{t("instantStripeDesc")}</p>
-                  </div>
+                  <p className="text-sm text-zinc-600 font-mono">{t("guaranteedDesc")}</p>
                 </div>
-              </div>
-
-              {/* Anti-Slop Visual Box */}
-              <div className="bg-zinc-950 text-white rounded-3xl p-8 shadow-xl space-y-6">
-                <div className="flex items-center gap-3 border-b border-zinc-800 pb-4">
-                  <div className="text-emerald-400">
-                    <Award className="size-6" aria-hidden="true" />
+                <div className="p-5 rounded-2xl border border-zinc-200/80 bg-zinc-50/50 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Zap className="size-5 text-zinc-950" aria-hidden="true" />
+                    <p className="text-lg font-extrabold text-zinc-950 font-mono">{t("instantStripeTitle")}</p>
                   </div>
-                  <div>
-                    <h3 className="text-base font-extrabold">{t("officialStandardTitle")}</h3>
-                    <p className="text-sm text-zinc-300 font-sans">{t("officialStandardSub")}</p>
-                  </div>
-                </div>
-                <div className="space-y-4 text-sm font-mono text-zinc-100">
-                  <div className="flex justify-between items-center py-2 border-b border-zinc-900">
-                    <span className="text-zinc-300">{t("atomicLockLabel")}</span>
-                    <span className="text-emerald-400 font-bold">{t("atomicLockVal")}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-zinc-900">
-                    <span className="text-zinc-300">{t("autoCancelLabel")}</span>
-                    <span className="text-white font-bold">{t("autoCancelVal")}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-zinc-900">
-                    <span className="text-zinc-300">{t("dpMethodLabel")}</span>
-                    <span className="text-white font-bold">{t("dpMethodVal")}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2">
-                    <span className="text-zinc-300">{t("ticketVerifyLabel")}</span>
-                    <span className="text-white font-bold">{t("ticketVerifyVal")}</span>
-                  </div>
+                  <p className="text-sm text-zinc-600 font-sans">{t("instantStripeDesc")}</p>
                 </div>
               </div>
             </div>
@@ -283,9 +250,6 @@ export default async function Home({
         <section className="relative py-20 bg-zinc-50/70 border-t border-zinc-200/80">
           <div className="max-w-7xl 2xl:max-w-[88rem] mx-auto px-6 space-y-12">
             <div className="text-center max-w-2xl mx-auto space-y-3">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-                {t("guideBadge")}
-              </span>
               <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-950">
                 {t("guideTitle")}
               </h2>

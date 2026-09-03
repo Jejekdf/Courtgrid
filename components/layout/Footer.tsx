@@ -2,7 +2,7 @@
 
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
-import { MapPin, Mail, Phone, ShieldCheck } from "lucide-react";
+import { MapPin, Mail, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export default function Footer() {
@@ -42,12 +42,6 @@ export default function Footer() {
             <p className="text-zinc-500 text-sm leading-relaxed max-w-xs">
               {t("tagline")}
             </p>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-200 bg-emerald-50 w-max">
-              <ShieldCheck className="size-3.5 text-emerald-600" />
-              <span className="text-[0.6875rem] font-mono font-bold text-emerald-800 uppercase tracking-wider">
-                {t("antiPalkor")}
-              </span>
-            </div>
           </div>
 
           <div className="md:col-span-8 lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-8">

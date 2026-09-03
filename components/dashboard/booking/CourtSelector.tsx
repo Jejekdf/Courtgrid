@@ -33,10 +33,11 @@ export function CourtSelector({
           const isSelected = activeCourt?.id === court.id;
 
           return (
-            <div
+            <button
+              type="button"
               key={court.id}
               onClick={() => onSelectCourt(court)}
-              className={`group relative p-5 rounded-2xl border transition-[border-color,box-shadow,background-color] duration-200 cursor-pointer flex flex-col justify-between overflow-hidden ${
+              className={`group relative p-5 rounded-2xl border transition-[border-color,box-shadow,background-color] duration-200 cursor-pointer flex flex-col justify-between overflow-hidden text-left w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-950 ${
                 isSelected
                   ? "border-zinc-950 bg-white shadow-md ring-2 ring-zinc-950/10"
                   : "border-zinc-200 bg-white hover:border-zinc-300 hover:shadow-xs"
@@ -59,13 +60,13 @@ export function CourtSelector({
                 </h4>
               </div>
 
-              <div className="mt-5 pt-3 border-t border-zinc-100 flex items-center justify-between">
+              <div className="mt-5 pt-3 border-t border-zinc-100 flex items-center justify-between w-full">
                 <span className="text-sm text-zinc-500 font-mono">{t("perHour")}</span>
                 <span className="text-base font-extrabold text-zinc-950">
                   Rp {court.pricePerHour.toLocaleString("id-ID")}
                 </span>
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
