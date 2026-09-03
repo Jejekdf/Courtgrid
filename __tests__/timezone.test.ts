@@ -77,7 +77,7 @@ test("validateBookingTime accepts future date", () => {
 
 // --- Schema superRefine test ---
 test("createReservationSchema rejects past date via superRefine", async () => {
-  const { createReservationSchema } = await import("../src/features/reservations/schemas");
+  const { createReservationSchema } = await import("../features/reservations/schemas");
   const result = createReservationSchema.safeParse({
     courtId: "test-court",
     dateStr: "2020-01-01",
@@ -95,7 +95,7 @@ test("createReservationSchema rejects past date via superRefine", async () => {
 });
 
 test("createReservationSchema accepts valid future booking", async () => {
-  const { createReservationSchema } = await import("../src/features/reservations/schemas");
+  const { createReservationSchema } = await import("../features/reservations/schemas");
   const { dateStr: today, hour: currentHour } = getJakartaNow();
   const futureHour = String(Math.min(23, currentHour + 1)).padStart(2, "0") + ":00";
   const nextHour = String(Math.min(23, currentHour + 2)).padStart(2, "0") + ":00";

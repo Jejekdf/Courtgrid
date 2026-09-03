@@ -11,7 +11,7 @@ import path from "node:path";
 
 const sourcePath = path.join(
   process.cwd(),
-  "src/features/reservations/ghostCancel.ts"
+  "features/reservations/ghostCancel.ts"
 );
 const src = fs.readFileSync(sourcePath, "utf-8");
 

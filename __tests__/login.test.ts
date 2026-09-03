@@ -22,10 +22,10 @@ function test(name: string, fn: () => void | Promise<void>) {
   tests.push({ name, fn });
 }
 
-const actionsPath = path.join(process.cwd(), "src/features/auth/actions.ts");
+const actionsPath = path.join(process.cwd(), "features/auth/actions.ts");
 const actionsSrc = fs.readFileSync(actionsPath, "utf-8");
 
-const credentialsPath = path.join(process.cwd(), "src/features/auth/credentials.ts");
+const credentialsPath = path.join(process.cwd(), "features/auth/credentials.ts");
 const credentialsSrc = fs.readFileSync(credentialsPath, "utf-8");
 
 const authPath = path.join(process.cwd(), "auth.ts");

@@ -77,7 +77,7 @@ export const verifyUserSession = cache(async (requiredRole?: "ADMIN" | "CUSTOMER
 /**
  * Updates a user's profile: name and email always, image only when provided.
  */
-export const updateUserProfileDAL = cache(async (userId: string, data: { name: string; email: string; image?: string }) => {
+export async function updateUserProfileDAL(userId: string, data: { name: string; email: string; image?: string }) {
   return prisma.user.update({
     where: { id: userId },
     data: {
@@ -86,14 +86,14 @@ export const updateUserProfileDAL = cache(async (userId: string, data: { name: s
       ...(data.image ? { image: data.image } : {}),
     },
   });
-});
+}
 
 /**
  * Replaces a user's password hash. The new value must already be hashed.
  */
-export const changePasswordDAL = cache(async (userId: string, passwordHash: string) => {
+export async function changePasswordDAL(userId: string, passwordHash: string) {
   return prisma.user.update({
     where: { id: userId },
     data: { passwordHash },
   });
-});
+}

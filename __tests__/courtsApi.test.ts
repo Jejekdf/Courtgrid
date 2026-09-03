@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { courtsQuerySchema } from "../src/features/courts/schemas";
+import { courtsQuerySchema } from "../features/courts/schemas";
 
 // Set environment variable to allow importing lib/prisma safely if needed
 process.env.DATABASE_URL = "postgresql://mock:mock@localhost:5432/mock";
@@ -56,7 +56,7 @@ const sampleCourts = [
 let getAvailabilityCalled = false;
 let getActiveCourtsCalled = false;
 
-const dalPath = require.resolve("../src/features/courts/dal");
+const dalPath = require.resolve("../features/courts/dal");
 require.cache[dalPath] = {
   id: dalPath,
   filename: dalPath,

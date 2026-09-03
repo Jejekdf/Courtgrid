@@ -16,7 +16,7 @@ import {
   intervalsOverlap,
   computeDeposit,
   ACTIVE_BOOKING_STATUSES,
-} from "../src/features/reservations/doubleBooking";
+} from "../features/reservations/doubleBooking";
 
 let passed = 0;
 let failed = 0;
@@ -99,7 +99,7 @@ test("ACTIVE_BOOKING_STATUSES contains PENDING and DP_PAID", () => {
 
 const actionsPath = path.join(
   process.cwd(),
-  "src/features/reservations/actions.ts",
+  "features/reservations/actions.ts",
 );
 const actionsSrc = fs.readFileSync(actionsPath, "utf-8");
 

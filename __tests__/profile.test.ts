@@ -28,10 +28,10 @@ function test(name: string, fn: () => void) {
   }
 }
 
-const actionsPath = path.join(process.cwd(), "src/features/auth/actions.ts");
+const actionsPath = path.join(process.cwd(), "features/auth/actions.ts");
 const actionsSrc = fs.readFileSync(actionsPath, "utf-8");
 
-const dalPath = path.join(process.cwd(), "src/features/auth/dal.ts");
+const dalPath = path.join(process.cwd(), "features/auth/dal.ts");
 const dalSrc = fs.readFileSync(dalPath, "utf-8");
 
 const storagePath = path.join(process.cwd(), "lib/supabase/storage.ts");
