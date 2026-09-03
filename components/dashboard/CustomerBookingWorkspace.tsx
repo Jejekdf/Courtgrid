@@ -3,7 +3,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryState, parseAsString } from "nuqs";
-import { format, addDays } from "date-fns";
 import { motion } from "motion/react";
 import { Loader2 } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -19,6 +18,7 @@ import { BookingSummaryPanel } from "./booking/BookingSummaryPanel";
 import { BookingPreviewModal } from "./booking/BookingPreviewModal";
 
 import { useTranslations } from "next-intl";
+import { getJakartaNow } from "@/lib/timezone";
 
 const TIME_SLOTS = Array.from({ length: 14 }, (_, i) => {
   const hour = i + 8;
@@ -41,7 +41,7 @@ export default function CustomerBookingWorkspace() {
   const [urlCourtId] = useQueryState("courtId", parseAsString);
 
   const [selectedDate, setSelectedDate] = useState<string>(
-    format(new Date(), "yyyy-MM-dd")
+    () => getJakartaNow().dateStr
   );
   const [selectedCourtId, setSelectedCourtId] = useState<string | null>(urlCourtId);
   const [prevUrlCourtId, setPrevUrlCourtId] = useState(urlCourtId);
@@ -112,8 +112,7 @@ export default function CustomerBookingWorkspace() {
 
   // Determine whether each hourly slot is in the past, pending, paid, or available
   const getSlotStatus = useMemo(() => {
-    const todayStr = format(new Date(), "yyyy-MM-dd");
-    const currentHour = new Date().getHours();
+    const { dateStr: todayStr, hour: currentHour } = getJakartaNow();
 
     return (time: string) => {
       const tHour = parseInt(time.split(":")[0], 10);
@@ -205,9 +204,13 @@ export default function CustomerBookingWorkspace() {
     );
   }
 
-  const todayStr = format(new Date(), "yyyy-MM-dd");
-  const tomorrowStr = format(addDays(new Date(), 1), "yyyy-MM-dd");
-  const dayAfterTomorrowStr = format(addDays(new Date(), 2), "yyyy-MM-dd");
+  const { dateStr: todayStr } = getJakartaNow();
+  const d1 = new Date(`${todayStr}T00:00:00Z`);
+  d1.setUTCDate(d1.getUTCDate() + 1);
+  const tomorrowStr = d1.toISOString().slice(0, 10);
+  const d2 = new Date(`${todayStr}T00:00:00Z`);
+  d2.setUTCDate(d2.getUTCDate() + 2);
+  const dayAfterTomorrowStr = d2.toISOString().slice(0, 10);
 
   const totalPrice = activeCourt
     ? selectedTimeSlots.length * activeCourt.pricePerHour

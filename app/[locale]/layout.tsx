@@ -31,6 +31,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: "#09090b",
+  viewportFit: "cover",
 };
 
 const BASE_URL = "https://courtgrid-one.vercel.app";
