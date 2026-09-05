@@ -61,8 +61,29 @@ export function Header() {
     return pathname === href;
   };
 
+  const handleNavClick = (href: string, e?: React.MouseEvent) => {
+    if (pathname === "/") {
+      if (href === "/") {
+        e?.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (window.location.hash) {
+          window.history.pushState(null, "", window.location.pathname);
+        }
+        setActiveSection("");
+      } else if (href === "/#courts") {
+        e?.preventDefault();
+        const el = document.getElementById("courts");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+          window.history.pushState(null, "", `${window.location.pathname}#courts`);
+          setActiveSection("#courts");
+        }
+      }
+    }
+  };
+
   const logoElement = (
-    <Link href="/" className="flex items-center gap-2.5 group shrink-0 outline-none">
+    <Link href="/" onClick={(e) => handleNavClick("/", e)} className="flex items-center gap-2.5 group shrink-0 outline-none">
       <Image src="/logo.svg" alt="CourtGrid Logo" width={28} height={28} priority className="rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
       <span className="font-heading text-zinc-950 font-extrabold tracking-tight text-base sm:text-lg">
         CourtGrid
@@ -74,7 +95,7 @@ export function Header() {
     { label: t("navBeranda"), href: "/" },
     { label: t("navFasilitas"), href: "/#courts" },
     { label: t("navKatalog"), href: "/courts" },
-    { label: t("navTentang"), href: "/#about" },
+    { label: t("navTentang"), href: "/about" },
   ];
 
   const isLoggedIn = status === "authenticated" && session?.user;
@@ -141,6 +162,7 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={(e) => handleNavClick(link.href, e)}
                 className={`relative text-sm font-medium outline-none transition-colors py-1.5
                   after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-zinc-950 after:origin-left after:transition-transform after:duration-200 after:ease-out
                   ${
@@ -180,6 +202,7 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={(e) => handleNavClick(link.href, e)}
                 className={`relative text-sm font-medium w-full justify-center text-center min-h-11 flex items-center transition-colors outline-none rounded-lg px-4
                   ${
                     checkIsActive(link.href)

@@ -44,7 +44,7 @@ export default function PageTransition({
         animate="animate"
         exit="exit"
         transition={pageTransition}
-        className="min-h-full"
+        className="min-h-full flex flex-col grow"
       >
         {children}
       </motion.div>
