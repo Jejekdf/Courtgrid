@@ -1,8 +1,9 @@
 "use client";
 
-import { Menu, PanelLeftClose, PanelLeft } from "lucide-react";
+import { Menu, PanelLeftClose, PanelLeft, QrCode } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
+import { useAdminReservationsActions } from "@/stores/useBoundStore";
 
 interface AdminTopbarProps {
   onMenuClick: () => void;
@@ -16,6 +17,7 @@ export default function AdminTopbar({
   onToggleSidebar,
 }: AdminTopbarProps) {
   const { data: session } = useSession();
+  const { openScanner } = useAdminReservationsActions();
   const t = useTranslations("admin.topbar");
 
   const userName = session?.user?.name || "Admin";
@@ -49,8 +51,16 @@ export default function AdminTopbar({
         )}
       </div>
 
-      {/* Admin User Badge */}
+      {/* Action + Admin User Badge */}
       <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={openScanner}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 text-zinc-900 rounded-lg transition-colors border border-zinc-200 cursor-pointer"
+        >
+          <QrCode className="size-3.5 text-emerald-600" />
+          <span className="hidden sm:inline">Verifikasi Tiket</span>
+        </button>
         <div className="flex items-center gap-2.5 p-1 pr-2 hover:bg-zinc-100 rounded-lg transition-colors border border-transparent hover:border-zinc-200">
           <div className="size-7 rounded-full bg-zinc-950 flex items-center justify-center text-white text-xs font-bold shrink-0">
             {userInitial}

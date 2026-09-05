@@ -23,7 +23,7 @@ import { adminKeys } from "@/lib/query-keys";
 import { adminReservationsParsers } from "@/lib/search-params";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { TicketVerificationDialog } from "@/components/admin/reservations/TicketVerificationDialog";
+import { useAdminReservationsActions } from "@/stores/useBoundStore";
 
 type ReservationDetail = {
   id: string;
@@ -45,7 +45,7 @@ export default function AdminReservationsPage() {
   const [page, setPage] = useQueryState("page", adminReservationsParsers.page.withOptions({ shallow: true }));
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
-  const [isVerifyOpen, setIsVerifyOpen] = useState(false);
+  const { openScanner } = useAdminReservationsActions();
 
   // Fetch reservations matching current filter and page
   const { data, isLoading, isFetching } = useQuery({
@@ -90,7 +90,7 @@ export default function AdminReservationsPage() {
           actions={
             <div className="flex items-center space-x-3">
               <button
-                onClick={() => setIsVerifyOpen(true)}
+                onClick={openScanner}
                 className="px-3.5 py-2 text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer"
               >
                 <ShieldCheck className="h-3.5 w-3.5" />
@@ -269,13 +269,6 @@ export default function AdminReservationsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {/* Ticket Verification & Check-in Dialog */}
-      <TicketVerificationDialog
-        isOpen={isVerifyOpen}
-        onOpenChange={setIsVerifyOpen}
-        onCheckInSuccess={() => queryClient.invalidateQueries({ queryKey: adminKeys.all })}
-      />
     </div>
   );
 }

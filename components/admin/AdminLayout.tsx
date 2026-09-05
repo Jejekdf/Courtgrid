@@ -4,10 +4,17 @@ import { useState } from "react";
 import AdminSidebar from "./AdminSidebar";
 import AdminTopbar from "./AdminTopbar";
 import PageTransition from "@/components/motion/PageTransition";
+import { TicketVerificationDialog } from "@/components/admin/reservations/TicketVerificationDialog";
+import { useBoundStore, useAdminReservationsActions } from "@/stores/useBoundStore";
+import { useQueryClient } from "@tanstack/react-query";
+import { adminKeys } from "@/lib/query-keys";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDesktopOpen, setIsDesktopOpen] = useState(true);
+  const isScannerOpen = useBoundStore((state) => state.adminReservations.scanner.isOpen);
+  const { openScanner, closeScanner } = useAdminReservationsActions();
+  const queryClient = useQueryClient();
 
   return (
     <div className="min-h-dvh bg-zinc-50 flex font-sans text-zinc-950 selection:bg-zinc-950 selection:text-white">
@@ -37,6 +44,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </main>
       </div>
+
+      <TicketVerificationDialog
+        isOpen={isScannerOpen}
+        onOpenChange={(open) => {
+          if (!open) closeScanner();
+          else openScanner();
+        }}
+        onCheckInSuccess={() => queryClient.invalidateQueries({ queryKey: adminKeys.all })}
+      />
     </div>
   );
 }
