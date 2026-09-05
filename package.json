@@ -10,7 +10,9 @@
     "lint": "eslint",
     "db:test": "tsx scripts/test-db.ts",
     "db:studio": "prisma studio",
-    "test": "tsx --test tests/*.test.ts __tests__/*.test.ts"
+    "test": "tsx --test tests/*.test.ts __tests__/*.test.ts",
+    "test:e2e": "playwright test",
+    "analyze": "ANALYZE=true next build --webpack"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.2",
