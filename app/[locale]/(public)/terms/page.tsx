@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import PageWrapper from "@/components/ui/PageWrapper";
-import { FileText, CheckCircle2, Clock } from "lucide-react";
+import { FileText, CheckCircle2 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import Breadcrumb from "@/components/layout/Breadcrumb";
 
@@ -13,15 +13,35 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale: locale as "id" | "en", namespace: "terms" });
+  const title = `${t("metaTitle")} | CourtGrid`;
+  const description = t("metaDesc");
+  const url = `${BASE_URL}/${locale}/terms`;
+
   return {
     title: t("metaTitle"),
-    description: t("metaDesc"),
+    description,
     alternates: {
-      canonical: `${BASE_URL}/${locale}/terms`,
+      canonical: url,
       languages: {
         id: `${BASE_URL}/id/terms`,
         en: `${BASE_URL}/en/terms`,
+        "x-default": `${BASE_URL}/terms`,
       },
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: "CourtGrid",
+      locale: locale === "id" ? "id_ID" : "en_US",
+      type: "website",
+      images: [{ url: `${BASE_URL}/og-image.png`, width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`${BASE_URL}/og-image.png`],
     },
   };
 }
@@ -233,43 +253,36 @@ export default async function TermsPage({
   ];
 
   return (
-    <div className="min-h-dvh pt-8 pb-20 px-4 sm:px-6 bg-[var(--background)] text-zinc-950">
+    <div className="min-h-dvh pt-6 pb-16 px-4 sm:px-6 lg:px-8 bg-[var(--background)] text-zinc-950">
       <PageWrapper className="max-w-4xl mx-auto">
         <Breadcrumb items={breadcrumbItems} locale={locale} />
-        <div className="space-y-10">
+        <div className="space-y-8 sm:space-y-10">
           {/* Document Header */}
-          <header className="border-b border-zinc-200/80 pb-8 space-y-4">
-
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 text-[0.6875rem] font-mono font-bold uppercase tracking-wider text-zinc-600">
-              <FileText className="size-3.5 text-zinc-950" />
-              <span>{t("badge")}</span>
-            </div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 text-[0.6875rem] font-mono text-zinc-600">
-              <Clock className="size-3.5 text-zinc-500" />
+          <header className="border-b border-zinc-200/80 pb-6 space-y-3">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-500 font-sans">
+              <span className="font-semibold text-zinc-900">{t("badge")}</span>
+              <span aria-hidden="true">•</span>
+              <span>{t("effectiveDateLabel")} {t("effectiveDateVal")}</span>
+              <span aria-hidden="true">•</span>
               <span>{t("readingTime")}</span>
             </div>
-            <div className="text-xs font-medium uppercase tracking-wider text-zinc-500 py-1.5">
-              <span>{t("effectiveDateLabel")} {t("effectiveDateVal")}</span>
-            </div>
-          </div>
 
-          <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950">
+          <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 text-balance">
             {t("title")}
           </h1>
 
-          <p className="text-base text-zinc-600 leading-relaxed max-w-2xl">
+          <p className="text-base text-zinc-600 leading-relaxed max-w-2xl font-sans text-pretty">
             {t("description")}
           </p>
 
           {/* Plain-Language Key Summary (NN/g + UK BEIS best practice) */}
           <div className="pt-4 border-t border-zinc-200/60">
-            <span className="text-xs font-medium uppercase tracking-wider text-zinc-950 block mb-2.5">
+            <span className="text-xs font-medium uppercase tracking-wider text-zinc-950 block mb-2.5 font-sans">
               {t("summaryTitle")}
             </span>
             <ul className="space-y-2">
               {summaryItems.map((item, idx) => (
-                <li key={idx} className="flex items-start gap-2.5 text-sm text-zinc-600">
+                <li key={idx} className="flex items-start gap-2.5 text-sm text-zinc-600 font-sans">
                   <span className="size-1.5 rounded-full bg-zinc-400 mt-2 shrink-0" />
                   <span>{item}</span>
                 </li>
@@ -289,7 +302,7 @@ export default async function TermsPage({
                   <FileText className="size-4 text-emerald-600 shrink-0" aria-hidden="true" />
                   <span>{t("navTitle")} ({sections.length})</span>
                 </span>
-                <span className="text-xs text-zinc-500 font-mono transition-transform duration-200 group-open:rotate-180">▼</span>
+                <span className="text-[0.6875rem] text-zinc-500 font-sans transition-transform duration-200 group-open:rotate-180">▼</span>
               </summary>
               <nav aria-label={t("navTitle")} className="pt-3 mt-3 border-t border-zinc-100">
                 <ul className="space-y-1">

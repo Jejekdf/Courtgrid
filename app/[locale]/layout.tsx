@@ -124,8 +124,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       suppressHydrationWarning
-      data-scroll-behavior="smooth"
-      className={`${heading.variable} ${body.variable} ${mono.variable} h-full antialiased scroll-smooth`}
+      className={`${heading.variable} ${body.variable} ${mono.variable} min-h-full antialiased`}
     >
       {/* Background and text are controlled by globals.css (Light Mode) */}
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground">

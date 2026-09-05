@@ -19,15 +19,35 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale: locale as "id" | "en", namespace: "faq" });
+  const title = `${t("metaTitle")} | CourtGrid`;
+  const description = t("metaDesc");
+  const url = `${BASE_URL}/${locale}/faq`;
+
   return {
     title: t("metaTitle"),
-    description: t("metaDesc"),
+    description,
     alternates: {
-      canonical: `${BASE_URL}/${locale}/faq`,
+      canonical: url,
       languages: {
         id: `${BASE_URL}/id/faq`,
         en: `${BASE_URL}/en/faq`,
+        "x-default": `${BASE_URL}/faq`,
       },
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: "CourtGrid",
+      locale: locale === "id" ? "id_ID" : "en_US",
+      type: "website",
+      images: [{ url: `${BASE_URL}/og-image.png`, width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`${BASE_URL}/og-image.png`],
     },
   };
 }
@@ -100,32 +120,32 @@ export default async function FAQPage({
   ];
 
   return (
-    <div className="min-h-dvh pt-8 pb-20 px-4 sm:px-6 bg-[var(--background)] text-zinc-950">
+    <div className="min-h-dvh pt-6 pb-16 px-4 sm:px-6 lg:px-8 bg-[var(--background)] text-zinc-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       <PageWrapper className="max-w-4xl mx-auto">
         <Breadcrumb items={breadcrumbItems} locale={locale} />
-        <div className="space-y-10">
+        <div className="space-y-8 sm:space-y-10">
           {/* Page Header */}
           <header className="border-b border-zinc-200/80 pb-6 space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200 bg-zinc-50 text-[0.6875rem] font-mono font-bold uppercase tracking-wider text-zinc-600 shadow-xs">
-            <HelpCircle className="size-3.5 text-zinc-950" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200/90 bg-zinc-100 text-[0.6875rem] font-semibold uppercase tracking-wider text-zinc-700 shadow-xs font-sans">
+            <HelpCircle className="size-3.5 text-zinc-950" aria-hidden="true" />
             <span>{t("badge")}</span>
           </div>
-          <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950">
+          <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 text-balance">
             {t("title")}
           </h1>
-          <p className="text-sm text-zinc-600 leading-relaxed max-w-xl">
+          <p className="text-sm text-zinc-600 leading-relaxed max-w-xl font-sans text-pretty">
             {t("description")}
           </p>
         </header>
 
         {/* FAQ Accordion List */}
-        <main className="space-y-8">
+        <main className="space-y-6">
           {faqCategories.map((cat, idx) => (
-            <div key={idx} className="space-y-4">
+            <div key={idx} className="space-y-3">
               <span className="text-xs font-semibold uppercase tracking-wider text-zinc-600 block">
                 {cat.category}
               </span>

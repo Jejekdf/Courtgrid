@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
-import { ArrowRight, CalendarDays, Zap, ShieldCheck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import type { ActiveCourtDTO } from "@/features/courts/dal";
 
@@ -29,85 +29,76 @@ export default async function Hero({ courts = [] }: { courts?: ActiveCourtDTO[] 
           { src: "/badminton2.webp", alt: "Badminton Pro Court", name: "Badminton Court 2", type: "BADMINTON", priority: false },
         ];
 
-  const totalCourts = courts.length > 0 ? courts.length : 5;
-
   return (
     <section className="relative w-full overflow-hidden bg-[var(--background)]">
-      {/* Subtle Background Pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] bg-size-[16px_16px] opacity-40 z-0" />
-
-      <div className="relative z-10 max-w-7xl 2xl:max-w-[88rem] mx-auto px-6 pt-10 pb-20 md:pt-14 md:pb-28 flex flex-col items-center text-center">
-        
-
-        {/* Hero Headline — fluid with clamp, 320→1920 (tailwind ^4 arbitrer, rem locked) */}
-        <h1 className="text-[clamp(1.875rem,5vw,3.75rem)] font-bold tracking-tight text-zinc-950 max-w-5xl leading-[1.05] mb-6">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 sm:pt-8 sm:pb-12 flex flex-col items-center text-center">
+        {/* Hero Headline */}
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-zinc-950 max-w-4xl leading-[1.12] mb-4 text-balance">
           {t("headline")}
         </h1>
 
         {/* Hero Subheadline */}
-        <p className="text-base md:text-lg text-zinc-600 max-w-2xl leading-relaxed mb-10 font-sans">
+        <p className="text-base sm:text-lg text-zinc-600 max-w-2xl leading-relaxed mb-6 font-sans text-pretty">
           {t("subheadline")}
         </p>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+        {/* CTA Actions */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto">
           <Link href="/dashboard/book" className="w-full sm:w-auto">
-            <Button size="lg" className="w-full sm:w-auto text-sm font-bold min-h-11 h-12 px-6 bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl shadow-xs cursor-pointer group">
+            <Button
+              size="lg"
+              className="w-full sm:w-auto text-sm font-bold min-h-12 h-12 px-7 bg-zinc-950 hover:bg-zinc-800 active:scale-[0.98] text-white rounded-xl shadow-sm transition-all duration-150 cursor-pointer group"
+            >
               <span>{t("checkSchedule")}</span>
               <ArrowRight className="ml-2 size-4 transition-transform group-hover-fine:translate-x-1 text-white" aria-hidden="true" />
             </Button>
           </Link>
-          <Link href="/register" className="w-full sm:w-auto">
-            <Button variant="secondary" size="lg" className="w-full sm:w-auto text-sm font-bold min-h-11 h-12 px-6 bg-[var(--background)] border border-zinc-200 text-zinc-950 hover:bg-zinc-100 rounded-xl cursor-pointer">
-              {t("registerAccount")}
+          <Link href="/courts" className="w-full sm:w-auto">
+            <Button
+              variant="secondary"
+              size="lg"
+              className="w-full sm:w-auto text-sm font-bold min-h-12 h-12 px-6 bg-white border border-zinc-200/90 text-zinc-900 hover:bg-zinc-50 active:scale-[0.98] rounded-xl transition-all duration-150 cursor-pointer shadow-2xs"
+            >
+              <span>Lihat Spesifikasi Lapangan</span>
             </Button>
           </Link>
         </div>
 
-        {/* Trust Indicators / Quick Stats */}
-        <div className="mt-16 md:mt-20 grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-12 pt-8 border-t border-zinc-200/80 w-full max-w-3xl mx-auto">
-          <div className="flex flex-col items-center text-center gap-1.5">
-            <Zap className="size-5 text-emerald-600 mb-1" aria-hidden="true" />
-            <span className="text-xl font-extrabold text-zinc-950 font-mono">{t("statRealtime")}</span>
-            <span className="text-xs font-mono font-bold text-zinc-600 uppercase tracking-wider">{t("statRealtimeDesc")}</span>
+        {/* Visual Showcase - Responsive Swipeable Track on Mobile, Bento Grid on Desktop */}
+        <div className="mt-8 sm:mt-10 w-full">
+          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5 overflow-x-auto sm:overflow-visible pb-3 sm:pb-0 scrollbar-none snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0">
+            {images.map((img, idx) => (
+              <Link
+                key={idx}
+                href="/dashboard/book"
+                className="group relative rounded-2xl overflow-hidden border border-zinc-200/90 aspect-4/3 bg-zinc-100 shadow-xs hover:shadow-md hover:border-zinc-400 transition-all duration-200 block text-left shrink-0 w-[78vw] max-w-[320px] sm:w-auto sm:max-w-none snap-center"
+              >
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  fill
+                  priority={img.priority}
+                  quality={85}
+                  unoptimized={img.src.startsWith("http")}
+                  className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none will-change-transform"
+                  sizes="(max-width: 640px) 78vw, (max-width: 1024px) 50vw, 25vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/30 to-transparent flex flex-col justify-end p-4 sm:p-5">
+                  <span className="text-xs uppercase font-bold tracking-wider text-emerald-400 mb-0.5">
+                    {img.type === "FUTSAL" ? "Rumput Sintetis" : "Karpet Vinyl BWF"}
+                  </span>
+                  <span className="text-base font-bold text-white tracking-tight leading-tight truncate drop-shadow-xs">
+                    {img.name}
+                  </span>
+                </div>
+              </Link>
+            ))}
           </div>
 
-          <div className="flex flex-col items-center text-center gap-1.5">
-            <ShieldCheck className="size-5 text-emerald-600 mb-1" aria-hidden="true" />
-            <span className="text-xl font-extrabold text-zinc-950 font-mono">{t("statGuarantee")}</span>
-            <span className="text-xs font-mono font-bold text-zinc-600 uppercase tracking-wider">{t("statGuaranteeDesc")}</span>
+          <div className="flex sm:hidden items-center justify-center gap-1.5 text-xs text-zinc-400 mt-2 font-medium">
+            <span>Geser untuk melihat 4 arena</span>
+            <ArrowRight className="size-3" aria-hidden="true" />
           </div>
-
-          <div className="flex flex-col items-center text-center gap-1.5 col-span-2 md:col-span-1">
-            <CalendarDays className="size-5 text-zinc-950 mb-1" aria-hidden="true" />
-            <span className="text-xl font-extrabold text-zinc-950 font-mono">{t("statCourtsCount", { count: totalCourts })}</span>
-            <span className="text-xs font-mono font-bold text-zinc-700 uppercase tracking-wider">{t("statCourtsDesc")}</span>
-          </div>
-        </div>
-
-        {/* Visual Showcase - Courts */}
-        <div className="mt-16 w-full max-w-7xl 2xl:max-w-[88rem] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {images.map((img, idx) => (
-            <div 
-              key={idx} 
-              className={`relative rounded-2xl overflow-hidden shadow-xs border border-zinc-200/80 aspect-video md:aspect-4/5 bg-zinc-100 ${idx % 2 !== 0 ? 'md:translate-y-6' : ''}`}
-            >
-              <Image 
-                src={img.src} 
-                alt={img.alt}
-                fill
-                priority={img.priority}
-                quality={80}
-                unoptimized={img.src.startsWith("http")}
-                className="object-cover transition-transform duration-500 hover-fine:scale-105" 
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1280px) 25vw, 320px"
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-zinc-950/85 via-zinc-950/25 to-transparent flex flex-col justify-end p-4">
-                <span className="text-xs font-mono font-bold text-white uppercase tracking-wider truncate drop-shadow-xs">{img.name}</span>
-                <span className="text-[0.6875rem] font-mono text-zinc-200 font-medium drop-shadow-xs">{img.type}</span>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </section>

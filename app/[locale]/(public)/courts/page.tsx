@@ -14,21 +14,35 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale: locale as "id" | "en", namespace: "courts" });
+  const title = `${t("metaTitle")} | CourtGrid`;
+  const description = t("metaDesc");
+  const url = `${BASE_URL}/${locale}/courts`;
+
   return {
     title: t("metaTitle"),
-    description: t("metaDesc"),
+    description,
     alternates: {
-      canonical: `${BASE_URL}/${locale}/courts`,
+      canonical: url,
       languages: {
         id: `${BASE_URL}/id/courts`,
         en: `${BASE_URL}/en/courts`,
+        "x-default": `${BASE_URL}/courts`,
       },
     },
     openGraph: {
-      title: t("metaTitle"),
-      description: t("metaDesc"),
-      url: `${BASE_URL}/${locale}/courts`,
-      images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+      title,
+      description,
+      url,
+      siteName: "CourtGrid",
+      locale: locale === "id" ? "id_ID" : "en_US",
+      type: "website",
+      images: [{ url: `${BASE_URL}/og-image.png`, width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`${BASE_URL}/og-image.png`],
     },
   };
 }
@@ -47,8 +61,8 @@ export default async function CourtsPage({
   ];
 
   return (
-    <div className="min-h-dvh pt-8 pb-16 px-4 sm:px-6 bg-[var(--background)]">
-      <div className="max-w-7xl 2xl:max-w-[88rem] mx-auto">
+    <div className="min-h-dvh pt-6 pb-16 px-4 sm:px-6 lg:px-8 bg-[var(--background)]">
+      <div className="max-w-7xl mx-auto">
         <Breadcrumb items={breadcrumbItems} locale={locale} />
         <Suspense fallback={<CourtState type="loading" />}>
           <CourtCatalog />
