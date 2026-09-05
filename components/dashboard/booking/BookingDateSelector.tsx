@@ -29,8 +29,8 @@ export function BookingDateSelector({
           <CalendarIcon className="size-5" />
         </div>
         <div>
-          <h2 className="text-sm font-bold text-zinc-950">{t("dateTitle")}</h2>
-          <p className="text-sm text-zinc-500 font-mono">
+          <h2 className="text-sm font-bold text-zinc-950 font-sans">{t("dateTitle")}</h2>
+          <p className="text-xs sm:text-sm text-zinc-600 font-medium font-sans">
             {format(new Date(selectedDate), "EEEE, dd MMMM yyyy", { locale: id })}
           </p>
         </div>
@@ -41,7 +41,7 @@ export function BookingDateSelector({
         <button
           type="button"
           onClick={() => onSelectDate(todayStr)}
-          className={`px-4 py-2.5 min-h-11 rounded-xl text-sm font-bold transition-colors cursor-pointer ${
+          className={`px-4 py-2.5 min-h-11 rounded-xl text-xs sm:text-sm font-bold font-sans transition-colors cursor-pointer ${
             selectedDate === todayStr
               ? "bg-zinc-950 text-white shadow-xs"
               : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200 hover:text-zinc-950"
@@ -52,7 +52,7 @@ export function BookingDateSelector({
         <button
           type="button"
           onClick={() => onSelectDate(tomorrowStr)}
-          className={`px-4 py-2.5 min-h-11 rounded-xl text-sm font-bold transition-colors cursor-pointer ${
+          className={`px-4 py-2.5 min-h-11 rounded-xl text-xs sm:text-sm font-bold font-sans transition-colors cursor-pointer ${
             selectedDate === tomorrowStr
               ? "bg-zinc-950 text-white shadow-xs"
               : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200 hover:text-zinc-950"
@@ -63,7 +63,7 @@ export function BookingDateSelector({
         <button
           type="button"
           onClick={() => onSelectDate(dayAfterTomorrowStr)}
-          className={`px-4 py-2.5 min-h-11 rounded-xl text-sm font-bold transition-colors cursor-pointer ${
+          className={`px-4 py-2.5 min-h-11 rounded-xl text-xs sm:text-sm font-bold font-sans transition-colors cursor-pointer ${
             selectedDate === dayAfterTomorrowStr
               ? "bg-zinc-950 text-white shadow-xs"
               : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200 hover:text-zinc-950"
@@ -77,7 +77,7 @@ export function BookingDateSelector({
           onChange={(e) => onSelectDate(e.target.value)}
           min={todayStr}
           max={format(addDays(new Date(), 30), "yyyy-MM-dd")}
-          className="h-10 text-sm bg-zinc-50 border-zinc-200 rounded-xl font-mono max-w-36"
+          className="h-11 min-h-11 text-xs sm:text-sm bg-zinc-50 border-zinc-200 rounded-xl font-sans max-w-36"
         />
       </div>
     </div>

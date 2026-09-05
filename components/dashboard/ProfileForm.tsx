@@ -138,26 +138,26 @@ export default function ProfileForm({
           onChange={handleAvatarChange}
         />
         <div>
-          <p className="text-sm font-extrabold text-zinc-950">{user.name || "Pelanggan"}</p>
-          <p className="text-sm text-zinc-400 font-mono">{user.email}</p>
-          <p className="text-sm text-zinc-400 mt-1 font-mono">{tForm("avatarHint")}</p>
+          <p className="text-sm font-extrabold text-zinc-950 font-sans">{user.name || "Pelanggan"}</p>
+          <p className="text-xs sm:text-sm text-zinc-500 font-sans">{user.email}</p>
+          <p className="text-xs text-zinc-400 mt-0.5 font-sans">{tForm("avatarHint")}</p>
         </div>
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="name" className="text-xs font-medium uppercase tracking-wider text-zinc-500 font-mono">{tForm("fullName")}</Label>
+        <Label htmlFor="name" className="text-xs font-semibold uppercase tracking-wider text-zinc-500 font-sans">{tForm("fullName")}</Label>
         <Input
           id="name"
           {...register("name")}
           placeholder={tAuth("register.namaPlaceholder")}
           error={errors.name?.message}
           leftIcon={<User className="size-4 text-zinc-400" />}
-          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
+          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl font-sans"
         />
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-zinc-500 font-mono">{tForm("email")}</Label>
+        <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-zinc-500 font-sans">{tForm("email")}</Label>
         <Input
           id="email"
           type="email"
@@ -165,7 +165,7 @@ export default function ProfileForm({
           placeholder="nama@email.com"
           error={errors.email?.message}
           leftIcon={<Mail className="size-4 text-zinc-400" />}
-          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl"
+          className="text-sm bg-zinc-50 border-zinc-200 rounded-xl font-sans"
         />
       </div>
 

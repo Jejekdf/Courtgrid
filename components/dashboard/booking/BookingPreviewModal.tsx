@@ -65,47 +65,47 @@ export function BookingPreviewModal({
         </DialogHeader>
 
         <div className="space-y-5 pt-2">
-          <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4 space-y-2.5 text-sm">
+          <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4 space-y-2.5 text-sm font-sans">
             <div className="flex justify-between border-b border-zinc-200/60 pb-2">
-              <span className="text-zinc-500 font-mono">{t("courtLabel")}</span>
+              <span className="text-zinc-500">{t("courtLabel")}</span>
               <span className="font-bold text-zinc-950">
                 {activeCourt.name} ({activeCourt.type})
               </span>
             </div>
             <div className="flex justify-between border-b border-zinc-200/60 pb-2">
-              <span className="text-zinc-500 font-mono">{t("dateLabel")}</span>
-              <span className="font-bold text-zinc-950 font-mono">
+              <span className="text-zinc-500">{t("dateLabel")}</span>
+              <span className="font-semibold text-zinc-950">
                 {format(new Date(selectedDate), "EEEE, dd MMMM yyyy", { locale: id })}
               </span>
             </div>
             <div className="flex justify-between border-b border-zinc-200/60 pb-2">
-              <span className="text-zinc-500 font-mono">{t("sessionLabel")}</span>
-              <span className="font-mono font-bold text-zinc-950">
+              <span className="text-zinc-500">{t("sessionLabel")}</span>
+              <span className="font-bold text-zinc-950 tabular-nums">
                 {startSlot} - {`${endHour}:00`} WIB
               </span>
             </div>
             {voucherCode.trim() && (
               <div className="flex justify-between border-b border-zinc-200/60 pb-2">
-                <span className="text-zinc-500 font-mono">{t("voucherApplied")}</span>
-                <span className="font-mono font-bold text-emerald-600">
+                <span className="text-zinc-500">{t("voucherApplied")}</span>
+                <span className="font-bold text-emerald-600">
                   {voucherCode.trim()}
                 </span>
               </div>
             )}
             <div className="flex justify-between pt-1 text-sm font-bold text-zinc-950">
               <span>{t("totalLabel")}</span>
-              <span>Rp {totalPrice.toLocaleString("id-ID")}</span>
+              <span className="tabular-nums">Rp {totalPrice.toLocaleString("id-ID")}</span>
             </div>
           </div>
 
-          <div className="bg-zinc-950 text-white rounded-xl p-4 space-y-2">
-            <div className="flex justify-between items-center text-sm font-bold text-emerald-400 font-mono">
+          <div className="bg-zinc-950 text-white rounded-xl p-4 space-y-2 font-sans">
+            <div className="flex justify-between items-center text-sm font-bold text-emerald-400">
               <span>{t("dpStripeLabel")}</span>
-              <span>Rp {dpAmount.toLocaleString("id-ID")}</span>
+              <span className="tabular-nums">Rp {dpAmount.toLocaleString("id-ID")}</span>
             </div>
-            <div className="flex justify-between items-center text-sm text-zinc-300 pt-1 border-t border-zinc-800 font-mono">
+            <div className="flex justify-between items-center text-sm text-zinc-300 pt-1 border-t border-zinc-800">
               <span>{t("cashRemaining")}</span>
-              <span className="font-bold text-zinc-200">
+              <span className="font-bold text-zinc-200 tabular-nums">
                 Rp {remainingCash.toLocaleString("id-ID")}
               </span>
             </div>

@@ -19,11 +19,11 @@ export function CourtSelector({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-bold text-zinc-950 uppercase tracking-wider font-mono flex items-center gap-2">
-          <span className="size-2 rounded-full bg-emerald-500 animate-ping" />
+        <h3 className="text-xs sm:text-sm font-bold text-zinc-950 uppercase tracking-wider font-sans flex items-center gap-2">
+          <span className="size-2 rounded-full bg-emerald-500 animate-ping" aria-hidden="true" />
           {t("step1")}
         </h3>
-        <span className="text-sm text-zinc-500 font-mono">
+        <span className="text-xs sm:text-sm text-zinc-500 font-sans">
           {t("activeArenas", { count: courts.length })}
         </span>
       </div>
@@ -45,24 +45,24 @@ export function CourtSelector({
             >
               {/* Selected Badge */}
               {isSelected && (
-                <div className="absolute top-3 right-3 px-2.5 py-1 bg-zinc-950 text-white rounded-full text-[0.6875rem] font-mono font-bold flex items-center gap-1 shadow-xs">
-                  <CheckCircle2 className="size-3.5 text-emerald-400" />
+                <div className="absolute top-3 right-3 px-2.5 py-1 bg-zinc-950 text-white rounded-full text-[0.6875rem] font-semibold flex items-center gap-1 shadow-xs font-sans">
+                  <CheckCircle2 className="size-3.5 text-emerald-400" aria-hidden="true" />
                   <span>{t("selectedBadge")}</span>
                 </div>
               )}
 
               <div className="space-y-2">
-                <span className="inline-block px-2.5 py-0.5 bg-zinc-100 text-zinc-700 border border-zinc-200 text-[0.6875rem] font-mono font-bold uppercase tracking-wider rounded-md">
+                <span className="inline-block px-2.5 py-0.5 bg-zinc-100 text-zinc-700 border border-zinc-200 text-[0.6875rem] font-semibold uppercase tracking-wider rounded-md font-sans">
                   {court.type}
                 </span>
-                <h4 className="font-extrabold text-zinc-950 text-lg group-hover:text-emerald-700 transition-colors">
+                <h4 className="font-extrabold text-zinc-950 text-base sm:text-lg group-hover:text-emerald-700 transition-colors font-sans">
                   {court.name}
                 </h4>
               </div>
 
               <div className="mt-5 pt-3 border-t border-zinc-100 flex items-center justify-between w-full">
-                <span className="text-sm text-zinc-500 font-mono">{t("perHour")}</span>
-                <span className="text-base font-extrabold text-zinc-950">
+                <span className="text-xs sm:text-sm text-zinc-500 font-sans">{t("perHour")}</span>
+                <span className="text-sm sm:text-base font-extrabold text-zinc-950 tabular-nums">
                   Rp {court.pricePerHour.toLocaleString("id-ID")}
                 </span>
               </div>

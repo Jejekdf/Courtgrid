@@ -26,19 +26,19 @@ export function TimeSlotPicker({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <h3 className="text-sm font-bold text-zinc-950 uppercase tracking-wider font-mono flex items-center gap-2">
-          <Clock className="size-4 text-zinc-600" />
+        <h3 className="text-xs sm:text-sm font-bold text-zinc-950 uppercase tracking-wider font-sans flex items-center gap-2">
+          <Clock className="size-4 text-zinc-600" aria-hidden="true" />
           {t("step2", { court: courtName })}
         </h3>
 
         {/* Status Legend */}
-        <div className="flex items-center gap-3 text-[0.6875rem] font-semibold text-zinc-500 font-mono">
+        <div className="flex items-center gap-3 text-[0.6875rem] font-medium text-zinc-500 font-sans flex-wrap">
           <span className="flex items-center gap-1.5">
             <span className="size-2.5 rounded-xs bg-white border border-zinc-300"></span>{" "}
             {t("legendFree")}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="size-2.5 rounded-xs bg-emerald-600"></span> {t("legendSelected")}
+            <span className="size-2.5 rounded-xs bg-zinc-950"></span> {t("legendSelected")}
           </span>
           <span className="flex items-center gap-1.5">
             <span className="size-2.5 rounded-xs bg-amber-100 border border-amber-300"></span>{" "}
@@ -52,14 +52,14 @@ export function TimeSlotPicker({
       </div>
 
       {isLoadingAvailability ? (
-        <div className="py-20 flex flex-col items-center justify-center bg-zinc-50/50 rounded-2xl border border-zinc-200 border-dashed space-y-2">
+        <div className="py-16 flex flex-col items-center justify-center bg-zinc-50/50 rounded-2xl border border-zinc-200 border-dashed space-y-2">
           <Loader2 className="h-6 w-6 animate-spin text-zinc-400" />
-          <span className="text-sm text-zinc-400 font-mono">
+          <span className="text-xs sm:text-sm text-zinc-500 font-sans">
             Mengecek jadwal jam main...
           </span>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2.5">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-2.5">
           {timeSlots.map((time) => {
             const status = getSlotStatus(time);
             const isAvailable = status === "AVAILABLE";
@@ -67,7 +67,7 @@ export function TimeSlotPicker({
             const isSelected = selectedTimeSlots.includes(time);
 
             let btnClasses =
-              "h-14 rounded-xl text-sm font-bold transition-colors duration-150 flex flex-col items-center justify-center select-none cursor-pointer ";
+              "h-13 sm:h-14 rounded-xl text-sm font-medium transition-[color,background-color,border-color,transform] duration-150 motion-reduce:transition-none will-change-transform flex flex-col items-center justify-center select-none cursor-pointer min-h-11 ";
 
             if (isPast) {
               btnClasses +=
@@ -94,8 +94,8 @@ export function TimeSlotPicker({
                 onClick={() => onToggleSlot(time)}
                 className={btnClasses}
               >
-                <span className="font-mono text-sm">{time}</span>
-                <span className="text-[0.6875rem] block leading-tight mt-0.5 font-mono opacity-80">
+                <span className="font-bold tabular-nums font-sans text-xs sm:text-sm">{time}</span>
+                <span className="text-[0.625rem] sm:text-[0.6875rem] block leading-tight mt-0.5 font-sans opacity-80">
                   {isPast
                     ? t("legendPast")
                     : isSelected

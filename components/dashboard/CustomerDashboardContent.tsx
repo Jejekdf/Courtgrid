@@ -49,35 +49,35 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono font-bold text-zinc-600 uppercase">{t("statTotal")}</span>
+            <span className="text-xs font-semibold text-zinc-600 uppercase tracking-wider font-sans">{t("statTotal")}</span>
             <div className="size-8 rounded-lg bg-zinc-100 text-zinc-950 flex items-center justify-center font-bold text-xs">
               <CalendarCheck className="size-4" />
             </div>
           </div>
-          <div className="text-2xl font-extrabold text-zinc-950 font-mono tabular-nums">{totalBookings}</div>
-          <p className="text-sm text-zinc-600 font-mono">{t("statTotalSub")}</p>
+          <div className="text-2xl font-extrabold text-zinc-950 tabular-nums">{totalBookings}</div>
+          <p className="text-xs sm:text-sm text-zinc-600 font-sans">{t("statTotalSub")}</p>
         </div>
 
         <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono font-bold text-zinc-600 uppercase">{t("statVerified")}</span>
+            <span className="text-xs font-semibold text-zinc-600 uppercase tracking-wider font-sans">{t("statVerified")}</span>
             <div className="size-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-xs">
               <ShieldCheck className="size-4" />
             </div>
           </div>
-          <div className="text-2xl font-extrabold text-zinc-950 font-mono tabular-nums">{activeBookings}</div>
-          <p className="text-sm text-zinc-600 font-mono">{t("statVerifiedSub")}</p>
+          <div className="text-2xl font-extrabold text-zinc-950 tabular-nums">{activeBookings}</div>
+          <p className="text-xs sm:text-sm text-zinc-600 font-sans">{t("statVerifiedSub")}</p>
         </div>
 
         <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono font-bold text-zinc-600 uppercase">{t("accountStatus")}</span>
+            <span className="text-xs font-semibold text-zinc-600 uppercase tracking-wider font-sans">{t("accountStatus")}</span>
             <div className="size-8 rounded-lg bg-zinc-950 text-white flex items-center justify-center font-bold text-xs">
               <Activity className="size-4" />
             </div>
           </div>
-          <div className="text-sm font-extrabold text-emerald-600 font-mono uppercase">{t("accountActive")}</div>
-          <p className="text-sm text-zinc-600 font-mono truncate">{user.email}</p>
+          <div className="text-sm font-extrabold text-emerald-600 font-sans uppercase">{t("accountActive")}</div>
+          <p className="text-xs sm:text-sm text-zinc-600 font-sans truncate">{user.email}</p>
         </div>
       </div>
 
@@ -87,7 +87,7 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[0.6875rem] font-mono font-bold uppercase tracking-wider text-emerald-400">
+              <span className="text-[0.6875rem] font-semibold uppercase tracking-wider text-emerald-400 font-sans">
                 {t("nextSession")}
               </span>
             </div>
@@ -95,13 +95,13 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
               <MapPin className="size-4 text-emerald-400" />
               {upcomingBooking.court?.name}
             </div>
-            <div className="text-sm text-zinc-200 flex items-center gap-2 font-mono">
+            <div className="text-xs sm:text-sm text-zinc-200 flex items-center gap-2 font-sans tabular-nums">
               <Clock className="size-4 text-zinc-300" />
               {safeFormatDate(upcomingBooking.date, "dd MMMM yyyy")} ({upcomingBooking.startTime} - {upcomingBooking.endTime} WIB)
             </div>
           </div>
           <Link href="/dashboard/reservations">
-            <button className="px-4 py-2.5 min-h-11 text-sm font-bold bg-white text-zinc-950 rounded-xl hover:bg-zinc-100 transition-colors inline-flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs">
+            <button className="px-4 py-2.5 min-h-11 text-sm font-bold bg-white text-zinc-950 rounded-xl hover:bg-zinc-100 transition-colors inline-flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs font-sans">
               <span>{t("openETicket")}</span>
               <ChevronRight className="size-4" />
             </button>
@@ -113,10 +113,10 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-base font-extrabold tracking-tight text-zinc-950">{t("recentTitle")}</h2>
-            <p className="text-sm text-zinc-500 font-mono">{t("recentDesc")}</p>
+            <h2 className="text-base font-extrabold tracking-tight text-zinc-950 font-sans">{t("recentTitle")}</h2>
+            <p className="text-xs sm:text-sm text-zinc-500 font-sans">{t("recentDesc")}</p>
           </div>
-          <Link href="/dashboard/reservations" className="text-sm font-bold text-zinc-950 hover:underline font-mono">
+          <Link href="/dashboard/reservations" className="text-xs sm:text-sm font-bold text-zinc-950 hover:underline font-sans">
             {t("viewAll")} &rarr;
           </Link>
         </div>
