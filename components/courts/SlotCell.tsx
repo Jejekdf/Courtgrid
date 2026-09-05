@@ -40,14 +40,14 @@ export function SlotCell({ slot, isSelected, onSelect }: SlotCellProps) {
       transition={{ duration: 0.15 }}
       disabled={isDisabled}
       onClick={() => onSelect(slot.hour)}
-      className={`flex flex-col items-center gap-0.5 px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors ${slotStyle(
+      className={`flex flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors min-h-11 sm:min-h-12 active:scale-[0.97] motion-reduce:transition-none ${slotStyle(
         slot.status,
         isSelected
       )}`}
       aria-label={`${slot.startTime} - ${statusLabel}`}
     >
-      <span className="font-semibold tabular-nums">{slot.startTime}</span>
-      <span className="text-[0.6875rem] opacity-75">{statusLabel}</span>
+      <span className="font-bold tabular-nums font-sans leading-none">{slot.startTime}</span>
+      <span className="text-[0.6875rem] opacity-80 leading-none">{statusLabel}</span>
     </motion.button>
   );
 }

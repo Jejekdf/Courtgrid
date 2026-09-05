@@ -55,6 +55,8 @@ export default function CourtCatalog() {
     queryFn: () => fetchCourts(filters),
   });
 
+  const [expandedCourtId, setExpandedCourtId] = useState<string | null>(null);
+
   return (
     <div className="space-y-8 text-zinc-950">
       {/* Header Catalog */}
@@ -72,7 +74,7 @@ export default function CourtCatalog() {
         <div
           role="tablist"
           aria-label={t("filterLabel")}
-          className="flex items-center gap-1.5 bg-zinc-100/80 p-1.5 rounded-2xl border border-zinc-200/80 shadow-xs"
+          className="flex items-center gap-1 bg-zinc-100 p-1 rounded-xl border border-zinc-200/80 shadow-xs max-w-full overflow-x-auto scrollbar-none"
         >
           {tabs.map((tabItem) => (
             <button
@@ -80,7 +82,7 @@ export default function CourtCatalog() {
               role="tab"
               aria-selected={tab === tabItem.value}
               onClick={() => setQueryParams({ type: tabItem.value })}
-              className={`px-4 min-h-11 py-2.5 rounded-xl text-sm font-mono font-bold transition-colors cursor-pointer ${
+              className={`px-4 min-h-10 py-2 rounded-lg text-sm font-semibold font-sans transition-colors cursor-pointer shrink-0 ${
                 tab === tabItem.value
                   ? "bg-zinc-950 text-white shadow-xs"
                   : "text-zinc-600 hover-fine:text-zinc-950 hover-fine:bg-zinc-200/60"
@@ -128,9 +130,17 @@ export default function CourtCatalog() {
           }}
         />
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-start">
           {data?.map((court, index) => (
-            <CourtCard key={court.id} court={court} priority={index === 0} />
+            <CourtCard
+              key={court.id}
+              court={court}
+              priority={index === 0}
+              isExpanded={expandedCourtId === court.id}
+              onToggleExpand={() =>
+                setExpandedCourtId((prev) => (prev === court.id ? null : court.id))
+              }
+            />
           ))}
         </div>
       )}

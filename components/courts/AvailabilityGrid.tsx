@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { Link } from "@/i18n/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarDays, Clock, Loader2, AlertTriangle } from "lucide-react";
+import { CalendarDays, Clock, Loader2, AlertTriangle, ArrowRight } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { useTranslations } from "next-intl";
 import {
@@ -111,14 +112,35 @@ export default function AvailabilityGrid({
         </div>
       )}
 
+      {/* Selected Hour Action Bar */}
+      {selectedHour !== null && (
+        <div className="p-3.5 bg-emerald-50 border border-emerald-200/90 rounded-xl flex items-center justify-between gap-3 flex-wrap">
+          <div className="space-y-0.5">
+            <span className="text-xs font-bold text-emerald-900 block">
+              Jam Dipilih: {String(selectedHour).padStart(2, "0")}:00 – {String(selectedHour + 1).padStart(2, "0")}:00
+            </span>
+            <span className="text-[0.6875rem] text-emerald-700 block">
+              Tanggal: {selectedDate}
+            </span>
+          </div>
+          <Link
+            href={`/dashboard/book?courtId=${courtId}&date=${selectedDate}&time=${String(selectedHour).padStart(2, "0")}:00`}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold rounded-lg transition-colors shadow-xs min-h-9"
+          >
+            <span>Lanjut Booking</span>
+            <ArrowRight className="size-3.5" aria-hidden="true" />
+          </Link>
+        </div>
+      )}
+
       {!isPending && !isError && freeCount === 0 && (
-        <p className="text-center text-sm text-zinc-400 pt-1">
+        <p className="text-center text-xs text-zinc-500 pt-1">
           {t("noSlotsAvailable")}
         </p>
       )}
 
-      {!isPending && !isError && freeCount > 0 && (
-        <p className="text-center text-sm text-zinc-400 pt-1">
+      {!isPending && !isError && freeCount > 0 && selectedHour === null && (
+        <p className="text-center text-xs text-zinc-500 pt-1">
           {t("slotsAvailable", { count: freeCount, total: slots.length })}
         </p>
       )}
