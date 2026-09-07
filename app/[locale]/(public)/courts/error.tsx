@@ -2,6 +2,7 @@
 
 import { AlertTriangle, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 export default function CourtsError({
   error,
@@ -10,6 +11,8 @@ export default function CourtsError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations("courts");
+  const tc = useTranslations("common");
   console.error("Courts page error:", error);
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
@@ -18,15 +21,15 @@ export default function CourtsError({
           <AlertTriangle className="h-6 w-6" />
         </div>
         <div className="space-y-1">
-          <h2 className="text-sm font-semibold text-zinc-950">
-            Terjadi kesalahan pada halaman
+          <h2 className="text-sm font-semibold text-zinc-950 text-balance">
+            {t("errorTitle")}
           </h2>
-          <p className="text-sm text-zinc-500 max-w-sm">
-            Terjadi kegagalan saat merender katalog. Silakan coba kembali.
+          <p className="text-sm text-zinc-500 max-w-sm text-pretty">
+            {t("errorCatalogDesc")}
           </p>
         </div>
         <Button onClick={reset} leftIcon={<RotateCcw className="h-4 w-4" />}>
-          Coba lagi
+          {tc("retry")}
         </Button>
       </div>
     </div>

@@ -2,18 +2,20 @@ import type { Metadata } from "next";
 import Hero from "@/components/layout/Hero";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight, CheckCircle2, ShieldCheck, Zap, QrCode } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getActiveCourtsDAL } from "@/features/courts/dal";
+import type { Locale } from "@/i18n/routing";
 
 const BASE_URL = "https://courtgrid-one.vercel.app";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale: locale as "id" | "en", namespace: "landing" });
+  setRequestLocale(locale);
+  const t = await getTranslations("landing");
   const title = `${t("metaTitle")} | CourtGrid`;
   const description = t("metaDesc");
 
@@ -56,10 +58,11 @@ export async function generateMetadata({
 export default async function Home({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale: locale as "id" | "en", namespace: "landing" });
+  setRequestLocale(locale);
+  const t = await getTranslations("landing");
   const courts = await getActiveCourtsDAL("", null);
 
   const futsalCourts = courts.filter((c) => c.type === "FUTSAL");
@@ -204,7 +207,7 @@ export default async function Home({
                     href="/dashboard/book"
                     className="text-xs font-bold text-zinc-950 hover:text-emerald-700 inline-flex items-center gap-1 transition-colors min-h-11 items-center"
                   >
-                    <span>Pesan Futsal</span>
+                    <span>{t("bookFutsal")}</span>
                     <ArrowRight className="size-3.5" aria-hidden="true" />
                   </Link>
                 </div>
@@ -253,7 +256,7 @@ export default async function Home({
                     href="/dashboard/book"
                     className="text-xs font-bold text-zinc-950 hover:text-sky-700 inline-flex items-center gap-1 transition-colors min-h-11 items-center"
                   >
-                    <span>Pesan Badminton</span>
+                    <span>{t("bookBadminton")}</span>
                     <ArrowRight className="size-3.5" aria-hidden="true" />
                   </Link>
                 </div>
@@ -296,8 +299,8 @@ export default async function Home({
                 <div className="size-10 rounded-xl bg-zinc-100 text-zinc-900 flex items-center justify-center">
                   <QrCode className="size-5" aria-hidden="true" />
                 </div>
-                <h3 className="text-lg font-bold text-zinc-950">E-Ticket QR Digital</h3>
-                <p className="text-sm text-zinc-600 leading-relaxed font-sans text-pretty">Check-in praktis langsung scan di resepsionis venue tanpa antre dan tanpa cetak tiket kertas.</p>
+                <h3 className="text-lg font-bold text-zinc-950">{t("eticketFeatureTitle")}</h3>
+                <p className="text-sm text-zinc-600 leading-relaxed font-sans text-pretty">{t("eticketFeatureDesc")}</p>
               </div>
             </div>
           </div>

@@ -1,18 +1,20 @@
 import { Metadata } from "next";
 import PageWrapper from "@/components/ui/PageWrapper";
 import { Shield, CheckCircle2 } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import Breadcrumb from "@/components/layout/Breadcrumb";
+import type { Locale } from "@/i18n/routing";
 
 const BASE_URL = "https://courtgrid-one.vercel.app";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale: locale as "id" | "en", namespace: "privacy" });
+  setRequestLocale(locale);
+  const t = await getTranslations("privacy");
   const title = `${t("metaTitle")} | CourtGrid`;
   const description = t("metaDesc");
   const url = `${BASE_URL}/${locale}/privacy`;
@@ -50,11 +52,12 @@ export async function generateMetadata({
 export default async function PrivacyPage({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale: locale as "id" | "en", namespace: "privacy" });
-  const th = await getTranslations({ locale: locale as "id" | "en", namespace: "header" });
+  setRequestLocale(locale);
+  const t = await getTranslations("privacy");
+  const th = await getTranslations("header");
 
   const breadcrumbItems = [
     { label: th("navBeranda"), href: "/" },
@@ -246,9 +249,9 @@ export default async function PrivacyPage({
           <header className="border-b border-zinc-200/80 pb-6 space-y-3">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-500 font-sans">
               <span className="font-semibold text-zinc-900">{t("badge")}</span>
-              <span aria-hidden="true">•</span>
+              <span className="text-zinc-300" aria-hidden="true">/</span>
               <span>{t("effectiveDateLabel")} {t("effectiveDateVal")}</span>
-              <span aria-hidden="true">•</span>
+              <span className="text-zinc-300" aria-hidden="true">/</span>
               <span>{t("readingTime")}</span>
             </div>
 

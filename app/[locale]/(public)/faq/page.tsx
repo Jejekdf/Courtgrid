@@ -7,18 +7,20 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { HelpCircle } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import Breadcrumb from "@/components/layout/Breadcrumb";
+import type { Locale } from "@/i18n/routing";
 
 const BASE_URL = "https://courtgrid-one.vercel.app";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale: locale as "id" | "en", namespace: "faq" });
+  setRequestLocale(locale);
+  const t = await getTranslations("faq");
   const title = `${t("metaTitle")} | CourtGrid`;
   const description = t("metaDesc");
   const url = `${BASE_URL}/${locale}/faq`;
@@ -55,11 +57,12 @@ export async function generateMetadata({
 export default async function FAQPage({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale: locale as "id" | "en", namespace: "faq" });
-  const th = await getTranslations({ locale: locale as "id" | "en", namespace: "header" });
+  setRequestLocale(locale);
+  const t = await getTranslations("faq");
+  const th = await getTranslations("header");
 
   const faqCategories = [
     {

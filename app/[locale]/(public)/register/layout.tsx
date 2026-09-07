@@ -1,8 +1,19 @@
 import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Locale } from "@/i18n/routing";
 
-export const metadata: Metadata = {
-  title: "Daftar Akun | CourtGrid",
-  robots: { index: false, follow: false },
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("auth.register");
+  return {
+    title: `${t("metaTitle")} | CourtGrid`,
+    robots: { index: false, follow: false },
+  };
 };
 
 export default function RegisterLayout({ children }: { children: React.ReactNode }) {

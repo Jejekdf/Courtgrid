@@ -2,18 +2,20 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import CourtCatalog from "@/components/courts/CourtCatalog";
 import CourtState from "@/components/courts/CourtState";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import Breadcrumb from "@/components/layout/Breadcrumb";
+import type { Locale } from "@/i18n/routing";
 
 const BASE_URL = "https://courtgrid-one.vercel.app";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale: locale as "id" | "en", namespace: "courts" });
+  setRequestLocale(locale);
+  const t = await getTranslations("courts");
   const title = `${t("metaTitle")} | CourtGrid`;
   const description = t("metaDesc");
   const url = `${BASE_URL}/${locale}/courts`;
@@ -50,10 +52,11 @@ export async function generateMetadata({
 export default async function CourtsPage({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }) {
   const { locale } = await params;
-  const th = await getTranslations({ locale: locale as "id" | "en", namespace: "header" });
+  setRequestLocale(locale);
+  const th = await getTranslations("header");
 
   const breadcrumbItems = [
     { label: th("navBeranda"), href: "/" },

@@ -2,15 +2,17 @@ import { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Locale } from "@/i18n/routing";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale: locale as "id" | "en", namespace: "cancel" });
+  setRequestLocale(locale);
+  const t = await getTranslations("cancel");
   return {
     title: t("metaTitle"),
     description: t("metaDesc"),
@@ -20,10 +22,11 @@ export async function generateMetadata({
 export default async function PaymentCancelPage({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale: locale as "id" | "en", namespace: "cancel" });
+  setRequestLocale(locale);
+  const t = await getTranslations("cancel");
 
   return (
     <div className="w-full flex-1 flex items-center justify-center py-16 px-4 bg-[var(--background)]">
