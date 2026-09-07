@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Clock, MapPin, CalendarPlus, ChevronRight, CalendarCheck, ShieldCheck, Activity } from "lucide-react";
 import { useTranslations } from "next-intl";
 import ReservationList, { type ReservationRow } from "@/components/dashboard/ReservationList";

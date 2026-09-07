@@ -1,14 +1,20 @@
 import { Metadata } from "next";
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { redirect, Link } from "@/i18n/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getCustomerReservationsDAL } from "@/features/reservations/dal";
 import { CalendarPlus } from "lucide-react";
 import ReservationList from "@/components/dashboard/ReservationList";
-import Link from "next/link";
 import PageHeader from "@/components/ui/PageHeader";
+import type { Locale } from "@/i18n/routing";
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations("dashboard.reservations");
   return {
     title: t("metaTitle"),
@@ -16,17 +22,25 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function CustomerReservationsPage() {
+export default async function CustomerReservationsPage({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const session = await auth();
   const t = await getTranslations("dashboard.reservations");
   const tHome = await getTranslations("dashboard.home");
 
   if (!session || !session.user || !session.user.id) {
-    redirect("/login");
+    redirect({ href: "/login", locale });
+    return null;
   }
 
   if (session.user.role === "ADMIN") {
-    redirect("/admin");
+    redirect({ href: "/admin", locale });
+    return null;
   }
 
   const reservationsRaw = await getCustomerReservationsDAL();

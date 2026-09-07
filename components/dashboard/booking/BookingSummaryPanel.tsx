@@ -1,9 +1,9 @@
 "use client";
 
 import { format } from "date-fns";
-import { id } from "date-fns/locale";
 import { CreditCard, Tag, ShieldCheck, ChevronRight, Clock } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { getDateFnsLocale } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { Court } from "@/components/dashboard/CustomerBookingWorkspace";
@@ -34,6 +34,7 @@ export function BookingSummaryPanel({
   isLoading,
 }: BookingSummaryPanelProps) {
   const t = useTranslations("dashboard.bookingFlow");
+  const locale = useLocale();
   return (
     <div className="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-xs space-y-6 sticky top-6">
       <div className="flex items-center justify-between border-b border-zinc-100 pb-4">
@@ -58,7 +59,7 @@ export function BookingSummaryPanel({
             <div className="flex justify-between py-1.5 border-b border-zinc-100 font-sans">
               <span className="text-zinc-500">{t("dateLabel")}</span>
               <span className="font-semibold text-zinc-800">
-                {format(new Date(selectedDate), "dd MMM yyyy", { locale: id })}
+                {format(new Date(selectedDate), "dd MMM yyyy", { locale: getDateFnsLocale(locale) })}
               </span>
             </div>
             <div className="flex justify-between py-1.5 border-b border-zinc-100 font-sans">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useQueryState, parseAsString } from "nuqs";
 import { motion } from "motion/react";
 import { Loader2 } from "lucide-react";

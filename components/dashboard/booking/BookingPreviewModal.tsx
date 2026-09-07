@@ -1,9 +1,9 @@
 "use client";
 
 import { format } from "date-fns";
-import { id } from "date-fns/locale";
 import { ShieldCheck } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { getDateFnsLocale } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,6 +42,7 @@ export function BookingPreviewModal({
   isLoading,
 }: BookingPreviewModalProps) {
   const t = useTranslations("dashboard.bookingFlow");
+  const locale = useLocale();
   if (!activeCourt || selectedTimeSlots.length === 0) return null;
 
   const sortedSlots = [...selectedTimeSlots].sort();
@@ -75,7 +76,7 @@ export function BookingPreviewModal({
             <div className="flex justify-between border-b border-zinc-200/60 pb-2">
               <span className="text-zinc-500">{t("dateLabel")}</span>
               <span className="font-semibold text-zinc-950">
-                {format(new Date(selectedDate), "EEEE, dd MMMM yyyy", { locale: id })}
+                {format(new Date(selectedDate), "EEEE, dd MMMM yyyy", { locale: getDateFnsLocale(locale) })}
               </span>
             </div>
             <div className="flex justify-between border-b border-zinc-200/60 pb-2">

@@ -1,14 +1,21 @@
 import { Metadata } from "next";
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { redirect } from "@/i18n/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { User, Key, ShieldCheck } from "lucide-react";
 import ProfileForm from "@/components/dashboard/ProfileForm";
 import PasswordForm from "@/components/dashboard/PasswordForm";
 import PageHeader from "@/components/ui/PageHeader";
+import type { Locale } from "@/i18n/routing";
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations("dashboard.settings");
   return {
     title: t("metaTitle"),
@@ -16,12 +23,19 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function CustomerSettingsPage() {
+export default async function CustomerSettingsPage({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const session = await auth();
   const t = await getTranslations("dashboard.settings");
 
   if (!session || !session.user || !session.user.id) {
-    redirect("/login");
+    redirect({ href: "/login", locale });
+    return null;
   }
 
   const user = await prisma.user.findUnique({
@@ -30,7 +44,8 @@ export default async function CustomerSettingsPage() {
   });
 
   if (!user) {
-    redirect("/login");
+    redirect({ href: "/login", locale });
+    return null;
   }
 
   const isOAuth = user.accounts.length > 0;

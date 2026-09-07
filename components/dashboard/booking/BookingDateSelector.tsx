@@ -1,9 +1,9 @@
 "use client";
 
 import { format, addDays } from "date-fns";
-import { id } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { getDateFnsLocale } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 
 interface BookingDateSelectorProps {
@@ -22,6 +22,7 @@ export function BookingDateSelector({
   dayAfterTomorrowStr,
 }: BookingDateSelectorProps) {
   const t = useTranslations("dashboard.bookingFlow");
+  const locale = useLocale();
   return (
     <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div className="flex items-center gap-3">
@@ -31,7 +32,7 @@ export function BookingDateSelector({
         <div>
           <h2 className="text-sm font-bold text-zinc-950 font-sans">{t("dateTitle")}</h2>
           <p className="text-xs sm:text-sm text-zinc-600 font-medium font-sans">
-            {format(new Date(selectedDate), "EEEE, dd MMMM yyyy", { locale: id })}
+            {format(new Date(selectedDate), "EEEE, dd MMMM yyyy", { locale: getDateFnsLocale(locale) })}
           </p>
         </div>
       </div>
