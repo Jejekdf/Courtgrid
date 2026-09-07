@@ -7,7 +7,6 @@ import { useDebounce } from "react-use";
 import { adminDeleteCustomer, getAdminPaginatedCustomersAction } from "@/features/admin/actions";
 import { Search, Trash2, CalendarCheck, Mail } from "lucide-react";
 import { format } from "date-fns";
-import { id } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,7 +21,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { adminKeys } from "@/lib/query-keys";
 import { adminCustomersParsers } from "@/lib/search-params";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { getDateFnsLocale } from "@/lib/utils";
 
 type Customer = {
   id: string;
@@ -36,6 +36,7 @@ type Customer = {
 
 export default function AdminCustomersPage() {
   const t = useTranslations("admin.customers");
+  const locale = useLocale();
   const queryClient = useQueryClient();
   const [search, setSearch] = useQueryState("search", adminCustomersParsers.search.withOptions({ shallow: true }));
   const [page, setPage] = useQueryState("page", adminCustomersParsers.page.withOptions({ shallow: true }));
@@ -164,7 +165,7 @@ export default function AdminCustomersPage() {
                       Rp {user.totalSpent.toLocaleString("id-ID")}
                     </td>
                     <td className="px-6 py-4 text-zinc-600">
-                      {user.lastBookingAt ? format(new Date(user.lastBookingAt), "dd MMM yyyy", { locale: id }) : "-"}
+                      {user.lastBookingAt ? format(new Date(user.lastBookingAt), "dd MMM yyyy", { locale: getDateFnsLocale(locale) }) : "-"}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">

@@ -1,18 +1,24 @@
 import { Metadata } from "next";
 import { auth } from "@/auth";
-import { redirect, notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { redirect, Link } from "@/i18n/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AppUser } from "@/auth.config";
 import { getReservationDetailsDAL } from "@/features/reservations/dal";
 import PrintButton from "@/components/ui/PrintButton";
 import { AdminCheckInButton } from "@/components/admin/eticket/AdminCheckInButton";
 import { ArrowLeft, ShieldCheck, Calendar, Clock, Receipt, Mail, Phone } from "lucide-react";
-import Link from "next/link";
 import { formatRupiah, safeFormatDate } from "@/lib/utils";
+import type { Locale } from "@/i18n/routing";
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string; locale: Locale }>;
+}): Promise<Metadata> {
+  const { id: ticketId, locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations("admin.eticket");
-  const ticketId = await params.then((p) => p.id);
   const reservation = await getReservationDetailsDAL(ticketId).catch(() => null);
 
   if (!reservation) {
@@ -25,17 +31,24 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
-export default async function AdminETicketPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function AdminETicketPage({
+  params,
+}: {
+  params: Promise<{ id: string; locale: Locale }>;
+}) {
+  const { id: ticketId, locale } = await params;
+  setRequestLocale(locale);
   const session = await auth();
   if (!session?.user?.id) {
-    redirect("/login");
+    redirect({ href: "/login", locale });
+    return null;
   }
   if ((session.user as AppUser).role !== "ADMIN") {
-    redirect("/");
+    redirect({ href: "/", locale });
+    return null;
   }
   const t = await getTranslations("admin.eticket");
 
-  const ticketId = await params.then((p) => p.id);
   let reservation;
   try {
     reservation = await getReservationDetailsDAL(ticketId);

@@ -70,7 +70,7 @@ export default function CourtCard({
             href={`/dashboard/book?courtId=${court.id}`}
             className="flex items-center justify-center gap-1.5 w-full min-h-11 py-2.5 text-sm font-bold font-sans text-white bg-zinc-950 hover:bg-zinc-800 active:scale-[0.98] rounded-xl transition-all shadow-xs cursor-pointer"
           >
-            <span>Pesan Lapangan</span>
+            <span>{t("bookCourt")}</span>
             <ArrowRight className="size-4" aria-hidden="true" />
           </Link>
 

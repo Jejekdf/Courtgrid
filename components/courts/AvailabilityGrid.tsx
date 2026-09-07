@@ -115,19 +115,16 @@ export default function AvailabilityGrid({
       {/* Selected Hour Action Bar */}
       {selectedHour !== null && (
         <div className="p-3.5 bg-emerald-50 border border-emerald-200/90 rounded-xl flex items-center justify-between gap-3 flex-wrap">
-          <div className="space-y-0.5">
-            <span className="text-xs font-bold text-emerald-900 block">
-              Jam Dipilih: {String(selectedHour).padStart(2, "0")}:00 – {String(selectedHour + 1).padStart(2, "0")}:00
-            </span>
-            <span className="text-[0.6875rem] text-emerald-700 block">
-              Tanggal: {selectedDate}
-            </span>
+          <div className="flex items-center gap-2 text-xs font-semibold text-emerald-900 whitespace-nowrap">
+            <span>{t("selectedDateLabel")}: {selectedDate}</span>
+            <span className="text-emerald-300">/</span>
+            <span>{t("selectedTimeLabel")}: {String(selectedHour).padStart(2, "0")}:00 – {String(selectedHour + 1).padStart(2, "0")}:00 WIB</span>
           </div>
           <Link
             href={`/dashboard/book?courtId=${courtId}&date=${selectedDate}&time=${String(selectedHour).padStart(2, "0")}:00`}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold rounded-lg transition-colors shadow-xs min-h-9"
           >
-            <span>Lanjut Booking</span>
+            <span>{t("continueBooking")}</span>
             <ArrowRight className="size-3.5" aria-hidden="true" />
           </Link>
         </div>

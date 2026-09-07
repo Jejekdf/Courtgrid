@@ -120,7 +120,7 @@ export default function Footer() {
             <p className="flex items-center gap-1.5">
               <span>{t("developedBy")}</span>
               <span className="text-zinc-950 font-medium">Randi Maulana</span>
-              <span>•</span>
+              <span className="text-zinc-300" aria-hidden="true">/</span>
               <span className="text-zinc-500">{t("standard")}</span>
             </p>
           </div>

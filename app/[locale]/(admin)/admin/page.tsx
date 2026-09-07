@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import AdminHeader from "@/components/admin/AdminHeader";
 import DashboardStats from "@/components/admin/DashboardStats";

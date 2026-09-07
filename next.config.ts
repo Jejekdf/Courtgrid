@@ -54,7 +54,7 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    qualities: [75, 80],
+    qualities: [75, 80, 85],
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {

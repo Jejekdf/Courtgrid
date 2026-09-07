@@ -59,7 +59,7 @@ export default async function Hero({ courts = [] }: { courts?: ActiveCourtDTO[] 
               size="lg"
               className="w-full sm:w-auto text-sm font-bold min-h-12 h-12 px-6 bg-white border border-zinc-200/90 text-zinc-900 hover:bg-zinc-50 active:scale-[0.98] rounded-xl transition-all duration-150 cursor-pointer shadow-2xs"
             >
-              <span>Lihat Spesifikasi Lapangan</span>
+              <span>{t("viewSpecs")}</span>
             </Button>
           </Link>
         </div>
@@ -84,8 +84,8 @@ export default async function Hero({ courts = [] }: { courts?: ActiveCourtDTO[] 
                   sizes="(max-width: 640px) 78vw, (max-width: 1024px) 50vw, 25vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/30 to-transparent flex flex-col justify-end p-4 sm:p-5">
-                  <span className="text-xs uppercase font-bold tracking-wider text-emerald-400 mb-0.5">
-                    {img.type === "FUTSAL" ? "Rumput Sintetis" : "Karpet Vinyl BWF"}
+                  <span className="text-xs uppercase font-bold tracking-wider text-emerald-400 mb-0.5 whitespace-nowrap">
+                    {img.type === "FUTSAL" ? t("turfSurface") : t("vinylSurface")}
                   </span>
                   <span className="text-base font-bold text-white tracking-tight leading-tight truncate drop-shadow-xs">
                     {img.name}
@@ -96,7 +96,7 @@ export default async function Hero({ courts = [] }: { courts?: ActiveCourtDTO[] 
           </div>
 
           <div className="flex sm:hidden items-center justify-center gap-1.5 text-xs text-zinc-400 mt-2 font-medium">
-            <span>Geser untuk melihat 4 arena</span>
+            <span>{t("swipeHint")}</span>
             <ArrowRight className="size-3" aria-hidden="true" />
           </div>
         </div>

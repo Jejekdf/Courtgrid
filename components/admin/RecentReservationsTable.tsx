@@ -2,6 +2,7 @@
 
 import { CalendarX } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 interface Reservation {
   id: string;
@@ -18,13 +19,13 @@ export default function RecentReservationsTable({ reservations = [] }: { reserva
   const getStatusBadge = (status: Reservation["status"]) => {
     switch (status) {
       case "DP_PAID":
-        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-md">{t("statusDpPaid")}</span>;
+        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusDpPaid")}</span>;
       case "PENDING":
-        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 rounded-md">{t("statusPending")}</span>;
+        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusPending")}</span>;
       case "DONE":
-        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 border border-zinc-200 rounded-md">{t("statusDone")}</span>;
+        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 border border-zinc-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusDone")}</span>;
       case "CANCELED":
-        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-red-50 text-red-600 border border-red-200 rounded-md">{t("statusCanceled")}</span>;
+        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-red-50 text-red-600 border border-red-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusCanceled")}</span>;
     }
   };
 
@@ -32,9 +33,10 @@ export default function RecentReservationsTable({ reservations = [] }: { reserva
     <div className="bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
       <div className="px-6 py-5 border-b border-zinc-200 flex items-center justify-between">
         <h3 className="text-lg font-medium tracking-tight text-zinc-950">{t("recentTitle")}</h3>
-        <button className="text-sm font-medium text-zinc-950 hover:text-zinc-700 transition-colors">
-          {t("viewAll")} &rarr;
-        </button>
+        <Link href="/admin/reservations" className="text-sm font-medium text-zinc-950 hover:text-zinc-700 transition-colors inline-flex items-center gap-1 cursor-pointer">
+          <span>{t("viewAll")}</span>
+          <span>&rarr;</span>
+        </Link>
       </div>
 
       {reservations.length === 0 ? (
@@ -52,12 +54,12 @@ export default function RecentReservationsTable({ reservations = [] }: { reserva
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-zinc-50 text-xs uppercase tracking-wider text-zinc-500 font-semibold border-b border-zinc-200">
               <tr>
-                <th className="px-6 py-4">ID</th>
-                <th className="px-6 py-4">Pelanggan</th>
-                <th className="px-6 py-4">Lapangan</th>
-                <th className="px-6 py-4">Jadwal</th>
-                <th className="px-6 py-4">Total Harga</th>
-                <th className="px-6 py-4">Status</th>
+                <th className="px-6 py-4">{t("colId")}</th>
+                <th className="px-6 py-4">{t("colCustomer")}</th>
+                <th className="px-6 py-4">{t("colCourt")}</th>
+                <th className="px-6 py-4">{t("colSchedule")}</th>
+                <th className="px-6 py-4">{t("colAmount")}</th>
+                <th className="px-6 py-4">{t("colStatus")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100">
@@ -67,9 +69,10 @@ export default function RecentReservationsTable({ reservations = [] }: { reserva
                   <td className="px-6 py-4 font-medium text-zinc-950">{res.customerName}</td>
                   <td className="px-6 py-4 text-zinc-700">{res.courtName}</td>
                   <td className="px-6 py-4 text-zinc-700">
-                    <div className="flex flex-col">
-                      <span>{res.date}</span>
-                      <span className="text-xs text-zinc-500">{res.time}</span>
+                    <div className="flex items-center gap-1.5 font-mono text-xs whitespace-nowrap">
+                      <span className="text-zinc-900 font-medium">{res.date}</span>
+                      <span className="text-zinc-300">,</span>
+                      <span className="text-zinc-500">{res.time}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 font-medium text-zinc-950">{res.amount}</td>
