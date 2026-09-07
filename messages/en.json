@@ -57,7 +57,8 @@
       "reqUpper": "1 uppercase letter (A-Z)",
       "reqLower": "1 lowercase letter (a-z)",
       "reqDigit": "1 number (0-9)",
-      "reqSpecial": "1 special character (!@#$%^&*)"
+      "reqSpecial": "1 special character (!@#$%^&*)",
+      "metaTitle": "Sign In"
     },
     "register": {
       "title": "Create New Account",
@@ -89,7 +90,8 @@
       "showConfirm": "Show password confirmation",
       "hideConfirm": "Hide password confirmation",
       "toastSuccess": "Registration successful! Redirecting to the sign-in page...",
-      "toastError": "An error occurred while registering."
+      "toastError": "An error occurred while registering.",
+      "metaTitle": "Register Account"
     },
     "forgot": {
       "title": "Forgot Password?",
@@ -101,7 +103,8 @@
       "toastUnexpected": "An unexpected error occurred.",
       "quote": "We ensure your account and team schedule stay safe, even when you can't access it for a moment.",
       "quoteAuthor": "CourtGrid Support Team",
-      "quoteRole": "Always Ready to Help"
+      "quoteRole": "Always Ready to Help",
+      "metaTitle": "Forgot Password"
     },
     "reset": {
       "title": "Create New Password",
@@ -123,7 +126,8 @@
       "showPassword": "Show password",
       "hidePassword": "Hide password",
       "showConfirm": "Show password confirmation",
-      "hideConfirm": "Hide password confirmation"
+      "hideConfirm": "Hide password confirmation",
+      "metaTitle": "Reset Password"
     },
     "social": {
       "divider": "Or Continue With",
@@ -153,7 +157,7 @@
     "fromPrice": "From Rp {price}/hr",
     "commitmentBadge": "Service Commitment",
     "commitmentTitle": "Reliable Schedules, Zero Double-Booking",
-    "commitmentDesc": "Every slot you select is immediately held for 15 minutes. Once your 50% DP is confirmed, your time is permanently locked in the database.",
+    "commitmentDesc": "Every slot you select is held for 15 minutes. Once your 50% deposit is confirmed, your booking is locked and guaranteed without overlap.",
     "guaranteedTitle": "Guaranteed Schedule",
     "guaranteedDesc": "Automated atomic checks prevent duplicate bookings on the same court and hour.",
     "instantStripeTitle": "Instant 50% DP",
@@ -182,7 +186,11 @@
     "onlineBookingBadge": "Online Booking",
     "ctaTitle": "Ready to Play with Your Team?",
     "ctaDesc": "Check availability for today or reserve prime weekend slots before they are booked.",
-    "ctaButton": "Check Court Schedule Now"
+    "ctaButton": "Check Court Schedule Now",
+    "bookFutsal": "Book Futsal",
+    "bookBadminton": "Book Badminton",
+    "eticketFeatureTitle": "Digital QR E-Ticket",
+    "eticketFeatureDesc": "Quick check-in by scanning at venue reception without lines or paper tickets."
   },
   "hero": {
     "badge": "Real-Time Reservation System",
@@ -197,7 +205,11 @@
     "statCourts": "5 Courts",
     "statCourtsCount": "{count} Courts",
     "statCourtsDesc": "Futsal & Badminton",
-    "courtShowcaseAlt": "GOR CourtGrid Arena"
+    "courtShowcaseAlt": "GOR CourtGrid Arena",
+    "viewSpecs": "View Court Specifications",
+    "turfSurface": "Synthetic Turf",
+    "vinylSurface": "BWF Vinyl Mat",
+    "swipeHint": "Swipe to explore courts"
   },
   "about": {
     "metaTitle": "About Us | CourtGrid",
@@ -267,10 +279,16 @@
     "slotFree": "Free",
     "stateLoadingAria": "Loading court list",
     "stateErrorTitle": "Failed to load court list",
-    "stateErrorDesc": "Could not fetch data from the server. Please try again.",
+    "stateErrorDesc": "Could not load court data. Please try again.",
     "stateEmptyTitle": "No matching courts",
     "stateEmptyDesc": "Try changing your search keyword or filters.",
-    "resetSearch": "Reset search"
+    "resetSearch": "Reset search",
+    "bookCourt": "Book Court",
+    "continueBooking": "Continue Booking",
+    "selectedTimeLabel": "Selected Time",
+    "selectedDateLabel": "Date",
+    "errorTitle": "Court catalog error",
+    "errorCatalogDesc": "Failed to load court catalog. Please try again."
   },
   "faq": {
     "metaTitle": "FAQ | CourtGrid",
@@ -334,7 +352,7 @@
     "s1Item1Label": "Account Data:",
     "s1Item1Text": "Name, email address, and profile avatar authorized via Google, Facebook, or direct registration.",
     "s1Item2Label": "Transaction Data:",
-    "s1Item2Text": "Payment information is processed encrypted via an official payment gateway. Our server never stores credit card numbers.",
+    "s1Item2Text": "Payment information is processed securely through certified industry-standard payment providers. We never store your credit card numbers.",
     "s1Item3Label": "E-Ticket QR:",
     "s1Item3Text": "Unique reference number used exclusively for cashier check-in verification at GOR.",
     "s2Title": "2. User Data Usage",
@@ -635,7 +653,7 @@
       "title": "Dashboard",
       "desc": "Monitor daily statistics, revenue, and recent reservation activity.",
       "loadingDesc": "Loading operational statistics...",
-      "errorDesc": "Failed to load server statistics.",
+      "errorDesc": "Failed to load summary statistics.",
       "retry": "Try Again",
       "statsFailed": "Failed to fetch statistics",
       "statReservations": "Total Reservations",
@@ -655,7 +673,13 @@
       "statusDpPaid": "DP Paid",
       "statusPending": "Pending",
       "statusDone": "Settled",
-      "statusCanceled": "Canceled"
+      "statusCanceled": "Canceled",
+      "colId": "ID",
+      "colCustomer": "Customer",
+      "colCourt": "Court",
+      "colSchedule": "Schedule",
+      "colAmount": "Total Amount",
+      "colStatus": "Status"
     },
     "courts": {
       "title": "Courts",
@@ -730,7 +754,7 @@
       "prevBtn": "Previous",
       "nextBtn": "Next",
       "deleteTitle": "Delete Reservation",
-      "deleteDesc": "Delete this reservation/pending status from the database? This action cannot be undone.",
+      "deleteDesc": "Delete this reservation? This action cannot be undone.",
       "cancelBtn": "Cancel",
       "verifyTicketBtn": "Verify E-Ticket",
       "verifyTicketTitle": "Verify E-Ticket & Check-in",
@@ -911,16 +935,16 @@
     "rateLimitRegister": "Too many registration attempts. Please try again in 15 minutes.",
     "emailAlreadyRegistered": "Email is already registered. Please use another email or sign in.",
     "registerSuccess": "Registration successful! Please sign in to your account.",
-    "registerServerError": "A server error occurred while registering. Please try again.",
+    "registerServerError": "Registration failed. Please try again.",
     "unauthorized": "Please sign in to your account first.",
     "unauthorizedAdmin": "Unauthorized. Admins only.",
     "emailInUse": "Email is already in use by another account.",
     "profileUpdateSuccess": "Profile updated successfully.",
-    "profileUpdateServerError": "A server error occurred while updating profile.",
+    "profileUpdateServerError": "Failed to update profile. Please try again.",
     "oauthNoLocalPassword": "This account does not have a local password (Use Social/OAuth sign in).",
     "currentPasswordWrong": "Current password is incorrect.",
     "passwordUpdateSuccess": "Password updated successfully!",
-    "passwordUpdateServerError": "A server error occurred while updating password.",
+    "passwordUpdateServerError": "Failed to update password. Please try again.",
     "imageRequired": "Image file is required.",
     "imageInvalidType": "File must be an image (JPG/PNG/WebP).",
     "imageTooLarge": "File size must be under 2MB.",
@@ -941,7 +965,7 @@
     "voucherMinSpend": "Minimum transaction for this voucher is Rp {minSpend}.",
     "doubleBooked": "This time slot is already booked. Please choose another time.",
     "doubleBookedRace": "This time slot was just booked. Please choose another time.",
-    "bookingServerError": "A server error occurred while processing your booking.",
+    "bookingServerError": "Failed to process booking. Please try again.",
     "stripeError": "Payment service is currently experiencing issues. Please try again later.",
     "reservationNotFound": "Reservation not found.",
     "cancelOnlyPending": "Only PENDING reservations can be canceled.",
@@ -965,9 +989,19 @@
     "onlyAdminDelete": "Cannot delete the only ADMIN account.",
     "adminCreateNotAllowed": "Not allowed to create a new ADMIN account. Use the existing Super Admin account.",
     "onlyAdminRoleSwap": "Cannot change the role of the only ADMIN account.",
-    "ticketNotFound": "Ticket / Reservation ID was not found in the database.",
+    "ticketNotFound": "Ticket or reservation ID was not found.",
     "ticketCanceled": "This ticket has been CANCELED and cannot be used.",
     "ticketAlreadyUsed": "This ticket has already been used for check-in and is in DONE status.",
     "statsNotReady": "Statistics are not available yet."
+  },
+  "common": {
+    "notFoundTitle": "Page not found",
+    "notFoundDesc": "The page you are looking for has been moved or does not exist.",
+    "backHome": "Back to Home",
+    "genericErrorTitle": "Something went wrong",
+    "genericErrorDesc": "Please try again. If the issue persists, contact venue support.",
+    "retry": "Try Again",
+    "language": "Language",
+    "switchLanguage": "Switch Language"
   }
 }

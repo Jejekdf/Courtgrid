@@ -57,7 +57,8 @@
       "reqUpper": "1 huruf besar (A-Z)",
       "reqLower": "1 huruf kecil (a-z)",
       "reqDigit": "1 angka (0-9)",
-      "reqSpecial": "1 karakter spesial (!@#$%^&*)"
+      "reqSpecial": "1 karakter spesial (!@#$%^&*)",
+      "metaTitle": "Masuk"
     },
     "register": {
       "title": "Buat Akun Baru",
@@ -89,7 +90,8 @@
       "showConfirm": "Tampilkan konfirmasi password",
       "hideConfirm": "Sembunyikan konfirmasi password",
       "toastSuccess": "Pendaftaran berhasil! Mengalihkan ke halaman masuk...",
-      "toastError": "Terjadi kesalahan saat mendaftar."
+      "toastError": "Terjadi kesalahan saat mendaftar.",
+      "metaTitle": "Daftar Akun"
     },
     "forgot": {
       "title": "Lupa Password?",
@@ -101,7 +103,8 @@
       "toastUnexpected": "Terjadi kesalahan yang tidak terduga.",
       "quote": "Akun dan jadwal tim kamu tetap aman meski sedang tidak bisa diakses sebentar.",
       "quoteAuthor": "Tim Support CourtGrid",
-      "quoteRole": "Selalu Siap Membantu"
+      "quoteRole": "Selalu Siap Membantu",
+      "metaTitle": "Lupa Kata Sandi"
     },
     "reset": {
       "title": "Buat Password Baru",
@@ -123,7 +126,8 @@
       "showPassword": "Tampilkan password",
       "hidePassword": "Sembunyikan password",
       "showConfirm": "Tampilkan konfirmasi password",
-      "hideConfirm": "Sembunyikan konfirmasi password"
+      "hideConfirm": "Sembunyikan konfirmasi password",
+      "metaTitle": "Reset Kata Sandi"
     },
     "social": {
       "divider": "Atau Lanjutkan Dengan",
@@ -153,7 +157,7 @@
     "fromPrice": "Mulai Rp {price}/jam",
     "commitmentBadge": "Komitmen Layanan",
     "commitmentTitle": "Jadwal Pasti, Tanpa Drama Double-Booking",
-    "commitmentDesc": "Setiap slot yang kamu pilih langsung di-hold selama 15 menit. Begitu DP 50% terkonfirmasi, jadwal otomatis terkunci di database tanpa ada kemungkinan bentrok dengan pemain lain.",
+    "commitmentDesc": "Setiap slot yang kamu pilih langsung diamankan selama 15 menit. Setelah DP 50% terkonfirmasi, jadwal otomatis terkunci resmi tanpa risiko bentrok dengan pemain lain.",
     "guaranteedTitle": "Garansi Jadwal Pasti",
     "guaranteedDesc": "Sistem otomatis menolak jadwal ganda pada jam dan lapangan yang sama.",
     "instantStripeTitle": "DP 50% Otomatis",
@@ -182,7 +186,11 @@
     "onlineBookingBadge": "Pemesanan Online",
     "ctaTitle": "Siap Main Bareng Tim Kamu?",
     "ctaDesc": "Cek jadwal hari ini atau booking untuk akhir pekan sebelum slot favoritmu diambil tim lain.",
-    "ctaButton": "Cek Jadwal Lapangan Sekarang"
+    "ctaButton": "Cek Jadwal Lapangan Sekarang",
+    "bookFutsal": "Pesan Futsal",
+    "bookBadminton": "Pesan Badminton",
+    "eticketFeatureTitle": "E-Ticket QR Digital",
+    "eticketFeatureDesc": "Check-in praktis langsung scan di resepsionis venue tanpa antre dan tanpa cetak tiket kertas."
   },
   "hero": {
     "badge": "Sistem Reservasi Real-Time",
@@ -197,7 +205,11 @@
     "statCourts": "5 Lapangan",
     "statCourtsCount": "{count} Lapangan",
     "statCourtsDesc": "Futsal & Badminton",
-    "courtShowcaseAlt": "GOR CourtGrid Arena"
+    "courtShowcaseAlt": "GOR CourtGrid Arena",
+    "viewSpecs": "Lihat Spesifikasi Lapangan",
+    "turfSurface": "Rumput Sintetis",
+    "vinylSurface": "Karpet Vinyl BWF",
+    "swipeHint": "Geser untuk melihat arena"
   },
   "about": {
     "metaTitle": "About Us | CourtGrid",
@@ -267,10 +279,16 @@
     "slotFree": "Tersedia",
     "stateLoadingAria": "Memuat daftar lapangan",
     "stateErrorTitle": "Gagal memuat daftar lapangan",
-    "stateErrorDesc": "Tidak dapat mengambil data dari server. Silakan coba lagi.",
+    "stateErrorDesc": "Gagal memuat data lapangan. Silakan coba lagi.",
     "stateEmptyTitle": "Tidak ada lapangan yang cocok",
     "stateEmptyDesc": "Coba ubah kata kunci pencarian atau filter yang kamu pilih.",
-    "resetSearch": "Reset pencarian"
+    "resetSearch": "Reset pencarian",
+    "bookCourt": "Pesan Lapangan",
+    "continueBooking": "Lanjut Booking",
+    "selectedTimeLabel": "Jam Dipilih",
+    "selectedDateLabel": "Tanggal",
+    "errorTitle": "Terjadi kesalahan pada katalog",
+    "errorCatalogDesc": "Terjadi kegagalan saat memuat data katalog. Silakan coba kembali."
   },
   "faq": {
     "metaTitle": "FAQ | CourtGrid",
@@ -334,7 +352,7 @@
     "s1Item1Label": "Data Akun:",
     "s1Item1Text": "Nama, alamat email, dan avatar profil yang diotorisasi via Google, Facebook, atau registrasi langsung.",
     "s1Item2Label": "Data Transaksi:",
-    "s1Item2Text": "Informasi pembayaran diproses secara terenkripsi melalui payment gateway resmi. Server kami tidak pernah menyimpan nomor kartu kredit.",
+    "s1Item2Text": "Informasi pembayaran diproses secara aman melalui penyedia pembayaran resmi berstandar industri. Kami tidak pernah menyimpan nomor kartu kredit Anda pada sistem kami.",
     "s1Item3Label": "E-Ticket QR:",
     "s1Item3Text": "Nomor rujukan unik digunakan khusus untuk verifikasi check-in kasir di GOR.",
     "s2Title": "2. Penggunaan Data Pengguna",
@@ -616,7 +634,7 @@
       "vouchers": "Voucher",
       "settings": "Pengaturan",
       "sectionLabel": "Navigasi Utama",
-      "logout": "Keluar Sistem",
+      "logout": "Keluar",
       "closeMenu": "Tutup menu"
     },
     "topbar": {
@@ -635,7 +653,7 @@
       "title": "Dashboard",
       "desc": "Pantau statistik harian, pendapatan, dan aktivitas reservasi terbaru.",
       "loadingDesc": "Memuat statistik operasional...",
-      "errorDesc": "Gagal memuat statistik server.",
+      "errorDesc": "Gagal memuat data ringkasan.",
       "retry": "Coba Lagi",
       "statsFailed": "Gagal mengambil data statistik",
       "statReservations": "Total Reservasi",
@@ -655,7 +673,13 @@
       "statusDpPaid": "DP Paid",
       "statusPending": "Pending",
       "statusDone": "Lunas",
-      "statusCanceled": "Canceled"
+      "statusCanceled": "Canceled",
+      "colId": "ID",
+      "colCustomer": "Pelanggan",
+      "colCourt": "Lapangan",
+      "colSchedule": "Jadwal",
+      "colAmount": "Total Harga",
+      "colStatus": "Status"
     },
     "courts": {
       "title": "Lapangan",
@@ -730,7 +754,7 @@
       "prevBtn": "Sebelumnya",
       "nextBtn": "Selanjutnya",
       "deleteTitle": "Hapus Reservasi",
-      "deleteDesc": "Yakin mau hapus reservasi/status pending ini dari database? Tindakan ini tidak bisa dibatalkan.",
+      "deleteDesc": "Hapus data reservasi ini? Tindakan ini tidak dapat dibatalkan.",
       "cancelBtn": "Batal",
       "verifyTicketBtn": "Verifikasi E-Ticket",
       "verifyTicketTitle": "Verifikasi E-Ticket & Check-in",
@@ -911,16 +935,16 @@
     "rateLimitRegister": "Terlalu banyak percobaan pendaftaran. Silakan coba lagi dalam 15 menit.",
     "emailAlreadyRegistered": "Email sudah terdaftar. Silakan gunakan email lain atau masuk.",
     "registerSuccess": "Pendaftaran akun berhasil! Silakan masuk ke akun kamu.",
-    "registerServerError": "Terjadi kesalahan pada server saat mendaftar. Silakan coba lagi.",
+    "registerServerError": "Pendaftaran gagal diproses. Silakan coba lagi.",
     "unauthorized": "Masuk dulu ke akun kamu sebelum lanjut.",
     "unauthorizedAdmin": "Unauthorized. Admins only.",
     "emailInUse": "Email sudah digunakan oleh akun lain.",
     "profileUpdateSuccess": "Profil akun berhasil diperbarui.",
-    "profileUpdateServerError": "Terjadi kesalahan server saat memperbarui profil.",
+    "profileUpdateServerError": "Gagal memperbarui profil. Silakan coba lagi.",
     "oauthNoLocalPassword": "Pengguna ini tidak memiliki password lokal (Gunakan login Social/OAuth).",
     "currentPasswordWrong": "Password saat ini salah.",
     "passwordUpdateSuccess": "Password berhasil diubah!",
-    "passwordUpdateServerError": "Terjadi kesalahan server saat mengubah password.",
+    "passwordUpdateServerError": "Gagal memperbarui kata sandi. Silakan coba lagi.",
     "imageRequired": "File gambar wajib diisi.",
     "imageInvalidType": "File harus berupa gambar (JPG/PNG/WebP).",
     "imageTooLarge": "Ukuran file maksimal 2MB.",
@@ -941,7 +965,7 @@
     "voucherMinSpend": "Minimal transaksi untuk voucher ini adalah Rp {minSpend}.",
     "doubleBooked": "Slot waktu ini sudah dipesan. Silakan pilih jam lain.",
     "doubleBookedRace": "Slot waktu ini baru saja dipesan. Silakan pilih jam lain.",
-    "bookingServerError": "Terjadi kesalahan server saat memproses booking.",
+    "bookingServerError": "Gagal memproses pemesanan. Silakan coba lagi.",
     "stripeError": "Layanan pembayaran sedang mengalami gangguan. Silakan coba beberapa saat lagi.",
     "reservationNotFound": "Reservasi tidak ditemukan.",
     "cancelOnlyPending": "Hanya pesanan berstatus PENDING yang dapat dibatalkan.",
@@ -965,9 +989,19 @@
     "onlyAdminDelete": "Tidak dapat menghapus satu-satunya akun ADMIN.",
     "adminCreateNotAllowed": "Tidak diizinkan membuat akun ADMIN baru. Gunakan akun Super Admin yang sudah ada.",
     "onlyAdminRoleSwap": "Tidak dapat mengganti role satu-satunya akun ADMIN.",
-    "ticketNotFound": "Tiket / ID Reservasi tidak ditemukan di database.",
+    "ticketNotFound": "Tiket atau ID reservasi tidak ditemukan.",
     "ticketCanceled": "Tiket ini sudah DIBATALKAN dan tidak dapat digunakan.",
     "ticketAlreadyUsed": "Tiket ini sudah digunakan untuk check-in dan berada dalam status SELESAI (DONE).",
     "statsNotReady": "Data statistik belum tersedia."
+  },
+  "common": {
+    "notFoundTitle": "Halaman tidak ditemukan",
+    "notFoundDesc": "Halaman yang Anda cari sudah dipindah atau tidak tersedia.",
+    "backHome": "Kembali ke Beranda",
+    "genericErrorTitle": "Terjadi kesalahan",
+    "genericErrorDesc": "Silakan coba lagi. Jika terus terjadi, hubungi pengelola venue.",
+    "retry": "Coba Lagi",
+    "language": "Bahasa",
+    "switchLanguage": "Ganti Bahasa"
   }
 }
