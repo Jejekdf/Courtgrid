@@ -21,10 +21,12 @@ export const proxy = auth((req) => {
   const { pathname } = req.nextUrl;
 
   const match = /^\/(id|en)(?:\/|$)/.exec(pathname);
-  const locale = match?.[1] ?? routing.defaultLocale;
-  const logicalPath = match
-    ? pathname.slice(match[1].length + 1) || "/"
-    : pathname;
+  if (!match) {
+    return handleI18nRouting(req);
+  }
+
+  const locale = match[1];
+  const logicalPath = pathname.slice(locale.length + 1) || "/";
 
   const isLoggedIn = !!req.auth;
   const userRole = req.auth?.user?.role;

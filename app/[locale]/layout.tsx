@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import { Be_Vietnam_Pro, Albert_Sans, IBM_Plex_Mono } from "next/font/google";
+import { routing } from "@/i18n/routing";
 import "../globals.css";
 import Providers from "@/components/Providers";
 import { Toaster } from "@/components/ui/sonner";
@@ -110,6 +112,10 @@ export async function generateMetadata({
   };
 }
 
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
 export default async function LocaleLayout({
   children,
   params,
@@ -118,6 +124,11 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }>) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+
+  setRequestLocale(locale);
   const messages = await getMessages();
 
   return (
