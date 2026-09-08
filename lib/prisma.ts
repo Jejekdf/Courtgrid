@@ -8,10 +8,17 @@ if (!connectionString) {
   throw new Error("DATABASE_URL environment variable is not set.");
 }
 const createPrismaClient = () => {
+  const poolMax = process.env.DB_POOL_MAX
+    ? parseInt(process.env.DB_POOL_MAX, 10)
+    : process.env.NODE_ENV === "production"
+      ? 2
+      : 10;
+
   const pool = new Pool({
     connectionString,
-    max: 10,
+    max: poolMax,
     idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
   });
 
   pool.on("error", (err) => {

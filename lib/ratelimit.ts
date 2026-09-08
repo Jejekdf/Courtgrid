@@ -5,6 +5,12 @@ type Bucket = "default" | "list" | "availability";
 
 const ratelimits: Partial<Record<Bucket, Ratelimit>> = {};
 
+const ephemeralCaches: Record<Bucket, Map<string, number>> = {
+  default: new Map(),
+  list: new Map(),
+  availability: new Map(),
+};
+
 let warned = false;
 
 function getRateLimiter(bucket: Bucket = "default"): Ratelimit | null {
@@ -32,6 +38,8 @@ function getRateLimiter(bucket: Bucket = "default"): Ratelimit | null {
             ? Ratelimit.slidingWindow(60, "1 m")
             : Ratelimit.slidingWindow(3, "15 m"),
       analytics: true,
+      ephemeralCache: ephemeralCaches[bucket],
+      timeout: 3000,
       prefix:
         bucket === "list"
           ? "ratelimit:list"

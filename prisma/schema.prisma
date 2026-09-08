@@ -175,6 +175,7 @@ model Reservation {
   @@index([userId, status])
   @@index([voucherId, status])
   @@index([date])
+  @@index([status, createdAt])
   @@unique([courtId, date, startTime])
   @@map("reservations")
 }
