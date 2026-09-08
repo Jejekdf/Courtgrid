@@ -90,7 +90,7 @@ export function HeroShowcaseTrack({ images, swipeHint }: HeroShowcaseTrackProps)
               priority={img.priority}
               quality={85}
               unoptimized={img.src.startsWith("http")}
-              className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none will-change-transform"
+              className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none"
               sizes="(max-width: 640px) 288px, (max-width: 1024px) 256px, 288px"
             />
             <div className="absolute inset-0 bg-linear-to-t from-zinc-950/90 via-zinc-950/30 to-transparent flex flex-col justify-end p-4 sm:p-5">

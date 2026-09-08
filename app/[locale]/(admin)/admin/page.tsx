@@ -6,11 +6,20 @@ import { useTranslations } from "next-intl";
 import AdminHeader from "@/components/admin/AdminHeader";
 import DashboardStats from "@/components/admin/DashboardStats";
 import RecentReservationsTable from "@/components/admin/RecentReservationsTable";
-import RevenueChart from "@/components/admin/RevenueChart";
-import PeakHoursCard from "@/components/admin/PeakHoursCard";
+import dynamic from "next/dynamic";
 import { adminKeys } from "@/lib/query-keys";
 import { getAdminStatsAction } from "@/features/admin/actions";
 import type { AdminStatsDTO } from "@/features/admin/dal";
+
+const RevenueChart = dynamic(() => import("@/components/admin/RevenueChart"), {
+  ssr: false,
+  loading: () => <div className="h-80 bg-zinc-100 rounded-xl animate-pulse" />,
+});
+
+const PeakHoursCard = dynamic(() => import("@/components/admin/PeakHoursCard"), {
+  ssr: false,
+  loading: () => <div className="h-80 bg-zinc-100 rounded-xl animate-pulse" />,
+});
 
 async function fetchAdminStats(router: ReturnType<typeof useRouter>, statsFailed: string): Promise<AdminStatsDTO> {
   const res = await getAdminStatsAction();
