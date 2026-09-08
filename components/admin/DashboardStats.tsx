@@ -80,29 +80,31 @@ export default function DashboardStats({
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
       {stats.map((stat, i) => {
         const Icon = stat.icon;
         return (
           <div
             key={i}
-            className="p-4 bg-zinc-50 rounded-xl border border-zinc-200 flex flex-col justify-between space-y-1 transition-colors hover:border-zinc-300"
+            className="p-5 sm:p-6 bg-white rounded-2xl border border-zinc-200/90 shadow-2xs hover:border-zinc-300 hover:shadow-xs transition-all flex flex-col justify-between gap-3"
           >
-            <div className="flex items-center justify-between gap-1">
-              <span className="text-[0.6875rem] font-mono font-bold uppercase tracking-wider text-zinc-400 truncate">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-zinc-400 truncate font-sans">
                 {stat.sub}
               </span>
-              <Icon className="size-4 text-zinc-950 shrink-0" />
+              <div className="size-9 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-900 shrink-0">
+                <Icon className="size-4.5 text-zinc-950" />
+              </div>
             </div>
 
-            <p className="text-xl sm:text-2xl font-bold font-mono tabular-nums tracking-tight text-zinc-950">
+            <p className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tabular-nums tracking-tight text-zinc-950 my-0.5">
               {stat.value}
             </p>
 
-            <div className="flex items-center justify-between gap-1 pt-0.5">
-              <p className="text-xs sm:text-sm font-medium text-zinc-500 truncate">{stat.title}</p>
+            <div className="flex items-center justify-between gap-2 pt-1 border-t border-zinc-100">
+              <p className="text-sm font-medium text-zinc-600 truncate">{stat.title}</p>
               {stat.badge && (
-                <span className="text-[0.625rem] font-mono font-semibold px-1.5 py-0.5 rounded bg-zinc-200/70 text-zinc-800 shrink-0">
+                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 shrink-0">
                   {stat.badge}
                 </span>
               )}
