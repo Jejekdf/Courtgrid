@@ -7,11 +7,26 @@ import { getJakartaNow, jakartaDayBounds, jakartaMonthBounds, formatSlotHour } f
 import { getOrSetCache } from "@/lib/redis";
 
 
+export type HourlyDistributionDatum = {
+  hour: number;
+  label: string;
+  count: number;
+  intensity: "low" | "medium" | "high" | "peak";
+};
+
 export type AdminStatsDTO = {
   totalReservations: number;
   totalRevenue: number;
   totalCourts: number;
   pendingCount: number;
+  totalCustomers: number;
+  newCustomersThisMonth: number;
+  occupancyRateToday: number;
+  bookedHoursToday: number;
+  totalCapacityToday: number;
+  peakHour: string;
+  peakHourCount: number;
+  hourlyDistribution: HourlyDistributionDatum[];
   recentReservations: Array<{
     id: string;
     userName: string;
@@ -75,7 +90,7 @@ export const getAdminRevenueChartDAL = cache(async (): Promise<AdminStatsDTO["re
 });
 
 /**
- * Aggregates dashboard totals, recent reservations, and the revenue chart.
+ * Aggregates dashboard totals, customer growth, occupancy, peak hours, recent bookings, and revenue chart.
  */
 export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> => {
   await verifyAdminSession();
@@ -83,37 +98,133 @@ export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> 
   return getOrSetCache<AdminStatsDTO>(
     "admin:dashboard:stats",
     async () => {
-      const [totalReservations, totalCourts, revenueResult, pendingCount, recent, revenueChart] =
-        await Promise.all([
-          prisma.reservation.count(),
-          prisma.court.count(),
-          prisma.reservation.aggregate({
-            _sum: { totalPrice: true },
-            where: { status: { in: ["DP_PAID", "DONE"] } },
-          }),
-          prisma.reservation.count({ where: { status: "PENDING" } }),
-          prisma.reservation.findMany({
-            take: 5,
-            orderBy: { createdAt: "desc" },
-            select: {
-              id: true,
-              date: true,
-              startTime: true,
-              endTime: true,
-              totalPrice: true,
-              status: true,
-              user: { select: { name: true, email: true } },
-              court: { select: { name: true } },
-            },
-          }),
-          getAdminRevenueChartDAL(),
-        ]);
+      const todayStr = getJakartaNow().dateStr;
+      const { start: todayStart, end: todayEnd } = jakartaDayBounds(todayStr);
+      const { start: monthStart } = jakartaMonthBounds(todayStr);
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+      const [
+        totalReservations,
+        totalCourts,
+        activeCourtsCount,
+        revenueResult,
+        pendingCount,
+        totalCustomers,
+        newCustomersThisMonth,
+        todayBookings,
+        recentBookingsForPeak,
+        recent,
+        revenueChart,
+      ] = await Promise.all([
+        prisma.reservation.count(),
+        prisma.court.count(),
+        prisma.court.count({ where: { isActive: true } }),
+        prisma.reservation.aggregate({
+          _sum: { totalPrice: true },
+          where: { status: { in: ["DP_PAID", "DONE"] } },
+        }),
+        prisma.reservation.count({ where: { status: "PENDING" } }),
+        prisma.user.count({ where: { role: "CUSTOMER" } }),
+        prisma.user.count({ where: { role: "CUSTOMER", createdAt: { gte: monthStart } } }),
+        prisma.reservation.findMany({
+          where: {
+            date: { gte: todayStart, lt: todayEnd },
+            status: { in: ["DP_PAID", "DONE"] },
+          },
+          select: { startTime: true, endTime: true },
+        }),
+        prisma.reservation.findMany({
+          where: {
+            createdAt: { gte: thirtyDaysAgo },
+            status: { in: ["DP_PAID", "DONE"] },
+          },
+          select: { startTime: true, endTime: true },
+        }),
+        prisma.reservation.findMany({
+          take: 5,
+          orderBy: { createdAt: "desc" },
+          select: {
+            id: true,
+            date: true,
+            startTime: true,
+            endTime: true,
+            totalPrice: true,
+            status: true,
+            user: { select: { name: true, email: true } },
+            court: { select: { name: true } },
+          },
+        }),
+        getAdminRevenueChartDAL(),
+      ]);
+
+      // 1. Occupancy Rate Today: 14 available slot hours per active court (08:00 - 22:00)
+      const totalCapacityToday = Math.max(1, activeCourtsCount * 14);
+      let bookedHoursToday = 0;
+      for (const b of todayBookings) {
+        const h = Math.max(1, b.endTime.getUTCHours() - b.startTime.getUTCHours());
+        bookedHoursToday += h;
+      }
+      const occupancyRateToday = Math.min(100, Math.round((bookedHoursToday / totalCapacityToday) * 100));
+
+      // 2. Peak Hours Analysis (14 operational slots: 8..21)
+      const slotCounts: Record<number, number> = {};
+      for (let h = 8; h <= 21; h++) {
+        slotCounts[h] = 0;
+      }
+      for (const b of recentBookingsForPeak) {
+        const startH = b.startTime.getUTCHours();
+        const endH = b.endTime.getUTCHours();
+        for (let h = startH; h < endH; h++) {
+          if (slotCounts[h] !== undefined) {
+            slotCounts[h]++;
+          }
+        }
+      }
+
+      let topHour = 19;
+      let maxCount = 0;
+      for (let h = 8; h <= 21; h++) {
+        if (slotCounts[h] > maxCount) {
+          maxCount = slotCounts[h];
+          topHour = h;
+        }
+      }
+
+      const pad = (n: number) => String(n).padStart(2, "0");
+      const peakHour = `${pad(topHour)}:00 - ${pad(topHour + 1)}:00`;
+
+      const hourlyDistribution: HourlyDistributionDatum[] = [];
+      for (let h = 8; h <= 21; h++) {
+        const count = slotCounts[h];
+        let intensity: HourlyDistributionDatum["intensity"] = "low";
+        if (count === maxCount && maxCount > 0) {
+          intensity = "peak";
+        } else if (maxCount > 0 && count >= maxCount * 0.6) {
+          intensity = "high";
+        } else if (maxCount > 0 && count >= maxCount * 0.25) {
+          intensity = "medium";
+        }
+        hourlyDistribution.push({
+          hour: h,
+          label: `${pad(h)}:00`,
+          count,
+          intensity,
+        });
+      }
 
       return {
         totalReservations,
         totalRevenue: revenueResult._sum.totalPrice || 0,
         totalCourts,
         pendingCount,
+        totalCustomers,
+        newCustomersThisMonth,
+        occupancyRateToday,
+        bookedHoursToday,
+        totalCapacityToday,
+        peakHour,
+        peakHourCount: maxCount,
+        hourlyDistribution,
         recentReservations: recent.map((r) => ({
           id: r.id,
           userName: r.user?.name || "Customer",

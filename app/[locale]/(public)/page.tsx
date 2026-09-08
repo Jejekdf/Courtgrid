@@ -132,7 +132,7 @@ export default async function Home({
   };
 
   return (
-    <div className="flex flex-col bg-[var(--background)] text-zinc-950 min-h-dvh">
+    <div className="flex flex-col bg-background text-zinc-950 min-h-dvh">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
@@ -266,7 +266,7 @@ export default async function Home({
         </section>
 
         {/* Section 3: Nilai Utama & Kepastian Jadwal */}
-        <section id="about" className="relative py-10 sm:py-14 lg:py-16 bg-[var(--background)] border-t border-zinc-200/80">
+        <section id="about" className="relative py-10 sm:py-14 lg:py-16 bg-background border-t border-zinc-200/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
             <div className="max-w-3xl space-y-3">
               <span className="text-xs uppercase font-bold tracking-wider text-emerald-600 font-sans">{t("commitmentBadge")}</span>
@@ -357,7 +357,7 @@ export default async function Home({
         </section>
 
         {/* Section 5: Callout Booking */}
-        <section className="relative py-10 sm:py-14 lg:py-16 bg-[var(--background)] border-t border-zinc-200">
+        <section className="relative py-10 sm:py-14 lg:py-16 bg-background border-t border-zinc-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="relative overflow-hidden bg-zinc-950 rounded-2xl sm:rounded-3xl p-7 sm:p-10 lg:p-12 flex flex-col items-center text-center gap-5 sm:gap-6 shadow-lg">
               <div className="relative z-10 space-y-3 max-w-2xl">

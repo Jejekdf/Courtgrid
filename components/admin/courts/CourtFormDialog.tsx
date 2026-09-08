@@ -129,7 +129,7 @@ function CourtFormContent({
         <select
           value={type}
           onChange={(e) => setType(e.target.value as "FUTSAL" | "BADMINTON")}
-          className="flex h-10 w-full rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-950 focus:outline-none focus:ring-2 focus:ring-zinc-950/20 focus:border-zinc-950"
+          className="flex h-10 w-full rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-950 focus:outline-hidden focus:ring-2 focus:ring-zinc-950/20 focus:border-zinc-950"
         >
           <option value="FUTSAL">FUTSAL</option>
           <option value="BADMINTON">BADMINTON</option>

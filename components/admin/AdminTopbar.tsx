@@ -29,7 +29,7 @@ export default function AdminTopbar({
         {/* Mobile menu trigger */}
         <button
           onClick={onMenuClick}
-          className="md:hidden p-2 -ml-2 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
+          className="md:hidden p-2.5 min-h-11 min-w-11 -ml-2 flex items-center justify-center text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
           aria-label={t("openSidebar")}
         >
           <Menu className="size-5" />
@@ -56,7 +56,7 @@ export default function AdminTopbar({
         <button
           type="button"
           onClick={openScanner}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 text-zinc-900 rounded-lg transition-colors border border-zinc-200 cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-2 min-h-10 text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 text-zinc-900 rounded-lg transition-colors border border-zinc-200 cursor-pointer"
         >
           <QrCode className="size-3.5 text-emerald-600" />
           <span className="hidden sm:inline">Verifikasi Tiket</span>

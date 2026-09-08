@@ -67,7 +67,7 @@ export function CourtCard({ court, onToggleActive, onEdit, onDelete }: CourtCard
         <div className="mt-auto flex items-center justify-between gap-2 pt-3 border-t border-zinc-100">
           <button
             onClick={() => onToggleActive(court)}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md border text-sm font-semibold transition-colors border-zinc-200 text-zinc-700 hover:bg-zinc-100"
+            className="inline-flex items-center gap-1.5 px-3 py-2 min-h-10 rounded-lg border text-xs sm:text-sm font-semibold transition-colors border-zinc-200 text-zinc-700 hover:bg-zinc-100 cursor-pointer"
           >
             <Power className={`size-3.5 ${court.isActive ? "text-red-600" : "text-emerald-600"}`} />
             <span>{court.isActive ? t("deactivateBtn") : t("activateBtn")}</span>
@@ -75,17 +75,17 @@ export function CourtCard({ court, onToggleActive, onEdit, onDelete }: CourtCard
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => onEdit(court)}
-              className="p-1.5 text-zinc-600 hover:text-zinc-950 transition-colors border border-zinc-200 rounded-md"
+              className="min-h-10 min-w-10 p-2 flex items-center justify-center text-zinc-600 hover:text-zinc-950 transition-colors border border-zinc-200 rounded-lg cursor-pointer"
               aria-label={t("editAria")}
             >
-              <Pencil className="h-3.5 w-3.5" />
+              <Pencil className="size-4" />
             </button>
             <button
               onClick={() => onDelete(court.id)}
-              className="p-1.5 text-red-600 hover:bg-red-50 transition-colors border border-red-200 rounded-md"
+              className="min-h-10 min-w-10 p-2 flex items-center justify-center text-red-600 hover:bg-red-50 transition-colors border border-red-200 rounded-lg cursor-pointer"
               aria-label={t("deleteAria")}
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Trash2 className="size-4" />
             </button>
           </div>
         </div>

@@ -123,7 +123,7 @@ export default async function FAQPage({
   ];
 
   return (
-    <div className="min-h-dvh pt-6 pb-16 px-4 sm:px-6 lg:px-8 bg-[var(--background)] text-zinc-950">
+    <div className="min-h-dvh pt-6 pb-16 px-4 sm:px-6 lg:px-8 bg-background text-zinc-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}

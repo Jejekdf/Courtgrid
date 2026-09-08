@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useDebounce } from "react-use";
+import { useDebouncedCallback } from "@react-hookz/web";
 import { useQueryStates } from "nuqs";
 import { useQuery } from "@tanstack/react-query";
 import { RotateCcw, Search } from "lucide-react";
@@ -28,21 +28,20 @@ export default function CourtCatalog() {
     { value: "BADMINTON", label: t("tabBadminton") },
   ];
 
+  const [prevSearch, setPrevSearch] = useState(search);
   const [searchDraft, setSearchDraft] = useState(search);
-  const [lastUrlSearch, setLastUrlSearch] = useState(search);
-  if (lastUrlSearch !== search) {
-    setLastUrlSearch(search);
+
+  if (search !== prevSearch) {
+    setPrevSearch(search);
     setSearchDraft(search);
   }
 
-  useDebounce(
-    () => {
-      if (searchDraft !== search) {
-        setQueryParams({ search: searchDraft || null });
-      }
+  const debouncedSetSearch = useDebouncedCallback(
+    (value: string) => {
+      setQueryParams({ search: value || null });
     },
-    300,
-    [searchDraft, search, setQueryParams]
+    [setQueryParams],
+    300
   );
 
   const filters: CourtFilters = {
@@ -96,7 +95,11 @@ export default function CourtCatalog() {
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Input
             value={searchDraft}
-            onChange={(e) => setSearchDraft(e.target.value)}
+            onChange={(e) => {
+              const val = e.target.value;
+              setSearchDraft(val);
+              debouncedSetSearch(val);
+            }}
             placeholder={t("searchPlaceholder")}
             containerClassName="w-full sm:w-72"
             leftIcon={<Search className="size-4 text-zinc-400" />}
@@ -107,11 +110,11 @@ export default function CourtCatalog() {
             disabled={isFetching}
             title={t("reloadTitle")}
             aria-label={t("reloadTitle")}
-            className={`flex items-center justify-center h-11 w-11 shrink-0 rounded-xl border border-zinc-200 bg-[var(--background)] text-zinc-600 transition-colors hover-fine:bg-zinc-50 hover-fine:text-zinc-950 cursor-pointer disabled:opacity-50 ${
+            className={`flex items-center justify-center size-11 shrink-0 rounded-xl border border-zinc-200 bg-background text-zinc-600 transition-colors hover-fine:bg-zinc-50 hover-fine:text-zinc-950 cursor-pointer disabled:opacity-50 ${
               isFetching ? "animate-spin" : ""
             }`}
           >
-            <RotateCcw className="h-4 w-4" />
+            <RotateCcw className="size-4" />
           </button>
         </div>
       </div>

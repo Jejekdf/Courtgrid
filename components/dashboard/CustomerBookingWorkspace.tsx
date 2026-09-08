@@ -5,6 +5,7 @@ import { useRouter } from "@/i18n/navigation";
 import { useQueryState, parseAsString } from "nuqs";
 import { motion } from "motion/react";
 import { Loader2 } from "lucide-react";
+import { addDays, format } from "date-fns";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { createReservationAction } from "@/features/reservations/actions";
 import { getCourts, getCourtAvailability } from "@/features/courts/actions";
@@ -38,23 +39,14 @@ export default function CustomerBookingWorkspace() {
   const tVal = useTranslations("validation");
   const tFlow = useTranslations("dashboard.book");
   const [paymentStatus, setPaymentStatus] = useQueryState("payment", parseAsString);
-  const [urlCourtId] = useQueryState("courtId", parseAsString);
+  const [courtId, setCourtId] = useQueryState("courtId", parseAsString.withDefault("").withOptions({ shallow: true }));
 
   const [selectedDate, setSelectedDate] = useState<string>(
     () => getJakartaNow().dateStr
   );
-  const [selectedCourtId, setSelectedCourtId] = useState<string | null>(urlCourtId);
-  const [prevUrlCourtId, setPrevUrlCourtId] = useState(urlCourtId);
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
   const [voucherCode, setVoucherCode] = useState("");
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-
-  // Sync state during render when URL query param ?courtId= changes via search bar
-  if (urlCourtId !== prevUrlCourtId) {
-    setPrevUrlCourtId(urlCourtId);
-    setSelectedCourtId(urlCourtId);
-    setSelectedTimeSlots([]);
-  }
 
   // Fetch active courts for selector
   const { data: courts = [], isLoading: isLoadingCourts } = useQuery({
@@ -67,11 +59,11 @@ export default function CustomerBookingWorkspace() {
 
   // Fallback to first available court if none explicitly chosen
   const activeCourt = useMemo(() => {
-    if (selectedCourtId) {
-      return courts.find((c) => c.id === selectedCourtId) || courts[0] || null;
+    if (courtId) {
+      return courts.find((c) => c.id === courtId) || courts[0] || null;
     }
     return courts[0] || null;
-  }, [courts, selectedCourtId]);
+  }, [courts, courtId]);
 
   const activeCourtId = activeCourt?.id || "";
 
@@ -92,7 +84,7 @@ export default function CustomerBookingWorkspace() {
   useAvailabilityRealtime(activeCourtId, selectedDate);
 
   const handleSelectCourt = (court: Court) => {
-    setSelectedCourtId(court.id);
+    setCourtId(court.id);
     setSelectedTimeSlots([]);
   };
 
@@ -205,12 +197,9 @@ export default function CustomerBookingWorkspace() {
   }
 
   const { dateStr: todayStr } = getJakartaNow();
-  const d1 = new Date(`${todayStr}T00:00:00Z`);
-  d1.setUTCDate(d1.getUTCDate() + 1);
-  const tomorrowStr = d1.toISOString().slice(0, 10);
-  const d2 = new Date(`${todayStr}T00:00:00Z`);
-  d2.setUTCDate(d2.getUTCDate() + 2);
-  const dayAfterTomorrowStr = d2.toISOString().slice(0, 10);
+  const todayDate = new Date(`${todayStr}T00:00:00+07:00`);
+  const tomorrowStr = format(addDays(todayDate, 1), "yyyy-MM-dd");
+  const dayAfterTomorrowStr = format(addDays(todayDate, 2), "yyyy-MM-dd");
 
   const totalPrice = activeCourt
     ? selectedTimeSlots.length * activeCourt.pricePerHour
@@ -223,7 +212,7 @@ export default function CustomerBookingWorkspace() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
-      className="space-y-8 max-w-7xl 2xl:max-w-[88rem] mx-auto text-zinc-950"
+      className="space-y-8 max-w-7xl mx-auto text-zinc-950"
     >
       <BookingDateSelector
         selectedDate={selectedDate}

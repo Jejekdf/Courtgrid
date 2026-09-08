@@ -50,38 +50,63 @@ export default function RecentReservationsTable({ reservations = [] }: { reserva
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-zinc-50 text-xs uppercase tracking-wider text-zinc-500 font-semibold border-b border-zinc-200">
-              <tr>
-                <th className="px-6 py-4">{t("colId")}</th>
-                <th className="px-6 py-4">{t("colCustomer")}</th>
-                <th className="px-6 py-4">{t("colCourt")}</th>
-                <th className="px-6 py-4">{t("colSchedule")}</th>
-                <th className="px-6 py-4">{t("colAmount")}</th>
-                <th className="px-6 py-4">{t("colStatus")}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-100">
-              {reservations.map((res) => (
-                <tr key={res.id} className="hover:bg-zinc-50/50 transition-colors">
-                  <td className="px-6 py-4 font-mono text-xs text-zinc-500">{res.id}</td>
-                  <td className="px-6 py-4 font-medium text-zinc-950">{res.customerName}</td>
-                  <td className="px-6 py-4 text-zinc-700">{res.courtName}</td>
-                  <td className="px-6 py-4 text-zinc-700">
-                    <div className="flex items-center gap-1.5 font-mono text-xs whitespace-nowrap">
-                      <span className="text-zinc-900 font-medium">{res.date}</span>
-                      <span className="text-zinc-300">,</span>
-                      <span className="text-zinc-500">{res.time}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 font-medium text-zinc-950">{res.amount}</td>
-                  <td className="px-6 py-4">{getStatusBadge(res.status)}</td>
+        <>
+          {/* Mobile Card Stack */}
+          <div className="block md:hidden divide-y divide-zinc-100">
+            {reservations.map((res) => (
+              <div key={res.id} className="p-4 space-y-2 hover:bg-zinc-50/50 transition-colors">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h4 className="font-bold text-sm text-zinc-950 leading-tight">{res.customerName}</h4>
+                    <span className="text-[0.6875rem] font-mono text-zinc-400">ID: {res.id}</span>
+                  </div>
+                  {getStatusBadge(res.status)}
+                </div>
+                <div className="flex items-center justify-between text-xs text-zinc-600">
+                  <span className="font-medium text-zinc-800">{res.courtName}</span>
+                  <span className="font-mono">{res.date}, {res.time}</span>
+                </div>
+                <div className="flex justify-end pt-1">
+                  <span className="font-extrabold text-sm text-zinc-950 font-mono">{res.amount}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Structured Table */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-left text-sm whitespace-nowrap">
+              <thead className="bg-zinc-50 text-xs uppercase tracking-wider text-zinc-500 font-semibold border-b border-zinc-200">
+                <tr>
+                  <th className="px-6 py-4">{t("colId")}</th>
+                  <th className="px-6 py-4">{t("colCustomer")}</th>
+                  <th className="px-6 py-4">{t("colCourt")}</th>
+                  <th className="px-6 py-4">{t("colSchedule")}</th>
+                  <th className="px-6 py-4">{t("colAmount")}</th>
+                  <th className="px-6 py-4">{t("colStatus")}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-zinc-100">
+                {reservations.map((res) => (
+                  <tr key={res.id} className="hover:bg-zinc-50/50 transition-colors">
+                    <td className="px-6 py-4 font-mono text-xs text-zinc-500">{res.id}</td>
+                    <td className="px-6 py-4 font-medium text-zinc-950">{res.customerName}</td>
+                    <td className="px-6 py-4 text-zinc-700">{res.courtName}</td>
+                    <td className="px-6 py-4 text-zinc-700">
+                      <div className="flex items-center gap-1.5 font-mono text-xs whitespace-nowrap">
+                        <span className="text-zinc-900 font-medium">{res.date}</span>
+                        <span className="text-zinc-300">,</span>
+                        <span className="text-zinc-500">{res.time}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 font-medium text-zinc-950">{res.amount}</td>
+                    <td className="px-6 py-4">{getStatusBadge(res.status)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </div>
   );

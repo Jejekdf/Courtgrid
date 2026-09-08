@@ -256,7 +256,7 @@ export default async function TermsPage({
   ];
 
   return (
-    <div className="min-h-dvh pt-6 pb-16 px-4 sm:px-6 lg:px-8 bg-[var(--background)] text-zinc-950">
+    <div className="min-h-dvh pt-6 pb-16 px-4 sm:px-6 lg:px-8 bg-background text-zinc-950">
       <PageWrapper className="max-w-4xl mx-auto">
         <Breadcrumb items={breadcrumbItems} locale={locale} />
         <div className="space-y-8 sm:space-y-10">

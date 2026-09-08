@@ -8,10 +8,11 @@ import { LayoutDashboard, CalendarDays, Box, Settings, LogOut, X, Tag } from "lu
 
 interface AdminSidebarProps {
   isOpen: boolean;
+  isDesktopOpen?: boolean;
   onClose: () => void;
 }
 
-export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
+export default function AdminSidebar({ isOpen, isDesktopOpen = true, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
   const t = useTranslations("admin.nav");
 
@@ -25,13 +26,17 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 
   return (
     <aside
-      className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-zinc-950 text-white transform transition-transform duration-200 ease-out flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] ${
-        isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+      className={`fixed md:static inset-y-0 left-0 z-50 bg-zinc-950 text-white transition-[transform,width,opacity] duration-200 ease-out flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] ${
+        isOpen ? "w-64 translate-x-0" : "-translate-x-full w-64"
+      } ${
+        isDesktopOpen
+          ? "md:w-64 md:translate-x-0 md:opacity-100"
+          : "md:w-0 md:translate-x-0 md:overflow-hidden md:opacity-0"
       }`}
     >
       {/* Brand Header */}
       <div className="h-16 flex items-center justify-between px-6 border-b border-zinc-900 shrink-0">
-        <Link href="/admin" className="flex items-center gap-2.5 outline-none">
+        <Link href="/admin" className="flex items-center gap-2.5 outline-hidden">
           <Image src="/logo.svg" alt="CourtGrid Logo" width={24} height={24} priority className="rounded-md object-contain" />
           <span className="font-bold tracking-tight text-base">CourtGrid Admin</span>
         </Link>

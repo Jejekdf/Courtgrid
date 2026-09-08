@@ -101,10 +101,10 @@ export default function ResetPasswordForm() {
                       <button
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
-                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
+                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-hidden p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
                         aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                       >
-                        {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                        {showPassword ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
                       </button>
                     }
                     {...field}
@@ -133,10 +133,10 @@ export default function ResetPasswordForm() {
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword((prev) => !prev)}
-                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-none p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
+                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-hidden p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
                         aria-label={showConfirmPassword ? t("hideConfirm") : t("showConfirm")}
                       >
-                        {showConfirmPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                        {showConfirmPassword ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
                       </button>
                     }
                     {...field}

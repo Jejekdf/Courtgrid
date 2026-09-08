@@ -10,7 +10,7 @@ export default function RegisterPage() {
   const ta = useTranslations("auth");
 
   return (
-    <div className="w-full flex-1 flex items-center justify-center py-6 sm:py-10 px-4 sm:px-6 lg:px-8 bg-[var(--background)] text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
+    <div className="w-full flex-1 flex items-center justify-center py-6 sm:py-10 px-4 sm:px-6 lg:px-8 bg-background text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
       <div className="w-full max-w-5xl bg-white border border-zinc-200/90 rounded-2xl sm:rounded-3xl shadow-xs overflow-hidden flex flex-col lg:flex-row-reverse">
         {/* Right Panel: Auth Form */}
         <div className="w-full lg:w-7/12 flex flex-col justify-center px-6 sm:px-10 md:px-12 py-8 sm:py-10 relative">

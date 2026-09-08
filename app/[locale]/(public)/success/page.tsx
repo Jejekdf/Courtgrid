@@ -29,7 +29,7 @@ export default async function PaymentSuccessPage({
   const t = await getTranslations("success");
 
   return (
-    <div className="w-full flex-1 flex items-center justify-center py-16 px-4 bg-[var(--background)]">
+    <div className="w-full flex-1 flex items-center justify-center py-16 px-4 bg-background">
       <div className="max-w-md w-full space-y-6 text-center">
         <div className="mx-auto size-16 rounded-full bg-emerald-100/80 flex items-center justify-center">
           <CheckCircle2 className="size-8 text-emerald-600" />

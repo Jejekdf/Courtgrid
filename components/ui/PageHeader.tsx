@@ -30,7 +30,11 @@ export default function PageHeader({
           </p>
         )}
       </div>
-      {actions && <div className="flex items-center gap-3 shrink-0">{actions}</div>}
+      {actions && (
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+          {actions}
+        </div>
+      )}
     </div>
   );
 }

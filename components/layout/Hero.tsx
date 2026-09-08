@@ -1,36 +1,38 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
-import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import type { ActiveCourtDTO } from "@/features/courts/dal";
+import { HeroShowcaseTrack, type ShowcaseImage } from "./HeroShowcaseTrack";
 
 export default async function Hero({ courts = [] }: { courts?: ActiveCourtDTO[] }) {
   const t = await getTranslations("hero");
 
-  const courtImages = courts
+  const courtImages: ShowcaseImage[] = courts
     .filter((c): c is ActiveCourtDTO & { imageUrl: string } => Boolean(c.imageUrl))
-    .slice(0, 4)
     .map((c, idx) => ({
+      id: c.id,
       src: c.imageUrl,
       alt: `${c.name} (${c.type})`,
       name: c.name,
       type: c.type,
+      surfaceLabel: c.type === "FUTSAL" ? t("turfSurface") : t("vinylSurface"),
       priority: idx === 0,
     }));
 
-  const images =
+  const images: ShowcaseImage[] =
     courtImages.length > 0
       ? courtImages
       : [
-          { src: "/futsal_arena_modern.webp", alt: "Futsal Court", name: "Futsal Arena", type: "FUTSAL", priority: true },
-          { src: "/badminton_court_pro.webp", alt: "Badminton Court", name: "Badminton Court", type: "BADMINTON", priority: false },
-          { src: "/futsal2.webp", alt: "Futsal Arena", name: "Futsal Court B", type: "FUTSAL", priority: false },
-          { src: "/badminton2.webp", alt: "Badminton Pro Court", name: "Badminton Court 2", type: "BADMINTON", priority: false },
+          { src: "/futsal_arena_modern.webp", alt: "Futsal Court A", name: "Futsal Court A", type: "FUTSAL", surfaceLabel: t("turfSurface"), priority: true },
+          { src: "/futsal2.webp", alt: "Futsal Court B", name: "Futsal Court B", type: "FUTSAL", surfaceLabel: t("turfSurface"), priority: false },
+          { src: "/badminton_court_pro.webp", alt: "Badminton Court 1", name: "Badminton Court 1", type: "BADMINTON", surfaceLabel: t("vinylSurface"), priority: false },
+          { src: "/badminton2.webp", alt: "Badminton Court 2", name: "Badminton Court 2", type: "BADMINTON", surfaceLabel: t("vinylSurface"), priority: false },
+          { src: "/badminton3.webp", alt: "Badminton Court 3", name: "Badminton Court 3", type: "BADMINTON", surfaceLabel: t("vinylSurface"), priority: false },
         ];
 
   return (
-    <section className="relative w-full overflow-hidden bg-[var(--background)]">
+    <section className="relative w-full overflow-hidden bg-background">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 sm:pt-8 sm:pb-12 flex flex-col items-center text-center">
         {/* Hero Headline */}
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-zinc-950 max-w-4xl leading-[1.12] mb-4 text-balance">
@@ -64,42 +66,8 @@ export default async function Hero({ courts = [] }: { courts?: ActiveCourtDTO[] 
           </Link>
         </div>
 
-        {/* Visual Showcase - Responsive Swipeable Track on Mobile, Bento Grid on Desktop */}
-        <div className="mt-8 sm:mt-10 w-full">
-          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5 overflow-x-auto sm:overflow-visible pb-3 sm:pb-0 scrollbar-none snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0">
-            {images.map((img, idx) => (
-              <Link
-                key={idx}
-                href="/dashboard/book"
-                className="group relative rounded-2xl overflow-hidden border border-zinc-200/90 aspect-4/3 bg-zinc-100 shadow-xs hover:shadow-md hover:border-zinc-400 transition-all duration-200 block text-left shrink-0 w-[78vw] max-w-[320px] sm:w-auto sm:max-w-none snap-center"
-              >
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  priority={img.priority}
-                  quality={85}
-                  unoptimized={img.src.startsWith("http")}
-                  className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none will-change-transform"
-                  sizes="(max-width: 640px) 78vw, (max-width: 1024px) 50vw, 25vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/30 to-transparent flex flex-col justify-end p-4 sm:p-5">
-                  <span className="text-xs uppercase font-bold tracking-wider text-emerald-400 mb-0.5 whitespace-nowrap">
-                    {img.type === "FUTSAL" ? t("turfSurface") : t("vinylSurface")}
-                  </span>
-                  <span className="text-base font-bold text-white tracking-tight leading-tight truncate drop-shadow-xs">
-                    {img.name}
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <div className="flex sm:hidden items-center justify-center gap-1.5 text-xs text-zinc-400 mt-2 font-medium">
-            <span>{t("swipeHint")}</span>
-            <ArrowRight className="size-3" aria-hidden="true" />
-          </div>
-        </div>
+        {/* Visual Showcase - Smooth Responsive Carousel Track */}
+        <HeroShowcaseTrack images={images} swipeHint={t("swipeHint")} />
       </div>
     </section>
   );

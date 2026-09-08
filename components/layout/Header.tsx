@@ -83,7 +83,7 @@ export function Header() {
   };
 
   const logoElement = (
-    <Link href="/" onClick={(e) => handleNavClick("/", e)} className="flex items-center gap-2.5 group shrink-0 outline-none">
+    <Link href="/" onClick={(e) => handleNavClick("/", e)} className="flex items-center gap-2.5 group shrink-0 outline-hidden">
       <Image src="/logo.svg" alt="CourtGrid Logo" width={28} height={28} priority className="rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
       <span className="font-heading text-zinc-950 font-extrabold tracking-tight text-base sm:text-lg">
         CourtGrid
@@ -118,7 +118,7 @@ export function Header() {
     ) : isLoggedIn ? (
     <Link
       href={dashboardHref}
-      className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-lg transition-colors shadow-xs outline-none w-full sm:w-auto cursor-pointer min-h-11"
+      className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-lg transition-colors shadow-xs outline-hidden w-full sm:w-auto cursor-pointer min-h-11"
     >
       {userImage ? (
         <Image src={userImage} alt={userName} width={16} height={16} className="size-4 rounded-full object-cover" />
@@ -131,13 +131,13 @@ export function Header() {
     <>
       <Link
         href="/login"
-        className="flex items-center justify-center px-4 py-2 text-sm font-semibold border border-zinc-200 bg-zinc-50 text-zinc-950 rounded-lg hover:bg-zinc-100 transition-colors duration-200 w-full sm:w-auto text-center outline-none cursor-pointer min-h-11"
+        className="flex items-center justify-center px-4 py-2 text-sm font-semibold border border-zinc-200 bg-zinc-50 text-zinc-950 rounded-lg hover:bg-zinc-100 transition-colors duration-200 w-full sm:w-auto text-center outline-hidden cursor-pointer min-h-11"
       >
         {t("masuk")}
       </Link>
       <Link
         href="/register"
-        className="flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-zinc-950 rounded-lg hover:bg-zinc-800 transition-colors duration-200 w-full sm:w-auto outline-none cursor-pointer shadow-xs min-h-11"
+        className="flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-zinc-950 rounded-lg hover:bg-zinc-800 transition-colors duration-200 w-full sm:w-auto outline-hidden cursor-pointer shadow-xs min-h-11"
       >
         {t("daftar")}
       </Link>
@@ -163,7 +163,7 @@ export function Header() {
                 key={link.href}
                 href={link.href}
                 onClick={(e) => handleNavClick(link.href, e)}
-                className={`relative text-sm font-medium outline-none transition-colors py-1.5
+                className={`relative text-sm font-medium outline-hidden transition-colors py-1.5
                   after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-zinc-950 after:origin-left after:transition-transform after:duration-200 after:ease-out
                   ${
                     checkIsActive(link.href)
@@ -182,7 +182,7 @@ export function Header() {
 
           <button
             type="button"
-            className="sm:hidden flex items-center justify-center size-11 text-zinc-700 hover:text-zinc-950 focus:outline-none transition-colors outline-none cursor-pointer"
+            className="sm:hidden flex items-center justify-center size-11 text-zinc-700 hover:text-zinc-950 focus:outline-hidden transition-colors outline-hidden cursor-pointer"
             onClick={toggleMenu}
             aria-expanded={isOpen}
             aria-controls="mobile-navigation"
@@ -203,7 +203,7 @@ export function Header() {
                 key={link.href}
                 href={link.href}
                 onClick={(e) => handleNavClick(link.href, e)}
-                className={`relative text-sm font-medium w-full justify-center text-center min-h-11 flex items-center transition-colors outline-none rounded-lg px-4
+                className={`relative text-sm font-medium w-full justify-center text-center min-h-11 flex items-center transition-colors outline-hidden rounded-lg px-4
                   ${
                     checkIsActive(link.href)
                       ? "bg-zinc-100 text-zinc-950 font-bold"

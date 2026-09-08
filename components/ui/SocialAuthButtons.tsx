@@ -57,7 +57,7 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
     <div className="space-y-3 w-full">
       <div className="relative flex items-center justify-center my-4">
         <div className="border-t border-zinc-200 w-full" />
-        <span className="bg-[var(--background)] px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider shrink-0">
+        <span className="bg-background px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider shrink-0">
           {t("divider")}
         </span>
         <div className="border-t border-zinc-200 w-full" />

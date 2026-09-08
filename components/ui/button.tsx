@@ -29,7 +29,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     // Base styles according to CourtGrid Premium Light Mode design system
     const baseStyles =
-      "inline-flex items-center justify-center font-medium transition-[background-color,color,border-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-950/20 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] cursor-pointer select-none";
+      "inline-flex items-center justify-center font-medium transition-[background-color,color,border-color,box-shadow,transform] duration-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950/20 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] cursor-pointer select-none";
 
     const variants = {
       primary:

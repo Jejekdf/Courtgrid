@@ -10,7 +10,7 @@ export default function ResetPasswordPage() {
   const t = useTranslations("auth.reset");
 
   return (
-    <div className="w-full flex-1 flex items-center justify-center py-6 sm:py-10 px-4 sm:px-6 lg:px-8 bg-[var(--background)] text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
+    <div className="w-full flex-1 flex items-center justify-center py-6 sm:py-10 px-4 sm:px-6 lg:px-8 bg-background text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
       <div className="w-full max-w-5xl bg-white border border-zinc-200/90 rounded-2xl sm:rounded-3xl shadow-xs overflow-hidden flex flex-col lg:flex-row-reverse">
         {/* Right Panel: Form */}
         <div className="w-full lg:w-7/12 flex flex-col justify-center px-6 sm:px-10 md:px-12 py-8 sm:py-10 relative">
@@ -43,8 +43,8 @@ export default function ResetPasswordPage() {
         {/* Left Panel: Visual Showcase (Hidden on Mobile) */}
         <div className="hidden lg:flex lg:w-5/12 bg-zinc-950 relative overflow-hidden flex-col justify-between p-8 xl:p-10 border-r border-zinc-900 min-h-[480px]">
           <div className="absolute inset-0 bg-[url('/badminton1.webp')] bg-cover bg-center opacity-30 mix-blend-luminosity transition-transform duration-1000 hover-fine:scale-105" />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-l from-zinc-950 via-transparent to-transparent opacity-80" />
+          <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/60 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-l from-zinc-950 via-transparent to-transparent opacity-80" />
           
           <div className="relative z-10 flex flex-col justify-end h-full max-w-xl space-y-4">
             <Quote className="text-emerald-500 size-8 opacity-80" />

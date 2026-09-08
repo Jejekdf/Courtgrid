@@ -7,32 +7,12 @@ import AdminHeader from "@/components/admin/AdminHeader";
 import DashboardStats from "@/components/admin/DashboardStats";
 import RecentReservationsTable from "@/components/admin/RecentReservationsTable";
 import RevenueChart from "@/components/admin/RevenueChart";
+import PeakHoursCard from "@/components/admin/PeakHoursCard";
 import { adminKeys } from "@/lib/query-keys";
 import { getAdminStatsAction } from "@/features/admin/actions";
+import type { AdminStatsDTO } from "@/features/admin/dal";
 
-type Stats = {
-  totalReservations: number;
-  totalRevenue: number;
-  totalCourts: number;
-  pendingCount: number;
-  recentReservations: Array<{
-    id: string;
-    userName: string;
-    userEmail: string;
-    courtName: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-    totalPrice: number;
-    status: string;
-  }>;
-  revenueChart: Array<{
-    date: string;
-    revenue: number;
-  }>;
-};
-
-async function fetchAdminStats(router: ReturnType<typeof useRouter>, statsFailed: string): Promise<Stats> {
+async function fetchAdminStats(router: ReturnType<typeof useRouter>, statsFailed: string): Promise<AdminStatsDTO> {
   const res = await getAdminStatsAction();
   if (!res.success) {
     if (res.unauthorized) {
@@ -57,13 +37,17 @@ export default function AdminDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 max-w-7xl 2xl:max-w-[88rem] mx-auto">
+      <div className="space-y-6 max-w-7xl mx-auto">
         <AdminHeader
           title={t("title")}
           description={t("loadingDesc")}
         />
-        <div className="animate-pulse space-y-4">
+        <div className="animate-pulse space-y-6">
           <div className="h-24 bg-zinc-100 rounded-xl" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="h-80 bg-zinc-100 rounded-xl" />
+            <div className="h-80 bg-zinc-100 rounded-xl" />
+          </div>
           <div className="h-64 bg-zinc-100 rounded-xl" />
         </div>
       </div>
@@ -72,12 +56,12 @@ export default function AdminDashboardPage() {
 
   if (isError || !stats) {
     return (
-      <div className="space-y-6 max-w-7xl 2xl:max-w-[88rem] mx-auto">
+      <div className="space-y-6 max-w-7xl mx-auto">
         <AdminHeader
           title={t("title")}
           description={t("errorDesc")}
           actions={
-            <button onClick={() => refetch()} className="px-3 py-1.5 text-sm font-semibold bg-zinc-950 text-white rounded-lg">
+            <button onClick={() => refetch()} className="px-3.5 py-2 min-h-10 text-xs sm:text-sm font-semibold bg-zinc-950 text-white rounded-lg cursor-pointer">
               {t("retry")}
             </button>
           }
@@ -87,7 +71,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-7xl 2xl:max-w-[88rem] mx-auto text-zinc-950">
+    <div className="space-y-8 max-w-7xl mx-auto text-zinc-950">
       {/* Reusable Admin Header Component */}
       <AdminHeader
         title={t("title")}
@@ -99,9 +83,21 @@ export default function AdminDashboardPage() {
         totalRevenue={stats.totalRevenue}
         activeCourts={stats.totalCourts}
         pendingCount={stats.pendingCount}
+        totalCustomers={stats.totalCustomers}
+        newCustomersThisMonth={stats.newCustomersThisMonth}
+        occupancyRateToday={stats.occupancyRateToday}
+        bookedHoursToday={stats.bookedHoursToday}
+        totalCapacityToday={stats.totalCapacityToday}
       />
 
-      <RevenueChart data={stats.revenueChart} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+        <RevenueChart data={stats.revenueChart} />
+        <PeakHoursCard
+          data={stats.hourlyDistribution}
+          peakHour={stats.peakHour}
+          peakHourCount={stats.peakHourCount}
+        />
+      </div>
 
       <RecentReservationsTable
         reservations={Array.isArray(stats?.recentReservations) ? stats.recentReservations.map((res) => {

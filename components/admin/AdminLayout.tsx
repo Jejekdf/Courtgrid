@@ -26,9 +26,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         />
       )}
       
-      {isDesktopOpen && (
-        <AdminSidebar isOpen={isMobileOpen} onClose={() => setIsMobileOpen(false)} />
-      )}
+      <AdminSidebar
+        isOpen={isMobileOpen}
+        isDesktopOpen={isDesktopOpen}
+        onClose={() => setIsMobileOpen(false)}
+      />
       
       <div className="flex-1 flex flex-col min-w-0 h-svh overflow-hidden">
         <AdminTopbar
@@ -36,8 +38,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           isSidebarOpen={isDesktopOpen}
           onToggleSidebar={() => setIsDesktopOpen((prev) => !prev)}
         />
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto bg-zinc-50">
-          <div className="max-w-7xl 2xl:max-w-[88rem] mx-auto space-y-8">
+        <main className="flex-1 p-3.5 sm:p-6 md:p-8 overflow-y-auto bg-zinc-50">
+          <div className="max-w-7xl mx-auto space-y-8">
             <PageTransition>
               {children}
             </PageTransition>

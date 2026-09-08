@@ -35,7 +35,7 @@ export default async function CustomerBookPage({
   }
 
   return (
-    <div className="space-y-8 max-w-7xl 2xl:max-w-[88rem] mx-auto text-zinc-950">
+    <div className="space-y-8 max-w-7xl mx-auto text-zinc-950">
       {/* Shared Reusable PageHeader (Consistent with Admin) */}
       <PageHeader
         title={t("pageTitle")}

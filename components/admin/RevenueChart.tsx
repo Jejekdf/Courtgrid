@@ -42,7 +42,7 @@ export default function RevenueChart({ data }: { data: RevenueChartDatum[] }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut", delay: 0.25 }}
-      className="bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden flex flex-col"
+      className="bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden flex flex-col justify-between h-full"
     >
       <div className="px-6 py-5 border-b border-zinc-200 flex flex-col gap-1">
         <h3 className="text-lg font-medium tracking-tight text-zinc-950">

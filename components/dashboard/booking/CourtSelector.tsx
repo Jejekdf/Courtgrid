@@ -37,7 +37,7 @@ export function CourtSelector({
               type="button"
               key={court.id}
               onClick={() => onSelectCourt(court)}
-              className={`group relative p-5 rounded-2xl border transition-[border-color,box-shadow,background-color] duration-200 cursor-pointer flex flex-col justify-between overflow-hidden text-left w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-950 ${
+              className={`group relative p-5 rounded-2xl border transition-[border-color,box-shadow,background-color] duration-200 cursor-pointer flex flex-col justify-between overflow-hidden text-left w-full focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950 ${
                 isSelected
                   ? "border-zinc-950 bg-white shadow-md ring-2 ring-zinc-950/10"
                   : "border-zinc-200 bg-white hover:border-zinc-300 hover:shadow-xs"

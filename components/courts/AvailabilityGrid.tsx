@@ -4,14 +4,15 @@ import { useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarDays, Clock, Loader2, AlertTriangle, ArrowRight } from "lucide-react";
-import { AnimatePresence } from "motion/react";
-import { useTranslations } from "next-intl";
+import { motion, AnimatePresence } from "motion/react";
+import { useTranslations, useLocale } from "next-intl";
 import {
   fetchAvailability,
   type AvailabilitySlot,
 } from "@/lib/api/courts";
 import { courtKeys } from "@/lib/query-keys";
 import { getJakartaNow } from "@/lib/timezone";
+import { safeFormatDate } from "@/lib/utils";
 import { SlotCell } from "./SlotCell";
 
 function addDays(dateStr: string, days: number): string {
@@ -33,9 +34,14 @@ export default function AvailabilityGrid({
   pricePerHour,
 }: Props) {
   const t = useTranslations("courts");
+  const locale = useLocale();
   const { dateStr: todayStr } = getJakartaNow();
   const [selectedDate, setSelectedDate] = useState(todayStr);
   const [selectedHour, setSelectedHour] = useState<number | null>(null);
+
+  const formattedDate = safeFormatDate(selectedDate, "EEE, d MMM yyyy", selectedDate, locale);
+  const startHourStr = selectedHour !== null ? String(selectedHour).padStart(2, "0") : "00";
+  const endHourStr = selectedHour !== null ? String(selectedHour + 1).padStart(2, "0") : "00";
 
   const maxDate = addDays(todayStr, 14);
 
@@ -51,7 +57,7 @@ export default function AvailabilityGrid({
     <div className="space-y-4 p-4 bg-white border border-zinc-200 rounded-xl">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-2">
-          <CalendarDays className="h-4 w-4 text-zinc-500" />
+          <CalendarDays className="size-4 text-zinc-500" />
           <label
             htmlFor={`date-${courtId}`}
             className="text-sm font-semibold text-zinc-700"
@@ -68,23 +74,23 @@ export default function AvailabilityGrid({
               setSelectedDate(e.target.value);
               setSelectedHour(null);
             }}
-            className="text-sm border border-zinc-200 rounded-md px-2 py-1 bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="text-sm border border-zinc-200 rounded-md px-2 py-1 bg-white text-zinc-900 focus:outline-2 focus:outline-offset-2 focus:outline-emerald-500"
           />
         </div>
         <div className="flex items-center gap-1.5 text-sm text-zinc-500">
-          <Clock className="h-3.5 w-3.5" />
+          <Clock className="size-3.5" />
           <span>{t("perHourShort", { price: `Rp ${pricePerHour.toLocaleString("id-ID")}` })}</span>
         </div>
       </div>
 
       {isPending ? (
         <div className="flex items-center justify-center py-8 gap-2 text-sm text-zinc-500">
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <Loader2 className="size-4 animate-spin" />
           <span>{t("loadingAvailability")}</span>
         </div>
       ) : isError ? (
         <div className="flex flex-col items-center justify-center py-8 gap-2">
-          <AlertTriangle className="h-5 w-5 text-red-500" />
+          <AlertTriangle className="size-5 text-red-500" />
           <span className="text-sm text-red-600">
             {t("availabilityError")}
           </span>
@@ -113,22 +119,40 @@ export default function AvailabilityGrid({
       )}
 
       {/* Selected Hour Action Bar */}
-      {selectedHour !== null && (
-        <div className="p-3.5 bg-emerald-50 border border-emerald-200/90 rounded-xl flex items-center justify-between gap-3 flex-wrap">
-          <div className="flex items-center gap-2 text-xs font-semibold text-emerald-900 whitespace-nowrap">
-            <span>{t("selectedDateLabel")}: {selectedDate}</span>
-            <span className="text-emerald-300">/</span>
-            <span>{t("selectedTimeLabel")}: {String(selectedHour).padStart(2, "0")}:00 – {String(selectedHour + 1).padStart(2, "0")}:00 WIB</span>
-          </div>
-          <Link
-            href={`/dashboard/book?courtId=${courtId}&date=${selectedDate}&time=${String(selectedHour).padStart(2, "0")}:00`}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold rounded-lg transition-colors shadow-xs min-h-9"
+      <AnimatePresence>
+        {selectedHour !== null && (
+          <motion.div
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.15 }}
+            role="region"
+            aria-live="polite"
+            className="p-3.5 bg-emerald-50/80 border border-emerald-200/90 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3"
           >
-            <span>{t("continueBooking")}</span>
-            <ArrowRight className="size-3.5" aria-hidden="true" />
-          </Link>
-        </div>
-      )}
+            <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-emerald-950">
+              <span className="inline-flex items-center gap-1.5 bg-white border border-emerald-200/80 px-2.5 py-1 rounded-md shadow-2xs">
+                <CalendarDays className="size-3.5 text-emerald-600 shrink-0" aria-hidden="true" />
+                <time dateTime={selectedDate}>{formattedDate}</time>
+              </span>
+              <span className="inline-flex items-center gap-1.5 bg-white border border-emerald-200/80 px-2.5 py-1 rounded-md shadow-2xs font-mono">
+                <Clock className="size-3.5 text-emerald-600 shrink-0" aria-hidden="true" />
+                <time dateTime={`${startHourStr}:00`}>{startHourStr}:00</time>
+                <span className="text-zinc-400">/</span>
+                <time dateTime={`${endHourStr}:00`}>{endHourStr}:00 WIB</time>
+              </span>
+            </div>
+            <Link
+              href={`/dashboard/book?courtId=${courtId}&date=${selectedDate}&time=${startHourStr}:00`}
+              aria-label={`${t("continueBooking")} ${formattedDate} ${startHourStr}:00`}
+              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-zinc-950 hover:bg-zinc-800 active:scale-[0.98] text-white text-xs font-bold rounded-lg transition-all shadow-xs w-full sm:w-auto min-h-10 cursor-pointer"
+            >
+              <span>{t("continueBooking")}</span>
+              <ArrowRight className="size-3.5" aria-hidden="true" />
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {!isPending && !isError && freeCount === 0 && (
         <p className="text-center text-xs text-zinc-500 pt-1">
