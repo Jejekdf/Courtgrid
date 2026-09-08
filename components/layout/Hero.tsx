@@ -33,7 +33,7 @@ export default async function Hero({ courts = [] }: { courts?: ActiveCourtDTO[] 
 
   return (
     <section className="relative w-full overflow-hidden bg-background">
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 sm:pt-8 sm:pb-12 flex flex-col items-center text-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 sm:pt-24 sm:pb-16 lg:pt-28 lg:pb-20 flex flex-col items-center text-center">
         {/* Hero Headline */}
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-zinc-950 max-w-4xl leading-[1.12] mb-4 text-balance">
           {t("headline")}

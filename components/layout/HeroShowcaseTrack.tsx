@@ -81,7 +81,7 @@ export function HeroShowcaseTrack({ images, swipeHint }: HeroShowcaseTrackProps)
           <Link
             key={idx}
             href={img.id ? `/dashboard/book?courtId=${img.id}` : "/dashboard/book"}
-            className="group relative rounded-2xl overflow-hidden border border-zinc-200/90 aspect-4/3 bg-zinc-100 shadow-xs hover:shadow-md hover:border-zinc-400 transition-all duration-200 block text-left shrink-0 w-72 max-w-xs sm:w-64 md:w-72 snap-start"
+            className="group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-zinc-200/90 aspect-16/10 bg-zinc-100 shadow-xs hover:shadow-md hover:border-zinc-400 transition-all duration-200 block text-left shrink-0 w-72 sm:w-80 md:w-88 lg:w-96 snap-start"
           >
             <Image
               src={img.src}
@@ -91,13 +91,13 @@ export function HeroShowcaseTrack({ images, swipeHint }: HeroShowcaseTrackProps)
               quality={85}
               unoptimized={img.src.startsWith("http")}
               className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none"
-              sizes="(max-width: 640px) 288px, (max-width: 1024px) 256px, 288px"
+              sizes="(max-width: 640px) 288px, (max-width: 1024px) 352px, 384px"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-zinc-950/90 via-zinc-950/30 to-transparent flex flex-col justify-end p-4 sm:p-5">
-              <span className="text-xs uppercase font-bold tracking-wider text-emerald-400 mb-0.5 whitespace-nowrap font-sans">
+            <div className="absolute inset-0 bg-linear-to-t from-zinc-950/90 via-zinc-950/30 to-transparent flex flex-col justify-end p-4 sm:p-5 lg:p-6">
+              <span className="text-xs sm:text-sm uppercase font-bold tracking-wider text-emerald-400 mb-1 whitespace-nowrap font-sans">
                 {img.surfaceLabel}
               </span>
-              <span className="text-base font-bold text-white tracking-tight leading-tight truncate drop-shadow-xs">
+              <span className="text-base sm:text-lg lg:text-xl font-bold text-white tracking-tight leading-tight truncate drop-shadow-xs">
                 {img.name}
               </span>
             </div>
