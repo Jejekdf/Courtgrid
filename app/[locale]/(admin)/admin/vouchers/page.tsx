@@ -129,12 +129,12 @@ export default function AdminVouchersPage() {
   );
 
   return (
-    <div className="space-y-8 max-w-7xl 2xl:max-w-[88rem] mx-auto text-zinc-950">
+    <div className="space-y-8 max-w-7xl mx-auto text-zinc-950">
       <AdminHeader
         title={t("title")}
         description={t("desc")}
         actions={
-          <Button onClick={openAdd} className="bg-zinc-950 text-white text-sm font-semibold" leftIcon={<Plus className="size-3.5" />}>
+          <Button onClick={openAdd} className="bg-zinc-950 text-white text-sm font-semibold min-h-10 px-3.5" leftIcon={<Plus className="size-4" />}>
             {t("addVoucher")}
           </Button>
         }
@@ -147,13 +147,103 @@ export default function AdminVouchersPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t("searchPlaceholder")}
-            className="pl-8"
+            className="pl-8 h-10"
           />
         </div>
       </div>
 
       <div className="bg-white border border-zinc-200 rounded-xl shadow-xs overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Mobile Card List View */}
+        <div className="block md:hidden divide-y divide-zinc-100">
+          {isLoading ? (
+            <div className="p-6 text-center text-xs text-zinc-400 font-mono">
+              {t("loading")}
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="p-6 text-center text-xs text-zinc-400 font-mono">
+              {t("empty")}
+            </div>
+          ) : (
+            filtered.map((v) => (
+              <div key={v.id} className="p-4 space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="font-mono font-bold text-sm text-zinc-950 flex items-center gap-1.5">
+                      <Tag className="size-3.5 text-zinc-400" />
+                      <span>{v.code}</span>
+                    </div>
+                    {v.description && (
+                      <p className="text-xs text-zinc-500 mt-0.5">{v.description}</p>
+                    )}
+                  </div>
+                  <span
+                    className={`inline-flex px-2 py-0.5 rounded-md text-[0.6875rem] font-bold uppercase border shrink-0 ${
+                      v.isActive
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        : "bg-zinc-100 text-zinc-600 border-zinc-200"
+                    }`}
+                  >
+                    {v.isActive ? t("active") : t("inactive")}
+                  </span>
+                </div>
+
+                <div className="bg-zinc-50/70 border border-zinc-100 rounded-lg p-2.5 space-y-1 text-xs text-zinc-700">
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">{t("colDiscount")}</span>
+                    <span className="font-bold text-zinc-950 font-mono">{v.discountPct}%</span>
+                  </div>
+                  {v.maxDiscount ? (
+                    <div className="flex justify-between">
+                      <span className="text-zinc-500">{t("colMaxDiscount")}</span>
+                      <span className="font-semibold text-zinc-800 font-mono">Rp {v.maxDiscount.toLocaleString("id-ID")}</span>
+                    </div>
+                  ) : null}
+                  <div className="flex justify-between font-mono text-[0.6875rem] text-zinc-500 pt-0.5 border-t border-zinc-100">
+                    <span>{t("colExpires")}: {new Date(v.expiresAt).toLocaleDateString("id-ID")}</span>
+                    <span>{t("colUses")}: {v.maxUses}x</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    onClick={() => openEdit(v)}
+                    className="flex-1 min-h-10 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold text-zinc-800 bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 rounded-lg transition-colors cursor-pointer"
+                  >
+                    <Pencil className="size-3.5" />
+                    <span>Edit</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setPendingDelete(v);
+                      setIsDeleteOpen(true);
+                    }}
+                    className="min-h-10 px-3.5 inline-flex items-center justify-center gap-1 text-xs text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-colors cursor-pointer font-semibold"
+                  >
+                    <Trash2 className="size-3.5" />
+                    <span>Hapus</span>
+                  </button>
+                  <button
+                    onClick={async () => {
+                      await adminToggleVoucherActive(v.id, !v.isActive);
+                      queryClient.invalidateQueries({ queryKey: ["admin", "vouchers"] });
+                    }}
+                    className={`min-h-10 px-3.5 inline-flex items-center justify-center gap-1 text-xs border rounded-lg transition-colors cursor-pointer font-semibold ${
+                      v.isActive
+                        ? "border-zinc-200 text-zinc-700 hover:bg-zinc-100"
+                        : "border-emerald-200 text-emerald-700 bg-emerald-50 hover:bg-emerald-100"
+                    }`}
+                  >
+                    <Power className={`size-3.5 ${v.isActive ? "text-red-500" : "text-emerald-600"}`} />
+                    <span>{v.isActive ? "Nonaktifkan" : "Aktifkan"}</span>
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop Structured Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-zinc-50 border-b border-zinc-200 text-xs uppercase font-semibold text-zinc-500">
               <tr>
@@ -188,7 +278,7 @@ export default function AdminVouchersPage() {
                         {v.code}
                       </span>
                       {v.description && (
-                        <div className="text-xs font-normal text-zinc-500 truncate max-w-[180px]">{v.description}</div>
+                        <div className="text-xs font-normal text-zinc-500 truncate max-w-44">{v.description}</div>
                       )}
                     </td>
                     <td className="px-4 py-3">{v.discountPct}%</td>
@@ -214,7 +304,7 @@ export default function AdminVouchersPage() {
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => openEdit(v)}
-                          className="p-1.5 border border-zinc-200 rounded-md hover:bg-zinc-50"
+                          className="p-2 min-h-9 min-w-9 flex items-center justify-center border border-zinc-200 rounded-lg hover:bg-zinc-50 cursor-pointer"
                           aria-label="Edit Voucher"
                         >
                           <Pencil className="size-3.5" />
@@ -224,7 +314,7 @@ export default function AdminVouchersPage() {
                             setPendingDelete(v);
                             setIsDeleteOpen(true);
                           }}
-                          className="p-1.5 border border-red-200 text-red-600 rounded-md hover:bg-red-50"
+                          className="p-2 min-h-9 min-w-9 flex items-center justify-center border border-red-200 text-red-600 rounded-lg hover:bg-red-50 cursor-pointer"
                           aria-label="Hapus Voucher"
                         >
                           <Trash2 className="size-3.5" />
@@ -234,7 +324,7 @@ export default function AdminVouchersPage() {
                             await adminToggleVoucherActive(v.id, !v.isActive);
                             queryClient.invalidateQueries({ queryKey: ["admin", "vouchers"] });
                           }}
-                          className="p-1.5 border border-zinc-200 rounded-md hover:bg-zinc-50"
+                          className="p-2 min-h-9 min-w-9 flex items-center justify-center border border-zinc-200 rounded-lg hover:bg-zinc-50 cursor-pointer"
                           title={v.isActive ? "Nonaktifkan" : "Aktifkan"}
                         >
                           <Power className={`size-3.5 ${v.isActive ? "text-red-500" : "text-emerald-600"}`} />
@@ -250,7 +340,7 @@ export default function AdminVouchersPage() {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[520px] max-h-[90svh] overflow-y-auto">
+        <DialogContent className="sm:max-w-lg max-h-[90svh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editing ? t("editTitle") : t("addTitle")}</DialogTitle>
             <DialogDescription>{t("formDesc")}</DialogDescription>
@@ -275,7 +365,7 @@ export default function AdminVouchersPage() {
                 placeholder={t("descriptionPlaceholder")}
                 maxLength={200}
                 rows={2}
-                className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-950/20"
+                className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm placeholder:text-zinc-400 focus:outline-hidden focus:ring-2 focus:ring-zinc-950/20"
               />
             </div>
             <label className="flex items-center gap-2 text-sm">

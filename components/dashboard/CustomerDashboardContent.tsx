@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import ReservationList, { type ReservationRow } from "@/components/dashboard/ReservationList";
 import { safeFormatDate } from "@/lib/utils";
 import PageHeader from "@/components/ui/PageHeader";
+import { getJakartaNow } from "@/lib/timezone";
 
 interface CustomerDashboardContentProps {
   user: { name: string | null; email: string | null };
@@ -15,8 +16,9 @@ interface CustomerDashboardContentProps {
 
 export default function CustomerDashboardContent({ user, reservations }: CustomerDashboardContentProps) {
   const t = useTranslations("dashboard.home");
+  const { dateStr: todayJakarta } = getJakartaNow();
   const upcomingBooking = reservations.find(
-    (r) => (r.status === "DP_PAID" || r.status === "PENDING" || r.payment?.status === "VERIFIED") && new Date(r.date) >= new Date()
+    (r) => (r.status === "DP_PAID" || r.status === "PENDING" || r.payment?.status === "VERIFIED") && r.date >= todayJakarta
   );
 
   const totalBookings = reservations.length;
@@ -29,7 +31,7 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
-      className="space-y-8 max-w-7xl 2xl:max-w-[88rem] mx-auto text-zinc-950"
+      className="space-y-8 max-w-7xl mx-auto text-zinc-950"
     >
       {/* Clean PageHeader */}
       <PageHeader

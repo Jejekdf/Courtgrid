@@ -47,7 +47,7 @@ export function ReservationFilters({
         <button
           key={btn.type}
           onClick={() => onFilterChange(btn.type)}
-          className={`px-3.5 py-1.5 rounded-xl text-sm font-bold font-mono transition-colors cursor-pointer ${
+          className={`px-3.5 py-2 min-h-10 rounded-xl text-xs sm:text-sm font-bold font-mono transition-colors cursor-pointer ${
             filter === btn.type ? btn.activeClass : btn.inactiveClass
           }`}
         >

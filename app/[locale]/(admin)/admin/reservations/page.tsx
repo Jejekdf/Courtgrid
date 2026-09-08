@@ -6,7 +6,7 @@ import { useQueryState } from "nuqs";
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { getAllReservations, adminDeleteReservation } from "@/features/admin/actions";
 import { format } from "date-fns";
-import { Printer, Filter, Trash2, ShieldCheck, ArrowUpRight } from "lucide-react";
+import { Printer, Filter, Trash2, ShieldCheck, ArrowUpRight, Download } from "lucide-react";
 import AdminHeader from "@/components/admin/AdminHeader";
 import { Button } from "@/components/ui/button";
 import {
@@ -62,6 +62,13 @@ export default function AdminReservationsPage() {
   const reservations = data?.reservations ?? [];
   const totalPages = data?.totalPages ?? 1;
 
+  const [statusFilter, setStatusFilter] = useState<string>("ALL");
+
+  const displayedReservations = reservations.filter((res) => {
+    if (statusFilter === "ALL") return true;
+    return res.status === statusFilter;
+  });
+
   // Mutation for deleting reservation and invalidating cache
   const deleteMutation = useMutation({
     mutationFn: (id: string) => adminDeleteReservation(id),
@@ -80,42 +87,117 @@ export default function AdminReservationsPage() {
     window.print();
   };
 
+  const handleExportCsv = () => {
+    if (displayedReservations.length === 0) {
+      toast.error("Tidak ada data reservasi untuk diekspor.");
+      return;
+    }
+    const headers = [
+      "ID Reservasi",
+      "Pelanggan",
+      "Email",
+      "Arena",
+      "Tanggal",
+      "Jam Mulai",
+      "Jam Selesai",
+      "Total (Rp)",
+      "DP (Rp)",
+      "Status Reservasi",
+      "Status Pembayaran",
+    ];
+    const rows = displayedReservations.map((r) => [
+      r.id,
+      r.user?.name ?? "-",
+      r.user?.email ?? "-",
+      r.court?.name ?? "-",
+      r.date ? format(new Date(r.date), "yyyy-MM-dd") : "-",
+      r.startTime,
+      r.endTime,
+      r.totalPrice,
+      r.payment?.dpAmount ?? 0,
+      r.status,
+      r.payment?.status ?? "-",
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) =>
+        row.map((val) => `"${String(val).replace(/"/g, '""')}"`).join(",")
+      ),
+    ].join("\r\n");
+
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute(
+      "download",
+      `reservasi-courtgrid-${filter}-${new Date().toISOString().slice(0, 10)}.csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success("File CSV berhasil diunduh.");
+  };
+
   return (
-    <div className="space-y-8 max-w-7xl 2xl:max-w-[88rem] mx-auto text-zinc-950">
+    <div className="space-y-8 max-w-7xl mx-auto text-zinc-950">
       {/* Reusable Admin Header Component */}
       <div className="print:hidden">
         <AdminHeader
           title={t("title")}
           description={t("desc")}
           actions={
-            <div className="flex items-center space-x-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
               <button
                 onClick={openScanner}
-                className="px-3.5 py-2 text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer"
+                className="px-3.5 py-2 min-h-10 text-xs sm:text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer"
               >
-                <ShieldCheck className="h-3.5 w-3.5" />
+                <ShieldCheck className="size-4" />
                 <span>{t("verifyTicketBtn")}</span>
               </button>
-              <div className="flex items-center bg-white border border-zinc-200 rounded-lg px-2.5 py-1.5 shadow-xs">
-                <Filter className="h-3.5 w-3.5 text-zinc-400 mr-1.5" />
+              <div className="flex items-center bg-white border border-zinc-200 rounded-lg px-2.5 py-2 min-h-10 shadow-xs">
+                <Filter className="size-3.5 text-zinc-400 mr-1.5" />
                 <select
                   value={filter}
                   onChange={(e) => {
                     setFilter(e.target.value as "daily" | "monthly" | "all");
                     setPage(1);
                   }}
-                  className="bg-transparent text-sm text-zinc-950 font-medium focus:outline-none cursor-pointer"
+                  className="bg-transparent text-xs sm:text-sm text-zinc-950 font-medium focus:outline-hidden cursor-pointer"
                 >
                   <option value="all">{t("filterAllTime")}</option>
                   <option value="daily">{t("filterToday")}</option>
                   <option value="monthly">{t("filterMonthly")}</option>
                 </select>
               </div>
+              <div className="flex items-center bg-white border border-zinc-200 rounded-lg px-2.5 py-2 min-h-10 shadow-xs">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="bg-transparent text-xs sm:text-sm text-zinc-950 font-medium focus:outline-hidden cursor-pointer"
+                  aria-label={t("filterStatus")}
+                >
+                  <option value="ALL">{t("allStatus")}</option>
+                  <option value="PENDING">{t("statusPending")}</option>
+                  <option value="DP_PAID">{t("statusDpPaid")}</option>
+                  <option value="DONE">{t("statusDone")}</option>
+                  <option value="CANCELED">{t("statusCanceled")}</option>
+                </select>
+              </div>
+              <button
+                onClick={handleExportCsv}
+                className="px-3.5 py-2 min-h-10 text-xs sm:text-sm font-semibold bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-800 rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer"
+              >
+                <Download className="size-4 text-zinc-500" />
+                <span>{t("exportCsv")}</span>
+              </button>
               <button
                 onClick={handlePrint}
-                className="px-3.5 py-2 text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0"
+                className="px-3.5 py-2 min-h-10 text-xs sm:text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0 cursor-pointer"
               >
-                <Printer className="h-3.5 w-3.5" />
+                <Printer className="size-4" />
                 <span>{t("printReport")}</span>
               </button>
             </div>
@@ -130,7 +212,73 @@ export default function AdminReservationsPage() {
           <p className="text-sm text-zinc-500">{t("reportPeriod", { period: filter.toUpperCase() })}</p>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile Card List View */}
+        <div className="block md:hidden print:hidden divide-y divide-zinc-100">
+          {isLoading ? (
+            <div className="p-6 text-center text-xs text-zinc-400 font-mono">
+              {t("loading")}
+            </div>
+          ) : displayedReservations.length === 0 ? (
+            <div className="p-6 text-center text-xs text-zinc-400 font-mono">
+              {t("empty")}
+            </div>
+          ) : (
+            displayedReservations.map((res) => (
+              <div key={res.id} className="p-4 space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h4 className="font-bold text-sm text-zinc-950 leading-tight">
+                      {res.user?.name || "Pelanggan Hapus"}
+                    </h4>
+                    <span className="text-[0.6875rem] font-mono text-zinc-400 block">
+                      ID: {res.id.slice(0, 8)} • {res.user?.email || "-"}
+                    </span>
+                  </div>
+                  {res.status === "DP_PAID" || res.payment?.status === "VERIFIED" ? (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[0.6875rem] font-mono font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      {t("dpPaidBadge")}
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[0.6875rem] font-mono font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200">
+                      {res.status}
+                    </span>
+                  )}
+                </div>
+
+                <div className="bg-zinc-50/70 border border-zinc-100 rounded-lg p-2.5 space-y-1 text-xs text-zinc-700">
+                  <div className="flex justify-between">
+                    <span className="font-semibold text-zinc-900">{res.court?.name || tDash("defaultCourt")}</span>
+                    <span className="font-mono text-zinc-500">{res.date ? format(new Date(res.date), "dd MMM yyyy") : "-"}</span>
+                  </div>
+                  <div className="flex justify-between font-mono text-zinc-500 text-[0.6875rem]">
+                    <span>{res.startTime} - {res.endTime} WIB</span>
+                    <span className="font-bold text-zinc-950 text-xs">Rp {res.totalPrice.toLocaleString("id-ID")}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 pt-1">
+                  <Link
+                    href={`/admin/eticket/${res.id}`}
+                    className="flex-1 min-h-10 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold text-zinc-800 bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 rounded-lg transition-colors"
+                  >
+                    <ArrowUpRight className="size-3.5" />
+                    <span>{t("eticketBtn")}</span>
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(res.id)}
+                    className="min-h-10 px-3.5 inline-flex items-center justify-center gap-1 text-xs text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-colors cursor-pointer font-semibold"
+                  >
+                    <Trash2 className="size-3.5" />
+                    <span>{t("deleteBtn")}</span>
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop Structured Table View */}
+        <div className="hidden md:block print:block overflow-x-auto">
           <table className="w-full text-left text-xs print:text-xs">
             <thead className="bg-zinc-50/70 border-b border-zinc-200 text-[0.6875rem] uppercase font-mono tracking-wider text-zinc-500 print:bg-transparent">
               <tr>
@@ -149,14 +297,14 @@ export default function AdminReservationsPage() {
                     {t("loading")}
                   </td>
                 </tr>
-              ) : !Array.isArray(reservations) || reservations.length === 0 ? (
+              ) : displayedReservations.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-4 py-8 text-center text-xs text-zinc-400">
                     {t("empty")}
                   </td>
                 </tr>
               ) : (
-                reservations.map((res) => (
+                displayedReservations.map((res) => (
                   <tr key={res.id} className="hover:bg-zinc-50/50 transition-colors print:hover:bg-transparent">
                     <td className="px-4 py-3.5 print:px-2 text-zinc-700">
                       <div className="text-[0.6875rem] text-zinc-400 font-mono mb-0.5">{res.id.slice(0,8)}</div>
@@ -188,18 +336,18 @@ export default function AdminReservationsPage() {
                       <div className="flex items-center justify-end gap-1.5">
                         <Link
                           href={`/admin/eticket/${res.id}`}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-zinc-700 hover:bg-zinc-100 border border-zinc-200 rounded-md transition-colors"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 min-h-9 text-xs font-semibold text-zinc-700 hover:bg-zinc-100 border border-zinc-200 rounded-md transition-colors"
                           title={t("viewTicketTitle")}
                         >
-                          <ArrowUpRight className="h-3.5 w-3.5" />
+                          <ArrowUpRight className="size-3.5" />
                           <span>{t("eticketBtn")}</span>
                         </Link>
                         <button
                           onClick={() => handleDelete(res.id)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs text-red-600 hover:bg-red-50 border border-red-200 rounded-md transition-colors cursor-pointer font-semibold"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 min-h-9 text-xs text-red-600 hover:bg-red-50 border border-red-200 rounded-md transition-colors cursor-pointer font-semibold"
                           title={t("deleteBtnTitle")}
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trash2 className="size-3.5" />
                           <span>{t("deleteBtn")}</span>
                         </button>
                       </div>
@@ -224,6 +372,7 @@ export default function AdminReservationsPage() {
               size="sm"
               disabled={page <= 1 || isFetching}
               onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              className="min-h-10 px-3.5"
             >
               {t("prevBtn")}
             </Button>
@@ -232,6 +381,7 @@ export default function AdminReservationsPage() {
               size="sm"
               disabled={page >= totalPages || isFetching}
               onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+              className="min-h-10 px-3.5"
             >
               {t("nextBtn")}
             </Button>

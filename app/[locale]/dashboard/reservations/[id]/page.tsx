@@ -5,6 +5,8 @@ import { redirect, Link } from "@/i18n/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getReservationDetailsDAL } from "@/features/reservations/dal";
 import PrintButton from "@/components/ui/PrintButton";
+import ETicketShareActions from "@/components/dashboard/reservations/ETicketShareActions";
+import QRCode from "qrcode";
 import { ArrowLeft, ShieldCheck, Calendar, Clock, Receipt } from "lucide-react";
 import { formatRupiah, safeFormatDate } from "@/lib/utils";
 import type { Locale } from "@/i18n/routing";
@@ -56,6 +58,13 @@ export default async function CustomerETicketPage({
   const remainingAmount = reservation.totalPrice - dpAmount;
   const isVerified = reservation.status === "DP_PAID" || reservation.payment?.status === "VERIFIED";
 
+  // Generate real dynamic QR code SVG for ticket check-in
+  const qrSvg = await QRCode.toString(reservation.id, {
+    type: "svg",
+    margin: 1,
+    color: { dark: "#09090b", light: "#ffffff" },
+  });
+
   return (
     <div className="space-y-8 max-w-3xl">
       {/* Back Link */}
@@ -94,12 +103,11 @@ export default async function CustomerETicketPage({
         <div className="p-8 space-y-8">
           {/* QR & Court Info */}
           <div className="flex flex-col md:flex-row items-center gap-8">
-            {/* QR Placeholder */}
-            <div className="flex-shrink-0 bg-white p-4 rounded-2xl border border-zinc-200 shadow-sm">
-              <svg className="size-32" viewBox="0 0 100 100" fill="currentColor">
-                <path d="M0,0 h30 v30 h-30 z M10,10 h10 v10 h-10 z M70,0 h30 v30 h-30 z M80,10 h10 v10 h-10 z M0,70 h30 v30 h-30 z M10,80 h10 v10 h-10 z M40,0 h20 v10 h-20 z M0,40 h10 v20 h-10 z M40,40 h20 v20 h-20 z M70,40 h10 v10 h-10 z M90,50 h10 v20 h-10 z M40,70 h10 v30 h-10 z M60,70 h30 v10 h-30 z M80,90 h20 v10 h-20 z" />
-              </svg>
-            </div>
+            {/* Real Dynamic QR Code */}
+            <div
+              className="shrink-0 bg-white p-3 rounded-2xl border border-zinc-200 shadow-xs size-36 flex items-center justify-center [&>svg]:size-full"
+              dangerouslySetInnerHTML={{ __html: qrSvg }}
+            />
 
             {/* Booking Details */}
             <div className="flex-1 space-y-4 w-full">
@@ -196,7 +204,19 @@ export default async function CustomerETicketPage({
             </div>
 
             {/* Actions */}
-            <PrintButton />
+            <div className="flex flex-wrap items-center gap-2">
+              <ETicketShareActions
+                ticketId={reservation.id}
+                courtName={reservation.court?.name ?? t("unknownCourt")}
+                dateStr={reservation.date ? safeFormatDate(reservation.date) : ""}
+                startTime={reservation.startTime}
+                endTime={reservation.endTime}
+                totalPriceFormatted={formatRupiah(reservation.totalPrice)}
+                dpAmountFormatted={formatRupiah(dpAmount)}
+                isVerified={isVerified}
+              />
+              <PrintButton />
+            </div>
           </div>
         </div>
       </div>

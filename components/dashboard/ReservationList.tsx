@@ -6,7 +6,6 @@ import { useQueryState } from "nuqs";
 import { useMutation } from "@tanstack/react-query";
 import { QrCode } from "lucide-react";
 import { toast } from "sonner";
-import { useCopyToClipboard } from "react-use";
 import { useTranslations } from "next-intl";
 import { cancelReservationAction } from "@/features/reservations/actions";
 import { reservationListParsers } from "@/lib/search-params";
@@ -22,6 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ReservationFilters } from "./reservations/ReservationFilters";
 import { ReservationTableRow } from "./reservations/ReservationTableRow";
+import { ReservationCard } from "./reservations/ReservationCard";
 
 export type ReservationRow = {
   id: string;
@@ -45,7 +45,6 @@ export default function ReservationList({
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
-  const [, copyToClipboard] = useCopyToClipboard();
 
   const cancelMutation = useMutation({
     mutationFn: (reservationId: string) =>
@@ -60,11 +59,15 @@ export default function ReservationList({
     onError: () => toast.error(t("cancelErrorToast")),
   });
 
-  const handleCopyId = (id: string) => {
-    copyToClipboard(id);
-    setCopiedId(id);
-    toast.success(t("copiedToast"));
-    setTimeout(() => setCopiedId(null), 2000);
+  const handleCopyId = async (id: string) => {
+    try {
+      await navigator.clipboard.writeText(id);
+      setCopiedId(id);
+      toast.success(t("copiedToast"));
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch {
+      toast.error("Gagal menyalin ID");
+    }
   };
 
   const filteredReservations = reservations.filter((res) => {
@@ -103,8 +106,31 @@ export default function ReservationList({
         totalCount={reservations.length}
       />
 
+      {/* Mobile Ergonomic Card List View */}
+      <div className="space-y-3 block md:hidden">
+        {filteredReservations.length === 0 ? (
+          <div className="p-6 text-center text-sm text-zinc-400 font-mono bg-white border border-zinc-200/80 rounded-2xl">
+            {t("noFilterMatch")}
+          </div>
+        ) : (
+          filteredReservations.map((res) => (
+            <ReservationCard
+              key={res.id}
+              reservation={res}
+              copiedId={copiedId}
+              onCopyId={handleCopyId}
+              onCancel={handleCancelBooking}
+              isCancelling={
+                cancelMutation.isPending &&
+                cancelMutation.variables === res.id
+              }
+            />
+          ))
+        )}
+      </div>
+
       {/* Desktop & Tablet Clean Table View */}
-      <div className="bg-white border border-zinc-200/80 rounded-2xl overflow-hidden shadow-xs">
+      <div className="hidden md:block bg-white border border-zinc-200/80 rounded-2xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="text-xs font-mono text-zinc-500 uppercase bg-zinc-50/60 border-b border-zinc-200/80 font-bold">

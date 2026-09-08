@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useQueryState } from "nuqs";
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
-import { useDebounce } from "react-use";
+import { useDebouncedCallback } from "@react-hookz/web";
 import { adminDeleteCustomer, getAdminPaginatedCustomersAction } from "@/features/admin/actions";
-import { Search, Trash2, CalendarCheck, Mail } from "lucide-react";
+import { Search, Trash2, CalendarCheck, Mail, Download } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,7 @@ import { adminKeys } from "@/lib/query-keys";
 import { adminCustomersParsers } from "@/lib/search-params";
 import { useTranslations, useLocale } from "next-intl";
 import { getDateFnsLocale } from "@/lib/utils";
+import { toast } from "sonner";
 
 type Customer = {
   id: string;
@@ -40,25 +41,24 @@ export default function AdminCustomersPage() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useQueryState("search", adminCustomersParsers.search.withOptions({ shallow: true }));
   const [page, setPage] = useQueryState("page", adminCustomersParsers.page.withOptions({ shallow: true }));
+  const [prevSearch, setPrevSearch] = useState(search);
   const [searchDraft, setSearchDraft] = useState(search);
-  const [lastUrlSearch, setLastUrlSearch] = useState(search);
-  if (lastUrlSearch !== search) {
-    setLastUrlSearch(search);
+
+  if (search !== prevSearch) {
+    setPrevSearch(search);
     setSearchDraft(search);
   }
+
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string | null } | null>(null);
 
-  // Debounce search query changes by 300ms
-  useDebounce(
-    () => {
-      if (searchDraft !== search) {
-        setSearch(searchDraft || null);
-        setPage(1);
-      }
+  const debouncedSetSearch = useDebouncedCallback(
+    (value: string) => {
+      setSearch(value || null);
+      setPage(1);
     },
-    300,
-    [searchDraft, search, setSearch, setPage]
+    [setSearch, setPage],
+    300
   );
 
   const { data, isPending, isFetching } = useQuery({
@@ -84,6 +84,50 @@ export default function AdminCustomersPage() {
     setIsDeleteDialogOpen(true);
   };
 
+  const handleExportCsv = () => {
+    if (customers.length === 0) {
+      toast.error("Tidak ada data pelanggan untuk diekspor.");
+      return;
+    }
+    const headers = [
+      "ID Pelanggan",
+      "Nama",
+      "Email",
+      "Total Booking",
+      "Total Pengeluaran (Rp)",
+      "Booking Terakhir",
+    ];
+    const rows = customers.map((c) => [
+      c.id,
+      c.name ?? "-",
+      c.email ?? "-",
+      c.totalBookings,
+      c.totalSpent,
+      c.lastBookingAt ? format(new Date(c.lastBookingAt), "yyyy-MM-dd HH:mm") : "-",
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) =>
+        row.map((val) => `"${String(val).replace(/"/g, '""')}"`).join(",")
+      ),
+    ].join("\r\n");
+
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute(
+      "download",
+      `pelanggan-courtgrid-${new Date().toISOString().slice(0, 10)}.csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success("File CSV pelanggan berhasil diunduh.");
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -96,21 +140,98 @@ export default function AdminCustomersPage() {
           </p>
         </div>
 
-        <div className="w-full md:w-72">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
+          <div className="w-full sm:w-72">
             <Input
               value={searchDraft}
-              onChange={(e) => setSearchDraft(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSearchDraft(val);
+                debouncedSetSearch(val);
+              }}
               placeholder={t("searchPlaceholder")}
               containerClassName="w-full"
               leftIcon={<Search className="size-4 text-zinc-400" />}
+              className="h-10"
             />
           </div>
+          <Button
+            variant="outline"
+            onClick={handleExportCsv}
+            className="w-full sm:w-auto min-h-10 px-3.5 text-xs font-semibold bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-800 rounded-lg transition-colors inline-flex items-center justify-center gap-1.5 shrink-0 shadow-2xs cursor-pointer"
+          >
+            <Download className="size-4 text-zinc-500" />
+            <span>{t("exportCsv")}</span>
+          </Button>
         </div>
       </div>
 
       <div className="bg-white rounded-xl border border-zinc-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Mobile Card List View */}
+        <div className="block md:hidden divide-y divide-zinc-100">
+          {isPending ? (
+            <div className="px-6 py-12 text-center text-xs text-zinc-400 font-mono">
+              {t("loading")}
+            </div>
+          ) : customers.length === 0 ? (
+            <div className="px-6 py-12 text-center text-xs text-zinc-400 font-mono bg-zinc-50/50">
+              {search ? t("emptySearch") : t("empty")}
+            </div>
+          ) : (
+            customers.map((user) => (
+              <div key={user.id} className="p-4 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="size-9 rounded-full bg-zinc-100 border border-zinc-200 font-bold text-zinc-700 flex items-center justify-center text-xs shrink-0">
+                      {user.name ? user.name.slice(0, 2).toUpperCase() : "US"}
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-sm text-zinc-950 leading-tight">
+                        {user.name || t("noName")}
+                      </h4>
+                      <span className="text-[0.6875rem] text-zinc-400 font-mono block">
+                        ID: {user.id.slice(0, 8)}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handleDelete(user.id, user.name)}
+                    className="size-10 flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition-colors cursor-pointer shrink-0"
+                    aria-label={t("deleteAria")}
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-1.5 text-xs text-zinc-600 font-mono">
+                  <Mail className="size-3.5 text-zinc-400 shrink-0" />
+                  <span className="truncate">{user.email}</span>
+                </div>
+
+                <div className="bg-zinc-50/70 border border-zinc-100 rounded-lg p-2.5 space-y-1.5 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-zinc-500">{t("colSpent")}</span>
+                    <span className="font-bold text-zinc-950 font-mono">
+                      Rp {user.totalSpent.toLocaleString("id-ID")}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between pt-1 border-t border-zinc-100 text-[0.6875rem] text-zinc-500">
+                    <span className="inline-flex items-center gap-1 font-semibold text-zinc-700">
+                      <CalendarCheck className="size-3 text-emerald-600" />
+                      {t("bookingsCount", { count: user.totalBookings })}
+                    </span>
+                    <span>
+                      {t("colLastBooking")}: {user.lastBookingAt ? format(new Date(user.lastBookingAt), "dd MMM yyyy", { locale: getDateFnsLocale(locale) }) : "-"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop Structured Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-zinc-50 border-b border-zinc-200 text-xs uppercase font-semibold text-zinc-500">
               <tr>
@@ -171,7 +292,7 @@ export default function AdminCustomersPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleDelete(user.id, user.name)}
-                          className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-md transition-colors"
+                          className="min-h-9 min-w-9 p-2 flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition-colors cursor-pointer"
                           aria-label={t("deleteAria")}
                         >
                           <Trash2 className="size-4" />
@@ -185,7 +306,7 @@ export default function AdminCustomersPage() {
           </table>
         </div>
         {totalPages > 1 && (
-          <div className="px-6 py-4 bg-zinc-50/50 border-t border-zinc-200 flex items-center justify-between">
+          <div className="px-6 py-4 bg-zinc-50/50 border-t border-zinc-200 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="text-sm text-zinc-500">
               {t("pageOf", { page, total: totalPages })}
             </div>
@@ -195,6 +316,7 @@ export default function AdminCustomersPage() {
                 size="sm"
                 disabled={page <= 1 || isFetching}
                 onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                className="min-h-10 px-3.5"
               >
                 {t("prevBtn")}
               </Button>
@@ -203,6 +325,7 @@ export default function AdminCustomersPage() {
                 size="sm"
                 disabled={page >= totalPages || isFetching}
                 onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+                className="min-h-10 px-3.5"
               >
                 {t("nextBtn")}
               </Button>
