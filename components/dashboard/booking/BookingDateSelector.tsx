@@ -23,6 +23,7 @@ export function BookingDateSelector({
 }: BookingDateSelectorProps) {
   const t = useTranslations("dashboard.bookingFlow");
   const locale = useLocale();
+  const maxDateStr = format(addDays(new Date(`${todayStr}T00:00:00+07:00`), 30), "yyyy-MM-dd");
   return (
     <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div className="flex items-center gap-3">
@@ -77,7 +78,7 @@ export function BookingDateSelector({
           value={selectedDate}
           onChange={(e) => onSelectDate(e.target.value)}
           min={todayStr}
-          max={format(addDays(new Date(), 30), "yyyy-MM-dd")}
+          max={maxDateStr}
           className="h-11 min-h-11 text-xs sm:text-sm bg-zinc-50 border-zinc-200 rounded-xl font-sans max-w-36"
         />
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import { Clock, Loader2 } from "lucide-react";
+import { useSyncExternalStore } from "react";
+import { Clock, Loader2, Globe } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface TimeSlotPickerProps {
@@ -14,6 +15,20 @@ interface TimeSlotPickerProps {
   onToggleSlot: (time: string) => void;
 }
 
+function getUserTz(): string | null {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (tz && !["Asia/Jakarta", "Asia/Pontianak"].includes(tz)) {
+      return tz;
+    }
+  } catch {
+    // Ignore detection errors
+  }
+  return null;
+}
+
+const emptySubscribe = () => () => {};
+
 export function TimeSlotPicker({
   courtName,
   timeSlots,
@@ -23,6 +38,8 @@ export function TimeSlotPicker({
   onToggleSlot,
 }: TimeSlotPickerProps) {
   const t = useTranslations("dashboard.bookingFlow");
+  const userTz = useSyncExternalStore(emptySubscribe, getUserTz, () => null);
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
@@ -50,6 +67,15 @@ export function TimeSlotPicker({
           </span>
         </div>
       </div>
+
+      {userTz && (
+        <div className="flex items-center gap-2.5 p-3 bg-zinc-50 border border-zinc-200/90 rounded-xl text-xs text-zinc-600 font-sans">
+          <Globe className="size-4 text-zinc-700 shrink-0" aria-hidden="true" />
+          <p className="leading-relaxed">
+            Semua slot di atas dalam zona waktu <strong>WIB (Asia/Jakarta / UTC+7)</strong>. Waktu lokal perangkat Anda: <span className="font-mono font-bold text-zinc-950">{userTz}</span>.
+          </p>
+        </div>
+      )}
 
       {isLoadingAvailability ? (
         <div className="py-16 flex flex-col items-center justify-center bg-zinc-50/50 rounded-2xl border border-zinc-200 border-dashed space-y-2">

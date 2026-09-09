@@ -209,6 +209,13 @@ export default async function CustomerETicketPage({
                 ticketId={reservation.id}
                 courtName={reservation.court?.name ?? t("unknownCourt")}
                 dateStr={reservation.date ? safeFormatDate(reservation.date) : ""}
+                rawDateStr={
+                  reservation.date
+                    ? typeof reservation.date === "string"
+                      ? reservation.date.split("T")[0]
+                      : safeFormatDate(reservation.date, "yyyy-MM-dd")
+                    : ""
+                }
                 startTime={reservation.startTime}
                 endTime={reservation.endTime}
                 totalPriceFormatted={formatRupiah(reservation.totalPrice)}
