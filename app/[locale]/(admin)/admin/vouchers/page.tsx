@@ -26,6 +26,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { formatRupiah } from "@/lib/utils";
 import {
   adminGetVouchers,
   adminCreateVoucher,
@@ -195,7 +196,7 @@ export default function AdminVouchersPage() {
                   {v.maxDiscount ? (
                     <div className="flex justify-between">
                       <span className="text-zinc-500">{t("colMaxDiscount")}</span>
-                      <span className="font-semibold text-zinc-800 font-mono">Rp {v.maxDiscount.toLocaleString("id-ID")}</span>
+                      <span className="font-semibold text-zinc-800 font-mono">{formatRupiah(v.maxDiscount)}</span>
                     </div>
                   ) : null}
                   <div className="flex justify-between font-mono text-[0.6875rem] text-zinc-500 pt-0.5 border-t border-zinc-100">
@@ -283,7 +284,7 @@ export default function AdminVouchersPage() {
                     </td>
                     <td className="px-4 py-3">{v.discountPct}%</td>
                     <td className="px-4 py-3 hidden md:table-cell">
-                      {v.maxDiscount ? `Rp ${v.maxDiscount.toLocaleString("id-ID")}` : "-"}
+                      {v.maxDiscount ? formatRupiah(v.maxDiscount) : "-"}
                     </td>
                     <td className="px-4 py-3 hidden sm:table-cell font-mono text-xs">
                       {new Date(v.expiresAt).toLocaleDateString("id-ID")}

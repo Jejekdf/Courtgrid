@@ -22,7 +22,7 @@ import {
 import { adminKeys } from "@/lib/query-keys";
 import { adminCustomersParsers } from "@/lib/search-params";
 import { useTranslations, useLocale } from "next-intl";
-import { getDateFnsLocale } from "@/lib/utils";
+import { getDateFnsLocale, formatRupiah } from "@/lib/utils";
 import { toast } from "sonner";
 
 type Customer = {
@@ -173,11 +173,11 @@ export default function AdminCustomersPage() {
         {/* Card view for mobile and tablet (< 1024px) */}
         <div className="block lg:hidden divide-y divide-zinc-100">
           {isPending ? (
-            <div className="px-6 py-12 text-center text-xs text-zinc-400 font-mono">
+            <div className="px-6 py-12 text-center text-xs text-zinc-500 font-mono">
               {t("loading")}
             </div>
           ) : customers.length === 0 ? (
-            <div className="px-6 py-12 text-center text-xs text-zinc-400 font-mono bg-zinc-50/50">
+            <div className="px-6 py-12 text-center text-xs text-zinc-500 font-mono bg-zinc-50/50">
               {search ? t("emptySearch") : t("empty")}
             </div>
           ) : (
@@ -215,7 +215,7 @@ export default function AdminCustomersPage() {
                   <div className="flex items-center justify-between">
                     <span className="text-zinc-500">{t("colSpent")}</span>
                     <span className="font-bold text-zinc-950 font-mono">
-                      Rp {user.totalSpent.toLocaleString("id-ID")}
+                      {formatRupiah(user.totalSpent)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between pt-1 border-t border-zinc-100 text-[0.6875rem] text-zinc-500">
@@ -286,7 +286,7 @@ export default function AdminCustomersPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-zinc-700 font-medium">
-                      Rp {user.totalSpent.toLocaleString("id-ID")}
+                      {formatRupiah(user.totalSpent)}
                     </td>
                     <td className="px-6 py-4 text-zinc-600">
                       {user.lastBookingAt ? format(new Date(user.lastBookingAt), "dd MMM yyyy", { locale: getDateFnsLocale(locale) }) : "-"}

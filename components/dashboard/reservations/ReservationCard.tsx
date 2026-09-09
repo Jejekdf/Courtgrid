@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { safeFormatDate } from "@/lib/utils";
+import { safeFormatDate, formatRupiah } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { XCircle, ArrowUpRight, Copy, Check, CreditCard, Calendar, Clock } from "lucide-react";
 import type { ReservationRow } from "@/components/dashboard/ReservationList";
@@ -51,9 +51,9 @@ export function ReservationCard({
   return (
     <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-xs space-y-3.5">
       {/* Header: Court Name + Copy ID + Status */}
-      <div className="flex items-start justify-between gap-2">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
+      <div className="flex items-start justify-between gap-2.5">
+        <div className="space-y-1 min-w-0 flex-1">
+          <div className="flex items-center gap-1.5 min-w-0">
             <span
               className={`size-2 rounded-full shrink-0 ${
                 isVerified
@@ -63,13 +63,13 @@ export function ReservationCard({
                   : "bg-zinc-300"
               }`}
             />
-            <h4 className="font-bold text-zinc-950 text-base leading-tight">
+            <h4 className="font-bold text-zinc-950 text-base leading-tight truncate">
               {res.court?.name}
             </h4>
             <button
               type="button"
               onClick={() => onCopyId(res.id)}
-              className="p-2 min-h-11 min-w-11 -my-2 flex items-center justify-center text-zinc-400 hover:text-zinc-950 rounded-lg transition-colors cursor-pointer"
+              className="p-1.5 min-h-11 min-w-11 flex items-center justify-center text-zinc-400 hover:text-zinc-950 rounded-lg transition-colors cursor-pointer shrink-0"
               aria-label={t("copyId")}
             >
               {copiedId === res.id ? (
@@ -105,7 +105,7 @@ export function ReservationCard({
         <div className="text-right">
           <span className="text-[0.6875rem] uppercase font-semibold text-zinc-400 block">Total</span>
           <span className="font-extrabold text-sm sm:text-base text-zinc-950 font-mono tabular-nums">
-            Rp {new Intl.NumberFormat("id-ID").format(res.totalPrice)}
+            {formatRupiah(res.totalPrice)}
           </span>
         </div>
       </div>

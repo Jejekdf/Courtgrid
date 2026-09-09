@@ -3,7 +3,7 @@
 import { format } from "date-fns";
 import { ShieldCheck } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
-import { getDateFnsLocale } from "@/lib/utils";
+import { getDateFnsLocale, formatRupiah } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -95,19 +95,19 @@ export function BookingPreviewModal({
             )}
             <div className="flex justify-between pt-1 text-sm font-bold text-zinc-950">
               <span>{t("totalLabel")}</span>
-              <span className="tabular-nums">Rp {totalPrice.toLocaleString("id-ID")}</span>
+              <span className="tabular-nums">{formatRupiah(totalPrice)}</span>
             </div>
           </div>
 
           <div className="bg-zinc-950 text-white rounded-xl p-4 space-y-2 font-sans">
             <div className="flex justify-between items-center text-sm font-bold text-emerald-400">
               <span>{t("dpStripeLabel")}</span>
-              <span className="tabular-nums">Rp {dpAmount.toLocaleString("id-ID")}</span>
+              <span className="tabular-nums">{formatRupiah(dpAmount)}</span>
             </div>
             <div className="flex justify-between items-center text-sm text-zinc-300 pt-1 border-t border-zinc-800">
               <span>{t("cashRemaining")}</span>
               <span className="font-bold text-zinc-200 tabular-nums">
-                Rp {remainingCash.toLocaleString("id-ID")}
+                {formatRupiah(remainingCash)}
               </span>
             </div>
           </div>

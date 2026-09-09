@@ -2,6 +2,7 @@
 
 import { CalendarCheck, Box, Clock, Wallet, Users, Activity } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { formatRupiah } from "@/lib/utils";
 
 interface DashboardStatsProps {
   totalReservations: number;
@@ -27,12 +28,7 @@ export default function DashboardStats({
   totalCapacityToday = 0,
 }: DashboardStatsProps) {
   const t = useTranslations("admin.dashboard");
-  const formattedRevenue = new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(totalRevenue);
+  const formattedRevenue = formatRupiah(totalRevenue);
 
   const stats = [
     {
@@ -86,7 +82,7 @@ export default function DashboardStats({
         return (
           <div
             key={i}
-            className="p-5 sm:p-6 bg-white rounded-2xl border border-zinc-200/90 shadow-2xs hover:border-zinc-300 hover:shadow-xs transition-all flex flex-col justify-between gap-3"
+            className="p-5 sm:p-6 bg-white rounded-2xl border border-zinc-200/90 shadow-2xs hover:border-zinc-300 hover:shadow-xs transition-[border-color,box-shadow] flex flex-col justify-between gap-3"
           >
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 line-clamp-1 font-sans">

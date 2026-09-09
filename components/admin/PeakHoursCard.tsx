@@ -116,7 +116,7 @@ export default function PeakHoursCard({
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <div className="h-[280px] flex items-center justify-center text-sm text-zinc-400 font-mono">
+          <div className="h-[280px] flex items-center justify-center text-sm text-zinc-500 font-mono">
             {t("noPeakData")}
           </div>
         )}

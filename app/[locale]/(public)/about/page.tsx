@@ -107,21 +107,21 @@ export default async function AboutPage({
             </div>
 
             {/* Stats Dense Grid */}
-            <div className="lg:col-span-5 grid grid-cols-2 gap-4 sm:gap-5 xl:gap-6">
+            <div className="lg:col-span-5 grid grid-cols-2 gap-3 sm:gap-5 xl:gap-6">
               {stats.map((item, idx) => (
                 <div
                   key={idx}
-                  className="p-5 sm:p-6 xl:p-7 bg-white rounded-2xl sm:rounded-3xl border border-zinc-200/90 shadow-xs flex flex-col justify-between hover:border-zinc-400 transition-[border-color,box-shadow]"
+                  className="p-4 sm:p-5 xl:p-6 bg-white rounded-2xl sm:rounded-3xl border border-zinc-200/90 shadow-xs flex flex-col justify-between hover:border-zinc-400 transition-[border-color,box-shadow]"
                 >
                   <div>
-                    <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-500 block font-sans min-h-8 sm:min-h-0 leading-tight">
+                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 block font-sans leading-snug">
                       {item.sub}
                     </span>
-                    <p className={`font-heading text-2xl sm:text-3xl xl:text-3xl font-extrabold tracking-tight tabular-nums whitespace-nowrap ${item.color} mt-2`}>
+                    <p className={`font-heading text-lg sm:text-2xl xl:text-3xl font-extrabold tracking-tight tabular-nums ${item.color} mt-1.5 sm:mt-2`}>
                       {item.value}
                     </p>
                   </div>
-                  <p className="text-xs sm:text-sm text-zinc-600 font-semibold font-sans border-t border-zinc-100/80 pt-3 mt-3">
+                  <p className="text-xs sm:text-sm text-zinc-600 font-medium font-sans border-t border-zinc-100/80 pt-2.5 sm:pt-3 mt-2.5 sm:mt-3">
                     {item.label}
                   </p>
                 </div>
@@ -155,7 +155,7 @@ export default async function AboutPage({
           </div>
           <Link
             href="/courts"
-            className="inline-flex items-center justify-center rounded-xl text-sm sm:text-base font-bold font-sans bg-zinc-950 text-white hover:bg-zinc-800 active:scale-[0.98] min-h-12 h-12 sm:h-13 px-6 sm:px-8 shrink-0 transition-all cursor-pointer gap-2 shadow-xs"
+            className="inline-flex items-center justify-center rounded-xl text-sm sm:text-base font-bold font-sans bg-zinc-950 text-white hover:bg-zinc-800 active:scale-[0.98] min-h-12 h-12 sm:h-13 px-6 sm:px-8 shrink-0 transition-[background-color,transform] cursor-pointer gap-2 shadow-xs"
           >
             <span>{t("ctaButton")}</span>
             <ArrowUpRight className="size-4.5" aria-hidden="true" />
@@ -197,16 +197,16 @@ export default async function AboutPage({
         {/* Direct Action CTA */}
         <section className="relative overflow-hidden bg-zinc-950 rounded-2xl sm:rounded-3xl p-10 sm:p-14 lg:p-20 text-center shadow-lg">
           <div className="space-y-5 max-w-3xl mx-auto">
-            <h3 className="font-heading text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold tracking-tight text-white leading-tight text-balance">
+            <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight text-balance">
               {t("ctaTitle")}
-            </h3>
+            </h2>
             <p className="text-sm sm:text-base md:text-lg xl:text-xl text-zinc-300 font-sans text-pretty">
               {t("ctaDesc")}
             </p>
             <div className="pt-2">
               <Link
                 href="/courts"
-                className="inline-flex items-center justify-center rounded-xl text-base xl:text-lg font-bold font-sans bg-white text-zinc-950 hover:bg-zinc-100 active:scale-[0.98] min-h-12 sm:min-h-14 h-12 sm:h-14 px-8 sm:px-12 transition-all cursor-pointer shadow-xs"
+                className="inline-flex items-center justify-center rounded-xl text-base xl:text-lg font-bold font-sans bg-white text-zinc-950 hover:bg-zinc-100 active:scale-[0.98] min-h-12 sm:min-h-14 h-12 sm:h-14 px-8 sm:px-12 transition-[background-color,transform] cursor-pointer shadow-xs"
               >
                 <span>{t("ctaButton")}</span>
                 <ArrowUpRight className="ml-2 h-5 w-5" aria-hidden="true" />

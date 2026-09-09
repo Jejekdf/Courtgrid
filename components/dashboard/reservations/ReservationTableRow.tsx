@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { safeFormatDate } from "@/lib/utils";
+import { safeFormatDate, formatRupiah } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { XCircle, ArrowUpRight, Copy, Check, CreditCard } from "lucide-react";
 import type { ReservationRow } from "@/components/dashboard/ReservationList";
@@ -92,7 +92,7 @@ export function ReservationTableRow({
         />
       </td>
       <td className="px-5 py-4 text-right font-extrabold text-zinc-950 font-mono">
-        Rp {new Intl.NumberFormat("id-ID").format(res.totalPrice)}
+        {formatRupiah(res.totalPrice)}
       </td>
       <td className="px-5 py-4 text-right">
         <div className="flex items-center justify-end gap-2">

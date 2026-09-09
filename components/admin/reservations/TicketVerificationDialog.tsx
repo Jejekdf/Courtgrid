@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import { adminScanTicket, adminCheckInReservation } from "@/features/admin/actions";
 import { formatRupiah, safeFormatDate } from "@/lib/utils";
+import { ReservationStatusBadge } from "./ReservationStatusBadge";
 
 type ScannedTicket = {
   id: string;
@@ -167,21 +168,10 @@ export function TicketVerificationDialog({
                   ID: #{scannedTicket.id.slice(0, 12)}
                 </div>
               </div>
-              <span
-                className={`inline-flex items-center px-2 py-0.5 rounded-md text-[0.6875rem] font-mono font-bold uppercase tracking-wider ${
-                  scannedTicket.status === "DONE"
-                    ? "bg-zinc-200 text-zinc-700 border border-zinc-300"
-                    : scannedTicket.status === "DP_PAID"
-                    ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
-                    : "bg-amber-100 text-amber-800 border border-amber-300"
-                }`}
-              >
-                {scannedTicket.status === "DONE"
-                  ? t("statusDone")
-                  : scannedTicket.status === "DP_PAID"
-                  ? t("dpPaidBadge")
-                  : scannedTicket.status}
-              </span>
+              <ReservationStatusBadge
+                status={scannedTicket.status}
+                paymentStatus={scannedTicket.payment?.status}
+              />
             </div>
 
             {/* Customer & Schedule Details */}

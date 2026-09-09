@@ -3,6 +3,7 @@
 import { CalendarX } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { ReservationStatusBadge } from "./reservations/ReservationStatusBadge";
 
 interface Reservation {
   id: string;
@@ -16,18 +17,6 @@ interface Reservation {
 
 export default function RecentReservationsTable({ reservations = [] }: { reservations?: Reservation[] }) {
   const t = useTranslations("admin.dashboard");
-  const getStatusBadge = (status: Reservation["status"]) => {
-    switch (status) {
-      case "DP_PAID":
-        return <span className="px-2.5 py-1 text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusDpPaid")}</span>;
-      case "PENDING":
-        return <span className="px-2.5 py-1 text-xs font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusPending")}</span>;
-      case "DONE":
-        return <span className="px-2.5 py-1 text-xs font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 border border-zinc-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusDone")}</span>;
-      case "CANCELED":
-        return <span className="px-2.5 py-1 text-xs font-bold uppercase tracking-wider bg-red-50 text-red-600 border border-red-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusCanceled")}</span>;
-    }
-  };
 
   return (
     <div className="bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
@@ -60,7 +49,7 @@ export default function RecentReservationsTable({ reservations = [] }: { reserva
                     <h4 className="font-bold text-sm text-zinc-950 leading-tight">{res.customerName}</h4>
                     <span className="text-xs font-mono text-zinc-400">ID: {res.id}</span>
                   </div>
-                  {getStatusBadge(res.status)}
+                  <ReservationStatusBadge status={res.status} />
                 </div>
                 <div className="bg-zinc-50/70 border border-zinc-100 rounded-lg p-2.5 space-y-1 text-xs text-zinc-700">
                   <div className="flex justify-between">
@@ -103,7 +92,7 @@ export default function RecentReservationsTable({ reservations = [] }: { reserva
                       </div>
                     </td>
                     <td className="px-6 py-4.5 font-bold font-mono text-zinc-950 text-sm sm:text-base tabular-nums">{res.amount}</td>
-                    <td className="px-6 py-4.5">{getStatusBadge(res.status)}</td>
+                    <td className="px-6 py-4.5"><ReservationStatusBadge status={res.status} /></td>
                   </tr>
                 ))}
               </tbody>

@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useTranslations } from "next-intl";
 import type { Court } from "@/lib/api/courts";
 import AvailabilityGrid from "./AvailabilityGrid";
+import { formatRupiah } from "@/lib/utils";
 
 export default function CourtCard({
   court,
@@ -61,14 +62,14 @@ export default function CourtCard({
         <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
           <span className="text-xs sm:text-sm text-zinc-600 font-sans">{t("perHour")}</span>
           <span className="font-extrabold text-zinc-950 text-sm sm:text-base tabular-nums">
-            Rp {court.pricePerHour.toLocaleString("id-ID")}
+            {formatRupiah(court.pricePerHour)}
           </span>
         </div>
 
         <div className="flex flex-col gap-2 pt-1">
           <Link
             href={`/dashboard/book?courtId=${court.id}`}
-            className="flex items-center justify-center gap-1.5 w-full min-h-11 py-2.5 text-sm font-bold font-sans text-white bg-zinc-950 hover:bg-zinc-800 active:scale-[0.98] rounded-xl transition-all shadow-xs cursor-pointer"
+            className="flex items-center justify-center gap-1.5 w-full min-h-11 py-2.5 text-sm font-bold font-sans text-white bg-zinc-950 hover:bg-zinc-800 active:scale-[0.98] rounded-xl transition-[background-color,transform] shadow-xs cursor-pointer"
           >
             <span>{t("bookCourt")}</span>
             <ArrowRight className="size-4" aria-hidden="true" />

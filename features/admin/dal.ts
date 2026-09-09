@@ -157,7 +157,7 @@ export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> 
         getAdminRevenueChartDAL(),
       ]);
 
-      // 1. Occupancy Rate Today: 14 available slot hours per active court (08:00 - 22:00)
+      // Occupancy Rate Today: 14 available slot hours per active court (08:00 - 22:00)
       const totalCapacityToday = Math.max(1, activeCourtsCount * 14);
       let bookedHoursToday = 0;
       for (const b of todayBookings) {
@@ -166,7 +166,7 @@ export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> 
       }
       const occupancyRateToday = Math.min(100, Math.round((bookedHoursToday / totalCapacityToday) * 100));
 
-      // 2. Peak Hours Analysis (14 operational slots: 8..21)
+      // Peak Hours Analysis (14 operational slots: 8..21)
       const slotCounts: Record<number, number> = {};
       for (let h = 8; h <= 21; h++) {
         slotCounts[h] = 0;

@@ -112,16 +112,14 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 sm:mt-12 pt-8 border-t border-zinc-200/80">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-sm text-zinc-500">
+        <div className="mt-10 sm:mt-12 pt-6 sm:pt-8 border-t border-zinc-200/80">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4 text-xs text-zinc-500 text-center sm:text-left">
             <p>
               &copy; {year} CourtGrid. {t("rights")}
             </p>
             <p className="flex items-center gap-1.5">
               <span>{t("developedBy")}</span>
-              <span className="text-zinc-950 font-medium">Randi Maulana</span>
-              <span className="text-zinc-300" aria-hidden="true">/</span>
-              <span className="text-zinc-500">{t("standard")}</span>
+              <span className="text-zinc-900 font-medium">Randi Maulana</span>
             </p>
           </div>
         </div>

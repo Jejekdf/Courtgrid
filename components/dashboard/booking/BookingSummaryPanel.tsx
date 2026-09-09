@@ -3,7 +3,7 @@
 import { format } from "date-fns";
 import { CreditCard, Tag, ShieldCheck, ChevronRight, Clock } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
-import { getDateFnsLocale } from "@/lib/utils";
+import { getDateFnsLocale, formatRupiah } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { Court } from "@/components/dashboard/CustomerBookingWorkspace";
@@ -71,7 +71,7 @@ export function BookingSummaryPanel({
             <div className="flex justify-between py-1.5 border-b border-zinc-100 font-sans">
               <span className="text-zinc-500">{t("totalLabel")}</span>
               <span className="font-extrabold text-zinc-950 tabular-nums">
-                Rp {totalPrice.toLocaleString("id-ID")}
+                {formatRupiah(totalPrice)}
               </span>
             </div>
           </div>
@@ -100,13 +100,13 @@ export function BookingSummaryPanel({
                 {t("dpTitle")}
               </span>
               <span className="text-lg font-extrabold text-emerald-400 tabular-nums">
-                Rp {dpAmount.toLocaleString("id-ID")}
+                {formatRupiah(dpAmount)}
               </span>
             </div>
             <div className="flex items-center justify-between text-sm text-zinc-300 pt-2 border-t border-zinc-800 font-sans">
               <span>{t("cashRemaining")}</span>
               <span className="font-bold text-zinc-200 tabular-nums">
-                Rp {remainingCash.toLocaleString("id-ID")}
+                {formatRupiah(remainingCash)}
               </span>
             </div>
           </div>

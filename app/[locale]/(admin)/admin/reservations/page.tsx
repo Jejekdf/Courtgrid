@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Link } from "@/i18n/navigation";
 import { useQueryState } from "nuqs";
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { getAllReservations, adminDeleteReservation } from "@/features/admin/actions";
 import { format } from "date-fns";
-import { Printer, Filter, Trash2, ShieldCheck, ArrowUpRight, Download } from "lucide-react";
+import { Printer, Filter, ShieldCheck, Download } from "lucide-react";
 import AdminHeader from "@/components/admin/AdminHeader";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,22 +23,11 @@ import { adminReservationsParsers } from "@/lib/search-params";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useAdminReservationsActions } from "@/stores/useBoundStore";
-
-type ReservationDetail = {
-  id: string;
-  user: { name: string | null; email: string | null } | null;
-  court: { name: string } | null;
-  date: string;
-  startTime: string;
-  endTime: string;
-  totalPrice: number;
-  status: string;
-  payment?: { status?: string; dpAmount?: number } | null;
-};
+import { ReservationRow, type ReservationRowData } from "@/components/admin/reservations/ReservationRow";
+import { ReservationCard } from "@/components/admin/reservations/ReservationCard";
 
 export default function AdminReservationsPage() {
   const t = useTranslations("admin.reservations");
-  const tDash = useTranslations("admin.dashboard");
   const queryClient = useQueryClient();
   const [filter, setFilter] = useQueryState("filter", adminReservationsParsers.filter.withOptions({ shallow: true }));
   const [page, setPage] = useQueryState("page", adminReservationsParsers.page.withOptions({ shallow: true }));
@@ -53,7 +41,7 @@ export default function AdminReservationsPage() {
     queryFn: async () => {
       const res = await getAllReservations(filter, page, 10);
       const list = Array.isArray(res) ? res : res?.reservations || [];
-      return { reservations: list as unknown as ReservationDetail[], totalPages: !Array.isArray(res) ? res?.totalPages ?? 1 : 1 };
+      return { reservations: list as unknown as ReservationRowData[], totalPages: !Array.isArray(res) ? res?.totalPages ?? 1 : 1 };
     },
     placeholderData: keepPreviousData,
     staleTime: 10000,
@@ -215,64 +203,20 @@ export default function AdminReservationsPage() {
         {/* Card view for mobile and tablet (< 1024px) */}
         <div className="block lg:hidden print:hidden divide-y divide-zinc-100">
           {isLoading ? (
-            <div className="p-6 text-center text-xs text-zinc-400 font-mono">
+            <div className="p-6 text-center text-xs text-zinc-500 font-mono">
               {t("loading")}
             </div>
           ) : displayedReservations.length === 0 ? (
-            <div className="p-6 text-center text-xs text-zinc-400 font-mono">
+            <div className="p-6 text-center text-xs text-zinc-500 font-mono">
               {t("empty")}
             </div>
           ) : (
             displayedReservations.map((res) => (
-              <div key={res.id} className="p-4 space-y-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h4 className="font-bold text-sm text-zinc-950 leading-tight">
-                      {res.user?.name || "Pelanggan Hapus"}
-                    </h4>
-                    <span className="text-[0.6875rem] font-mono text-zinc-400 block">
-                      ID: {res.id.slice(0, 8)} • {res.user?.email || "-"}
-                    </span>
-                  </div>
-                  {res.status === "DP_PAID" || res.payment?.status === "VERIFIED" ? (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[0.6875rem] font-mono font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
-                      {t("dpPaidBadge")}
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[0.6875rem] font-mono font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200">
-                      {res.status}
-                    </span>
-                  )}
-                </div>
-
-                <div className="bg-zinc-50/70 border border-zinc-100 rounded-lg p-2.5 space-y-1 text-xs text-zinc-700">
-                  <div className="flex justify-between">
-                    <span className="font-semibold text-zinc-900">{res.court?.name || tDash("defaultCourt")}</span>
-                    <span className="font-mono text-zinc-500">{res.date ? format(new Date(res.date), "dd MMM yyyy") : "-"}</span>
-                  </div>
-                  <div className="flex justify-between font-mono text-zinc-500 text-[0.6875rem]">
-                    <span>{res.startTime} - {res.endTime} WIB</span>
-                    <span className="font-bold text-zinc-950 text-xs">Rp {res.totalPrice.toLocaleString("id-ID")}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 pt-1">
-                  <Link
-                    href={`/admin/eticket/${res.id}`}
-                    className="flex-1 min-h-10 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold text-zinc-800 bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 rounded-lg transition-colors"
-                  >
-                    <ArrowUpRight className="size-3.5" />
-                    <span>{t("eticketBtn")}</span>
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(res.id)}
-                    className="min-h-10 px-3.5 inline-flex items-center justify-center gap-1 text-xs text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-colors cursor-pointer font-semibold"
-                  >
-                    <Trash2 className="size-3.5" />
-                    <span>{t("deleteBtn")}</span>
-                  </button>
-                </div>
-              </div>
+              <ReservationCard
+                key={res.id}
+                reservation={res}
+                onDelete={handleDelete}
+              />
             ))
           )}
         </div>
@@ -293,66 +237,23 @@ export default function AdminReservationsPage() {
             <tbody className="divide-y divide-zinc-100">
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-10 text-center text-sm text-zinc-400">
+                  <td colSpan={6} className="px-6 py-10 text-center text-sm text-zinc-500">
                     {t("loading")}
                   </td>
                 </tr>
               ) : displayedReservations.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-10 text-center text-sm text-zinc-400">
+                  <td colSpan={6} className="px-6 py-10 text-center text-sm text-zinc-500">
                     {t("empty")}
                   </td>
                 </tr>
               ) : (
                 displayedReservations.map((res) => (
-                  <tr key={res.id} className="hover:bg-zinc-50/50 transition-colors print:hover:bg-transparent">
-                    <td className="px-6 py-4.5 print:px-2 text-zinc-700">
-                      <div className="text-xs text-zinc-400 font-mono mb-0.5">{res.id.slice(0, 8)}</div>
-                      <div className="font-semibold text-zinc-950 text-sm sm:text-base">{res.date ? format(new Date(res.date), "dd MMM yyyy") : "-"}</div>
-                    </td>
-                    <td className="px-6 py-4.5 print:px-2">
-                      <div className="font-semibold text-zinc-950 text-sm sm:text-base">{res.user?.name || "Pelanggan Hapus"}</div>
-                      <div className="text-xs sm:text-sm text-zinc-500">{res.user?.email || "-"}</div>
-                    </td>
-                    <td className="px-6 py-4.5 print:px-2 text-zinc-700">
-                      <div className="font-semibold text-zinc-950 text-sm sm:text-base">{res.court?.name || tDash("defaultCourt")}</div>
-                      <div className="text-xs sm:text-sm text-zinc-500 font-mono">{res.startTime} - {res.endTime} WIB</div>
-                    </td>
-                    <td className="px-6 py-4.5 print:px-2 font-bold font-mono text-zinc-950 text-sm sm:text-base tabular-nums">
-                      Rp {res.totalPrice.toLocaleString("id-ID")}
-                    </td>
-                    <td className="px-6 py-4.5 print:px-2">
-                      {res.status === "DP_PAID" || res.payment?.status === "VERIFIED" ? (
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-mono font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          {t("dpPaidBadge")}
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-mono font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200">
-                          {res.status}
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4.5 print:hidden text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link
-                          href={`/admin/eticket/${res.id}`}
-                          className="inline-flex items-center gap-1.5 px-3 py-2 min-h-10 text-xs sm:text-sm font-semibold text-zinc-700 hover:bg-zinc-100 border border-zinc-200 rounded-lg transition-colors cursor-pointer"
-                          title={t("viewTicketTitle")}
-                        >
-                          <ArrowUpRight className="size-4" />
-                          <span>{t("eticketBtn")}</span>
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(res.id)}
-                          className="inline-flex items-center gap-1.5 px-3 py-2 min-h-10 text-xs sm:text-sm text-red-600 hover:bg-red-50 border border-red-200 rounded-lg transition-colors cursor-pointer font-semibold"
-                          title={t("deleteBtnTitle")}
-                        >
-                          <Trash2 className="size-4" />
-                          <span>{t("deleteBtn")}</span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                  <ReservationRow
+                    key={res.id}
+                    reservation={res}
+                    onDelete={handleDelete}
+                  />
                 ))
               )}
             </tbody>

@@ -38,11 +38,12 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
         title={t("welcome", { name: user.name || t("defaultName") })}
         description={t("welcomeDesc")}
         actions={
-          <Link href="/dashboard/book">
-            <button className="px-4 py-2.5 text-sm font-bold bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl transition-colors shadow-xs inline-flex items-center gap-2 shrink-0 cursor-pointer">
-              <CalendarPlus className="size-4" />
-              <span>{t("newBooking")}</span>
-            </button>
+          <Link
+            href="/dashboard/book"
+            className="px-4 py-2.5 text-sm font-bold bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl transition-colors shadow-xs inline-flex items-center gap-2 shrink-0 cursor-pointer"
+          >
+            <CalendarPlus className="size-4" />
+            <span>{t("newBooking")}</span>
           </Link>
         }
       />
@@ -102,11 +103,12 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
               {safeFormatDate(upcomingBooking.date, "dd MMMM yyyy")} ({upcomingBooking.startTime} - {upcomingBooking.endTime} WIB)
             </div>
           </div>
-          <Link href="/dashboard/reservations">
-            <button className="px-4 py-2.5 min-h-11 text-sm font-bold bg-white text-zinc-950 rounded-xl hover:bg-zinc-100 transition-colors inline-flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs font-sans">
-              <span>{t("openETicket")}</span>
-              <ChevronRight className="size-4" />
-            </button>
+          <Link
+            href="/dashboard/reservations"
+            className="px-4 py-2.5 min-h-11 text-sm font-bold bg-white text-zinc-950 rounded-xl hover:bg-zinc-100 transition-colors inline-flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs font-sans"
+          >
+            <span>{t("openETicket")}</span>
+            <ChevronRight className="size-4" />
           </Link>
         </div>
       )}

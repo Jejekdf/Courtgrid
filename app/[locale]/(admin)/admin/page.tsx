@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 import { adminKeys } from "@/lib/query-keys";
 import { getAdminStatsAction } from "@/features/admin/actions";
 import type { AdminStatsDTO } from "@/features/admin/dal";
+import { formatRupiah, safeFormatDate } from "@/lib/utils";
 
 const RevenueChart = dynamic(() => import("@/components/admin/RevenueChart"), {
   ssr: false,
@@ -109,18 +110,15 @@ export default function AdminDashboardPage() {
       </div>
 
       <RecentReservationsTable
-        reservations={Array.isArray(stats?.recentReservations) ? stats.recentReservations.map((res) => {
-          const isValidDate = res.date && !isNaN(new Date(res.date).getTime());
-          return {
-            id: res.id,
+        reservations={Array.isArray(stats?.recentReservations) ? stats.recentReservations.map((res) => ({
+          id: res.id,
             customerName: res.userName || t("defaultCustomer"),
             courtName: res.courtName || t("defaultCourt"),
-            date: isValidDate ? new Date(res.date).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }) : "-",
+            date: safeFormatDate(res.date, "d MMM yyyy"),
             time: res.startTime ? `${res.startTime} - ${res.endTime} WIB` : "-",
             status: (res.status || "PENDING") as "PENDING" | "DP_PAID" | "DONE" | "CANCELED",
-            amount: `Rp ${(res.totalPrice || 0).toLocaleString("id-ID")}`,
-          };
-        }) : []}
+            amount: formatRupiah(res.totalPrice || 0),
+          })) : []}
       />
     </div>
   );

@@ -64,11 +64,12 @@ export default async function CustomerReservationsPage({
         title={t("pageTitle")}
         description={t("pageDesc")}
         actions={
-          <Link href="/dashboard/book">
-            <button className="px-4 py-2 text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0">
-              <CalendarPlus className="size-4" />
-              <span>{tHome("newBooking")}</span>
-            </button>
+          <Link
+            href="/dashboard/book"
+            className="px-4 py-2 text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0"
+          >
+            <CalendarPlus className="size-4" />
+            <span>{tHome("newBooking")}</span>
           </Link>
         }
       />

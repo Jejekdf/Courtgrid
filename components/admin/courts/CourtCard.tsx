@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Image as ImageIcon, Pencil, Power, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { formatRupiah } from "@/lib/utils";
 
 export type AdminCourt = {
   id: string;
@@ -61,7 +62,7 @@ export function CourtCard({ court, onToggleActive, onEdit, onDelete }: CourtCard
         <div className="text-sm text-zinc-600">
           <div className="flex justify-between items-baseline">
             <span className="text-zinc-500">{t("perHour")}</span>
-            <span className="text-base font-bold font-mono text-zinc-950">Rp {court.pricePerHour.toLocaleString("id-ID")}</span>
+            <span className="text-base font-bold font-mono text-zinc-950">{formatRupiah(court.pricePerHour)}</span>
           </div>
         </div>
         <div className="mt-auto flex items-center justify-between gap-2 pt-3 border-t border-zinc-100">

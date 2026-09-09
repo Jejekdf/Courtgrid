@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { ArrowRight, CheckCircle2, ShieldCheck, Zap, QrCode } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getActiveCourtsDAL } from "@/features/courts/dal";
+import { formatRupiah } from "@/lib/utils";
 import type { Locale } from "@/i18n/routing";
 
 const BASE_URL = "https://courtgrid-one.vercel.app";
@@ -110,7 +111,7 @@ export default async function Home({
         closes: "23:00",
       },
     ],
-    priceRange: `Rp ${minOverallPrice.toLocaleString("id-ID")} - Rp ${maxOverallPrice.toLocaleString("id-ID")}`,
+    priceRange: `${formatRupiah(minOverallPrice)} - ${formatRupiah(maxOverallPrice)}`,
     currenciesAccepted: "IDR",
     paymentAccepted: "Credit Card, Bank Transfer, QRIS",
     areaServed: {
@@ -125,7 +126,7 @@ export default async function Home({
         itemOffered: {
           "@type": "Service",
           name: court.name,
-          description: `${court.type === "FUTSAL" ? "Synthetic turf futsal court" : "PVC anti-slip badminton court"} - Rp ${court.pricePerHour.toLocaleString("id-ID")}/jam`,
+          description: `${court.type === "FUTSAL" ? "Synthetic turf futsal court" : "PVC anti-slip badminton court"} - ${formatRupiah(court.pricePerHour)}/jam`,
         },
       })),
     },
@@ -165,9 +166,9 @@ export default async function Home({
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 xl:gap-10">
               {/* Futsal Card */}
-              <div className="p-6 sm:p-8 lg:p-9 xl:p-10 bg-white border border-zinc-200/90 rounded-2xl sm:rounded-3xl space-y-6 shadow-xs hover:border-zinc-300 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+              <div className="p-5 sm:p-8 lg:p-9 xl:p-10 bg-white border border-zinc-200/90 rounded-2xl sm:rounded-3xl space-y-6 shadow-xs hover:border-zinc-300 hover:shadow-md transition-[border-color,box-shadow] duration-200 flex flex-col justify-between">
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between gap-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-3">
                     <span className="text-xs sm:text-sm uppercase font-bold text-emerald-800 bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200/80">
                       {t("futsalBadge", { count: futsalCourts.length })}
                     </span>
@@ -177,7 +178,7 @@ export default async function Home({
                   </div>
 
                   <div>
-                    <h3 className="text-2xl sm:text-3xl font-extrabold text-zinc-950 mb-2">{t("futsalTitle")}</h3>
+                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-zinc-950 mb-2">{t("futsalTitle")}</h3>
                     <p className="text-sm sm:text-base text-zinc-600 leading-relaxed font-sans text-pretty">
                       {t("futsalDesc")}
                     </p>
@@ -214,9 +215,9 @@ export default async function Home({
               </div>
 
               {/* Badminton Card */}
-              <div className="p-6 sm:p-8 lg:p-9 xl:p-10 bg-white border border-zinc-200/90 rounded-2xl sm:rounded-3xl space-y-6 shadow-xs hover:border-zinc-300 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+              <div className="p-5 sm:p-8 lg:p-9 xl:p-10 bg-white border border-zinc-200/90 rounded-2xl sm:rounded-3xl space-y-6 shadow-xs hover:border-zinc-300 hover:shadow-md transition-[border-color,box-shadow] duration-200 flex flex-col justify-between">
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between gap-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-3">
                     <span className="text-xs sm:text-sm uppercase font-bold text-sky-800 bg-sky-50 px-3.5 py-1.5 rounded-full border border-sky-200/80">
                       {t("badmintonBadge", { count: badmintonCourts.length })}
                     </span>
@@ -226,7 +227,7 @@ export default async function Home({
                   </div>
 
                   <div>
-                    <h3 className="text-2xl sm:text-3xl font-extrabold text-zinc-950 mb-2">{t("badmintonTitle")}</h3>
+                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-zinc-950 mb-2">{t("badmintonTitle")}</h3>
                     <p className="text-sm sm:text-base text-zinc-600 leading-relaxed font-sans text-pretty">
                       {t("badmintonDesc")}
                     </p>
@@ -234,7 +235,7 @@ export default async function Home({
 
                   {badmintonCourts.length > 0 && (
                     <div className="pt-2 flex flex-wrap gap-2">
-                      {futsalCourts.map((court) => (
+                      {badmintonCourts.map((court) => (
                         <Link
                           key={court.id}
                           href="/dashboard/book"
@@ -372,7 +373,7 @@ export default async function Home({
               
               <Link
                 href="/dashboard/book"
-                className="relative z-10 inline-flex items-center justify-center rounded-xl text-base sm:text-lg font-bold bg-white text-zinc-950 hover:bg-zinc-100 active:scale-[0.98] min-h-12 sm:min-h-13 h-12 sm:h-13 px-8 sm:px-10 transition-all duration-150 cursor-pointer shadow-sm group"
+                className="relative z-10 inline-flex items-center justify-center rounded-xl text-base sm:text-lg font-bold bg-white text-zinc-950 hover:bg-zinc-100 active:scale-[0.98] min-h-12 sm:min-h-13 h-12 sm:h-13 px-8 sm:px-10 transition-[background-color,transform] duration-150 cursor-pointer shadow-sm group"
               >
                 <span>{t("ctaButton")}</span>
                 <ArrowRight className="ml-2 size-4 sm:size-5 transform group-hover-fine:translate-x-1 transition-transform" aria-hidden="true" />

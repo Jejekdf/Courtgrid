@@ -12,7 +12,7 @@ import {
 } from "@/lib/api/courts";
 import { courtKeys } from "@/lib/query-keys";
 import { getJakartaNow } from "@/lib/timezone";
-import { safeFormatDate } from "@/lib/utils";
+import { safeFormatDate, formatRupiah } from "@/lib/utils";
 import { SlotCell } from "./SlotCell";
 
 function addDays(dateStr: string, days: number): string {
@@ -79,7 +79,7 @@ export default function AvailabilityGrid({
         </div>
         <div className="flex items-center gap-1.5 text-sm text-zinc-500">
           <Clock className="size-3.5" />
-          <span>{t("perHourShort", { price: `Rp ${pricePerHour.toLocaleString("id-ID")}` })}</span>
+          <span>{t("perHourShort", { price: formatRupiah(pricePerHour) })}</span>
         </div>
       </div>
 
@@ -145,7 +145,7 @@ export default function AvailabilityGrid({
             <Link
               href={`/dashboard/book?courtId=${courtId}&date=${selectedDate}&time=${startHourStr}:00`}
               aria-label={`${t("continueBooking")} ${formattedDate} ${startHourStr}:00`}
-              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-zinc-950 hover:bg-zinc-800 active:scale-[0.98] text-white text-xs font-bold rounded-lg transition-all shadow-xs w-full sm:w-auto min-h-10 cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-zinc-950 hover:bg-zinc-800 active:scale-[0.98] text-white text-xs font-bold rounded-lg transition-[background-color,transform] shadow-xs w-full sm:w-auto min-h-10 cursor-pointer"
             >
               <span>{t("continueBooking")}</span>
               <ArrowRight className="size-3.5" aria-hidden="true" />

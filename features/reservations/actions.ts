@@ -26,7 +26,7 @@ import { getTranslations } from "next-intl/server";
 export async function createReservationAction(rawInput: unknown) {
   const t = await getTranslations("validation");
 
-  // 1. Validate every field again on the server.
+  // Server-side validation of raw input
   const bookingInput = createReservationSchema(t).safeParse(rawInput);
   if (!bookingInput.success) {
     return {
@@ -35,7 +35,7 @@ export async function createReservationAction(rawInput: unknown) {
     };
   }
 
-  // 2. Make sure the user is logged in.
+  // Auth session check
   let user;
   try {
     user = await verifyUserSession();
@@ -46,14 +46,14 @@ export async function createReservationAction(rawInput: unknown) {
     };
   }
 
-  // 3. Reject dates/hours that have already passed (Asia/Jakarta, not the client's clock).
+  // Reject dates/hours that have already passed (Asia/Jakarta, not the client's clock)
   const { courtId, dateStr, startTime, endTime, voucherCode } = bookingInput.data;
   const tzError = validateBookingTime(dateStr, startTime, t);
   if (tzError) {
     return { success: false, error: tzError };
   }
 
-  // 4. The court must exist and be active.
+  // The court must exist and be active
   const court = await prisma.court.findUnique({
     where: { id: courtId },
     select: { id: true, name: true, pricePerHour: true, isActive: true },
@@ -69,7 +69,7 @@ export async function createReservationAction(rawInput: unknown) {
     return { success: false, error: t("courtInactive") };
   }
 
-  // 5. Recompute the price server-side (never trust client numbers), then apply a voucher if given.
+  // Recompute the price server-side (never trust client numbers), then apply voucher if given
   const startHour = parseInt(startTime.split(":")[0], 10);
   const endHour = parseInt(endTime.split(":")[0], 10);
   const duration = endHour - startHour;
@@ -110,14 +110,14 @@ export async function createReservationAction(rawInput: unknown) {
   const startDateTime = new Date(`${dateStr}T${startTime}:00.000Z`);
   const endDateTime = new Date(`${dateStr}T${endTime}:00.000Z`);
 
-  // 5b. Down-payment percentage from Settings (default 50%).
+  // Down-payment percentage from Settings (default 50%)
   const setting = await prisma.setting.findUnique({ where: { id: 1 } });
   const dpPercentage = setting?.dpPercentage ?? 50;
 
   const dpAmount = computeDeposit(finalTotalPrice, dpPercentage);
 
-  // 6. Check for overlap inside a transaction so the slot can't be double-booked,
-  //    then create the reservation and its payment record together.
+  // Check for overlap inside a transaction so the slot can't be double-booked,
+  // then create the reservation and its payment record together.
   let reservationId: string;
   try {
     const reservation = await prisma.$transaction(async (tx) => {
@@ -190,7 +190,7 @@ export async function createReservationAction(rawInput: unknown) {
     return { success: false, error: t("bookingServerError") };
   }
 
-  // 7. Create the Stripe Checkout session and attach it to the reservation.
+  // Create the Stripe Checkout session and attach it to the reservation
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   let checkoutSession;
   try {
@@ -227,7 +227,7 @@ export async function createReservationAction(rawInput: unknown) {
     return { success: false, error: t("stripeError") };
   }
 
-  // 8. Confirmation email is fire-and-forget; then invalidate caches and revalidate the affected routes.
+  // Confirmation email is fire-and-forget; then invalidate caches and revalidate affected routes
   resend.emails.send({
     ...bookingConfirmationEmail({
       userName: user.name,
@@ -253,7 +253,7 @@ export async function createReservationAction(rawInput: unknown) {
   revalidatePath("/admin");
   revalidatePath("/admin/reservations");
 
-  // 9. Return the checkout URL so the client can redirect.
+  // Return checkout session URL for client redirect
   return { success: true, url: checkoutSession.url };
 }
 

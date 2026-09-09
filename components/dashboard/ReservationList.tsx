@@ -149,7 +149,7 @@ export default function ReservationList({
                 <tr>
                   <td
                     colSpan={7}
-                    className="px-5 py-12 text-center text-sm text-zinc-400 font-mono"
+                    className="px-5 py-12 text-center text-sm text-zinc-500 font-mono"
                   >
                     {t("noFilterMatch")}
                   </td>

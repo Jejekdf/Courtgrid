@@ -60,7 +60,7 @@ export default function CourtCatalog() {
     <div className="space-y-8 text-zinc-950">
       {/* Header Catalog */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-zinc-950 text-balance">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-zinc-950 text-balance">
           {t("title")}
         </h1>
         <p className="text-sm sm:text-base text-zinc-600 leading-relaxed text-pretty">

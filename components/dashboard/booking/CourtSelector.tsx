@@ -3,6 +3,7 @@
 import { CheckCircle2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { Court } from "@/components/dashboard/CustomerBookingWorkspace";
+import { formatRupiah } from "@/lib/utils";
 
 interface CourtSelectorProps {
   courts: Court[];
@@ -63,7 +64,7 @@ export function CourtSelector({
               <div className="mt-5 pt-3 border-t border-zinc-100 flex items-center justify-between w-full">
                 <span className="text-xs sm:text-sm text-zinc-500 font-sans">{t("perHour")}</span>
                 <span className="text-sm sm:text-base font-extrabold text-zinc-950 tabular-nums">
-                  Rp {court.pricePerHour.toLocaleString("id-ID")}
+                  {formatRupiah(court.pricePerHour)}
                 </span>
               </div>
             </button>

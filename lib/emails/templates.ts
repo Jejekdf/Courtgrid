@@ -1,3 +1,5 @@
+import { formatRupiah } from "@/lib/utils";
+
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 export const forgotPasswordEmail = (name: string | null | undefined, resetUrl: string) => ({
@@ -52,8 +54,8 @@ export const bookingConfirmationEmail = (data: {
           <li><strong>Lapangan:</strong> ${data.courtName}</li>
           <li><strong>Tanggal:</strong> ${data.dateStr}</li>
           <li><strong>Jam:</strong> ${data.startTime} - ${data.endTime}</li>
-          <li><strong>Total:</strong> Rp ${data.totalPrice.toLocaleString("id-ID")}</li>
-          <li><strong>DP:</strong> Rp ${data.dpAmount.toLocaleString("id-ID")}</li>
+          <li><strong>Total:</strong> ${formatRupiah(data.totalPrice)}</li>
+          <li><strong>DP:</strong> ${formatRupiah(data.dpAmount)}</li>
           <li><strong>ID Reservasi:</strong> ${data.reservationId}</li>
         </ul>
         <p>Silakan selesaikan pembayaran DP untuk mengamankan jadwal.</p>
@@ -93,8 +95,8 @@ export const paymentSuccessEmail = (data: {
           <li><strong>Lapangan:</strong> ${data.courtName}</li>
           <li><strong>Tanggal:</strong> ${data.dateStr}</li>
           <li><strong>Jam:</strong> ${data.startTime} - ${data.endTime}</li>
-          <li><strong>Total:</strong> Rp ${data.totalPrice.toLocaleString("id-ID")}</li>
-          <li><strong>DP:</strong> Rp ${data.dpAmount.toLocaleString("id-ID")}</li>
+          <li><strong>Total:</strong> ${formatRupiah(data.totalPrice)}</li>
+          <li><strong>DP:</strong> ${formatRupiah(data.dpAmount)}</li>
           <li><strong>ID Reservasi:</strong> ${data.reservationId}</li>
         </ul>
         <p>Booking Anda sekarang sudah terjamin. Sampai jumpa di lapangan!</p>
