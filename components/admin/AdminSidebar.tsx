@@ -27,27 +27,27 @@ export default function AdminSidebar({ isOpen, isDesktopOpen = true, onClose }: 
   return (
     <aside
       className={`fixed md:static inset-y-0 left-0 z-50 bg-zinc-950 text-white transition-[transform,width,opacity] duration-200 ease-out flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] ${
-        isOpen ? "w-64 translate-x-0" : "-translate-x-full w-64"
+        isOpen ? "w-72 translate-x-0" : "-translate-x-full w-72"
       } ${
         isDesktopOpen
-          ? "md:w-64 md:translate-x-0 md:opacity-100"
+          ? "md:w-72 md:translate-x-0 md:opacity-100"
           : "md:w-0 md:translate-x-0 md:overflow-hidden md:opacity-0"
       }`}
     >
       {/* Brand Header */}
-      <div className="h-16 flex items-center justify-between px-6 border-b border-zinc-900 shrink-0">
-        <Link href="/admin" className="flex items-center gap-2.5 outline-hidden">
-          <Image src="/logo.svg" alt="CourtGrid Logo" width={24} height={24} priority className="rounded-md object-contain" />
-          <span className="font-bold tracking-tight text-base">CourtGrid Admin</span>
+      <div className="h-18 sm:h-20 flex items-center justify-between px-6 border-b border-zinc-800/80 shrink-0">
+        <Link href="/admin" className="flex items-center gap-3 outline-hidden">
+          <Image src="/logo.svg" alt="CourtGrid Logo" width={28} height={28} priority className="rounded-lg object-contain" />
+          <span className="font-extrabold tracking-tight text-lg sm:text-xl">CourtGrid Admin</span>
         </Link>
-        <button className="md:hidden text-zinc-400 hover:text-white" onClick={onClose} aria-label={t("closeMenu")}>
+        <button className="md:hidden p-2 text-zinc-400 hover:text-white rounded-lg transition-colors cursor-pointer" onClick={onClose} aria-label={t("closeMenu")}>
           <X className="size-5" />
         </button>
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 py-6 px-4 space-y-1 overflow-y-auto">
-        <div className="px-3 mb-2 text-[0.6875rem] font-mono font-semibold text-zinc-400 uppercase tracking-wider">
+      <nav className="flex-1 py-6 px-4 space-y-1.5 overflow-y-auto">
+        <div className="px-3.5 mb-3 text-xs font-mono font-semibold text-zinc-400 uppercase tracking-wider">
           {t("sectionLabel")}
         </div>
         {links.map((link) => {
@@ -58,13 +58,13 @@ export default function AdminSidebar({ isOpen, isDesktopOpen = true, onClose }: 
               key={link.href}
               href={link.href}
               onClick={onClose}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3.5 px-4 py-3 min-h-12 rounded-xl text-sm font-semibold transition-colors ${
                 isActive
-                  ? "bg-zinc-900 text-white font-semibold"
-                  : "text-zinc-300 hover:bg-zinc-900/50 hover:text-white"
+                  ? "bg-zinc-900 text-white shadow-xs"
+                  : "text-zinc-400 hover:bg-zinc-900/60 hover:text-white"
               }`}
             >
-              <Icon className={`size-4 ${isActive ? "text-emerald-400" : "text-zinc-400"}`} />
+              <Icon className={`size-5 shrink-0 ${isActive ? "text-emerald-400" : "text-zinc-400"}`} />
               <span>{t(link.label)}</span>
             </Link>
           );
@@ -72,12 +72,12 @@ export default function AdminSidebar({ isOpen, isDesktopOpen = true, onClose }: 
       </nav>
 
       {/* Logout Footer */}
-      <div className="p-4 border-t border-zinc-900 shrink-0">
+      <div className="p-4 border-t border-zinc-800/80 shrink-0">
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="flex w-full items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-950/40 rounded-lg transition-colors cursor-pointer"
+          className="flex w-full items-center justify-center gap-2.5 px-4 py-3 min-h-12 text-sm font-semibold text-red-400 hover:bg-red-950/40 rounded-xl transition-colors cursor-pointer"
         >
-          <LogOut className="size-4" />
+          <LogOut className="size-5" />
           <span>{t("logout")}</span>
         </button>
       </div>

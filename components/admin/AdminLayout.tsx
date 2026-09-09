@@ -38,8 +38,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           isSidebarOpen={isDesktopOpen}
           onToggleSidebar={() => setIsDesktopOpen((prev) => !prev)}
         />
-        <main className="flex-1 p-3.5 sm:p-6 md:p-8 overflow-y-auto bg-zinc-50">
-          <div className="max-w-7xl mx-auto space-y-8">
+        <main className="flex-1 p-4 sm:p-5 md:p-6 lg:p-8 xl:p-10 overflow-y-auto bg-zinc-50">
+          <div className="w-full max-w-7xl 2xl:max-w-(--breakpoint-2xl) mx-auto space-y-8">
             <PageTransition>
               {children}
             </PageTransition>

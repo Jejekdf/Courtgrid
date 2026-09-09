@@ -23,44 +23,44 @@ export default function Footer() {
 
   return (
     <footer className="w-full bg-white border-t border-zinc-200/80 mt-auto text-zinc-950">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14 md:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 lg:gap-12">
           {/* Brand Column */}
-          <div className="md:col-span-4 lg:col-span-4 flex flex-col gap-4">
+          <div className="lg:col-span-4 flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-2.5 group w-max outline-hidden">
               <Image
                 src="/logo.svg"
                 alt="CourtGrid Logo"
-                width={32}
-                height={32}
+                width={36}
+                height={36}
                 className="rounded-lg object-contain transition-transform group-hover-fine:scale-95"
               />
-              <span className="font-heading text-zinc-950 font-extrabold tracking-tight text-xl">
+              <span className="font-heading text-zinc-950 font-extrabold tracking-tight text-xl sm:text-2xl">
                 CourtGrid
               </span>
             </Link>
-            <p className="text-zinc-500 text-sm leading-relaxed max-w-xs">
+            <p className="text-zinc-600 text-sm sm:text-base leading-relaxed max-w-sm text-pretty font-sans">
               {t("tagline")}
             </p>
           </div>
 
-          <div className="md:col-span-8 lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-8">
+          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             {/* Column 1: Kontak GOR */}
             <div className="flex flex-col gap-3">
-              <span className="text-xs font-medium uppercase tracking-wider text-zinc-950 mb-1">
+              <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-950 mb-1 font-sans">
                 {t("contactTitle")}
               </span>
-              <address className="not-italic flex flex-col gap-3 text-sm text-zinc-600">
+              <address className="not-italic flex flex-col gap-3 text-sm sm:text-base text-zinc-600 font-sans">
                 <div className="flex items-start gap-2.5">
-                  <MapPin className="size-4 mt-0.5 shrink-0 text-zinc-500" aria-hidden="true" />
+                  <MapPin className="size-4.5 mt-0.5 shrink-0 text-zinc-500" aria-hidden="true" />
                   <span>{t("address")}</span>
                 </div>
                 <a
                   href="tel:+6287746288262"
-                  className="flex items-center gap-2.5 hover:text-zinc-950 transition-colors w-max"
+                  className="flex items-center gap-2.5 hover:text-zinc-950 transition-colors w-max tabular-nums"
                   aria-label="Telepon CourtGrid"
                 >
-                  <Phone className="size-4 shrink-0 text-zinc-500" aria-hidden="true" />
+                  <Phone className="size-4.5 shrink-0 text-zinc-500" aria-hidden="true" />
                   <span>+62 877 4628 8262</span>
                 </a>
                 <a
@@ -68,7 +68,7 @@ export default function Footer() {
                   className="flex items-center gap-2.5 hover:text-zinc-950 transition-colors w-max"
                   aria-label="Email CourtGrid"
                 >
-                  <Mail className="size-4 shrink-0 text-zinc-500" aria-hidden="true" />
+                  <Mail className="size-4.5 shrink-0 text-zinc-500" aria-hidden="true" />
                   <span>info@courtgrid.com</span>
                 </a>
               </address>
@@ -76,7 +76,7 @@ export default function Footer() {
 
             {/* Column 2: Navigasi Publik */}
             <div className="flex flex-col gap-3">
-              <span className="text-xs font-medium uppercase tracking-wider text-zinc-950 mb-1">
+              <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-950 mb-1">
                 {t("navigationTitle")}
               </span>
               <nav aria-label={t("navigationTitle")} className="flex flex-col gap-1.5">
@@ -84,7 +84,7 @@ export default function Footer() {
                   <Link
                     key={i}
                     href={href}
-                    className="w-max text-sm text-zinc-600 hover:text-zinc-950 transition-colors py-1 inline-flex items-center"
+                    className="w-max text-sm sm:text-base text-zinc-600 hover:text-zinc-950 transition-colors py-1.5 inline-flex items-center"
                   >
                     {title}
                   </Link>
@@ -94,7 +94,7 @@ export default function Footer() {
 
             {/* Column 3: Layanan & Legal */}
             <div className="flex flex-col gap-3">
-              <span className="text-xs font-medium uppercase tracking-wider text-zinc-950 mb-1">
+              <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-950 mb-1">
                 {t("servicesTitle")}
               </span>
               <nav aria-label={t("servicesTitle")} className="flex flex-col gap-1.5">
@@ -102,7 +102,7 @@ export default function Footer() {
                   <Link
                     key={i}
                     href={href}
-                    className="w-max text-sm text-zinc-600 hover:text-zinc-950 transition-colors py-1 inline-flex items-center"
+                    className="w-max text-sm sm:text-base text-zinc-600 hover:text-zinc-950 transition-colors py-1.5 inline-flex items-center"
                   >
                     {title}
                   </Link>
@@ -112,8 +112,8 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-zinc-200/80">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-zinc-500">
+        <div className="mt-10 sm:mt-12 pt-8 border-t border-zinc-200/80">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-sm text-zinc-500">
             <p>
               &copy; {year} CourtGrid. {t("rights")}
             </p>

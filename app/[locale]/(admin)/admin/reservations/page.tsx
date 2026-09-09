@@ -89,7 +89,7 @@ export default function AdminReservationsPage() {
 
   const handleExportCsv = () => {
     if (displayedReservations.length === 0) {
-      toast.error("Tidak ada data reservasi untuk diekspor.");
+      toast.error(t("exportEmptyToast"));
       return;
     }
     const headers = [
@@ -138,11 +138,11 @@ export default function AdminReservationsPage() {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    toast.success("File CSV berhasil diunduh.");
+    toast.success(t("exportSuccessToast"));
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto text-zinc-950">
+    <div className="w-full space-y-8 text-zinc-950">
       {/* Reusable Admin Header Component */}
       <div className="print:hidden">
         <AdminHeader
@@ -212,8 +212,8 @@ export default function AdminReservationsPage() {
           <p className="text-sm text-zinc-500">{t("reportPeriod", { period: filter.toUpperCase() })}</p>
         </div>
 
-        {/* Mobile Card List View */}
-        <div className="block md:hidden print:hidden divide-y divide-zinc-100">
+        {/* Card view for mobile and tablet (< 1024px) */}
+        <div className="block lg:hidden print:hidden divide-y divide-zinc-100">
           {isLoading ? (
             <div className="p-6 text-center text-xs text-zinc-400 font-mono">
               {t("loading")}
@@ -277,77 +277,77 @@ export default function AdminReservationsPage() {
           )}
         </div>
 
-        {/* Desktop Structured Table View */}
-        <div className="hidden md:block print:block overflow-x-auto">
-          <table className="w-full text-left text-xs print:text-xs">
-            <thead className="bg-zinc-50/70 border-b border-zinc-200 text-[0.6875rem] uppercase font-mono tracking-wider text-zinc-500 print:bg-transparent">
+        {/* Desktop table — 1024px+ where content area is wide enough */}
+        <div className="hidden lg:block print:block overflow-x-auto">
+          <table className="w-full text-left text-sm print:text-xs">
+            <thead className="bg-zinc-50/80 border-b border-zinc-200 text-xs uppercase font-mono tracking-wider text-zinc-500 font-semibold print:bg-transparent">
               <tr>
-                <th className="px-4 py-3 print:px-2">{t("colIdDate")}</th>
-                <th className="px-4 py-3 print:px-2">{t("colCustomer")}</th>
-                <th className="px-4 py-3 print:px-2">{t("colCourtTime")}</th>
-                <th className="px-4 py-3 print:px-2">{t("colTotal")}</th>
-                <th className="px-4 py-3 print:px-2">{t("colPaymentStatus")}</th>
-                <th className="px-4 py-3 print:hidden text-right">{t("colAction")}</th>
+                <th className="px-6 py-4 print:px-2">{t("colIdDate")}</th>
+                <th className="px-6 py-4 print:px-2">{t("colCustomer")}</th>
+                <th className="px-6 py-4 print:px-2">{t("colCourtTime")}</th>
+                <th className="px-6 py-4 print:px-2">{t("colTotal")}</th>
+                <th className="px-6 py-4 print:px-2">{t("colPaymentStatus")}</th>
+                <th className="px-6 py-4 print:hidden text-right">{t("colAction")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100">
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-xs text-zinc-400">
+                  <td colSpan={6} className="px-6 py-10 text-center text-sm text-zinc-400">
                     {t("loading")}
                   </td>
                 </tr>
               ) : displayedReservations.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-xs text-zinc-400">
+                  <td colSpan={6} className="px-6 py-10 text-center text-sm text-zinc-400">
                     {t("empty")}
                   </td>
                 </tr>
               ) : (
                 displayedReservations.map((res) => (
                   <tr key={res.id} className="hover:bg-zinc-50/50 transition-colors print:hover:bg-transparent">
-                    <td className="px-4 py-3.5 print:px-2 text-zinc-700">
-                      <div className="text-[0.6875rem] text-zinc-400 font-mono mb-0.5">{res.id.slice(0,8)}</div>
-                      <div className="font-semibold text-zinc-950">{res.date ? format(new Date(res.date), "dd MMM yyyy") : "-"}</div>
+                    <td className="px-6 py-4.5 print:px-2 text-zinc-700">
+                      <div className="text-xs text-zinc-400 font-mono mb-0.5">{res.id.slice(0, 8)}</div>
+                      <div className="font-semibold text-zinc-950 text-sm sm:text-base">{res.date ? format(new Date(res.date), "dd MMM yyyy") : "-"}</div>
                     </td>
-                    <td className="px-4 py-3.5 print:px-2">
-                      <div className="font-semibold text-zinc-950">{res.user?.name || "Pelanggan Hapus"}</div>
-                      <div className="text-xs text-zinc-400">{res.user?.email || "-"}</div>
+                    <td className="px-6 py-4.5 print:px-2">
+                      <div className="font-semibold text-zinc-950 text-sm sm:text-base">{res.user?.name || "Pelanggan Hapus"}</div>
+                      <div className="text-xs sm:text-sm text-zinc-500">{res.user?.email || "-"}</div>
                     </td>
-                    <td className="px-4 py-3.5 print:px-2 text-zinc-700">
-                      <div className="font-semibold text-zinc-950">{res.court?.name || tDash("defaultCourt")}</div>
-                      <div className="text-xs text-zinc-400 font-mono">{res.startTime} - {res.endTime} WIB</div>
+                    <td className="px-6 py-4.5 print:px-2 text-zinc-700">
+                      <div className="font-semibold text-zinc-950 text-sm sm:text-base">{res.court?.name || tDash("defaultCourt")}</div>
+                      <div className="text-xs sm:text-sm text-zinc-500 font-mono">{res.startTime} - {res.endTime} WIB</div>
                     </td>
-                    <td className="px-4 py-3.5 print:px-2 font-semibold text-zinc-950">
+                    <td className="px-6 py-4.5 print:px-2 font-bold font-mono text-zinc-950 text-sm sm:text-base tabular-nums">
                       Rp {res.totalPrice.toLocaleString("id-ID")}
                     </td>
-                    <td className="px-4 py-3.5 print:px-2">
+                    <td className="px-6 py-4.5 print:px-2">
                       {res.status === "DP_PAID" || res.payment?.status === "VERIFIED" ? (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[0.6875rem] font-mono font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-mono font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
                           {t("dpPaidBadge")}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[0.6875rem] font-mono font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-mono font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200">
                           {res.status}
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3.5 print:hidden text-right">
-                      <div className="flex items-center justify-end gap-1.5">
+                    <td className="px-6 py-4.5 print:hidden text-right">
+                      <div className="flex items-center justify-end gap-2">
                         <Link
                           href={`/admin/eticket/${res.id}`}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 min-h-9 text-xs font-semibold text-zinc-700 hover:bg-zinc-100 border border-zinc-200 rounded-md transition-colors"
+                          className="inline-flex items-center gap-1.5 px-3 py-2 min-h-10 text-xs sm:text-sm font-semibold text-zinc-700 hover:bg-zinc-100 border border-zinc-200 rounded-lg transition-colors cursor-pointer"
                           title={t("viewTicketTitle")}
                         >
-                          <ArrowUpRight className="size-3.5" />
+                          <ArrowUpRight className="size-4" />
                           <span>{t("eticketBtn")}</span>
                         </Link>
                         <button
                           onClick={() => handleDelete(res.id)}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 min-h-9 text-xs text-red-600 hover:bg-red-50 border border-red-200 rounded-md transition-colors cursor-pointer font-semibold"
+                          className="inline-flex items-center gap-1.5 px-3 py-2 min-h-10 text-xs sm:text-sm text-red-600 hover:bg-red-50 border border-red-200 rounded-lg transition-colors cursor-pointer font-semibold"
                           title={t("deleteBtnTitle")}
                         >
-                          <Trash2 className="size-3.5" />
+                          <Trash2 className="size-4" />
                           <span>{t("deleteBtn")}</span>
                         </button>
                       </div>

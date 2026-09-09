@@ -46,7 +46,7 @@ export default function AdminDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 max-w-7xl mx-auto">
+      <div className="w-full space-y-6">
         <AdminHeader
           title={t("title")}
           description={t("loadingDesc")}
@@ -65,7 +65,7 @@ export default function AdminDashboardPage() {
 
   if (isError || !stats) {
     return (
-      <div className="space-y-6 max-w-7xl mx-auto">
+      <div className="w-full space-y-6">
         <AdminHeader
           title={t("title")}
           description={t("errorDesc")}
@@ -80,7 +80,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto text-zinc-950">
+    <div className="w-full space-y-8 text-zinc-950">
       {/* Reusable Admin Header Component */}
       <AdminHeader
         title={t("title")}

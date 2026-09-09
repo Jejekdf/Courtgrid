@@ -17,7 +17,7 @@ export default function ResetPasswordPage() {
           <div className="w-full max-w-md mx-auto space-y-6">
             <Link 
               href="/login" 
-              className="inline-flex items-center gap-2 text-xs font-semibold text-zinc-500 hover:text-zinc-950 transition-colors"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-zinc-600 hover:text-zinc-950 transition-colors"
             >
               &larr; {t("backToLogin")}
             </Link>
@@ -26,7 +26,7 @@ export default function ResetPasswordPage() {
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950 text-balance">
                 {t("title")}
               </h1>
-              <p className="text-sm text-zinc-500 leading-relaxed text-pretty">
+              <p className="text-sm sm:text-base text-zinc-600 leading-relaxed text-pretty">
                 {t("desc")}
               </p>
             </div>
@@ -49,7 +49,7 @@ export default function ResetPasswordPage() {
           <div className="relative z-10 flex flex-col justify-end h-full max-w-xl space-y-4">
             <Quote className="text-emerald-500 size-8 opacity-80" />
             <blockquote className="space-y-3">
-              <p className="text-base font-bold leading-relaxed text-white font-sans text-pretty">
+              <p className="text-base lg:text-lg font-bold leading-relaxed text-white font-sans text-pretty">
                 &ldquo;{t("quote")}&rdquo;
               </p>
               <footer className="flex items-center gap-3 pt-1">
@@ -57,8 +57,8 @@ export default function ResetPasswordPage() {
                   CG
                 </div>
                 <div>
-                  <div className="font-semibold text-white">{t("quoteAuthor")}</div>
-                  <div className="text-sm text-zinc-300">{t("quoteRole")}</div>
+                  <div className="font-bold text-white text-sm sm:text-base font-sans">{t("quoteAuthor")}</div>
+                  <div className="text-xs sm:text-sm text-zinc-400 font-sans">{t("quoteRole")}</div>
                 </div>
               </footer>
             </blockquote>

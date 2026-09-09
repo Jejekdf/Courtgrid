@@ -75,6 +75,9 @@ export default function AdminCustomersPage() {
     onSuccess: (result) => {
       if (result.success) {
         queryClient.invalidateQueries({ queryKey: adminKeys.customersAll() });
+        toast.success(t("deletedToast"));
+      } else {
+        toast.error(result.error || t("deleteFailedToast"));
       }
     },
   });
@@ -86,7 +89,7 @@ export default function AdminCustomersPage() {
 
   const handleExportCsv = () => {
     if (customers.length === 0) {
-      toast.error("Tidak ada data pelanggan untuk diekspor.");
+      toast.error(t("exportEmptyToast"));
       return;
     }
     const headers = [
@@ -125,22 +128,22 @@ export default function AdminCustomersPage() {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    toast.success("File CSV pelanggan berhasil diunduh.");
+    toast.success(t("exportSuccessToast"));
   };
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-950 flex items-center gap-2.5">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950 text-balance">
             {t("title")}
           </h1>
-          <p className="text-zinc-500 mt-1 text-sm">
+          <p className="text-zinc-500 mt-1 text-sm text-pretty">
             {t("desc")}
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full lg:w-auto shrink-0">
           <div className="w-full sm:w-72">
             <Input
               value={searchDraft}
@@ -167,8 +170,8 @@ export default function AdminCustomersPage() {
       </div>
 
       <div className="bg-white rounded-xl border border-zinc-200 shadow-sm overflow-hidden">
-        {/* Mobile Card List View */}
-        <div className="block md:hidden divide-y divide-zinc-100">
+        {/* Card view for mobile and tablet (< 1024px) */}
+        <div className="block lg:hidden divide-y divide-zinc-100">
           {isPending ? (
             <div className="px-6 py-12 text-center text-xs text-zinc-400 font-mono">
               {t("loading")}
@@ -230,8 +233,8 @@ export default function AdminCustomersPage() {
           )}
         </div>
 
-        {/* Desktop Structured Table View */}
-        <div className="hidden md:block overflow-x-auto">
+        {/* Desktop table — 1024px+ */}
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="bg-zinc-50 border-b border-zinc-200 text-xs uppercase font-semibold text-zinc-500">
               <tr>

@@ -128,38 +128,43 @@ export default async function FAQPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <PageWrapper className="max-w-4xl mx-auto">
+      <PageWrapper className="max-w-7xl mx-auto">
         <Breadcrumb items={breadcrumbItems} locale={locale} />
-        <div className="space-y-8 sm:space-y-10">
+        <div className="space-y-10 sm:space-y-14">
           {/* Page Header */}
-          <header className="border-b border-zinc-200/80 pb-6 space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-200/90 bg-zinc-100 text-[0.6875rem] font-semibold uppercase tracking-wider text-zinc-700 shadow-xs font-sans">
+          <header className="border-b border-zinc-200/80 pb-6 sm:pb-8 space-y-3.5 max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-zinc-200/90 bg-zinc-100 text-xs font-semibold uppercase tracking-wider text-zinc-700 shadow-xs font-sans">
             <HelpCircle className="size-3.5 text-zinc-950" aria-hidden="true" />
             <span>{t("badge")}</span>
           </div>
-          <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 text-balance">
+          <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-zinc-950 text-balance">
             {t("title")}
           </h1>
-          <p className="text-sm text-zinc-600 leading-relaxed max-w-xl font-sans text-pretty">
+          <p className="text-base sm:text-lg text-zinc-600 leading-relaxed font-sans text-pretty">
             {t("description")}
           </p>
         </header>
 
         {/* FAQ Accordion List */}
-        <main className="space-y-6">
+        <main className="space-y-10 sm:space-y-12">
           {faqCategories.map((cat, idx) => (
-            <div key={idx} className="space-y-3">
-              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-600 block">
-                {cat.category}
-              </span>
-              <div className="border border-zinc-200/80 rounded-xl p-2 bg-white shadow-xs">
+            <div key={idx} className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 xl:gap-12 pt-8 first:pt-0 border-t border-zinc-200/80 first:border-t-0 items-start">
+              <div className="lg:col-span-4 lg:sticky lg:top-28 self-start">
+                <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-600 block mb-1.5 font-sans">
+                  {t("badge")}
+                </span>
+                <h2 className="font-heading text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-zinc-950 text-balance">
+                  {cat.category}
+                </h2>
+              </div>
+              <div className="lg:col-span-8 border border-zinc-200/90 rounded-2xl sm:rounded-3xl p-2 sm:p-4 bg-white shadow-xs">
                 <Accordion className="w-full divide-y divide-zinc-100">
                   {cat.items.map((faq, i) => (
-                    <AccordionItem key={i} value={`cat-${idx}-item-${i}`} className="border-b-0 px-3">
-                      <AccordionTrigger className="text-left text-zinc-950 font-semibold hover-fine:text-zinc-700 text-sm py-4 cursor-pointer min-h-11">
+                    <AccordionItem key={i} value={`cat-${idx}-item-${i}`} className="border-b-0 px-3 sm:px-5">
+                      <AccordionTrigger className="text-left text-zinc-950 font-bold hover-fine:text-zinc-700 text-base sm:text-lg py-4 sm:py-5 cursor-pointer min-h-12 text-balance">
                         {faq.q}
                       </AccordionTrigger>
-                      <AccordionContent className="text-zinc-600 leading-relaxed text-sm pb-4 pt-1">
+                      <AccordionContent className="text-zinc-600 leading-relaxed text-sm sm:text-base pb-5 pt-1 text-pretty font-sans">
                         {faq.a}
                       </AccordionContent>
                     </AccordionItem>

@@ -21,7 +21,7 @@ export default function LoginPage() {
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950 text-balance">
                 {t("title")}
               </h1>
-              <p className="text-sm text-zinc-500 leading-relaxed text-pretty">
+              <p className="text-sm sm:text-base text-zinc-600 leading-relaxed text-pretty">
                 {t("desc")}
               </p>
             </div>
@@ -34,7 +34,7 @@ export default function LoginPage() {
             </div>
 
             {/* Footer Link */}
-            <p className="text-center text-sm text-zinc-500 pt-2">
+            <p className="text-center text-sm sm:text-base text-zinc-600 pt-2">
               {t("noAccount")}{" "}
               <Link
                 href="/register"
@@ -55,7 +55,7 @@ export default function LoginPage() {
           {/* Anti-Slop Pill */}
           <div className="relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 w-max shadow-xs">
             <ShieldCheck className="size-4 text-emerald-400" aria-hidden="true" />
-            <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider font-sans">
+            <span className="text-xs sm:text-sm font-semibold text-emerald-400 uppercase tracking-wider font-sans">
               {ta("antiPalkor")}
             </span>
           </div>
@@ -64,7 +64,7 @@ export default function LoginPage() {
           <div className="relative z-10 flex flex-col justify-end max-w-lg space-y-4">
             <Quote className="text-emerald-400 size-8 opacity-80" aria-hidden="true" />
             <blockquote className="space-y-3">
-              <p className="text-base font-bold leading-relaxed text-white font-sans text-pretty">
+              <p className="text-base lg:text-lg font-bold leading-relaxed text-white font-sans text-pretty">
                 &ldquo;{t("quote")}&rdquo;
               </p>
               <footer className="flex items-center gap-3 pt-1">
@@ -72,8 +72,8 @@ export default function LoginPage() {
                   AT
                 </div>
                 <div>
-                  <div className="font-bold text-white text-sm font-sans">{t("quoteAuthor")}</div>
-                  <div className="text-xs text-zinc-400 font-sans">{t("quoteRole")}</div>
+                  <div className="font-bold text-white text-sm sm:text-base font-sans">{t("quoteAuthor")}</div>
+                  <div className="text-xs sm:text-sm text-zinc-400 font-sans">{t("quoteRole")}</div>
                 </div>
               </footer>
             </blockquote>

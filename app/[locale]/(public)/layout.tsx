@@ -10,7 +10,7 @@ export default function PublicLayout({
   return (
     <>
       <Header />
-      <main className="grow flex flex-col pt-24">
+      <main className="grow flex flex-col pt-20 sm:pt-24">
         <PageTransition>
           {children}
         </PageTransition>

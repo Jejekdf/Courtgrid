@@ -12,7 +12,7 @@ export default function PageHeader({
   actions,
 }: PageHeaderProps) {
   return (
-    <div className="border-b border-zinc-200 pb-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="border-b border-zinc-200 pb-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
       <div className="space-y-1">
         {section && (
           <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-zinc-400">
@@ -21,17 +21,17 @@ export default function PageHeader({
             <span className="text-zinc-950 font-semibold">{title}</span>
           </div>
         )}
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950 text-balance">
           {title}
         </h1>
         {description && (
-          <p className="text-sm text-zinc-500 max-w-2xl leading-relaxed">
+          <p className="text-sm text-zinc-500 max-w-2xl leading-relaxed text-pretty">
             {description}
           </p>
         )}
       </div>
       {actions && (
-        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full lg:w-auto shrink-0">
           {actions}
         </div>
       )}

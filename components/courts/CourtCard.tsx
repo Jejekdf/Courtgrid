@@ -43,8 +43,8 @@ export default function CourtCard({
             {t("cardImageFallback")}
           </div>
         )}
-        <div className="absolute top-3 right-3 px-2.5 py-1 bg-zinc-950/90 text-white rounded-full text-[0.6875rem] font-bold uppercase tracking-wider border border-zinc-700 shadow-xs flex items-center gap-1 font-sans">
-          <CheckCircle2 className="size-3 text-emerald-400" aria-hidden="true" />
+        <div className="absolute top-3 right-3 px-3 py-1 bg-zinc-950/90 text-white rounded-full text-xs font-bold uppercase tracking-wider border border-zinc-700 shadow-xs flex items-center gap-1.5 font-sans">
+          <CheckCircle2 className="size-3.5 text-emerald-400" aria-hidden="true" />
           <span>{court.type}</span>
         </div>
       </div>

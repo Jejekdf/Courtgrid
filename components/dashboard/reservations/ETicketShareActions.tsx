@@ -44,7 +44,7 @@ export default function ETicketShareActions({
       toast.success(t("summaryCopied"));
       setTimeout(() => setHasCopied(false), 2000);
     } catch {
-      toast.error("Gagal menyalin rincian tiket.");
+      toast.error(t("summaryCopyFailed"));
     }
   };
 

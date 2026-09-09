@@ -79,7 +79,7 @@ export default function AdminCourtsPage() {
   });
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto text-zinc-950">
+    <div className="w-full space-y-8 text-zinc-950">
       <AdminHeader
         title={t("title")}
         description={t("desc")}

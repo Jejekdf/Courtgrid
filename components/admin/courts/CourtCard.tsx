@@ -23,7 +23,7 @@ export function CourtCard({ court, onToggleActive, onEdit, onDelete }: CourtCard
 
   return (
     <div className="bg-white border border-zinc-200 rounded-xl shadow-xs overflow-hidden flex flex-col hover:border-zinc-950 transition-colors">
-      <div className="relative h-36 bg-zinc-100 border-b border-zinc-200 flex items-center justify-center overflow-hidden">
+      <div className="relative h-44 sm:h-48 bg-zinc-100 border-b border-zinc-200 flex items-center justify-center overflow-hidden">
         {court.imageUrl ? (
           <Image
             src={court.imageUrl}
@@ -40,16 +40,16 @@ export function CourtCard({ court, onToggleActive, onEdit, onDelete }: CourtCard
           </div>
         )}
       </div>
-      <div className="p-4 space-y-3 flex-1 flex flex-col">
+      <div className="p-5 space-y-4 flex-1 flex flex-col">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h3 className="text-sm font-bold text-zinc-950">{court.name}</h3>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[0.6875rem] font-mono font-bold uppercase tracking-wider bg-zinc-100 text-zinc-600 border border-zinc-200">
+            <h3 className="text-base font-bold text-zinc-950">{court.name}</h3>
+            <span className="inline-flex items-center px-2.5 py-0.5 mt-1 rounded-md text-xs font-mono font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 border border-zinc-200">
               {court.type}
             </span>
           </div>
           <span
-            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[0.6875rem] font-mono font-bold uppercase tracking-wider ${
+            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-bold uppercase tracking-wider ${
               court.isActive
                 ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                 : "bg-red-50 text-red-700 border border-red-200"
@@ -59,9 +59,9 @@ export function CourtCard({ court, onToggleActive, onEdit, onDelete }: CourtCard
           </span>
         </div>
         <div className="text-sm text-zinc-600">
-          <div className="flex justify-between">
-            <span className="text-zinc-400">{t("perHour")}</span>
-            <span className="font-bold text-zinc-950">Rp {court.pricePerHour.toLocaleString("id-ID")}</span>
+          <div className="flex justify-between items-baseline">
+            <span className="text-zinc-500">{t("perHour")}</span>
+            <span className="text-base font-bold font-mono text-zinc-950">Rp {court.pricePerHour.toLocaleString("id-ID")}</span>
           </div>
         </div>
         <div className="mt-auto flex items-center justify-between gap-2 pt-3 border-t border-zinc-100">

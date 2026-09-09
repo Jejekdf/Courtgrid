@@ -24,7 +24,7 @@ import { createResetPasswordSchema, ResetPasswordInput } from "@/lib/zod";
 
 const easeCustom = [0.16, 1, 0.3, 1] as const;
 
-const inputLabelClass = "text-xs font-medium uppercase tracking-wider text-zinc-500";
+const inputLabelClass = "text-xs sm:text-sm font-semibold uppercase tracking-wider text-zinc-700";
 
 export default function ResetPasswordForm() {
   const [token] = useQueryState("token", parseAsString);
@@ -96,12 +96,12 @@ export default function ResetPasswordForm() {
                     autoComplete="new-password"
                     disabled={form.formState.isSubmitting}
                     error={!!fieldState.error}
-                    className="border-zinc-200"
+                    className="border-zinc-200 min-h-11 sm:min-h-12 h-11 sm:h-12 text-sm sm:text-base rounded-xl"
                     rightElement={
                       <button
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
-                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-hidden p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
+                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-hidden p-2.5 h-11 sm:h-12 flex items-center justify-center cursor-pointer"
                         aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                       >
                         {showPassword ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
@@ -128,12 +128,12 @@ export default function ResetPasswordForm() {
                     autoComplete="new-password"
                     disabled={form.formState.isSubmitting}
                     error={!!fieldState.error}
-                    className="border-zinc-200"
+                    className="border-zinc-200 min-h-11 sm:min-h-12 h-11 sm:h-12 text-sm sm:text-base rounded-xl"
                     rightElement={
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword((prev) => !prev)}
-                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-hidden p-2 h-11 sm:h-10 flex items-center justify-center cursor-pointer"
+                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-hidden p-2.5 h-11 sm:h-12 flex items-center justify-center cursor-pointer"
                         aria-label={showConfirmPassword ? t("hideConfirm") : t("showConfirm")}
                       >
                         {showConfirmPassword ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
@@ -153,7 +153,7 @@ export default function ResetPasswordForm() {
             size="default"
             isLoading={form.formState.isSubmitting}
             disabled={form.formState.isSubmitting}
-            className="w-full mt-2"
+            className="w-full mt-2 min-h-11 sm:min-h-12 h-11 sm:h-12 text-base font-bold rounded-xl"
           >
             {form.formState.isSubmitting ? t("saving") : t("submit")}
           </Button>

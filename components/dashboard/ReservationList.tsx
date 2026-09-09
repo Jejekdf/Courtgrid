@@ -66,7 +66,7 @@ export default function ReservationList({
       toast.success(t("copiedToast"));
       setTimeout(() => setCopiedId(null), 2000);
     } catch {
-      toast.error("Gagal menyalin ID");
+      toast.error(t("copyFailedToast"));
     }
   };
 

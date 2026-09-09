@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { formatRupiah } from "@/lib/utils";
+import { useTranslations, useLocale } from "next-intl";
 
 export type RevenueChartDatum = {
   date: string;
@@ -29,8 +30,11 @@ function RevenueTooltip(props: RevenueTooltipProps) {
 }
 
 export default function RevenueChart({ data }: { data: RevenueChartDatum[] }) {
+  const t = useTranslations("admin.dashboard");
+  const locale = useLocale();
+
   const chartData = data.map((item) => ({
-    label: new Date(item.date).toLocaleDateString("id-ID", {
+    label: new Date(item.date).toLocaleDateString(locale === "en" ? "en-US" : "id-ID", {
       day: "numeric",
       month: "short",
     }),
@@ -45,11 +49,11 @@ export default function RevenueChart({ data }: { data: RevenueChartDatum[] }) {
       className="bg-white border border-zinc-200/90 rounded-2xl shadow-2xs overflow-hidden flex flex-col justify-between h-full"
     >
       <div className="px-6 py-5 border-b border-zinc-200 flex flex-col gap-1">
-        <h3 className="text-xl font-bold tracking-tight text-zinc-950">
-          Revenue 7 Hari Terakhir
+        <h3 className="text-xl font-bold tracking-tight text-zinc-950 text-balance">
+          {t("revenueChartTitle")}
         </h3>
-        <p className="text-sm text-zinc-500">
-          Pendapatan dari reservasi DP Paid &amp; Done dalam 7 hari terakhir.
+        <p className="text-sm text-zinc-500 text-pretty">
+          {t("revenueChartDesc")}
         </p>
       </div>
 

@@ -47,7 +47,7 @@ export function SlotCell({ slot, isSelected, onSelect }: SlotCellProps) {
       aria-label={`${slot.startTime} - ${statusLabel}`}
     >
       <span className="font-bold tabular-nums font-sans leading-none">{slot.startTime}</span>
-      <span className="text-[0.6875rem] opacity-80 leading-none">{statusLabel}</span>
+      <span className="text-xs font-medium opacity-85 leading-none">{statusLabel}</span>
     </motion.button>
   );
 }

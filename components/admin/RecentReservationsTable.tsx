@@ -19,13 +19,13 @@ export default function RecentReservationsTable({ reservations = [] }: { reserva
   const getStatusBadge = (status: Reservation["status"]) => {
     switch (status) {
       case "DP_PAID":
-        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusDpPaid")}</span>;
+        return <span className="px-2.5 py-1 text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusDpPaid")}</span>;
       case "PENDING":
-        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusPending")}</span>;
+        return <span className="px-2.5 py-1 text-xs font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusPending")}</span>;
       case "DONE":
-        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 border border-zinc-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusDone")}</span>;
+        return <span className="px-2.5 py-1 text-xs font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 border border-zinc-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusDone")}</span>;
       case "CANCELED":
-        return <span className="px-2.5 py-1 text-[0.6875rem] font-bold uppercase tracking-wider bg-red-50 text-red-600 border border-red-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusCanceled")}</span>;
+        return <span className="px-2.5 py-1 text-xs font-bold uppercase tracking-wider bg-red-50 text-red-600 border border-red-200 rounded-md whitespace-nowrap inline-flex items-center">{t("statusCanceled")}</span>;
     }
   };
 
@@ -51,56 +51,59 @@ export default function RecentReservationsTable({ reservations = [] }: { reserva
         </div>
       ) : (
         <>
-          {/* Mobile Card Stack */}
-          <div className="block md:hidden divide-y divide-zinc-100">
+          {/* Card view for mobile and tablet (< 1024px) */}
+          <div className="block lg:hidden divide-y divide-zinc-100">
             {reservations.map((res) => (
-              <div key={res.id} className="p-4 space-y-2 hover:bg-zinc-50/50 transition-colors">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
+              <div key={res.id} className="p-4 sm:p-5 space-y-3 hover:bg-zinc-50/50 transition-colors">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
                     <h4 className="font-bold text-sm text-zinc-950 leading-tight">{res.customerName}</h4>
-                    <span className="text-[0.6875rem] font-mono text-zinc-400">ID: {res.id}</span>
+                    <span className="text-xs font-mono text-zinc-400">ID: {res.id}</span>
                   </div>
                   {getStatusBadge(res.status)}
                 </div>
-                <div className="flex items-center justify-between text-xs text-zinc-600">
-                  <span className="font-medium text-zinc-800">{res.courtName}</span>
-                  <span className="font-mono">{res.date}, {res.time}</span>
-                </div>
-                <div className="flex justify-end pt-1">
-                  <span className="font-extrabold text-sm text-zinc-950 font-mono">{res.amount}</span>
+                <div className="bg-zinc-50/70 border border-zinc-100 rounded-lg p-2.5 space-y-1 text-xs text-zinc-700">
+                  <div className="flex justify-between">
+                    <span className="font-semibold text-zinc-900">{res.courtName}</span>
+                    <span className="font-mono text-zinc-500">{res.date}</span>
+                  </div>
+                  <div className="flex justify-between items-center font-mono text-zinc-500">
+                    <span>{res.time}</span>
+                    <span className="font-bold text-zinc-950 tabular-nums">{res.amount}</span>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Desktop Structured Table */}
-          <div className="hidden md:block overflow-x-auto">
+          {/* Desktop table — only at 1024px+ where sidebar + content fits */}
+          <div className="hidden lg:block overflow-x-auto">
             <table className="w-full text-left text-sm whitespace-nowrap">
               <thead className="bg-zinc-50 text-xs uppercase tracking-wider text-zinc-500 font-semibold border-b border-zinc-200">
                 <tr>
-                  <th className="px-6 py-4">{t("colId")}</th>
-                  <th className="px-6 py-4">{t("colCustomer")}</th>
-                  <th className="px-6 py-4">{t("colCourt")}</th>
-                  <th className="px-6 py-4">{t("colSchedule")}</th>
-                  <th className="px-6 py-4">{t("colAmount")}</th>
-                  <th className="px-6 py-4">{t("colStatus")}</th>
+                  <th className="px-6 py-4.5">{t("colId")}</th>
+                  <th className="px-6 py-4.5">{t("colCustomer")}</th>
+                  <th className="px-6 py-4.5">{t("colCourt")}</th>
+                  <th className="px-6 py-4.5">{t("colSchedule")}</th>
+                  <th className="px-6 py-4.5">{t("colAmount")}</th>
+                  <th className="px-6 py-4.5">{t("colStatus")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100">
                 {reservations.map((res) => (
                   <tr key={res.id} className="hover:bg-zinc-50/50 transition-colors">
-                    <td className="px-6 py-4 font-mono text-xs text-zinc-500">{res.id}</td>
-                    <td className="px-6 py-4 font-medium text-zinc-950">{res.customerName}</td>
-                    <td className="px-6 py-4 text-zinc-700">{res.courtName}</td>
-                    <td className="px-6 py-4 text-zinc-700">
-                      <div className="flex items-center gap-1.5 font-mono text-xs whitespace-nowrap">
+                    <td className="px-6 py-4.5 font-mono text-xs text-zinc-500">{res.id}</td>
+                    <td className="px-6 py-4.5 font-semibold text-zinc-950 text-sm sm:text-base">{res.customerName}</td>
+                    <td className="px-6 py-4.5 text-zinc-700 text-sm">{res.courtName}</td>
+                    <td className="px-6 py-4.5 text-zinc-700">
+                      <div className="flex items-center gap-1.5 font-mono text-xs sm:text-sm whitespace-nowrap">
                         <span className="text-zinc-900 font-medium">{res.date}</span>
                         <span className="text-zinc-300">,</span>
                         <span className="text-zinc-500">{res.time}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-medium text-zinc-950">{res.amount}</td>
-                    <td className="px-6 py-4">{getStatusBadge(res.status)}</td>
+                    <td className="px-6 py-4.5 font-bold font-mono text-zinc-950 text-sm sm:text-base tabular-nums">{res.amount}</td>
+                    <td className="px-6 py-4.5">{getStatusBadge(res.status)}</td>
                   </tr>
                 ))}
               </tbody>

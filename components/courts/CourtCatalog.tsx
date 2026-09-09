@@ -69,7 +69,7 @@ export default function CourtCatalog() {
       </div>
 
       {/* Filter Tabs & Search Bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t border-zinc-200/80">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-4 border-t border-zinc-200/80">
         <div
           role="tablist"
           aria-label={t("filterLabel")}
@@ -92,7 +92,7 @@ export default function CourtCatalog() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex items-center gap-2 w-full md:w-auto">
           <Input
             value={searchDraft}
             onChange={(e) => {
@@ -101,7 +101,7 @@ export default function CourtCatalog() {
               debouncedSetSearch(val);
             }}
             placeholder={t("searchPlaceholder")}
-            containerClassName="w-full sm:w-72"
+            containerClassName="w-full md:w-72"
             leftIcon={<Search className="size-4 text-zinc-400" />}
             className="h-11 text-sm bg-zinc-50 border-zinc-200 rounded-xl"
           />

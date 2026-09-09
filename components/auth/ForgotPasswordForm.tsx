@@ -20,7 +20,7 @@ import { createForgotPasswordSchema, ForgotPasswordInput } from "@/lib/zod";
 
 const easeCustom = [0.16, 1, 0.3, 1] as const;
 
-const inputLabelClass = "text-xs font-medium uppercase tracking-wider text-zinc-500";
+const inputLabelClass = "text-xs sm:text-sm font-semibold uppercase tracking-wider text-zinc-700";
 
 export default function ForgotPasswordForm() {
   const t = useTranslations("auth.forgot");
@@ -69,7 +69,7 @@ export default function ForgotPasswordForm() {
                     autoComplete="email"
                     disabled={form.formState.isSubmitting}
                     error={!!fieldState.error}
-                    className="border-zinc-200"
+                    className="border-zinc-200 min-h-11 sm:min-h-12 h-11 sm:h-12 text-sm sm:text-base rounded-xl"
                     {...field}
                   />
                 </FormControl>
@@ -84,7 +84,7 @@ export default function ForgotPasswordForm() {
             size="default"
             isLoading={form.formState.isSubmitting}
             disabled={form.formState.isSubmitting}
-            className="w-full mt-2"
+            className="w-full mt-2 min-h-11 sm:min-h-12 h-11 sm:h-12 text-base font-bold rounded-xl"
           >
             {form.formState.isSubmitting ? t("sending") : t("submit")}
           </Button>

@@ -80,7 +80,7 @@ export default function DashboardStats({
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-5">
       {stats.map((stat, i) => {
         const Icon = stat.icon;
         return (
@@ -89,7 +89,7 @@ export default function DashboardStats({
             className="p-5 sm:p-6 bg-white rounded-2xl border border-zinc-200/90 shadow-2xs hover:border-zinc-300 hover:shadow-xs transition-all flex flex-col justify-between gap-3"
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-zinc-400 truncate font-sans">
+              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 line-clamp-1 font-sans">
                 {stat.sub}
               </span>
               <div className="size-9 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-900 shrink-0">
@@ -97,7 +97,7 @@ export default function DashboardStats({
               </div>
             </div>
 
-            <p className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tabular-nums tracking-tight text-zinc-950 my-0.5">
+            <p className="text-2xl sm:text-3xl font-extrabold font-mono tabular-nums tracking-tight text-zinc-950 my-0.5">
               {stat.value}
             </p>
 
