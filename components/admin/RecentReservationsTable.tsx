@@ -13,6 +13,7 @@ interface Reservation {
   time: string;
   status: "PENDING" | "DP_PAID" | "DONE" | "CANCELED";
   amount: string;
+  paymentStatus?: string;
 }
 
 export default function RecentReservationsTable({ reservations = [] }: { reservations?: Reservation[] }) {
@@ -49,7 +50,7 @@ export default function RecentReservationsTable({ reservations = [] }: { reserva
                     <h4 className="font-bold text-sm text-zinc-950 leading-tight">{res.customerName}</h4>
                     <span className="text-xs font-mono text-zinc-400">ID: {res.id}</span>
                   </div>
-                  <ReservationStatusBadge status={res.status} />
+                  <ReservationStatusBadge status={res.status} paymentStatus={res.paymentStatus} />
                 </div>
                 <div className="bg-zinc-50/70 border border-zinc-100 rounded-lg p-2.5 space-y-1 text-xs text-zinc-700">
                   <div className="flex justify-between">
@@ -92,7 +93,7 @@ export default function RecentReservationsTable({ reservations = [] }: { reserva
                       </div>
                     </td>
                     <td className="px-6 py-4.5 font-bold font-mono text-zinc-950 text-sm sm:text-base tabular-nums">{res.amount}</td>
-                    <td className="px-6 py-4.5"><ReservationStatusBadge status={res.status} /></td>
+                    <td className="px-6 py-4.5"><ReservationStatusBadge status={res.status} paymentStatus={res.paymentStatus} /></td>
                   </tr>
                 ))}
               </tbody>

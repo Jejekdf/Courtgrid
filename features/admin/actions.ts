@@ -168,13 +168,18 @@ export async function adminDeleteReservation(id: string) {
   if (!adminCheck.success) {
     return adminCheck;
   }
-  await prisma.reservation.delete({
-    where: { id },
-  });
-  await invalidateCache("admin:dashboard:stats");
-  revalidatePath("/admin");
-  revalidatePath("/admin/reservations");
-  return { success: true };
+  try {
+    await prisma.reservation.delete({
+      where: { id },
+    });
+    await invalidateCache("admin:dashboard:stats");
+    revalidatePath("/admin");
+    revalidatePath("/admin/reservations");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete reservation:", error);
+    return { success: false, error: "Gagal menghapus reservasi" };
+  }
 }
 
 // =======================
@@ -308,7 +313,7 @@ export async function adminToggleCourtActive(id: string, formData: FormData) {
   revalidatePath("/admin/courts");
   revalidatePath("/courts");
   revalidatePath("/");
-  return { success: true };
+  return { success: true as const };
 }
 
 

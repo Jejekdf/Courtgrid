@@ -118,6 +118,7 @@ export default function AdminDashboardPage() {
             time: res.startTime ? `${res.startTime} - ${res.endTime} WIB` : "-",
             status: (res.status || "PENDING") as "PENDING" | "DP_PAID" | "DONE" | "CANCELED",
             amount: formatRupiah(res.totalPrice || 0),
+            paymentStatus: res.paymentStatus,
           })) : []}
       />
     </div>

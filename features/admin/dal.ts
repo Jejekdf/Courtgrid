@@ -37,6 +37,7 @@ export type AdminStatsDTO = {
     endTime: string;
     totalPrice: number;
     status: string;
+    paymentStatus?: string;
   }>;
   revenueChart: Array<{
     date: string;
@@ -152,6 +153,7 @@ export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> 
             status: true,
             user: { select: { name: true, email: true } },
             court: { select: { name: true } },
+            payment: { select: { status: true } },
           },
         }),
         getAdminRevenueChartDAL(),
@@ -235,6 +237,7 @@ export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> 
           endTime: formatSlotHour(r.endTime),
           totalPrice: r.totalPrice,
           status: r.status,
+          paymentStatus: r.payment?.status,
         })),
         revenueChart,
       };

@@ -59,10 +59,19 @@ export default function AdminReservationsPage() {
 
   // Mutation for deleting reservation and invalidating cache
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => adminDeleteReservation(id),
+    mutationFn: async (id: string) => {
+      const res = await adminDeleteReservation(id);
+      if (!res.success) {
+        throw new Error(res.error || "Gagal menghapus reservasi");
+      }
+      return res;
+    },
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: adminKeys.all });
       toast.success(t("deletedToast", { id: id.slice(0, 8) }));
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Gagal menghapus reservasi");
     },
   });
 
