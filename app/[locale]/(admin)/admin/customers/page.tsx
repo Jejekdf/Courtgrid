@@ -71,14 +71,19 @@ export default function AdminCustomersPage() {
   const totalPages = data?.totalPages ?? 1;
 
   const deleteMutation = useMutation({
-    mutationFn: (userId: string) => adminDeleteCustomer(userId),
-    onSuccess: (result) => {
-      if (result.success) {
-        queryClient.invalidateQueries({ queryKey: adminKeys.customersAll() });
-        toast.success(t("deletedToast"));
-      } else {
-        toast.error(result.error || t("deleteFailedToast"));
+    mutationFn: async (userId: string) => {
+      const result = await adminDeleteCustomer(userId);
+      if (!result.success) {
+        throw new Error(result.error || t("deleteFailedToast"));
       }
+      return result;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.customersAll() });
+      toast.success(t("deletedToast"));
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : t("deleteFailedToast"));
     },
   });
 

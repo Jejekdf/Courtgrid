@@ -35,30 +35,68 @@ export default function AdminCourtsPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => adminDeleteCourt(id),
-    onSuccess: (result) => {
-      if (result.success) {
-        queryClient.invalidateQueries({ queryKey: courtKeys.all });
-        toast.success(t("deletedToast"));
-      } else {
-        toast.error(result.error || t("deletedFailToast"));
+    mutationFn: async (id: string) => {
+      const result = await adminDeleteCourt(id);
+      if (!result.success) {
+        throw new Error(result.error || t("deletedFailToast"));
       }
+      return result;
+    },
+    onMutate: async (id: string) => {
+      await queryClient.cancelQueries({ queryKey: courtKeys.all });
+      const previousCourts = queryClient.getQueryData<AdminCourt[]>(courtKeys.all);
+      queryClient.setQueryData<AdminCourt[]>(courtKeys.all, (old) =>
+        old ? old.filter((court) => court.id !== id) : []
+      );
+      return { previousCourts };
+    },
+    onError: (err, _id, context) => {
+      if (context?.previousCourts) {
+        queryClient.setQueryData(courtKeys.all, context.previousCourts);
+      }
+      toast.error(err instanceof Error ? err.message : t("deletedFailToast"));
+    },
+    onSuccess: () => {
+      toast.success(t("deletedToast"));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: courtKeys.all });
     },
   });
 
   const toggleMutation = useMutation({
-    mutationFn: ({ court, isActive }: { court: AdminCourt; isActive: boolean }) => {
+    mutationFn: async ({ court, isActive }: { court: AdminCourt; isActive: boolean }) => {
       const formData = new FormData();
       formData.append("isActive", isActive.toString());
-      return adminToggleCourtActive(court.id, formData);
+      const res = await adminToggleCourtActive(court.id, formData);
+      if (!res.success) {
+        throw new Error(res.error || "Failed to update court status");
+      }
+      return res;
+    },
+    onMutate: async ({ court, isActive }) => {
+      await queryClient.cancelQueries({ queryKey: courtKeys.all });
+      const previousCourts = queryClient.getQueryData<AdminCourt[]>(courtKeys.all);
+      queryClient.setQueryData<AdminCourt[]>(courtKeys.all, (old) =>
+        old ? old.map((c) => (c.id === court.id ? { ...c, isActive } : c)) : []
+      );
+      return { previousCourts };
+    },
+    onError: (err, _vars, context) => {
+      if (context?.previousCourts) {
+        queryClient.setQueryData(courtKeys.all, context.previousCourts);
+      }
+      toast.error(err instanceof Error ? err.message : "Failed to update court status");
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: courtKeys.all });
       toast.success(
         variables.isActive
           ? t("activatedToast", { name: variables.court.name })
           : t("deactivatedToast", { name: variables.court.name })
       );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: courtKeys.all });
     },
   });
 

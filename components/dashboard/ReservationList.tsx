@@ -3,7 +3,8 @@
 
 import { useState } from "react";
 import { useQueryState } from "nuqs";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "@/i18n/navigation";
 import { QrCode } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
@@ -41,22 +42,29 @@ export default function ReservationList({
   reservations: ReservationRow[];
 }) {
   const t = useTranslations("dashboard.reservations");
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useQueryState("status", reservationListParsers.status.withOptions({ shallow: true }));
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [pendingCancelId, setPendingCancelId] = useState<string | null>(null);
 
   const cancelMutation = useMutation({
-    mutationFn: (reservationId: string) =>
-      cancelReservationAction({ reservationId }),
-    onSuccess: (result) => {
-      if (result.success) {
-        toast.success(result.message);
-      } else {
-        toast.error(result.error);
+    mutationFn: async (reservationId: string) => {
+      const result = await cancelReservationAction({ reservationId });
+      if (!result.success) {
+        throw new Error(result.error || t("cancelErrorToast"));
       }
+      return result;
     },
-    onError: () => toast.error(t("cancelErrorToast")),
+    onSuccess: (result) => {
+      toast.success(result.message);
+      queryClient.invalidateQueries();
+      router.refresh();
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : t("cancelErrorToast"));
+    },
   });
 
   const handleCopyId = async (id: string) => {

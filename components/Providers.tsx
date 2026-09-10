@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { SessionProvider } from "next-auth/react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { MotionConfig } from "motion/react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { makeQueryClient } from "@/lib/react-query";
+import { getQueryClient } from "@/lib/react-query";
 import { usePathname } from "@/i18n/navigation";
 
 function ScrollReset() {
@@ -22,7 +22,7 @@ function ScrollReset() {
 }
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(() => makeQueryClient());
+  const queryClient = getQueryClient();
 
   return (
     <NuqsAdapter>
