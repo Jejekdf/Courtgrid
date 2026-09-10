@@ -62,3 +62,20 @@ export async function invalidateCache(...keys: string[]): Promise<void> {
     console.warn(`[Redis Cache DEL Error] Keys: ${keys.join(", ")}`, err);
   }
 }
+
+/**
+ * Invalidate cache keys matching a pattern
+ */
+export async function invalidateCachePattern(pattern: string): Promise<void> {
+  const redis = getRedisClient();
+  if (!redis || !pattern) return;
+
+  try {
+    const keys = await redis.keys(pattern);
+    if (keys.length > 0) {
+      await redis.del(...keys);
+    }
+  } catch (err) {
+    console.warn(`[Redis Cache DEL Pattern Error] Pattern: ${pattern}`, err);
+  }
+}

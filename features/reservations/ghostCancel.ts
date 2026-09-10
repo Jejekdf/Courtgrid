@@ -1,6 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
+import { invalidateCache, invalidateCachePattern } from "@/lib/redis";
 
 /**
  * Single owner rule for ghost-booking auto-cancel.
@@ -20,7 +21,7 @@ export async function autoCancelGhostBookings(): Promise<void> {
 
   const cutoff = new Date(Date.now() - timeoutMinutes * 60 * 1000);
 
-  await prisma.reservation.updateMany({
+  const result = await prisma.reservation.updateMany({
     where: {
       status: "PENDING",
       createdAt: { lt: cutoff },
@@ -30,4 +31,10 @@ export async function autoCancelGhostBookings(): Promise<void> {
       status: "CANCELED",
     },
   });
+
+  if (result.count > 0) {
+    await invalidateCache("admin:dashboard:stats");
+    await invalidateCachePattern("customer:*:reservations");
+  }
 }
+

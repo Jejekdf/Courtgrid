@@ -109,8 +109,12 @@ export async function POST(req: Request) {
 
       logger.info("Webhook:Success", `Payment verified and reservation ${reservationId} updated to DP_PAID.`, { reservationId });
 
-      // Invalidate Redis cache for admin stats
-      await invalidateCache("admin:dashboard:stats");
+      // Invalidate Redis cache for admin stats and customer reservations
+      if (reservation.userId) {
+        await invalidateCache("admin:dashboard:stats", `customer:${reservation.userId}:reservations`);
+      } else {
+        await invalidateCache("admin:dashboard:stats");
+      }
 
       // Revalidate admin and dashboard caches
       revalidatePath("/admin");

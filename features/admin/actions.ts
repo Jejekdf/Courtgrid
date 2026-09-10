@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getJakartaNow, jakartaDayBounds, jakartaMonthBounds, formatSlotHour } from "@/lib/timezone";
-import { invalidateCache } from "@/lib/redis";
+import { invalidateCache, invalidateCachePattern } from "@/lib/redis";
 import { getAdminDashboardStatsDAL, type AdminStatsDTO } from "@/features/admin/dal";
 
 // =======================
@@ -171,6 +171,7 @@ export async function adminDeleteReservation(id: string) {
   await prisma.reservation.delete({
     where: { id },
   });
+  await invalidateCache("admin:dashboard:stats");
   revalidatePath("/admin");
   revalidatePath("/admin/reservations");
   return { success: true };
@@ -223,6 +224,7 @@ export async function adminCreateCourt(formData: FormData) {
       },
     });
     await invalidateCache("admin:dashboard:stats");
+    await invalidateCachePattern("public:courts:*");
     revalidatePath("/admin/courts");
     revalidatePath("/courts");
     revalidatePath("/");
@@ -259,6 +261,8 @@ export async function adminUpdateCourt(id: string, formData: FormData) {
         imageUrl: courtData.imageUrl || null,
       },
     });
+    await invalidateCache("admin:dashboard:stats");
+    await invalidateCachePattern("public:courts:*");
     revalidatePath("/admin/courts");
     revalidatePath("/courts");
     revalidatePath("/");
@@ -278,6 +282,8 @@ export async function adminDeleteCourt(id: string) {
     return adminCheck;
   }
   await prisma.court.delete({ where: { id } });
+  await invalidateCache("admin:dashboard:stats");
+  await invalidateCachePattern("public:courts:*");
   revalidatePath("/admin/courts");
   revalidatePath("/courts");
   revalidatePath("/");
@@ -297,6 +303,8 @@ export async function adminToggleCourtActive(id: string, formData: FormData) {
     where: { id },
     data: { isActive },
   });
+  await invalidateCache("admin:dashboard:stats");
+  await invalidateCachePattern("public:courts:*");
   revalidatePath("/admin/courts");
   revalidatePath("/courts");
   revalidatePath("/");
@@ -461,6 +469,12 @@ export async function adminCheckInReservation(reservationId: string) {
     where: { id: reservationId.trim() },
     data: { status: "DONE" },
   });
+
+  if (reservation.userId) {
+    await invalidateCache("admin:dashboard:stats", `customer:${reservation.userId}:reservations`);
+  } else {
+    await invalidateCache("admin:dashboard:stats");
+  }
 
   revalidatePath("/admin");
   revalidatePath("/admin/reservations");
