@@ -7,6 +7,7 @@ import PageTransition from "@/components/motion/PageTransition";
 import { TicketVerificationDialog } from "@/components/admin/reservations/TicketVerificationDialog";
 import { useBoundStore, useAdminReservationsActions } from "@/stores/useBoundStore";
 import { useQueryClient } from "@tanstack/react-query";
+import { useKeyboardEvent } from "@react-hookz/web";
 import { adminKeys } from "@/lib/query-keys";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -15,6 +16,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isScannerOpen = useBoundStore((state) => state.adminReservations.scanner.isOpen);
   const { openScanner, closeScanner } = useAdminReservationsActions();
   const queryClient = useQueryClient();
+
+  useKeyboardEvent(
+    "F2",
+    (e) => {
+      e.preventDefault();
+      if (isScannerOpen) {
+        closeScanner();
+      } else {
+        openScanner();
+      }
+    },
+    [isScannerOpen, openScanner, closeScanner]
+  );
 
   return (
     <div className="min-h-dvh bg-zinc-50 flex font-sans text-zinc-950 selection:bg-zinc-950 selection:text-white">

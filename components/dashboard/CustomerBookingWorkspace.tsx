@@ -4,9 +4,10 @@ import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useQueryState, parseAsString } from "nuqs";
 import { motion } from "motion/react";
-import { Loader2 } from "lucide-react";
+import { Loader2, WifiOff } from "lucide-react";
 import { addDays, format } from "date-fns";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useNetworkState } from "@react-hookz/web";
 import { createReservationAction } from "@/features/reservations/actions";
 import { getCourts, getCourtAvailability } from "@/features/courts/actions";
 import { courtKeys } from "@/lib/query-keys";
@@ -40,6 +41,9 @@ export default function CustomerBookingWorkspace() {
   const tFlow = useTranslations("dashboard.book");
   const [paymentStatus, setPaymentStatus] = useQueryState("payment", parseAsString);
   const [courtId, setCourtId] = useQueryState("courtId", parseAsString.withDefault("").withOptions({ shallow: true }));
+
+  const network = useNetworkState();
+  const isOnline = network.online ?? true;
 
   const [selectedDate, setSelectedDate] = useState<string>(
     () => getJakartaNow().dateStr
@@ -129,6 +133,9 @@ export default function CustomerBookingWorkspace() {
   // Submit reservation and proceed to Stripe checkout
   const bookingMutation = useMutation({
     mutationFn: async () => {
+      if (!isOnline) {
+        throw new Error(tFlow("offlineToast"));
+      }
       if (selectedTimeSlots.length === 0 || !activeCourt)
         throw new Error(tVal("emptyTimeSlots"));
 
@@ -214,6 +221,13 @@ export default function CustomerBookingWorkspace() {
       transition={{ duration: 0.2 }}
       className="space-y-8 max-w-7xl mx-auto text-zinc-950"
     >
+      {!isOnline && (
+        <div className="flex items-center gap-2.5 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs font-semibold text-amber-800 shadow-xs">
+          <WifiOff className="size-4 shrink-0 text-amber-600" />
+          <span>{tFlow("offlineWarning")}</span>
+        </div>
+      )}
+
       <BookingDateSelector
         selectedDate={selectedDate}
         onSelectDate={handleSelectDate}
@@ -250,7 +264,7 @@ export default function CustomerBookingWorkspace() {
           voucherCode={voucherCode}
           onVoucherChange={setVoucherCode}
           onOpenPreview={() => setShowPreviewModal(true)}
-          isLoading={bookingMutation.isPending}
+          isLoading={bookingMutation.isPending || !isOnline}
         />
       </div>
 
@@ -265,6 +279,10 @@ export default function CustomerBookingWorkspace() {
         remainingCash={remainingCash}
         voucherCode={voucherCode}
         onConfirm={async () => {
+          if (!isOnline) {
+            toast.error(tFlow("offlineToast"));
+            return;
+          }
           setShowPreviewModal(false);
           bookingMutation.mutate();
         }}

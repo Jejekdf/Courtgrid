@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useDebouncedCallback } from "@react-hookz/web";
+import { useDebouncedCallback, usePrevious } from "@react-hookz/web";
 import { useQueryStates } from "nuqs";
 import { useQuery } from "@tanstack/react-query";
 import { RotateCcw, Search } from "lucide-react";
@@ -28,11 +28,10 @@ export default function CourtCatalog() {
     { value: "BADMINTON", label: t("tabBadminton") },
   ];
 
-  const [prevSearch, setPrevSearch] = useState(search);
+  const prevSearch = usePrevious(search);
   const [searchDraft, setSearchDraft] = useState(search);
 
-  if (search !== prevSearch) {
-    setPrevSearch(search);
+  if (prevSearch !== undefined && search !== prevSearch && searchDraft !== search) {
     setSearchDraft(search);
   }
 

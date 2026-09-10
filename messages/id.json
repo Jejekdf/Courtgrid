@@ -566,7 +566,9 @@
       "successToast": "Pembayaran DP berhasil. E-Ticket telah terbit.",
       "cancelToast": "Pembayaran dibatalkan.",
       "failTitle": "Pemesanan Gagal",
-      "failFallback": "Terjadi kesalahan."
+      "failFallback": "Terjadi kesalahan.",
+      "offlineWarning": "Koneksi internet terputus. Checkout dinonaktifkan sementara hingga perangkat kembali online.",
+      "offlineToast": "Koneksi internet terputus. Mohon periksa jaringan Anda."
     },
     "settings": {
       "metaTitle": "Profil & Keamanan | CourtGrid",
@@ -785,6 +787,14 @@
       "ticketInputPlaceholder": "Ketik atau tempel ID reservasi",
       "searchBtn": "Cari Tiket",
       "ticketNotFound": "E-Ticket tidak ditemukan.",
+      "cameraTab": "Scan Kamera",
+      "manualTab": "Input Manual",
+      "cameraHint": "Arahkan kamera ke QR code tiket pelanggan",
+      "cameraStart": "Nyalakan Kamera",
+      "cameraStop": "Matikan Kamera",
+      "cameraError": "Kamera tidak dapat diakses. Pastikan izin kamera browser aktif atau gunakan input manual.",
+      "scanSuccessToast": "QR Code berhasil dipindai",
+      "scanAnotherBtn": "Pindai Tiket Lain",
       "unknownCourt": "Lapangan",
       "statusDone": "Selesai",
       "customerLabel": "Pelanggan",

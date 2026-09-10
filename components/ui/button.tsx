@@ -1,9 +1,11 @@
 import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  asChild?: boolean;
   variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive";
   size?: "default" | "sm" | "lg" | "icon";
   isLoading?: boolean;
@@ -23,6 +25,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       disabled,
       type = "button",
+      asChild = false,
       ...props
     },
     ref
@@ -51,11 +54,12 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       icon: "h-11 w-11 sm:h-10 sm:w-10 text-sm rounded-lg p-0",
     };
 
+    const Comp = asChild ? Slot : "button";
+
     return (
-      <button
+      <Comp
         ref={ref}
-        type={type}
-        disabled={disabled || isLoading}
+        {...(!asChild ? { type, disabled: disabled || isLoading } : {})}
         className={cn(baseStyles, variants[variant], sizes[size], className)}
         {...props}
       >
@@ -68,7 +72,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {!isLoading && rightIcon ? (
           <span className="ml-2 shrink-0">{rightIcon}</span>
         ) : null}
-      </button>
+      </Comp>
     );
   }
 );

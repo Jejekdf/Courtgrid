@@ -565,7 +565,9 @@
       "successToast": "DP payment successful. Your E-Ticket has been issued.",
       "cancelToast": "Payment canceled.",
       "failTitle": "Booking Failed",
-      "failFallback": "Something went wrong."
+      "failFallback": "Something went wrong.",
+      "offlineWarning": "Internet connection lost. Checkout is temporarily disabled until back online.",
+      "offlineToast": "Internet connection lost. Please check your network connection."
     },
     "settings": {
       "metaTitle": "Profile & Security | CourtGrid",
@@ -784,6 +786,14 @@
       "ticketInputPlaceholder": "Type or paste Reservation ID",
       "searchBtn": "Search Ticket",
       "ticketNotFound": "E-Ticket not found.",
+      "cameraTab": "Camera Scan",
+      "manualTab": "Manual Input",
+      "cameraHint": "Point camera at customer E-Ticket QR Code",
+      "cameraStart": "Start Camera",
+      "cameraStop": "Stop Camera",
+      "cameraError": "Camera cannot be accessed. Check camera permissions or use manual input.",
+      "scanSuccessToast": "QR Code scanned successfully",
+      "scanAnotherBtn": "Scan Another Ticket",
       "unknownCourt": "Court",
       "statusDone": "Completed",
       "customerLabel": "Customer",
