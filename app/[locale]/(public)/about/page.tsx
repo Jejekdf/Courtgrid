@@ -8,6 +8,8 @@ import type { Locale } from "@/i18n/routing";
 
 const BASE_URL = "https://courtgrid-one.vercel.app";
 
+export const revalidate = 86400;
+
 export async function generateMetadata({
   params,
 }: {
