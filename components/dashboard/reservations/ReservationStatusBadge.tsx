@@ -18,11 +18,26 @@ export function ReservationStatusBadge({ status }: ReservationStatusBadgeProps) 
     }
   };
 
+  const getStatusLabel = () => {
+    switch (status) {
+      case "DP_PAID":
+        return "DP TERVERIFIKASI";
+      case "PENDING":
+        return "MENUNGGU PEMBAYARAN";
+      case "DONE":
+        return "SELESAI";
+      case "CANCELED":
+        return "DIBATALKAN";
+      default:
+        return status.replace("_", " ");
+    }
+  };
+
   return (
     <span
       className={`px-2.5 py-1 rounded-md text-[0.6875rem] font-mono font-bold uppercase tracking-wider border ${getBadgeClass()}`}
     >
-      {status.replace("_", " ")}
+      {getStatusLabel()}
     </span>
   );
 }
@@ -40,7 +55,7 @@ export function PaymentStatusBadge({
     return (
       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[0.6875rem] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
         <CheckCircle2 className="size-3 text-emerald-600" />
-        VERIFIED (50% DP)
+        TERVERIFIKASI DP 50%
       </span>
     );
   }
@@ -48,14 +63,15 @@ export function PaymentStatusBadge({
   if (reservationStatus === "CANCELED") {
     return (
       <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[0.6875rem] font-mono font-bold bg-red-50 text-red-700 border border-red-200">
-        HANGUS / BATAL
+        DIBATALKAN
       </span>
     );
   }
 
   return (
     <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[0.6875rem] font-mono font-bold bg-amber-50 text-amber-800 border border-amber-200">
-      UNPAID
+      BELUM DIBAYAR
     </span>
   );
 }
+

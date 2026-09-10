@@ -39,7 +39,7 @@ export default function ETicketShareActions({
   const t = useTranslations("dashboard.eticket");
   const [hasCopied, setHasCopied] = useState(false);
 
-  const shareText = `*CourtGrid E-Ticket Reservasi*\nArena: ${courtName}\nTanggal: ${dateStr}\nJam: ${startTime} - ${endTime} WIB\nTotal: ${totalPriceFormatted} (DP: ${dpAmountFormatted})\nKode Tiket: #${ticketId}\nStatus: ${isVerified ? "DP Lunas" : "Menunggu DP"}\n\nTunjukkan tiket ini ke petugas saat tiba di GOR.`;
+  const shareText = `*CourtGrid E-Ticket Reservasi*\nArena ${courtName}\nTanggal ${dateStr}\nJam ${startTime} sampai ${endTime} WIB\nTotal ${totalPriceFormatted} dengan DP ${dpAmountFormatted}\nKode Tiket #${ticketId}\nStatus ${isVerified ? "DP Lunas" : "Menunggu DP"}\n\nTunjukkan QR ini ke kasir GOR saat tim kamu tiba di lokasi.`;
 
   const handleShareWhatsApp = () => {
     const url = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
@@ -59,9 +59,9 @@ export default function ETicketShareActions({
 
   const calendarDate = rawDateStr || dateStr;
   const calendarEvent = {
-    title: `Booking Arena: ${courtName}`,
-    description: `CourtGrid E-Ticket #${ticketId}\nArena: ${courtName}\nJam: ${startTime} - ${endTime} WIB\nStatus: ${isVerified ? "DP Lunas" : "Menunggu DP"}\nTunjukkan e-ticket ini saat tiba di lokasi.`,
-    location: "CourtGrid Sport Center, Jakarta",
+    title: `Booking Arena ${courtName}`,
+    description: `CourtGrid E-Ticket #${ticketId}\nArena ${courtName}\nJam ${startTime} sampai ${endTime} WIB\nStatus ${isVerified ? "DP Lunas" : "Menunggu DP"}\nTunjukkan QR ini saat tiba di lokasi.`,
+    location: "CourtGrid Sport Center Jakarta",
     dateStr: calendarDate,
     startTime,
     endTime,
