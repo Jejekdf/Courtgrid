@@ -7,6 +7,7 @@ import { AppUser } from "@/auth.config";
 import { getReservationDetailsDAL } from "@/features/reservations/dal";
 import PrintButton from "@/components/ui/PrintButton";
 import { AdminCheckInButton } from "@/components/admin/eticket/AdminCheckInButton";
+import QRCode from "qrcode";
 import { ArrowLeft, ShieldCheck, Calendar, Clock, Receipt, Mail, Phone } from "lucide-react";
 import { formatRupiah, safeFormatDate } from "@/lib/utils";
 import type { Locale } from "@/i18n/routing";
@@ -64,6 +65,13 @@ export default async function AdminETicketPage({
   const remainingAmount = reservation.totalPrice - dpAmount;
   const isVerified = reservation.status === "DP_PAID" || reservation.payment?.status === "VERIFIED";
 
+  // Generate real dynamic QR code SVG for ticket check-in
+  const qrSvg = await QRCode.toString(reservation.id, {
+    type: "svg",
+    margin: 1,
+    color: { dark: "#09090b", light: "#ffffff" },
+  });
+
   return (
     <div className="space-y-8 max-w-3xl">
       {/* Back Link */}
@@ -78,20 +86,20 @@ export default async function AdminETicketPage({
       {/* E-Ticket Card */}
       <div className="bg-white border border-zinc-200 rounded-2xl shadow-sm overflow-hidden">
         {/* Header */}
-        <div className="bg-zinc-950 px-8 py-6 text-white">
-          <div className="flex items-center justify-between">
+        <div className="bg-zinc-950 px-5 sm:px-8 py-5 sm:py-6 text-white">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-                <ShieldCheck className="size-7 text-emerald-400" />
-                CourtGrid E-Ticket
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight flex items-center gap-2.5 sm:gap-3">
+                <ShieldCheck className="size-6 sm:size-7 text-emerald-400 shrink-0" />
+                <span>CourtGrid E-Ticket</span>
               </h1>
-              <p className="text-zinc-400 text-sm mt-1">
+              <p className="text-zinc-400 text-xs sm:text-sm mt-1">
                 {t("venueHint")}
               </p>
             </div>
-            <div className="text-right">
-              <div className="text-xs text-zinc-400 uppercase tracking-widest font-semibold">{t("ticketId")}</div>
-              <div className="font-mono text-sm font-bold text-emerald-400">
+            <div className="text-left sm:text-right shrink-0">
+              <div className="text-[0.6875rem] sm:text-xs text-zinc-400 uppercase tracking-widest font-semibold">{t("ticketId")}</div>
+              <div className="font-mono text-xs sm:text-sm font-bold text-emerald-400 break-all">
                 {reservation.id}
               </div>
             </div>
@@ -99,14 +107,13 @@ export default async function AdminETicketPage({
         </div>
 
         {/* Body */}
-        <div className="p-8 space-y-8">
+        <div className="p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
           {/* QR + Customer Info */}
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="shrink-0 bg-white p-4 rounded-2xl border border-zinc-200 shadow-sm">
-              <svg className="size-32" viewBox="0 0 100 100" fill="currentColor">
-                <path d="M0,0 h30 v30 h-30 z M10,10 h10 v10 h-10 z M70,0 h30 v30 h-30 z M80,10 h10 v10 h-10 z M0,70 h30 v30 h-30 z M10,80 h10 v10 h-10 z M40,0 h20 v10 h-20 z M0,40 h10 v20 h-10 z M40,40 h20 v20 h-20 z M70,40 h10 v10 h-10 z M90,50 h10 v20 h-10 z M40,70 h10 v30 h-10 z M60,70 h30 v10 h-30 z M80,90 h20 v10 h-20 z" />
-              </svg>
-            </div>
+            <div
+              className="shrink-0 bg-white p-3 rounded-2xl border border-zinc-200 shadow-xs size-36 flex items-center justify-center [&>svg]:size-full"
+              dangerouslySetInnerHTML={{ __html: qrSvg }}
+            />
 
             <div className="flex-1 space-y-3 w-full">
               <div className="flex items-center gap-2 text-lg font-bold text-zinc-950">
@@ -193,7 +200,7 @@ export default async function AdminETicketPage({
           <hr className="border-zinc-100" />
 
           {/* Admin Actions */}
-          <div className="flex items-center justify-between pt-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
             <div>
               <div className="text-xs text-zinc-400 uppercase tracking-widest font-semibold">{t("paymentStatusLabel")}</div>
               <div className="mt-1 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border">
@@ -210,7 +217,7 @@ export default async function AdminETicketPage({
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
               <PrintButton />
               <AdminCheckInButton reservationId={reservation.id} status={reservation.status} />
             </div>

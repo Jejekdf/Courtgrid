@@ -79,20 +79,20 @@ export default async function CustomerETicketPage({
       {/* E-Ticket Card */}
       <div className="bg-white border border-zinc-200 rounded-2xl shadow-sm overflow-hidden">
         {/* Header */}
-        <div className="bg-zinc-950 px-8 py-6 text-white">
-          <div className="flex items-center justify-between">
+        <div className="bg-zinc-950 px-5 sm:px-8 py-5 sm:py-6 text-white">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-                <ShieldCheck className="size-7 text-emerald-400" />
-                CourtGrid E-Ticket
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight flex items-center gap-2.5 sm:gap-3">
+                <ShieldCheck className="size-6 sm:size-7 text-emerald-400 shrink-0" />
+                <span>CourtGrid E-Ticket</span>
               </h1>
-              <p className="text-zinc-400 text-sm mt-1">
+              <p className="text-zinc-400 text-xs sm:text-sm mt-1">
                 {t("cashierHint")}
               </p>
             </div>
-            <div className="text-right">
-              <div className="text-xs text-zinc-400 uppercase tracking-widest font-semibold">{t("ticketId")}</div>
-              <div className="font-mono text-sm font-bold text-emerald-400">
+            <div className="text-left sm:text-right shrink-0">
+              <div className="text-[0.6875rem] sm:text-xs text-zinc-400 uppercase tracking-widest font-semibold">{t("ticketId")}</div>
+              <div className="font-mono text-xs sm:text-sm font-bold text-emerald-400 break-all">
                 {reservation.id}
               </div>
             </div>
@@ -100,7 +100,7 @@ export default async function CustomerETicketPage({
         </div>
 
         {/* Body */}
-        <div className="p-8 space-y-8">
+        <div className="p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
           {/* QR & Court Info */}
           <div className="flex flex-col md:flex-row items-center gap-8">
             {/* Real Dynamic QR Code */}
@@ -185,8 +185,8 @@ export default async function CustomerETicketPage({
             </div>
           </div>
 
-          {/* Status Badge */}
-          <div className="flex items-center justify-between pt-4 border-t border-zinc-100">
+          {/* Status Badge & Actions */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-zinc-100">
             <div>
               <div className="text-xs text-zinc-400 uppercase tracking-widest font-semibold">{t("paymentStatusLabel")}</div>
               <div className="mt-1 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border">
@@ -204,7 +204,7 @@ export default async function CustomerETicketPage({
             </div>
 
             {/* Actions */}
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
               <ETicketShareActions
                 ticketId={reservation.id}
                 courtName={reservation.court?.name ?? t("unknownCourt")}

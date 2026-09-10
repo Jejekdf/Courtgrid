@@ -116,7 +116,7 @@ export function TicketVerificationDialog({
         onOpenChange(open);
       }}
     >
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-base font-bold text-zinc-950 flex items-center gap-2">
             <ShieldCheck className="size-5 text-emerald-600" />
