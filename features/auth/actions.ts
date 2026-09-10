@@ -327,10 +327,11 @@ export async function forgotPasswordAction(rawInput: unknown): Promise<ForgotPas
   }
 
   const resetToken = crypto.randomBytes(32).toString("hex");
+  const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
   const passwordResetExpires = new Date(Date.now() + 3600000);
 
   await prisma.passwordResetToken.create({
-    data: { email: user.email!, token: resetToken, expires: passwordResetExpires },
+    data: { email: user.email!, token: hashedToken, expires: passwordResetExpires },
   });
 
   const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/reset-password?token=${resetToken}`;
@@ -368,7 +369,8 @@ export async function resetPasswordAction(rawInput: unknown): Promise<ResetPassw
     return { success: false, error: t("rateLimitResetSubmit") };
   }
 
-  const resetToken = await prisma.passwordResetToken.findUnique({ where: { token } });
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  const resetToken = await prisma.passwordResetToken.findUnique({ where: { token: hashedToken } });
   if (!resetToken) {
     return { success: false, error: t("resetLinkInvalid") };
   }

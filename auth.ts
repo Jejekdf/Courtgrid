@@ -43,13 +43,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { email },
         });
 
-        if (!user) {
-          return null;
-        }
-
+        // Run password verification unconditionally to ensure constant-time response
         const isPasswordValid = await verifyCredentialsPassword(user, password);
 
         if (!isPasswordValid) {
+          return null;
+        }
+
+        if (!user) {
           return null;
         }
 
