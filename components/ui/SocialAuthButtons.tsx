@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -44,6 +44,17 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
   const [loadingProvider, setLoadingProvider] = useState<"google" | "facebook" | null>(null);
   const t = useTranslations("auth.social");
 
+  useEffect(() => {
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        setLoadingProvider(null);
+      }
+    };
+
+    window.addEventListener("pageshow", handlePageShow);
+    return () => window.removeEventListener("pageshow", handlePageShow);
+  }, []);
+
   const handleProviderSignIn = async (provider: "google" | "facebook") => {
     setLoadingProvider(provider);
     try {
@@ -57,7 +68,7 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
     <div className="space-y-3 w-full">
       <div className="relative flex items-center justify-center my-3">
         <div className="border-t border-zinc-200 w-full" />
-        <span className="bg-background px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider shrink-0">
+        <span className="bg-white px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider shrink-0">
           {t("divider")}
         </span>
         <div className="border-t border-zinc-200 w-full" />
@@ -70,7 +81,7 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
           isLoading={loadingProvider === "google" || isLoading}
           onClick={() => handleProviderSignIn("google")}
           leftIcon={loadingProvider !== "google" ? <GoogleIcon /> : null}
-          className="w-full text-sm sm:text-base font-semibold border-zinc-200 hover:bg-zinc-50 min-h-11 sm:min-h-12 h-11 sm:h-12 rounded-xl"
+          className="w-full px-2 sm:px-4 text-sm sm:text-base font-semibold border-zinc-200 hover:bg-zinc-50 min-h-11 sm:min-h-12 h-11 sm:h-12 rounded-xl"
         >
           {t("google")}
         </Button>
@@ -81,7 +92,7 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
           isLoading={loadingProvider === "facebook" || isLoading}
           onClick={() => handleProviderSignIn("facebook")}
           leftIcon={loadingProvider !== "facebook" ? <FacebookIcon /> : null}
-          className="w-full text-sm sm:text-base font-semibold border-zinc-200 hover:bg-zinc-50 min-h-11 sm:min-h-12 h-11 sm:h-12 rounded-xl"
+          className="w-full px-2 sm:px-4 text-sm sm:text-base font-semibold border-zinc-200 hover:bg-zinc-50 min-h-11 sm:min-h-12 h-11 sm:h-12 rounded-xl"
         >
           {t("facebook")}
         </Button>
