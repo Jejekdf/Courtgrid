@@ -264,7 +264,7 @@ export const getAdminPaginatedReservationsDAL = cache(
       prisma.reservation.count({ where: dateFilter }),
       prisma.reservation.findMany({
         where: dateFilter,
-        orderBy: { date: "desc" },
+        orderBy: [{ date: "desc" }, { startTime: "asc" }, { createdAt: "desc" }],
         skip: (page - 1) * pageSize,
         take: pageSize,
         select: {
