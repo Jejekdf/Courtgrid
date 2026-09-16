@@ -175,7 +175,7 @@
     "guideBadge": "Reservation Guide",
     "guideTitle": "How Booking Works at CourtGrid",
     "guideDesc": "From picking a time slot to getting your E-Ticket, it only takes four simple steps.",
-    "step1Title": "Choose Court & Schedule",
+    "step1Title": "Select Court & Schedule",
     "step1Desc": "Browse live availability and pick your preferred match hours.",
     "step2Title": "Slot Held for 15 Minutes",
     "step2Desc": "Your time slot is reserved while you complete the down payment.",
@@ -190,7 +190,7 @@
     "bookFutsal": "Book Futsal",
     "bookBadminton": "Book Badminton",
     "eticketFeatureTitle": "Digital QR E-Ticket",
-    "eticketFeatureDesc": "Quick check-in by scanning at venue reception without lines or paper tickets."
+    "eticketFeatureDesc": "Simply show the QR code on your phone to the venue receptionist for instant court entry."
   },
   "hero": {
     "badge": "Real-Time Reservation System",
@@ -209,7 +209,7 @@
     "viewSpecs": "View Court Specifications",
     "turfSurface": "Synthetic Turf",
     "vinylSurface": "BWF Vinyl Mat",
-    "swipeHint": "Swipe to explore courts"
+    "swipeHint": "Swipe to browse courts"
   },
   "about": {
     "metaTitle": "About Us",
@@ -220,7 +220,7 @@
     "title": "Easier Court Booking, Schedules You Can Count On",
     "description": "CourtGrid makes court booking transparent: real-time availability updates instantly and slots lock immediately once the down payment is completed.",
     "stats": {
-      "arenas": "5 Arenas",
+      "arenas": "5 Courts",
       "arenasSub": "Futsal & Badminton",
       "arenasLabel": "2 Futsal + 3 Badminton",
       "dp": "50% DP",
@@ -449,6 +449,7 @@
   "success": {
     "metaTitle": "Payment Successful | CourtGrid",
     "metaDesc": "Your court booking DP payment was successful.",
+    "badge": "Real-Time Verified",
     "title": "DP Payment Successful",
     "description": "We received your court booking DP payment. Your E-Ticket has been sent to your email.",
     "viewReservations": "View Booking History",
@@ -559,7 +560,7 @@
       "metaTitle": "Book a Court | CourtGrid Customer Portal",
       "metaDesc": "Book futsal & badminton courts instantly on the Customer Portal.",
       "pageTitle": "Book a Court & Rental Session",
-      "pageDesc": "Pick your favorite arena, choose the play date, and reserve an available hourly session in real time.",
+      "pageDesc": "Pick your favorite court, choose the play date, and reserve an available hourly session in real time.",
       "loadingCourts": "Loading courts & availability...",
       "redirectToast": "Redirecting to payment checkout...",
       "successToast": "DP payment successful. Your E-Ticket has been issued.",
@@ -598,8 +599,8 @@
       "avatarHint": "Click the photo to upload an avatar"
     },
     "bookingFlow": {
-      "step1": "1. Pick Your Arena",
-      "activeArenas": "{count} Active Arenas",
+      "step1": "1. Select Court",
+      "activeArenas": "{count} Active Courts",
       "perHour": "Hourly Rate",
       "selectedBadge": "SELECTED",
       "step2": "2. Pick Play Hours • {court}",
@@ -609,7 +610,7 @@
       "legendPast": "Past",
       "summaryTitle": "Rental Summary",
       "stripeBadge": "ONLINE PAYMENT",
-      "courtLabel": "Arena Court",
+      "courtLabel": "Court",
       "dateLabel": "Play Date",
       "durationLabel": "Total Duration",
       "durationValue": "{count} Hour Sessions",
@@ -620,7 +621,7 @@
       "cashRemaining": "Balance Due at Venue",
       "payButton": "Preview & Pay DP",
       "emptyTitle": "No Hours Selected Yet",
-      "emptyDesc": "Pick an arena and at least 1 hour session on the left.",
+      "emptyDesc": "Select a court and at least 1 hour session on the left.",
       "dateTitle": "Set Your Play Date",
       "today": "Today",
       "tomorrow": "Tomorrow",
@@ -652,7 +653,7 @@
       "notificationsTitle": "System Notifications",
       "pendingBadge": "{count} PENDING",
       "emptyNotifications": "No new notifications.",
-      "searchPlaceholder": "Search reservation ID, customer, arena",
+      "searchPlaceholder": "Search reservation ID, customer, court",
       "searchIdleHint": "Type to search reservations or courts",
       "searchNoResults": "No matching data.",
       "superadminRole": "Superadmin",
@@ -707,14 +708,14 @@
     },
     "courts": {
       "title": "Courts",
-      "desc": "Manage futsal and badminton arena data, hourly rates, and court photos.",
+      "desc": "Manage futsal and badminton court data, hourly rates, and court photos.",
       "addCourt": "Add Court",
       "editDialogTitle": "Edit Court",
       "addDialogTitle": "Add New Court",
       "formDesc": "Fill in the form or upload an image file directly from your device.",
       "nameLabel": "Court Name",
       "namePlaceholder": "E.g.: Futsal Court A",
-      "typeLabel": "Arena Type",
+      "typeLabel": "Court Type",
       "priceLabel": "Price Per Hour",
       "pricePlaceholder": "E.g.: 150000",
       "uploadLabel": "Upload Court Photo",
@@ -792,10 +793,14 @@
       "cameraStart": "Start Camera",
       "cameraStop": "Stop Camera",
       "cameraError": "Camera cannot be accessed. Check camera permissions or use manual input.",
+      "cameraPermissionDenied": "Camera access denied. Please grant camera permission in browser settings or use manual input.",
+      "cameraNotFound": "No camera device found. Please use the manual input tab.",
+      "cameraInUse": "Camera is currently in use by another application. Please close it and retry.",
+      "cameraInsecureContext": "Camera access requires a secure connection (HTTPS). Please use manual input.",
       "scanSuccessToast": "QR Code scanned successfully",
       "scanAnotherBtn": "Scan Another Ticket",
       "unknownCourt": "Court",
-      "statusDone": "Completed",
+      "statusDone": "Done",
       "customerLabel": "Customer",
       "scheduleLabel": "Session Schedule",
       "totalLabel": "Total Price",
@@ -816,7 +821,6 @@
       "allStatus": "All Statuses",
       "statusPending": "Awaiting DP",
       "statusDpPaid": "DP Paid",
-      "statusDone": "Done",
       "statusCanceled": "Canceled"
     },
     "customers": {
