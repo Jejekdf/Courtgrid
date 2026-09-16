@@ -193,17 +193,17 @@ export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> 
       }
 
       const pad = (n: number) => String(n).padStart(2, "0");
-      const peakHour = `${pad(topHour)}:00 - ${pad(topHour + 1)}:00`;
+      const peakHour = maxCount > 0 ? `${pad(topHour)}:00 - ${pad(topHour + 1)}:00` : "";
 
       const hourlyDistribution: HourlyDistributionDatum[] = [];
       for (let h = 8; h <= 21; h++) {
         const count = slotCounts[h];
         let intensity: HourlyDistributionDatum["intensity"] = "low";
-        if (count === maxCount && maxCount > 0) {
+        if (count >= 4 && count === maxCount) {
           intensity = "peak";
-        } else if (maxCount > 0 && count >= maxCount * 0.6) {
+        } else if (count >= 3 && maxCount > 0 && count >= maxCount * 0.6) {
           intensity = "high";
-        } else if (maxCount > 0 && count >= maxCount * 0.25) {
+        } else if (count >= 2 || (count === 1 && maxCount < 3)) {
           intensity = "medium";
         }
         hourlyDistribution.push({
