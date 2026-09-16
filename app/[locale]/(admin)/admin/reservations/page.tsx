@@ -149,7 +149,7 @@ export default function AdminReservationsPage() {
             <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
               <button
                 onClick={openScanner}
-                className="px-3.5 py-2 min-h-10 text-xs sm:text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer"
+                className="w-full sm:w-auto justify-center px-3.5 py-2 min-h-10 text-xs sm:text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors inline-flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer"
               >
                 <ShieldCheck className="size-4" />
                 <span>{t("verifyTicketBtn")}</span>

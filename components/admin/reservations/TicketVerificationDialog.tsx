@@ -180,36 +180,81 @@ export function TicketVerificationDialog({
         await executeSearch(cleanId);
       };
 
-      let cameraIdOrConfig: string | { facingMode: string } = { facingMode: "environment" };
+      let started = false;
+      let lastError: unknown = null;
+
+      // 1. Mobile phone / tablet: rear camera
       try {
-        const cameras = await Html5Qrcode.getCameras();
-        if (cameras && cameras.length > 0) {
-          const backCam = cameras.find((c) => {
-            const label = c.label.toLowerCase();
-            return label.includes("back") || label.includes("rear") || label.includes("environment");
-          });
-          cameraIdOrConfig = backCam ? backCam.id : cameras[0].id;
+        await scanner.start(
+          { facingMode: "environment" },
+          qrConfig,
+          onScanSuccess,
+          () => {}
+        );
+        started = true;
+      } catch (envErr) {
+        lastError = envErr;
+        const errName = envErr instanceof Error ? envErr.name : "";
+        const errMsg = envErr instanceof Error ? envErr.message : String(envErr);
+        const isPermissionDenied =
+          errName === "NotAllowedError" ||
+          errName === "PermissionDeniedError" ||
+          errMsg.includes("NotAllowedError") ||
+          errMsg.includes("Permission denied") ||
+          errMsg.toLowerCase().includes("permission");
+
+        if (isPermissionDenied) {
+          throw envErr;
         }
-      } catch (camErr) {
-        console.warn("Unable to query camera list via getCameras, falling back to facingMode:", camErr);
       }
 
-      try {
-        await scanner.start(
-          cameraIdOrConfig,
-          qrConfig,
-          onScanSuccess,
-          () => {}
-        );
-      } catch (startErr) {
-        console.warn("First scanner start attempt failed, attempting fallback:", startErr);
-        // If deviceId or environment failed, try user-facing or default
-        await scanner.start(
-          { facingMode: "user" },
-          qrConfig,
-          onScanSuccess,
-          () => {}
-        );
+      // 2. Laptop / desktop webcam fallback
+      if (!started) {
+        try {
+          await scanner.start(
+            { facingMode: "user" },
+            qrConfig,
+            onScanSuccess,
+            () => {}
+          );
+          started = true;
+        } catch (userErr) {
+          lastError = userErr;
+          const errName = userErr instanceof Error ? userErr.name : "";
+          const errMsg = userErr instanceof Error ? userErr.message : String(userErr);
+          const isPermissionDenied =
+            errName === "NotAllowedError" ||
+            errName === "PermissionDeniedError" ||
+            errMsg.includes("NotAllowedError") ||
+            errMsg.includes("Permission denied") ||
+            errMsg.toLowerCase().includes("permission");
+
+          if (isPermissionDenied) {
+            throw userErr;
+          }
+        }
+      }
+
+      // 3. Explicit deviceId fallback
+      if (!started) {
+        try {
+          const cameras = await Html5Qrcode.getCameras();
+          if (cameras && cameras.length > 0) {
+            await scanner.start(
+              cameras[0].id,
+              qrConfig,
+              onScanSuccess,
+              () => {}
+            );
+            started = true;
+          }
+        } catch (camErr) {
+          lastError = camErr;
+        }
+      }
+
+      if (!started) {
+        throw lastError || new Error("Failed to start camera scanner");
       }
 
       setIsCameraActive(true);
@@ -369,50 +414,56 @@ export function TicketVerificationDialog({
         {/* Camera Viewport */}
         {scanMode === "camera" && !scannedTicket && (
           <div className="space-y-3 mt-2">
-            <div className="relative w-full aspect-4/3 max-h-64 sm:max-h-72 rounded-xl overflow-hidden bg-zinc-950 border border-zinc-200 shadow-inner flex items-center justify-center">
+            <div className="relative w-full aspect-4/3 max-h-64 sm:max-h-72 rounded-xl overflow-hidden bg-zinc-950 border border-zinc-200/80 shadow-inner">
               <div
                 id="ticket-qr-reader"
-                className="w-full h-full [&_video]:size-full [&_video]:object-cover"
+                className="absolute inset-0 size-full [&_video]:size-full [&_video]:object-cover"
               />
 
               {isCameraActive && (
-                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                  <div className="relative size-44 sm:size-48 rounded-2xl border-2 border-emerald-500/90 shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]">
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center z-10">
+                  <div className="relative size-40 sm:size-48 rounded-2xl border-2 border-emerald-500/90 shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]">
                     <div className="absolute inset-x-0 top-0 h-0.5 bg-emerald-400 shadow-[0_0_8px_#10b981] animate-pulse" />
                   </div>
                 </div>
               )}
 
               {!isCameraActive && isCameraStarting && (
-                <div className="text-zinc-400 text-xs flex flex-col items-center gap-2 p-4 text-center">
-                  <Camera className="size-6 text-zinc-500 animate-pulse" />
-                  <span>{t("cameraStart")}...</span>
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 p-4 text-center bg-zinc-950/80 backdrop-blur-xs">
+                  <Camera className="size-6 text-zinc-400 animate-pulse" />
+                  <span className="text-xs font-medium text-zinc-300">{t("cameraStart")}...</span>
                 </div>
               )}
 
               {cameraError && (
-                <div className="p-4 text-center text-xs text-red-400 max-w-xs space-y-2">
-                  <CameraOff className="size-6 mx-auto text-red-400" />
-                  <p>{cameraError}</p>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={startCamera}
-                    className="mt-2 text-xs bg-zinc-900 border-zinc-700 text-white"
-                  >
-                    {t("cameraStart")}
-                  </Button>
+                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-4 text-center bg-zinc-950/92">
+                  <div className="w-full max-w-xs flex flex-col items-center gap-2.5">
+                    <div className="size-9 rounded-full bg-rose-500/15 border border-rose-500/30 flex items-center justify-center">
+                      <CameraOff className="size-4.5 text-rose-400" />
+                    </div>
+                    <p className="text-xs text-rose-200/90 leading-relaxed text-balance px-2">
+                      {cameraError}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => void startCamera()}
+                      className="mt-1 inline-flex items-center justify-center gap-2 px-4 py-2 min-h-10 text-xs font-semibold bg-white hover:bg-zinc-100 active:bg-zinc-200 text-zinc-950 rounded-lg transition-colors cursor-pointer shadow-xs"
+                    >
+                      <Camera className="size-3.5" />
+                      <span>{t("cameraStart")}</span>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
 
-            <div className="flex items-center justify-between text-xs text-zinc-500 px-1">
-              <span>{t("cameraHint")}</span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-xs text-zinc-500 px-1">
+              <span className="leading-snug">{t("cameraHint")}</span>
               {isCameraActive && (
                 <button
                   type="button"
                   onClick={stopCamera}
-                  className="text-xs text-zinc-600 hover:text-zinc-900 underline cursor-pointer"
+                  className="text-xs text-zinc-600 hover:text-zinc-900 underline cursor-pointer self-start sm:self-auto shrink-0"
                 >
                   {t("cameraStop")}
                 </button>

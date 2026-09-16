@@ -689,6 +689,7 @@
       "peakTipTitle": "Operational Insight",
       "peakTipDesc": "Evening slots 18:00–21:00 show highest demand. Optimize morning slots 08:00–14:00 with promotional discounts.",
       "noPeakData": "No reservation data yet",
+      "peakScrollHint": "Swipe to view all operating hours",
       "recentTitle": "Recent Reservations",
       "viewAll": "View All",
       "emptyTitle": "No Data",

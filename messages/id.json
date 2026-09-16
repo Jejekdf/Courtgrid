@@ -689,6 +689,7 @@
       "peakTipTitle": "Insight Operasional",
       "peakTipDesc": "Slot malam 18.00 sampai 21.00 memiliki pemesanan tertinggi. Optimalkan slot pagi 08.00 sampai 14.00 dengan voucher diskon.",
       "noPeakData": "Belum ada data reservasi",
+      "peakScrollHint": "Geser untuk melihat seluruh jam operasional",
       "recentTitle": "Reservasi Terbaru",
       "viewAll": "Lihat Semua",
       "emptyTitle": "Tidak Ada Data",
