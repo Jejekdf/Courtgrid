@@ -166,7 +166,7 @@ export function TicketVerificationDialog({
         fps: 10,
         qrbox: (viewfinderWidth: number, viewfinderHeight: number) => {
           const edge = Math.min(viewfinderWidth, viewfinderHeight);
-          const size = Math.max(160, Math.floor(edge * 0.72));
+          const size = Math.max(50, Math.min(edge, Math.floor(edge * 0.72)));
           return { width: size, height: size };
         },
       };
