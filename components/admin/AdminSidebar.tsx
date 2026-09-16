@@ -35,7 +35,7 @@ export default function AdminSidebar({ isOpen, isDesktopOpen = true, onClose }: 
       }`}
     >
       {/* Brand Header */}
-      <div className="h-18 sm:h-20 flex items-center justify-between px-6 border-b border-zinc-800/80 shrink-0">
+      <div className="h-16 flex items-center justify-between px-6 border-b border-zinc-800/80 shrink-0">
         <Link href="/admin" className="flex items-center gap-3 outline-hidden">
           <Image src="/logo.svg" alt="CourtGrid Logo" width={28} height={28} priority className="rounded-lg object-contain" />
           <span className="font-extrabold tracking-tight text-lg sm:text-xl">CourtGrid Admin</span>

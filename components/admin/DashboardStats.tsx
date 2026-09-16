@@ -76,31 +76,31 @@ export default function DashboardStats({
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-5">
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
       {stats.map((stat, i) => {
         const Icon = stat.icon;
         return (
           <div
             key={i}
-            className="p-5 sm:p-6 bg-white rounded-2xl border border-zinc-200/90 shadow-2xs hover:border-zinc-300 hover:shadow-xs transition-[border-color,box-shadow] flex flex-col justify-between gap-3"
+            className="p-3.5 sm:p-5 md:p-6 bg-white rounded-xl sm:rounded-2xl border border-zinc-200/90 shadow-2xs hover:border-zinc-300 hover:shadow-xs transition-[border-color,box-shadow] flex flex-col justify-between gap-2 sm:gap-3"
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 line-clamp-1 font-sans">
+              <span className="text-[0.6875rem] sm:text-xs font-semibold uppercase tracking-wider text-zinc-400 line-clamp-1 font-sans">
                 {stat.sub}
               </span>
-              <div className="size-9 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-900 shrink-0">
-                <Icon className="size-4.5 text-zinc-950" />
+              <div className="size-7 sm:size-9 rounded-lg sm:rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-900 shrink-0">
+                <Icon className="size-3.5 sm:size-4.5 text-zinc-950" />
               </div>
             </div>
 
-            <p className="text-2xl sm:text-3xl font-extrabold font-mono tabular-nums tracking-tight text-zinc-950 my-0.5">
+            <p className="text-lg sm:text-2xl md:text-3xl font-extrabold font-mono tabular-nums tracking-tight text-zinc-950 my-0.5 truncate">
               {stat.value}
             </p>
 
-            <div className="flex items-center justify-between gap-2 pt-1 border-t border-zinc-100">
-              <p className="text-sm font-medium text-zinc-600 truncate">{stat.title}</p>
+            <div className="flex items-center justify-between gap-1.5 pt-1 border-t border-zinc-100">
+              <p className="text-xs sm:text-sm font-medium text-zinc-600 truncate">{stat.title}</p>
               {stat.badge && (
-                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 shrink-0">
+                <span className="text-[0.625rem] sm:text-xs font-semibold px-2 sm:px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 shrink-0">
                   {stat.badge}
                 </span>
               )}

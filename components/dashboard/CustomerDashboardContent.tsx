@@ -49,7 +49,7 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
       />
 
       {/* Overview Stat Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-600 uppercase tracking-wider font-sans">{t("statTotal")}</span>
@@ -72,7 +72,7 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
           <p className="text-xs sm:text-sm text-zinc-600 font-sans">{t("statVerifiedSub")}</p>
         </div>
 
-        <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-xs space-y-2">
+        <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-xs space-y-2 sm:col-span-2 lg:col-span-1">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-600 uppercase tracking-wider font-sans">{t("accountStatus")}</span>
             <div className="size-8 rounded-lg bg-zinc-950 text-white flex items-center justify-center font-bold text-xs">
