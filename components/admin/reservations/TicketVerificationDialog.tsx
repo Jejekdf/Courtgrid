@@ -167,7 +167,6 @@ export function TicketVerificationDialog({
       const qrConfig = {
         fps: 10,
         qrbox: { width: 220, height: 220 },
-        aspectRatio: 1.333333,
       };
 
       const onScanSuccess = async (decodedText: string) => {
@@ -181,26 +180,36 @@ export function TicketVerificationDialog({
         await executeSearch(cleanId);
       };
 
+      let cameraIdOrConfig: string | { facingMode: string } = { facingMode: "environment" };
+      try {
+        const cameras = await Html5Qrcode.getCameras();
+        if (cameras && cameras.length > 0) {
+          const backCam = cameras.find((c) => {
+            const label = c.label.toLowerCase();
+            return label.includes("back") || label.includes("rear") || label.includes("environment");
+          });
+          cameraIdOrConfig = backCam ? backCam.id : cameras[0].id;
+        }
+      } catch (camErr) {
+        console.warn("Unable to query camera list via getCameras, falling back to facingMode:", camErr);
+      }
+
       try {
         await scanner.start(
-          { facingMode: "environment" },
+          cameraIdOrConfig,
           qrConfig,
           onScanSuccess,
           () => {}
         );
       } catch (startErr) {
-        const errName = startErr instanceof Error ? startErr.name : "";
-        const errMsg = startErr instanceof Error ? startErr.message : String(startErr);
-        if (errName === "OverconstrainedError" || errMsg.includes("OverconstrainedError")) {
-          await scanner.start(
-            { facingMode: "user" },
-            qrConfig,
-            onScanSuccess,
-            () => {}
-          );
-        } else {
-          throw startErr;
-        }
+        console.warn("First scanner start attempt failed, attempting fallback:", startErr);
+        // If deviceId or environment failed, try user-facing or default
+        await scanner.start(
+          { facingMode: "user" },
+          qrConfig,
+          onScanSuccess,
+          () => {}
+        );
       }
 
       setIsCameraActive(true);
@@ -240,23 +249,32 @@ export function TicketVerificationDialog({
     }
   }, [stopCamera, t, executeSearch]);
 
+  const startCameraRef = useRef(startCamera);
+  const stopCameraRef = useRef(stopCamera);
+  useEffect(() => {
+    startCameraRef.current = startCamera;
+    stopCameraRef.current = stopCamera;
+  });
+
+  const hasScannedTicket = Boolean(scannedTicket);
+
   useEffect(() => {
     let unmounted = false;
 
-    if (isOpen && scanMode === "camera" && !scannedTicket) {
+    if (isOpen && scanMode === "camera" && !hasScannedTicket) {
       const timer = setTimeout(() => {
         if (!unmounted) {
-          void startCamera();
+          void startCameraRef.current();
         }
-      }, 50);
+      }, 150);
 
       return () => {
         unmounted = true;
         clearTimeout(timer);
-        void stopCamera();
+        void stopCameraRef.current();
       };
     }
-  }, [isOpen, scanMode, scannedTicket, startCamera, stopCamera]);
+  }, [isOpen, scanMode, hasScannedTicket]);
 
   const handleCheckIn = async () => {
     if (!scannedTicket) return;
