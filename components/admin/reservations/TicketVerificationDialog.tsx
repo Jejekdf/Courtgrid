@@ -139,6 +139,23 @@ export function TicketVerificationDialog({
       return;
     }
 
+    if (
+      typeof window !== "undefined" &&
+      !window.isSecureContext &&
+      window.location.hostname !== "localhost" &&
+      window.location.hostname !== "127.0.0.1"
+    ) {
+      setCameraError(t("cameraInsecureContext"));
+      setIsCameraStarting(false);
+      return;
+    }
+
+    if (typeof navigator !== "undefined" && !navigator.mediaDevices?.getUserMedia) {
+      setCameraError(t("cameraInsecureContext"));
+      setIsCameraStarting(false);
+      return;
+    }
+
     try {
       if (scannerRef.current) {
         await stopCamera();
@@ -147,32 +164,76 @@ export function TicketVerificationDialog({
       const scanner = new Html5Qrcode("ticket-qr-reader");
       scannerRef.current = scanner;
 
-      await scanner.start(
-        { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: { width: 220, height: 220 },
-          aspectRatio: 1.333333,
-        },
-        async (decodedText) => {
-          if (typeof navigator !== "undefined" && navigator.vibrate) {
-            navigator.vibrate(100);
-          }
-          toast.success(t("scanSuccessToast"));
-          const cleanId = extractReservationId(decodedText);
-          setTicketId(cleanId);
-          await stopCamera();
-          await executeSearch(cleanId);
-        },
-        () => {
-          // Normal frame pass when no barcode is in view
+      const qrConfig = {
+        fps: 10,
+        qrbox: { width: 220, height: 220 },
+        aspectRatio: 1.333333,
+      };
+
+      const onScanSuccess = async (decodedText: string) => {
+        if (typeof navigator !== "undefined" && navigator.vibrate) {
+          navigator.vibrate(100);
         }
-      );
+        toast.success(t("scanSuccessToast"));
+        const cleanId = extractReservationId(decodedText);
+        setTicketId(cleanId);
+        await stopCamera();
+        await executeSearch(cleanId);
+      };
+
+      try {
+        await scanner.start(
+          { facingMode: "environment" },
+          qrConfig,
+          onScanSuccess,
+          () => {}
+        );
+      } catch (startErr) {
+        const errName = startErr instanceof Error ? startErr.name : "";
+        const errMsg = startErr instanceof Error ? startErr.message : String(startErr);
+        if (errName === "OverconstrainedError" || errMsg.includes("OverconstrainedError")) {
+          await scanner.start(
+            { facingMode: "user" },
+            qrConfig,
+            onScanSuccess,
+            () => {}
+          );
+        } else {
+          throw startErr;
+        }
+      }
 
       setIsCameraActive(true);
     } catch (err) {
       console.warn("Unable to start camera scanner:", err);
-      setCameraError(t("cameraError"));
+      const errName = err instanceof Error ? err.name : "";
+      const errMsg = err instanceof Error ? err.message : String(err);
+
+      if (
+        errName === "NotAllowedError" ||
+        errName === "PermissionDeniedError" ||
+        errMsg.includes("NotAllowedError") ||
+        errMsg.includes("Permission denied") ||
+        errMsg.toLowerCase().includes("permission")
+      ) {
+        setCameraError(t("cameraPermissionDenied"));
+      } else if (
+        errName === "NotFoundError" ||
+        errName === "DevicesNotFoundError" ||
+        errMsg.includes("NotFoundError") ||
+        errMsg.includes("Requested device not found")
+      ) {
+        setCameraError(t("cameraNotFound"));
+      } else if (
+        errName === "NotReadableError" ||
+        errName === "TrackStartError" ||
+        errMsg.includes("NotReadableError") ||
+        errMsg.includes("Could not start video source")
+      ) {
+        setCameraError(t("cameraInUse"));
+      } else {
+        setCameraError(t("cameraError"));
+      }
       setIsCameraActive(false);
     } finally {
       setIsCameraStarting(false);
