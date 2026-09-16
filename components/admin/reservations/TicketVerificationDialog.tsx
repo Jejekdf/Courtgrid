@@ -130,9 +130,6 @@ export function TicketVerificationDialog({
     setCameraError(null);
     setIsCameraStarting(true);
 
-    // Allow DOM to settle for container mounting
-    await new Promise((resolve) => setTimeout(resolve, 150));
-
     const container = document.getElementById("ticket-qr-reader");
     if (!container) {
       setIsCameraStarting(false);
@@ -161,12 +158,17 @@ export function TicketVerificationDialog({
         await stopCamera();
       }
 
+      container.innerHTML = "";
       const scanner = new Html5Qrcode("ticket-qr-reader");
       scannerRef.current = scanner;
 
       const qrConfig = {
         fps: 10,
-        qrbox: { width: 220, height: 220 },
+        qrbox: (viewfinderWidth: number, viewfinderHeight: number) => {
+          const edge = Math.min(viewfinderWidth, viewfinderHeight);
+          const size = Math.max(160, Math.floor(edge * 0.72));
+          return { width: size, height: size };
+        },
       };
 
       const onScanSuccess = async (decodedText: string) => {
@@ -194,21 +196,10 @@ export function TicketVerificationDialog({
         started = true;
       } catch (envErr) {
         lastError = envErr;
-        const errName = envErr instanceof Error ? envErr.name : "";
-        const errMsg = envErr instanceof Error ? envErr.message : String(envErr);
-        const isPermissionDenied =
-          errName === "NotAllowedError" ||
-          errName === "PermissionDeniedError" ||
-          errMsg.includes("NotAllowedError") ||
-          errMsg.includes("Permission denied") ||
-          errMsg.toLowerCase().includes("permission");
-
-        if (isPermissionDenied) {
-          throw envErr;
-        }
+        console.warn("Camera attempt 1 (environment) failed:", envErr);
       }
 
-      // 2. Laptop / desktop webcam fallback
+      // 2. Front webcam fallback (laptops / PCs)
       if (!started) {
         try {
           await scanner.start(
@@ -220,22 +211,11 @@ export function TicketVerificationDialog({
           started = true;
         } catch (userErr) {
           lastError = userErr;
-          const errName = userErr instanceof Error ? userErr.name : "";
-          const errMsg = userErr instanceof Error ? userErr.message : String(userErr);
-          const isPermissionDenied =
-            errName === "NotAllowedError" ||
-            errName === "PermissionDeniedError" ||
-            errMsg.includes("NotAllowedError") ||
-            errMsg.includes("Permission denied") ||
-            errMsg.toLowerCase().includes("permission");
-
-          if (isPermissionDenied) {
-            throw userErr;
-          }
+          console.warn("Camera attempt 2 (user) failed:", userErr);
         }
       }
 
-      // 3. Explicit deviceId fallback
+      // 3. Explicit deviceId query fallback
       if (!started) {
         try {
           const cameras = await Html5Qrcode.getCameras();
@@ -250,6 +230,7 @@ export function TicketVerificationDialog({
           }
         } catch (camErr) {
           lastError = camErr;
+          console.warn("Camera attempt 3 (getCameras) failed:", camErr);
         }
       }
 
@@ -263,13 +244,17 @@ export function TicketVerificationDialog({
       const errName = err instanceof Error ? err.name : "";
       const errMsg = err instanceof Error ? err.message : String(err);
 
-      if (
-        errName === "NotAllowedError" ||
-        errName === "PermissionDeniedError" ||
-        errMsg.includes("NotAllowedError") ||
-        errMsg.includes("Permission denied") ||
-        errMsg.toLowerCase().includes("permission")
-      ) {
+      let permissionState: PermissionState | null = null;
+      try {
+        if (typeof navigator !== "undefined" && navigator.permissions?.query) {
+          const status = await navigator.permissions.query({ name: "camera" as PermissionName });
+          permissionState = status.state;
+        }
+      } catch {
+        // Permissions query not supported for camera on this browser
+      }
+
+      if (permissionState === "denied") {
         setCameraError(t("cameraPermissionDenied"));
       } else if (
         errName === "NotFoundError" ||
@@ -285,6 +270,13 @@ export function TicketVerificationDialog({
         errMsg.includes("Could not start video source")
       ) {
         setCameraError(t("cameraInUse"));
+      } else if (
+        errName === "NotAllowedError" ||
+        errName === "PermissionDeniedError" ||
+        errMsg.includes("NotAllowedError") ||
+        errMsg.includes("Permission denied")
+      ) {
+        setCameraError(t("cameraPermissionDenied"));
       } else {
         setCameraError(t("cameraError"));
       }
