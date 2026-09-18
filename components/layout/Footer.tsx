@@ -35,22 +35,22 @@ export default function Footer() {
                 height={36}
                 className="rounded-lg object-contain transition-transform group-hover-fine:scale-95"
               />
-              <span className="font-heading text-zinc-950 font-extrabold tracking-tight text-xl sm:text-2xl">
+              <span className="font-heading text-zinc-950 font-extrabold tracking-tight text-xl sm:text-2xl lg:text-3xl">
                 CourtGrid
               </span>
             </Link>
-            <p className="text-zinc-600 text-sm sm:text-base leading-relaxed max-w-sm text-pretty font-sans">
+            <p className="text-zinc-600 text-sm sm:text-base lg:text-lg leading-relaxed max-w-sm lg:max-w-md text-pretty font-sans">
               {t("tagline")}
             </p>
           </div>
 
-          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 lg:gap-10">
             {/* Column 1: Kontak GOR */}
             <div className="flex flex-col gap-3">
-              <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-950 mb-1 font-sans">
+              <span className="text-xs sm:text-sm lg:text-base font-bold uppercase tracking-wider text-zinc-950 mb-1 font-sans">
                 {t("contactTitle")}
               </span>
-              <address className="not-italic flex flex-col gap-3 text-sm sm:text-base text-zinc-600 font-sans">
+              <address className="not-italic flex flex-col gap-3 text-sm sm:text-base lg:text-base text-zinc-600 font-sans">
                 <div className="flex items-start gap-2.5">
                   <MapPin className="size-4.5 mt-0.5 shrink-0 text-zinc-500" aria-hidden="true" />
                   <span>{t("address")}</span>
@@ -76,7 +76,7 @@ export default function Footer() {
 
             {/* Column 2: Navigasi Publik */}
             <div className="flex flex-col gap-3">
-              <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-950 mb-1">
+              <span className="text-xs sm:text-sm lg:text-base font-bold uppercase tracking-wider text-zinc-950 mb-1 font-sans">
                 {t("navigationTitle")}
               </span>
               <nav aria-label={t("navigationTitle")} className="flex flex-col gap-1.5">
@@ -84,7 +84,7 @@ export default function Footer() {
                   <Link
                     key={i}
                     href={href}
-                    className="w-max text-sm sm:text-base text-zinc-600 hover:text-zinc-950 transition-colors py-1.5 inline-flex items-center"
+                    className="w-max text-sm sm:text-base lg:text-base text-zinc-600 hover:text-zinc-950 transition-colors py-1.5 inline-flex items-center"
                   >
                     {title}
                   </Link>
@@ -94,7 +94,7 @@ export default function Footer() {
 
             {/* Column 3: Layanan & Legal */}
             <div className="flex flex-col gap-3">
-              <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-950 mb-1">
+              <span className="text-xs sm:text-sm lg:text-base font-bold uppercase tracking-wider text-zinc-950 mb-1 font-sans">
                 {t("servicesTitle")}
               </span>
               <nav aria-label={t("servicesTitle")} className="flex flex-col gap-1.5">
@@ -102,7 +102,7 @@ export default function Footer() {
                   <Link
                     key={i}
                     href={href}
-                    className="w-max text-sm sm:text-base text-zinc-600 hover:text-zinc-950 transition-colors py-1.5 inline-flex items-center"
+                    className="w-max text-sm sm:text-base lg:text-base text-zinc-600 hover:text-zinc-950 transition-colors py-1.5 inline-flex items-center"
                   >
                     {title}
                   </Link>
@@ -113,7 +113,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 sm:mt-12 pt-6 sm:pt-8 border-t border-zinc-200/80">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4 text-xs text-zinc-500 text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4 text-xs sm:text-sm text-zinc-500 text-center sm:text-left">
             <p>
               &copy; {year} CourtGrid. {t("rights")}
             </p>

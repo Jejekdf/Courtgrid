@@ -106,7 +106,7 @@ export default function LoginForm() {
                     placeholder={t("emailPlaceholder")}
                     autoComplete="email"
                     error={!!fieldState.error}
-                    className="border-zinc-200 min-h-11 sm:min-h-12 h-11 sm:h-12 text-sm sm:text-base rounded-xl"
+                    className="border-zinc-200 min-h-12 h-12 lg:min-h-13 lg:h-13 text-base rounded-xl"
                     {...field}
                   />
                 </FormControl>
@@ -127,12 +127,12 @@ export default function LoginForm() {
                     placeholder={t("passwordPlaceholder")}
                     autoComplete="current-password"
                     error={!!fieldState.error}
-                    className="border-zinc-200 min-h-11 sm:min-h-12 h-11 sm:h-12 text-sm sm:text-base rounded-xl"
+                    className="border-zinc-200 min-h-12 h-12 lg:min-h-13 lg:h-13 text-base rounded-xl"
                     rightElement={
                       <button
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
-                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-hidden p-2.5 h-11 sm:h-12 flex items-center justify-center cursor-pointer"
+                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-hidden p-2.5 h-12 lg:h-13 flex items-center justify-center cursor-pointer"
                         aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                       >
                         {showPassword ? (
@@ -154,7 +154,7 @@ export default function LoginForm() {
                 <div className="flex justify-end mt-1.5">
                   <Link
                     href="/forgot-password"
-                    className="text-sm font-semibold text-zinc-600 hover:text-zinc-950 transition-colors"
+                    className="text-sm sm:text-base font-semibold text-zinc-600 hover:text-zinc-950 transition-colors"
                   >
                     {t("forgotPassword")}
                   </Link>
@@ -168,7 +168,7 @@ export default function LoginForm() {
             variant="primary"
             size="default"
             isLoading={form.formState.isSubmitting}
-            className="w-full mt-2 min-h-11 sm:min-h-12 h-11 sm:h-12 text-base font-bold rounded-xl"
+            className="w-full mt-2 min-h-12 h-12 lg:min-h-13 lg:h-13 text-base lg:text-lg font-bold rounded-xl"
             leftIcon={<LogIn className="size-4 text-white" />}
           >
             {t("submit")}

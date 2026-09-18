@@ -81,23 +81,24 @@ export function HeroShowcaseTrack({ images, swipeHint }: HeroShowcaseTrackProps)
           <Link
             key={idx}
             href={img.id ? `/dashboard/book?courtId=${img.id}` : "/dashboard/book"}
-            className="group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-zinc-200/90 aspect-16/10 bg-zinc-100 shadow-xs hover:shadow-md hover:border-zinc-400 transition-[border-color,box-shadow] duration-200 block text-left shrink-0 w-[82vw] max-w-[320px] sm:w-80 md:w-88 lg:w-96 xl:w-[420px] snap-start"
+            className="group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-zinc-200/90 aspect-16/10 bg-zinc-100 shadow-xs hover:shadow-md hover:border-zinc-400 transition-[border-color,box-shadow] duration-200 block text-left shrink-0 w-[82vw] max-w-[320px] sm:w-80 md:w-88 lg:w-96 xl:w-[420px] 2xl:w-[460px] snap-start"
           >
             <Image
               src={img.src}
               alt={img.alt}
               fill
               priority={img.priority}
+              loading={img.priority ? "eager" : "lazy"}
               quality={85}
               unoptimized={img.src.startsWith("http")}
               className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none"
-              sizes="(max-width: 640px) 82vw, (max-width: 1024px) 352px, (max-width: 1280px) 384px, 420px"
+              sizes="(max-width: 640px) 82vw, (max-width: 1024px) 352px, (max-width: 1280px) 384px, (max-width: 1536px) 420px, 460px"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-zinc-950/90 via-zinc-950/30 to-transparent flex flex-col justify-end p-4 sm:p-5 lg:p-6">
-              <span className="text-xs sm:text-sm uppercase font-bold tracking-wider text-emerald-400 mb-1 whitespace-nowrap font-sans">
+            <div className="absolute inset-0 bg-linear-to-t from-zinc-950/90 via-zinc-950/30 to-transparent flex flex-col justify-end p-4 sm:p-5 lg:p-6 xl:p-7">
+              <span className="text-xs sm:text-sm lg:text-sm uppercase font-bold tracking-wider text-emerald-400 mb-1 whitespace-nowrap font-sans">
                 {img.surfaceLabel}
               </span>
-              <span className="text-base sm:text-lg lg:text-xl xl:text-2xl font-extrabold text-white tracking-tight leading-tight truncate drop-shadow-xs">
+              <span className="text-base sm:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-extrabold text-white tracking-tight leading-tight truncate drop-shadow-xs">
                 {img.name}
               </span>
             </div>

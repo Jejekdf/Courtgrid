@@ -38,9 +38,10 @@ export function FacebookIcon({ className = "h-4 w-4" }: { className?: string }) 
 
 interface SocialAuthButtonsProps {
   isLoading?: boolean;
+  callbackUrl?: string;
 }
 
-export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps) {
+export default function SocialAuthButtons({ isLoading, callbackUrl }: SocialAuthButtonsProps) {
   const [loadingProvider, setLoadingProvider] = useState<"google" | "facebook" | null>(null);
   const t = useTranslations("auth.social");
 
@@ -58,7 +59,9 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
   const handleProviderSignIn = async (provider: "google" | "facebook") => {
     setLoadingProvider(provider);
     try {
-      await signIn(provider, { callbackUrl: "/dashboard" });
+      const isSafeCallback = callbackUrl && callbackUrl.startsWith("/") && !callbackUrl.startsWith("//");
+      const targetUrl = isSafeCallback ? callbackUrl : "/dashboard";
+      await signIn(provider, { callbackUrl: targetUrl });
     } catch {
       setLoadingProvider(null);
     }
@@ -68,7 +71,7 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
     <div className="space-y-3 w-full">
       <div className="relative flex items-center justify-center my-3">
         <div className="border-t border-zinc-200 w-full" />
-        <span className="bg-white px-3 text-xs font-medium text-zinc-400 uppercase tracking-wider shrink-0">
+        <span className="bg-white px-3 text-xs sm:text-sm font-semibold text-zinc-500 uppercase tracking-wider shrink-0">
           {t("divider")}
         </span>
         <div className="border-t border-zinc-200 w-full" />
@@ -81,7 +84,7 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
           isLoading={loadingProvider === "google" || isLoading}
           onClick={() => handleProviderSignIn("google")}
           leftIcon={loadingProvider !== "google" ? <GoogleIcon /> : null}
-          className="w-full px-2 sm:px-4 text-sm sm:text-base font-semibold border-zinc-200 hover:bg-zinc-50 min-h-11 sm:min-h-12 h-11 sm:h-12 rounded-xl"
+          className="w-full px-2 sm:px-4 text-base font-semibold border-zinc-200 hover:bg-zinc-50 min-h-12 h-12 lg:min-h-13 lg:h-13 rounded-xl cursor-pointer"
         >
           {t("google")}
         </Button>
@@ -92,7 +95,7 @@ export default function SocialAuthButtons({ isLoading }: SocialAuthButtonsProps)
           isLoading={loadingProvider === "facebook" || isLoading}
           onClick={() => handleProviderSignIn("facebook")}
           leftIcon={loadingProvider !== "facebook" ? <FacebookIcon /> : null}
-          className="w-full px-2 sm:px-4 text-sm sm:text-base font-semibold border-zinc-200 hover:bg-zinc-50 min-h-11 sm:min-h-12 h-11 sm:h-12 rounded-xl"
+          className="w-full px-2 sm:px-4 text-base font-semibold border-zinc-200 hover:bg-zinc-50 min-h-12 h-12 lg:min-h-13 lg:h-13 rounded-xl cursor-pointer"
         >
           {t("facebook")}
         </Button>

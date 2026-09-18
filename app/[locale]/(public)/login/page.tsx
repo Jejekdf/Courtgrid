@@ -18,10 +18,10 @@ export default function LoginPage() {
           <div className="w-full max-w-md mx-auto space-y-6">
             {/* Header */}
             <div className="flex flex-col space-y-2">
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950 text-balance">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-950 text-balance">
                 {t("title")}
               </h1>
-              <p className="text-sm sm:text-base text-zinc-600 leading-relaxed text-pretty">
+              <p className="text-sm sm:text-base lg:text-lg text-zinc-600 leading-relaxed text-pretty">
                 {t("desc")}
               </p>
             </div>
@@ -34,7 +34,7 @@ export default function LoginPage() {
             </div>
 
             {/* Footer Link */}
-            <p className="text-center text-sm sm:text-base text-zinc-600 pt-2">
+            <p className="text-center text-sm sm:text-base lg:text-base text-zinc-600 pt-2">
               {t("noAccount")}{" "}
               <Link
                 href="/register"
@@ -55,7 +55,7 @@ export default function LoginPage() {
           {/* Anti-Slop Pill */}
           <div className="relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 w-max shadow-xs">
             <ShieldCheck className="size-4 text-emerald-400" aria-hidden="true" />
-            <span className="text-xs sm:text-sm font-semibold text-emerald-400 uppercase tracking-wider font-sans">
+            <span className="text-xs sm:text-sm font-bold text-emerald-400 uppercase tracking-wider font-sans">
               {ta("antiPalkor")}
             </span>
           </div>
@@ -64,16 +64,16 @@ export default function LoginPage() {
           <div className="relative z-10 flex flex-col justify-end max-w-lg space-y-4">
             <Quote className="text-emerald-400 size-8 opacity-80" aria-hidden="true" />
             <blockquote className="space-y-3">
-              <p className="text-base lg:text-lg font-bold leading-relaxed text-white font-sans text-pretty">
+              <p className="text-base lg:text-lg xl:text-xl font-bold leading-relaxed text-white font-sans text-pretty">
                 &ldquo;{t("quote")}&rdquo;
               </p>
               <footer className="flex items-center gap-3 pt-1">
-                <div className="size-8 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white font-bold text-xs font-sans">
+                <div className="size-8.5 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white font-bold text-xs font-sans">
                   AT
                 </div>
                 <div>
-                  <div className="font-bold text-white text-sm sm:text-base font-sans">{t("quoteAuthor")}</div>
-                  <div className="text-xs sm:text-sm text-zinc-400 font-sans">{t("quoteRole")}</div>
+                  <div className="font-bold text-white text-sm sm:text-base lg:text-lg font-sans">{t("quoteAuthor")}</div>
+                  <div className="text-xs sm:text-sm lg:text-base text-zinc-400 font-sans">{t("quoteRole")}</div>
                 </div>
               </footer>
             </blockquote>

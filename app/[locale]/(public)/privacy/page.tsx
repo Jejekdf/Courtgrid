@@ -253,7 +253,7 @@ export default async function PrivacyPage({
         <div className="space-y-10 sm:space-y-12">
           {/* Document Header */}
           <header className="border-b border-zinc-200/80 pb-6 sm:pb-8 space-y-4">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm text-zinc-500 font-sans">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm lg:text-base text-zinc-500 font-sans">
               <span className="font-semibold text-zinc-900">{t("badge")}</span>
               <span className="text-zinc-300" aria-hidden="true">/</span>
               <span>{t("effectiveDateLabel")} {t("effectiveDateVal")}</span>
@@ -261,22 +261,22 @@ export default async function PrivacyPage({
               <span>{t("readingTime")}</span>
             </div>
 
-            <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-zinc-950 text-balance">
+            <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight text-zinc-950 text-balance">
               {t("title")}
             </h1>
 
-            <p className="text-base sm:text-lg text-zinc-600 leading-relaxed max-w-2xl font-sans text-pretty">
+            <p className="text-base sm:text-lg lg:text-xl text-zinc-600 leading-relaxed max-w-3xl font-sans text-pretty">
               {t("description")}
             </p>
 
             {/* Plain-Language Key Summary */}
-            <div className="mt-6 p-5 sm:p-6 bg-zinc-50 border border-zinc-200/90 rounded-2xl">
-              <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-950 block mb-3 font-sans">
+            <div className="mt-6 p-5 sm:p-6 lg:p-7 bg-zinc-50 border border-zinc-200/90 rounded-2xl">
+              <span className="text-xs sm:text-sm lg:text-base font-bold uppercase tracking-wider text-zinc-950 block mb-3 font-sans">
                 {t("summaryTitle")}
               </span>
               <ul className="space-y-2.5">
                 {summaryItems.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5 text-sm sm:text-base text-zinc-700 leading-relaxed font-sans text-pretty">
+                  <li key={idx} className="flex items-start gap-2.5 text-sm sm:text-base lg:text-base text-zinc-700 leading-relaxed font-sans text-pretty">
                     <span className="size-2 rounded-full bg-zinc-400 mt-2 shrink-0" />
                     <span>{item}</span>
                   </li>
