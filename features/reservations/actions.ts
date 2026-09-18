@@ -19,6 +19,7 @@ import { validateBookingTime, formatSlotHour } from "@/lib/timezone";
 import { auth } from "@/auth";
 import { uploadPaymentProof, getPaymentProofSignedUrl } from "@/lib/supabase/storage";
 import { getTranslations } from "next-intl/server";
+import { acquireLock, releaseLock } from "@/lib/redis";
 
 /**
  * Creates a reservation and redirects the user to Stripe Checkout for the down payment.
@@ -116,6 +117,12 @@ export async function createReservationAction(rawInput: unknown) {
 
   const dpAmount = computeDeposit(finalTotalPrice, dpPercentage);
 
+  const slotLockKey = `lock:court:${courtId}:${dateStr}:${startTime}`;
+  const slotLock = await acquireLock(slotLockKey, 10);
+  if (!slotLock.acquired) {
+    return { success: false, error: t("doubleBooked") };
+  }
+
   // Check for overlap inside a transaction so the slot can't be double-booked,
   // then create the reservation and its payment record together.
   let reservationId: string;
@@ -188,6 +195,8 @@ export async function createReservationAction(rawInput: unknown) {
     }
     console.error("Create reservation action error:", error);
     return { success: false, error: t("bookingServerError") };
+  } finally {
+    await releaseLock(slotLockKey, slotLock.token);
   }
 
   // Create the Stripe Checkout session and attach it to the reservation
@@ -245,8 +254,13 @@ export async function createReservationAction(rawInput: unknown) {
     console.error("Failed to send booking confirmation email:", emailError);
   });
 
-  const { invalidateCache } = await import("@/lib/redis");
-  await invalidateCache(`customer:${user.id}:reservations`, "admin:dashboard:stats");
+  const { invalidateCache, invalidateCachePattern } = await import("@/lib/redis");
+  await invalidateCache(
+    `customer:${user.id}:reservations`,
+    `public:avail:${courtId}:${dateStr}`,
+    "admin:dashboard:stats"
+  );
+  await invalidateCachePattern("public:avail:*");
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/reservations");
@@ -297,10 +311,13 @@ export async function cancelReservationAction(rawInput: unknown) {
     return { success: false, error: t("cancelOnlyPending") };
   }
 
-  const { invalidateCache } = await import("@/lib/redis");
+  const { invalidateCache, invalidateCachePattern } = await import("@/lib/redis");
   if (reservation.userId) {
     await invalidateCache(`customer:${reservation.userId}:reservations`, "admin:dashboard:stats");
+  } else {
+    await invalidateCache("admin:dashboard:stats");
   }
+  await invalidateCachePattern("public:avail:*");
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/reservations");

@@ -35,6 +35,7 @@ export async function autoCancelGhostBookings(): Promise<void> {
   if (result.count > 0) {
     await invalidateCache("admin:dashboard:stats");
     await invalidateCachePattern("customer:*:reservations");
+    await invalidateCachePattern("public:avail:*");
   }
 }
 

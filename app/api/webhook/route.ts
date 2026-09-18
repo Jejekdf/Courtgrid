@@ -6,7 +6,7 @@ import { resend, RESEND_FROM_EMAIL } from "@/lib/resend";
 import { paymentSuccessEmail } from "@/lib/emails/templates";
 import Stripe from "stripe";
 import { headers } from "next/headers";
-import { invalidateCache } from "@/lib/redis";
+import { invalidateCache, invalidateCachePattern } from "@/lib/redis";
 import { logger } from "@/lib/logger";
 
 export async function POST(req: Request) {
@@ -115,6 +115,7 @@ export async function POST(req: Request) {
       } else {
         await invalidateCache("admin:dashboard:stats");
       }
+      await invalidateCachePattern("public:avail:*");
 
       // Revalidate admin and dashboard caches
       revalidatePath("/admin");
