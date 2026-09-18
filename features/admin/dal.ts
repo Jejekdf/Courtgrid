@@ -242,7 +242,7 @@ export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> 
         revenueChart,
       };
     },
-    15 // 15 seconds TTL in Redis
+    30 // 30 seconds TTL in Redis
   );
 });
 

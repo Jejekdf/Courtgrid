@@ -1,20 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useDebouncedCallback } from "@react-hookz/web";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { Plus, Pencil, Trash2, Search, Power, Tag } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import AdminHeader from "@/components/admin/AdminHeader";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogClose,
-} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,99 +22,49 @@ import { toast } from "sonner";
 import { formatRupiah } from "@/lib/utils";
 import {
   adminGetVouchers,
-  adminCreateVoucher,
-  adminUpdateVoucher,
   adminDeleteVoucher,
   adminToggleVoucherActive,
 } from "@/features/vouchers/actions";
-
-type Voucher = {
-  id: string;
-  code: string;
-  discountPct: number;
-  maxDiscount: number | null;
-  minSpend: number;
-  expiresAt: string;
-  maxUses: number;
-  description: string | null;
-  isActive: boolean;
-};
+import { VoucherFormDialog, type AdminVoucher } from "@/components/admin/vouchers/VoucherFormDialog";
 
 export default function AdminVouchersPage() {
   const t = useTranslations("admin.vouchers");
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
+  const [searchDraft, setSearchDraft] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [editing, setEditing] = useState<Voucher | null>(null);
-  const [pendingDelete, setPendingDelete] = useState<Voucher | null>(null);
+  const [editing, setEditing] = useState<AdminVoucher | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<AdminVoucher | null>(null);
 
-  const [code, setCode] = useState("");
-  const [discountPct, setDiscountPct] = useState("10");
-  const [maxDiscount, setMaxDiscount] = useState("");
-  const [minSpend, setMinSpend] = useState("0");
-  const [expiresAt, setExpiresAt] = useState("");
-  const [maxUses, setMaxUses] = useState("1");
-  const [description, setDescription] = useState("");
-  const [isActive, setIsActive] = useState(true);
+  const [initialExpiresAt, setInitialExpiresAt] = useState("");
+
+  const debouncedSetSearch = useDebouncedCallback(
+    (value: string) => {
+      setSearch(value);
+    },
+    [setSearch],
+    300
+  );
 
   const { data: vouchers = [], isLoading } = useQuery({
     queryKey: ["admin", "vouchers"],
     queryFn: async () => {
       const data = await adminGetVouchers();
-      return data as unknown as Voucher[];
+      return data as unknown as AdminVoucher[];
     },
   });
 
   const openAdd = () => {
     setEditing(null);
-    setCode("");
-    setDiscountPct("10");
-    setMaxDiscount("");
-    setMinSpend("0");
-    setExpiresAt(new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10));
-    setMaxUses("1");
-    setDescription("");
-    setIsActive(true);
+    setInitialExpiresAt(new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10));
     setIsDialogOpen(true);
   };
 
-  const openEdit = (v: Voucher) => {
+  const openEdit = (v: AdminVoucher) => {
     setEditing(v);
-    setCode(v.code);
-    setDiscountPct(String(v.discountPct));
-    setMaxDiscount(v.maxDiscount ? String(v.maxDiscount) : "");
-    setMinSpend(String(v.minSpend));
-    setExpiresAt(new Date(v.expiresAt).toISOString().slice(0, 10));
-    setMaxUses(String(v.maxUses));
-    setDescription(v.description || "");
-    setIsActive(v.isActive);
+    setInitialExpiresAt(new Date(v.expiresAt).toISOString().slice(0, 10));
     setIsDialogOpen(true);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const fd = new FormData();
-    fd.append("code", code);
-    fd.append("discountPct", discountPct);
-    fd.append("maxDiscount", maxDiscount);
-    fd.append("minSpend", minSpend);
-    fd.append("expiresAt", expiresAt);
-    fd.append("maxUses", maxUses);
-    fd.append("description", description);
-    fd.append("isActive", String(isActive));
-
-    const res = editing
-      ? await adminUpdateVoucher(editing.id, fd)
-      : await adminCreateVoucher(fd);
-
-    if (res.success) {
-      toast.success(editing ? t("updatedToast") : t("createdToast"));
-      setIsDialogOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["admin", "vouchers"] });
-    } else {
-      toast.error(res.error || t("errorToast"));
-    }
   };
 
   const filtered = vouchers.filter((v) =>
@@ -141,27 +84,29 @@ export default function AdminVouchersPage() {
         }
       />
 
-      <div className="flex items-center gap-2 max-w-sm">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-zinc-400" />
+      <div className="bg-white rounded-2xl border border-zinc-200/80 p-5 shadow-xs">
+        <div className="relative max-w-sm">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-zinc-400" />
           <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={searchDraft}
+            onChange={(e) => {
+              const val = e.target.value;
+              setSearchDraft(val);
+              debouncedSetSearch(val);
+            }}
             placeholder={t("searchPlaceholder")}
-            className="pl-8 h-10"
+            className="pl-10 h-10 text-sm"
           />
         </div>
       </div>
 
-      <div className="bg-white border border-zinc-200 rounded-xl shadow-xs overflow-hidden">
-        {/* Mobile Card List View */}
-        <div className="block md:hidden divide-y divide-zinc-100">
+      <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs overflow-hidden">
+        {/* Mobile Cards (sm:hidden) */}
+        <div className="divide-y divide-zinc-100 sm:hidden">
           {isLoading ? (
-            <div className="p-6 text-center text-xs text-zinc-400 font-mono">
-              {t("loading")}
-            </div>
+            <div className="p-8 text-center text-sm text-zinc-400">Loading...</div>
           ) : filtered.length === 0 ? (
-            <div className="p-6 text-center text-xs text-zinc-400 font-mono">
+            <div className="p-8 text-center text-sm text-zinc-500 font-medium">
               {t("empty")}
             </div>
           ) : (
@@ -205,37 +150,35 @@ export default function AdminVouchersPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-1">
+                <div className="flex items-center justify-end gap-1 pt-1 border-t border-zinc-100">
+                  <button
+                    onClick={async () => {
+                      await adminToggleVoucherActive(v.id, !v.isActive);
+                      queryClient.invalidateQueries({ queryKey: ["admin", "vouchers"] });
+                    }}
+                    className={`p-1.5 rounded-lg border transition-colors ${
+                      v.isActive
+                        ? "text-emerald-600 hover:bg-emerald-50 border-emerald-200"
+                        : "text-zinc-400 hover:bg-zinc-100 border-zinc-200"
+                    }`}
+                    title={v.isActive ? t("inactive") : t("active")}
+                  >
+                    <Power className="size-4" />
+                  </button>
                   <button
                     onClick={() => openEdit(v)}
-                    className="flex-1 min-h-10 inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold text-zinc-800 bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 rounded-lg transition-colors cursor-pointer"
+                    className="p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-600 border border-zinc-200 transition-colors"
                   >
-                    <Pencil className="size-3.5" />
-                    <span>Edit</span>
+                    <Pencil className="size-4" />
                   </button>
                   <button
                     onClick={() => {
                       setPendingDelete(v);
                       setIsDeleteOpen(true);
                     }}
-                    className="min-h-10 px-3.5 inline-flex items-center justify-center gap-1 text-xs text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-colors cursor-pointer font-semibold"
+                    className="p-1.5 rounded-lg hover:bg-red-50 text-red-600 border border-red-200 transition-colors"
                   >
-                    <Trash2 className="size-3.5" />
-                    <span>Hapus</span>
-                  </button>
-                  <button
-                    onClick={async () => {
-                      await adminToggleVoucherActive(v.id, !v.isActive);
-                      queryClient.invalidateQueries({ queryKey: ["admin", "vouchers"] });
-                    }}
-                    className={`min-h-10 px-3.5 inline-flex items-center justify-center gap-1 text-xs border rounded-lg transition-colors cursor-pointer font-semibold ${
-                      v.isActive
-                        ? "border-zinc-200 text-zinc-700 hover:bg-zinc-100"
-                        : "border-emerald-200 text-emerald-700 bg-emerald-50 hover:bg-emerald-100"
-                    }`}
-                  >
-                    <Power className={`size-3.5 ${v.isActive ? "text-red-500" : "text-emerald-600"}`} />
-                    <span>{v.isActive ? "Nonaktifkan" : "Aktifkan"}</span>
+                    <Trash2 className="size-4" />
                   </button>
                 </div>
               </div>
@@ -243,92 +186,104 @@ export default function AdminVouchersPage() {
           )}
         </div>
 
-        {/* Desktop Structured Table View */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-zinc-50 border-b border-zinc-200 text-xs uppercase font-semibold text-zinc-500">
-              <tr>
-                <th className="px-4 py-3">{t("colCode")}</th>
-                <th className="px-4 py-3">{t("colDiscount")}</th>
-                <th className="px-4 py-3 hidden md:table-cell">{t("colMaxDiscount")}</th>
-                <th className="px-4 py-3 hidden sm:table-cell">{t("colExpires")}</th>
-                <th className="px-4 py-3">{t("colUses")}</th>
-                <th className="px-4 py-3">{t("colStatus")}</th>
-                <th className="px-4 py-3 text-right">{t("colAction")}</th>
+        {/* Desktop Table (hidden sm:block) */}
+        <div className="hidden sm:block overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[700px]">
+            <thead>
+              <tr className="border-b border-zinc-200/80 bg-zinc-50/50 text-[0.6875rem] font-bold uppercase tracking-wider text-zinc-500">
+                <th className="p-4 pl-6">{t("colCode")}</th>
+                <th className="p-4">{t("colDiscount")}</th>
+                <th className="p-4">{t("colMaxDiscount")}</th>
+                <th className="p-4">{t("colMinSpend")}</th>
+                <th className="p-4">{t("colExpires")}</th>
+                <th className="p-4">{t("colUses")}</th>
+                <th className="p-4">{t("colStatus")}</th>
+                <th className="p-4 pr-6 text-right">{t("colAction")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100">
+            <tbody className="divide-y divide-zinc-200/60 text-sm">
               {isLoading ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-zinc-400">
-                    {t("loading")}
+                  <td colSpan={8} className="p-8 text-center text-zinc-400 font-mono">
+                    Loading...
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-zinc-400">
+                  <td colSpan={8} className="p-8 text-center text-zinc-500 font-medium">
                     {t("empty")}
                   </td>
                 </tr>
               ) : (
                 filtered.map((v) => (
-                  <tr key={v.id} className="hover:bg-zinc-50/60">
-                    <td className="px-4 py-3 font-mono font-bold text-zinc-950">
-                      <span className="inline-flex items-center gap-1">
-                        <Tag className="size-3 text-zinc-400" />
-                        {v.code}
-                      </span>
+                  <tr key={v.id} className="hover:bg-zinc-50/50 transition-colors group">
+                    <td className="p-4 pl-6">
+                      <div className="font-mono font-bold text-zinc-950 flex items-center gap-2">
+                        <Tag className="size-3.5 text-zinc-400" />
+                        <span>{v.code}</span>
+                      </div>
                       {v.description && (
-                        <div className="text-xs font-normal text-zinc-500 truncate max-w-44">{v.description}</div>
+                        <div className="text-xs text-zinc-500 mt-0.5 line-clamp-1 max-w-[200px]">
+                          {v.description}
+                        </div>
                       )}
                     </td>
-                    <td className="px-4 py-3">{v.discountPct}%</td>
-                    <td className="px-4 py-3 hidden md:table-cell">
+                    <td className="p-4 font-mono font-semibold text-zinc-950">{v.discountPct}%</td>
+                    <td className="p-4 font-mono text-zinc-600">
                       {v.maxDiscount ? formatRupiah(v.maxDiscount) : "-"}
                     </td>
-                    <td className="px-4 py-3 hidden sm:table-cell font-mono text-xs">
-                      {new Date(v.expiresAt).toLocaleDateString("id-ID")}
+                    <td className="p-4 font-mono text-zinc-600">{formatRupiah(v.minSpend)}</td>
+                    <td className="p-4 font-mono text-zinc-600 text-xs">
+                      {new Date(v.expiresAt).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </td>
-                    <td className="px-4 py-3 font-mono">{v.maxUses}</td>
-                    <td className="px-4 py-3">
+                    <td className="p-4 font-mono text-zinc-600">{v.maxUses}x</td>
+                    <td className="p-4">
                       <span
-                        className={`inline-flex px-2 py-0.5 rounded-md text-[0.6875rem] font-bold uppercase border ${
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                           v.isActive
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                            : "bg-zinc-100 text-zinc-600 border-zinc-200"
+                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            : "bg-zinc-100 text-zinc-600 border border-zinc-200"
                         }`}
                       >
                         {v.isActive ? t("active") : t("inactive")}
                       </span>
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-1.5">
+                    <td className="p-4 pr-6 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={async () => {
+                            await adminToggleVoucherActive(v.id, !v.isActive);
+                            queryClient.invalidateQueries({ queryKey: ["admin", "vouchers"] });
+                          }}
+                          className={`p-1.5 rounded-lg border transition-colors ${
+                            v.isActive
+                              ? "text-emerald-600 hover:bg-emerald-50 border-emerald-200"
+                              : "text-zinc-400 hover:bg-zinc-100 border-zinc-200"
+                          }`}
+                          title={v.isActive ? t("inactive") : t("active")}
+                        >
+                          <Power className="size-4" />
+                        </button>
                         <button
                           onClick={() => openEdit(v)}
-                          className="p-2 min-h-9 min-w-9 flex items-center justify-center border border-zinc-200 rounded-lg hover:bg-zinc-50 cursor-pointer"
-                          aria-label="Edit Voucher"
+                          className="p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-600 transition-colors"
+                          title={t("editTitle")}
                         >
-                          <Pencil className="size-3.5" />
+                          <Pencil className="size-4" />
                         </button>
                         <button
                           onClick={() => {
                             setPendingDelete(v);
                             setIsDeleteOpen(true);
                           }}
-                          className="p-2 min-h-9 min-w-9 flex items-center justify-center border border-red-200 text-red-600 rounded-lg hover:bg-red-50 cursor-pointer"
-                          aria-label="Hapus Voucher"
+                          className="p-1.5 rounded-lg hover:bg-red-50 text-red-600 transition-colors"
+                          title={t("deleteTitle")}
                         >
-                          <Trash2 className="size-3.5" />
-                        </button>
-                        <button
-                          onClick={async () => {
-                            await adminToggleVoucherActive(v.id, !v.isActive);
-                            queryClient.invalidateQueries({ queryKey: ["admin", "vouchers"] });
-                          }}
-                          className="p-2 min-h-9 min-w-9 flex items-center justify-center border border-zinc-200 rounded-lg hover:bg-zinc-50 cursor-pointer"
-                          title={v.isActive ? "Nonaktifkan" : "Aktifkan"}
-                        >
-                          <Power className={`size-3.5 ${v.isActive ? "text-red-500" : "text-emerald-600"}`} />
+                          <Trash2 className="size-4" />
                         </button>
                       </div>
                     </td>
@@ -340,48 +295,13 @@ export default function AdminVouchersPage() {
         </div>
       </div>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-lg max-h-[90svh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{editing ? t("editTitle") : t("addTitle")}</DialogTitle>
-            <DialogDescription>{t("formDesc")}</DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4 mt-2">
-            <Input label={t("codeLabel")} value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder={t("codePlaceholder")} required />
-            <div className="grid grid-cols-2 gap-3">
-              <Input label={t("discountLabel")} type="number" value={discountPct} onChange={(e) => setDiscountPct(e.target.value)} min={1} max={100} required />
-              <Input label={t("maxDiscountLabel")} type="number" value={maxDiscount} onChange={(e) => setMaxDiscount(e.target.value)} placeholder={t("maxDiscountPlaceholder")} />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <Input label={t("minSpendLabel")} type="number" value={minSpend} onChange={(e) => setMinSpend(e.target.value)} min={0} />
-              <Input label={t("expiresLabel")} type="date" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} required />
-            </div>
-            <Input label={t("maxUsesLabel")} type="number" value={maxUses} onChange={(e) => setMaxUses(e.target.value)} min={1} max={100} required />
-            <p className="text-xs text-zinc-500 -mt-2">{t("maxUsesHint")}</p>
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium">{t("descriptionLabel")}</label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder={t("descriptionPlaceholder")}
-                maxLength={200}
-                rows={2}
-                className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm placeholder:text-zinc-400 focus:outline-hidden focus:ring-2 focus:ring-zinc-950/20"
-              />
-            </div>
-            <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} className="size-4 rounded border-zinc-300" />
-              {t("activeLabel")}
-            </label>
-            <div className="flex justify-end gap-2 pt-2 border-t">
-              <DialogClose render={<Button type="button" variant="outline" size="sm" className="text-sm">{t("cancelBtn")}</Button>} />
-              <Button type="submit" className="bg-zinc-950 text-white">
-                {editing ? t("editTitle") : t("addTitle")}
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <VoucherFormDialog
+        isOpen={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        voucherToEdit={editing}
+        initialExpiresAt={initialExpiresAt}
+        onSuccess={() => queryClient.invalidateQueries({ queryKey: ["admin", "vouchers"] })}
+      />
 
       <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <AlertDialogContent>

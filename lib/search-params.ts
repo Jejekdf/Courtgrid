@@ -1,4 +1,4 @@
-import { parseAsString, parseAsInteger, parseAsStringLiteral } from "nuqs";
+import { parseAsString, parseAsInteger, parseAsStringLiteral, parseAsBoolean } from "nuqs";
 import { createSearchParamsCache } from "nuqs/server";
 
 export const courtCatalogParsers = {
@@ -7,8 +7,11 @@ export const courtCatalogParsers = {
 };
 export const courtCatalogSearchParamsCache = createSearchParamsCache(courtCatalogParsers);
 
+export const adminScannerParser = parseAsBoolean.withDefault(false);
+
 export const adminReservationsParsers = {
   filter: parseAsStringLiteral(["all", "daily", "monthly"] as const).withDefault("all"),
+  status: parseAsStringLiteral(["ALL", "PENDING", "DP_PAID", "DONE", "CANCELED"] as const).withDefault("ALL"),
   page: parseAsInteger.withDefault(1),
 };
 export const adminReservationsSearchParamsCache = createSearchParamsCache(adminReservationsParsers);

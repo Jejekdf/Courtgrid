@@ -3,7 +3,8 @@
 import { Menu, PanelLeftClose, PanelLeft, QrCode } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
-import { useAdminReservationsActions } from "@/stores/useBoundStore";
+import { useQueryState } from "nuqs";
+import { adminScannerParser } from "@/lib/search-params";
 
 interface AdminTopbarProps {
   onMenuClick: () => void;
@@ -17,7 +18,8 @@ export default function AdminTopbar({
   onToggleSidebar,
 }: AdminTopbarProps) {
   const { data: session } = useSession();
-  const { openScanner } = useAdminReservationsActions();
+  const [, setIsScannerOpen] = useQueryState("scanner", adminScannerParser.withOptions({ shallow: true }));
+  const openScanner = () => setIsScannerOpen(true);
   const t = useTranslations("admin.topbar");
 
   const userName = session?.user?.name || "Admin";

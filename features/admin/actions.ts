@@ -169,12 +169,33 @@ export async function adminDeleteReservation(id: string) {
     return adminCheck;
   }
   try {
+    const reservation = await prisma.reservation.findUnique({
+      where: { id },
+      select: { userId: true, courtId: true, date: true },
+    });
+
     await prisma.reservation.delete({
       where: { id },
     });
-    await invalidateCache("admin:dashboard:stats");
+
+    const keysToInvalidate = ["admin:dashboard:stats"];
+    if (reservation?.userId) {
+      keysToInvalidate.push(`customer:${reservation.userId}:reservations`);
+    }
+    if (reservation?.courtId && reservation?.date) {
+      const dateStr =
+        reservation.date instanceof Date
+          ? reservation.date.toISOString().slice(0, 10)
+          : String(reservation.date).slice(0, 10);
+      keysToInvalidate.push(`public:avail:${reservation.courtId}:${dateStr}`);
+    }
+    await invalidateCache(...keysToInvalidate);
+    await invalidateCachePattern("public:avail:*");
+
     revalidatePath("/admin");
     revalidatePath("/admin/reservations");
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/reservations");
     return { success: true };
   } catch (error) {
     console.error("Failed to delete reservation:", error);

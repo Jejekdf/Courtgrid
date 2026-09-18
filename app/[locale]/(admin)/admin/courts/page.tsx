@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useQueryState } from "nuqs";
+import { useDebouncedCallback } from "@react-hookz/web";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { adminGetCourts, adminDeleteCourt, adminToggleCourtActive } from "@/features/admin/actions";
 import { courtKeys } from "@/lib/query-keys";
@@ -20,6 +21,21 @@ export default function AdminCourtsPage() {
   const queryClient = useQueryClient();
   const [tab, setTab] = useQueryState("tab", adminCourtsParsers.tab.withOptions({ shallow: true }));
   const [search, setSearch] = useQueryState("search", adminCourtsParsers.search.withOptions({ shallow: true }));
+  const [prevSearch, setPrevSearch] = useState(search);
+  const [searchDraft, setSearchDraft] = useState(search);
+
+  if (search !== prevSearch) {
+    setPrevSearch(search);
+    setSearchDraft(search);
+  }
+
+  const debouncedSetSearch = useDebouncedCallback(
+    (value: string) => {
+      setSearch(value || null);
+    },
+    [setSearch],
+    300
+  );
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingCourt, setEditingCourt] = useState<AdminCourt | null>(null);
@@ -162,8 +178,12 @@ export default function AdminCourtsPage() {
         </div>
         <div className="relative w-full sm:w-64">
           <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={searchDraft}
+            onChange={(e) => {
+              const val = e.target.value;
+              setSearchDraft(val);
+              debouncedSetSearch(val);
+            }}
             placeholder={t("searchPlaceholder")}
             containerClassName="w-full"
             leftIcon={<Search className="size-4 text-zinc-400" />}

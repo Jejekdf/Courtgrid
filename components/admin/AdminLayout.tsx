@@ -5,7 +5,8 @@ import AdminSidebar from "./AdminSidebar";
 import AdminTopbar from "./AdminTopbar";
 import PageTransition from "@/components/motion/PageTransition";
 import { TicketVerificationDialog } from "@/components/admin/reservations/TicketVerificationDialog";
-import { useBoundStore, useAdminReservationsActions } from "@/stores/useBoundStore";
+import { useQueryState } from "nuqs";
+import { adminScannerParser } from "@/lib/search-params";
 import { useQueryClient } from "@tanstack/react-query";
 import { useKeyboardEvent } from "@react-hookz/web";
 import { adminKeys } from "@/lib/query-keys";
@@ -13,8 +14,12 @@ import { adminKeys } from "@/lib/query-keys";
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDesktopOpen, setIsDesktopOpen] = useState(true);
-  const isScannerOpen = useBoundStore((state) => state.adminReservations.scanner.isOpen);
-  const { openScanner, closeScanner } = useAdminReservationsActions();
+  const [isScannerOpen, setIsScannerOpen] = useQueryState(
+    "scanner",
+    adminScannerParser.withOptions({ shallow: true })
+  );
+  const openScanner = () => setIsScannerOpen(true);
+  const closeScanner = () => setIsScannerOpen(null);
   const queryClient = useQueryClient();
 
   useKeyboardEvent(

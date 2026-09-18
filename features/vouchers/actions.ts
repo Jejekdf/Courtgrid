@@ -1,23 +1,40 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { auth } from "@/auth";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
-import { verifyUserSession } from "@/features/auth/dal";
 import { voucherSchema } from "./schemas";
 
-async function requireAdmin() {
-  const user = await verifyUserSession();
-  if (user.role !== "ADMIN") throw new Error("Forbidden");
-  return user;
+/**
+ * Checks that the current session belongs to an admin.
+ *
+ * Returns a typed failure instead of throwing so server actions can respond
+ * with a controlled `{ success: false, error }` object.
+ */
+async function checkAdmin() {
+  const session = await auth();
+  if (session?.user?.role !== "ADMIN") {
+    const t = await getTranslations("validation");
+    return { success: false as const, error: t("unauthorizedAdmin") };
+  }
+
+  return { success: true as const };
 }
 
 export async function adminGetVouchers() {
-  await requireAdmin();
+  const adminCheck = await checkAdmin();
+  if (!adminCheck.success) {
+    return [];
+  }
   return prisma.voucher.findMany({ orderBy: { createdAt: "desc" } });
 }
 
 export async function adminCreateVoucher(formData: FormData) {
-  await requireAdmin();
+  const adminCheck = await checkAdmin();
+  if (!adminCheck.success) {
+    return adminCheck;
+  }
 
   const raw = {
     code: formData.get("code"),
@@ -44,7 +61,10 @@ export async function adminCreateVoucher(formData: FormData) {
 }
 
 export async function adminUpdateVoucher(id: string, formData: FormData) {
-  await requireAdmin();
+  const adminCheck = await checkAdmin();
+  if (!adminCheck.success) {
+    return adminCheck;
+  }
 
   const raw = {
     code: formData.get("code"),
@@ -81,7 +101,10 @@ export async function adminUpdateVoucher(id: string, formData: FormData) {
 }
 
 export async function adminDeleteVoucher(id: string) {
-  await requireAdmin();
+  const adminCheck = await checkAdmin();
+  if (!adminCheck.success) {
+    return adminCheck;
+  }
 
   const used = await prisma.reservation.count({
     where: { voucherId: id, status: { not: "CANCELED" } },
@@ -96,7 +119,11 @@ export async function adminDeleteVoucher(id: string) {
 }
 
 export async function adminToggleVoucherActive(id: string, isActive: boolean) {
-  await requireAdmin();
+  const adminCheck = await checkAdmin();
+  if (!adminCheck.success) {
+    return adminCheck;
+  }
+
   await prisma.voucher.update({ where: { id }, data: { isActive } });
   revalidatePath("/admin/vouchers");
   return { success: true };

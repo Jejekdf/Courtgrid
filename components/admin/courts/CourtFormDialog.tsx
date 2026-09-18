@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { Plus, CheckCircle2, Upload } from "lucide-react";
 import { toast } from "sonner";
@@ -16,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { adminCreateCourt, adminUpdateCourt } from "@/features/admin/actions";
 import { uploadCourtImageAction } from "@/features/courts/actions";
+import { buildCourtSchema, type CreateCourtInput } from "@/features/admin/schemas";
 import type { AdminCourt } from "./CourtCard";
 
 interface CourtFormDialogProps {
@@ -37,14 +41,23 @@ function CourtFormContent({
   const t = useTranslations("admin.courts");
   const tv = useTranslations("validation");
   const isEditing = Boolean(courtToEdit);
-
-  const [name, setName] = useState(courtToEdit?.name ?? "");
-  const [type, setType] = useState<"FUTSAL" | "BADMINTON">(courtToEdit?.type ?? "FUTSAL");
-  const [price, setPrice] = useState(courtToEdit ? courtToEdit.pricePerHour.toString() : "");
-  const [imageUrl, setImageUrl] = useState(courtToEdit?.imageUrl ?? "");
-  const [isActive, setIsActive] = useState(courtToEdit?.isActive ?? true);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<z.input<ReturnType<typeof buildCourtSchema>>, unknown, CreateCourtInput>({
+    resolver: zodResolver(buildCourtSchema(tv)),
+    mode: "onChange",
+    defaultValues: {
+      name: courtToEdit?.name ?? "",
+      type: (courtToEdit?.type as "FUTSAL" | "BADMINTON") ?? "FUTSAL",
+      pricePerHour: courtToEdit ? courtToEdit.pricePerHour : 0,
+      imageUrl: courtToEdit?.imageUrl ?? "",
+      isActive: courtToEdit?.isActive ?? true,
+    },
+  });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -61,12 +74,9 @@ function CourtFormContent({
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
+  const onSubmit = async (data: CreateCourtInput) => {
     try {
-      let finalImageUrl = imageUrl;
+      let finalImageUrl = data.imageUrl || "";
 
       if (selectedFile) {
         const uploadFormData = new FormData();
@@ -77,16 +87,15 @@ function CourtFormContent({
           finalImageUrl = uploadRes.url;
         } else {
           toast.error(uploadRes.error || t("uploadFailToast"));
-          setIsSubmitting(false);
           return;
         }
       }
 
       const formData = new FormData();
-      formData.append("name", name);
-      formData.append("type", type);
-      formData.append("pricePerHour", price);
-      formData.append("isActive", isActive.toString());
+      formData.append("name", data.name);
+      formData.append("type", data.type);
+      formData.append("pricePerHour", data.pricePerHour.toString());
+      formData.append("isActive", data.isActive ? "true" : "false");
       formData.append("imageUrl", finalImageUrl);
 
       let res;
@@ -98,7 +107,6 @@ function CourtFormContent({
 
       if (res && "success" in res && !res.success) {
         toast.error(res.error || tv(isEditing ? "courtUpdateFailed" : "courtCreateFailed"));
-        setIsSubmitting(false);
         return;
       }
 
@@ -107,19 +115,16 @@ function CourtFormContent({
       onSuccess();
     } catch {
       toast.error(tv(isEditing ? "courtUpdateFailed" : "courtCreateFailed"));
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 mt-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-2">
       <Input
         label={t("nameLabel")}
-        value={name}
-        onChange={(e) => setName(e.target.value)}
+        {...register("name")}
         placeholder={t("namePlaceholder")}
-        required
+        error={errors.name?.message}
       />
 
       <div className="space-y-1.5 w-full text-left">
@@ -127,22 +132,23 @@ function CourtFormContent({
           {t("typeLabel")}
         </label>
         <select
-          value={type}
-          onChange={(e) => setType(e.target.value as "FUTSAL" | "BADMINTON")}
+          {...register("type")}
           className="flex h-10 w-full rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-950 focus:outline-hidden focus:ring-2 focus:ring-zinc-950/20 focus:border-zinc-950"
         >
           <option value="FUTSAL">FUTSAL</option>
           <option value="BADMINTON">BADMINTON</option>
         </select>
+        {errors.type?.message && (
+          <p className="text-sm font-medium text-red-500 mt-1">{errors.type.message}</p>
+        )}
       </div>
 
       <Input
         label={t("priceLabel")}
         type="number"
-        value={price}
-        onChange={(e) => setPrice(e.target.value)}
+        {...register("pricePerHour", { valueAsNumber: true })}
         placeholder={t("pricePlaceholder")}
-        required
+        error={errors.pricePerHour?.message}
       />
 
       <div className="space-y-1.5 w-full text-left">
@@ -165,17 +171,16 @@ function CourtFormContent({
 
       <Input
         label={t("urlLabel")}
-        value={imageUrl}
-        onChange={(e) => setImageUrl(e.target.value)}
+        {...register("imageUrl")}
         placeholder={t("urlPlaceholder")}
+        error={errors.imageUrl?.message}
       />
 
       <div className="flex items-center space-x-2 pt-1 pb-1">
         <input
           type="checkbox"
           id="isActive"
-          checked={isActive}
-          onChange={(e) => setIsActive(e.target.checked)}
+          {...register("isActive")}
           className="h-4 w-4 rounded border-zinc-300 text-zinc-950 focus:ring-zinc-950 cursor-pointer"
         />
         <label htmlFor="isActive" className="text-sm font-medium text-zinc-700 cursor-pointer">

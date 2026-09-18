@@ -81,6 +81,9 @@ export async function updateAdminSettings(formData: FormData) {
     });
 
     // Clear the Next.js cache so the UI reflects changes immediately.
+    const { invalidateCache } = await import("@/lib/redis");
+    await invalidateCache("admin:dashboard:stats");
+
     revalidatePath("/admin/settings");
     revalidatePath("/admin");
     revalidatePath("/");

@@ -19,10 +19,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { adminKeys } from "@/lib/query-keys";
-import { adminReservationsParsers } from "@/lib/search-params";
+import { adminReservationsParsers, adminScannerParser } from "@/lib/search-params";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { useAdminReservationsActions } from "@/stores/useBoundStore";
 import { ReservationRow, type ReservationRowData } from "@/components/admin/reservations/ReservationRow";
 import { ReservationCard } from "@/components/admin/reservations/ReservationCard";
 
@@ -30,10 +29,12 @@ export default function AdminReservationsPage() {
   const t = useTranslations("admin.reservations");
   const queryClient = useQueryClient();
   const [filter, setFilter] = useQueryState("filter", adminReservationsParsers.filter.withOptions({ shallow: true }));
+  const [statusFilter, setStatusFilter] = useQueryState("status", adminReservationsParsers.status.withOptions({ shallow: true }));
   const [page, setPage] = useQueryState("page", adminReservationsParsers.page.withOptions({ shallow: true }));
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
-  const { openScanner } = useAdminReservationsActions();
+  const [, setIsScannerOpen] = useQueryState("scanner", adminScannerParser.withOptions({ shallow: true }));
+  const openScanner = () => setIsScannerOpen(true);
 
   // Fetch reservations matching current filter and page
   const { data, isLoading, isFetching } = useQuery({
@@ -49,8 +50,6 @@ export default function AdminReservationsPage() {
 
   const reservations = data?.reservations ?? [];
   const totalPages = data?.totalPages ?? 1;
-
-  const [statusFilter, setStatusFilter] = useState<string>("ALL");
 
   const displayedReservations = reservations.filter((res) => {
     if (statusFilter === "ALL") return true;
@@ -172,7 +171,10 @@ export default function AdminReservationsPage() {
               <div className="flex items-center bg-white border border-zinc-200 rounded-lg px-2.5 py-2 min-h-10 shadow-xs">
                 <select
                   value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value as "ALL" | "PENDING" | "DP_PAID" | "DONE" | "CANCELED";
+                    setStatusFilter(val === "ALL" ? null : val);
+                  }}
                   className="bg-transparent text-xs sm:text-sm text-zinc-950 font-medium focus:outline-hidden cursor-pointer"
                   aria-label={t("filterStatus")}
                 >
