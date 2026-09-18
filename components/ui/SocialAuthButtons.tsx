@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -43,27 +43,62 @@ interface SocialAuthButtonsProps {
 
 export default function SocialAuthButtons({ isLoading, callbackUrl }: SocialAuthButtonsProps) {
   const [loadingProvider, setLoadingProvider] = useState<"google" | "facebook" | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const t = useTranslations("auth.social");
 
+  const resetLoading = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setLoadingProvider(null);
+  };
+
   useEffect(() => {
-    const handlePageShow = (event: PageTransitionEvent) => {
-      if (event.persisted) {
-        setLoadingProvider(null);
+    const handlePageShow = () => {
+      resetLoading();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        resetLoading();
       }
     };
 
+    const handleFocus = () => {
+      resetLoading();
+    };
+
     window.addEventListener("pageshow", handlePageShow);
-    return () => window.removeEventListener("pageshow", handlePageShow);
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener("pageshow", handlePageShow);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, []);
 
   const handleProviderSignIn = async (provider: "google" | "facebook") => {
     setLoadingProvider(provider);
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      setLoadingProvider(null);
+    }, 6000);
+
     try {
       const isSafeCallback = callbackUrl && callbackUrl.startsWith("/") && !callbackUrl.startsWith("//");
       const targetUrl = isSafeCallback ? callbackUrl : "/dashboard";
       await signIn(provider, { callbackUrl: targetUrl });
     } catch {
-      setLoadingProvider(null);
+      resetLoading();
     }
   };
 

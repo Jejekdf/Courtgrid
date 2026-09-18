@@ -30,6 +30,7 @@ const inputLabelClass = "text-xs sm:text-sm font-semibold uppercase tracking-wid
 
 export default function LoginForm() {
   const [errorParam] = useQueryState("error", parseAsString);
+  const [callbackUrl] = useQueryState("callbackUrl", parseAsString);
   const [showPassword, setShowPassword] = useState(false);
   const t = useTranslations("auth.login");
   const tVal = useTranslations("validation");
@@ -176,7 +177,7 @@ export default function LoginForm() {
         </form>
       </Form>
 
-      <SocialAuthButtons isLoading={form.formState.isSubmitting} />
+      <SocialAuthButtons isLoading={form.formState.isSubmitting} callbackUrl={callbackUrl ?? undefined} />
     </motion.div>
   );
 }
