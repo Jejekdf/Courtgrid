@@ -63,6 +63,7 @@
     "register": {
       "title": "Buat Akun Baru",
       "desc": "Buat akun untuk mulai pesan lapangan. Jadwal kamu terkunci otomatis begitu DP 50% dibayar.",
+      "formLoading": "Memuat formulir pendaftaran...",
       "haveAccount": "Sudah memiliki akun?",
       "signInLink": "Masuk Sekarang",
       "quote": "Proses pendaftaran cepat dan sistem jadwalnya 100% akurat. Penanganan DP online membuat jadwal tim kami terjamin.",
@@ -91,7 +92,19 @@
       "hideConfirm": "Sembunyikan konfirmasi password",
       "toastSuccess": "Pendaftaran berhasil. Mengalihkan ke halaman masuk...",
       "toastError": "Terjadi kesalahan saat mendaftar.",
-      "metaTitle": "Daftar Akun"
+      "metaTitle": "Daftar Akun",
+      "otpTitle": "Verifikasi Email Kamu",
+      "otpDesc": "Kami telah mengirimkan 6 digit kode verifikasi ke",
+      "otpInputLabel": "Kode Verifikasi (OTP)",
+      "otpVerifyButton": "Verifikasi Akun",
+      "otpVerifying": "Memverifikasi...",
+      "otpResendButton": "Kirim Ulang Kode",
+      "otpResending": "Mengirim kode...",
+      "otpResendWait": "Kirim ulang dalam",
+      "otpChangeEmail": "Ubah Email / Kembali",
+      "otpSuccess": "Akun berhasil diverifikasi! Mengalihkan ke halaman masuk...",
+      "otpSent": "Kode verifikasi 6 digit telah dikirim ke email kamu.",
+      "otpResent": "Kode verifikasi baru berhasil dikirim."
     },
     "forgot": {
       "title": "Lupa Password?",
@@ -1046,7 +1059,15 @@
     "ticketNotFound": "Tiket atau ID reservasi tidak ditemukan.",
     "ticketCanceled": "Tiket ini sudah DIBATALKAN dan tidak dapat digunakan.",
     "ticketAlreadyUsed": "Tiket ini sudah digunakan untuk check-in dan berstatus Selesai.",
-    "statsNotReady": "Data statistik belum tersedia."
+    "statsNotReady": "Data statistik belum tersedia.",
+    "otpRequired": "Kode OTP wajib diisi",
+    "otpLength": "Kode OTP harus berupa 6 digit angka",
+    "otpInvalidOrExpired": "Kode OTP salah atau sudah kedaluwarsa. Silakan minta kode baru.",
+    "rateLimitOtp": "Terlalu banyak percobaan verifikasi. Silakan coba lagi dalam beberapa menit.",
+    "rateLimitResendOtp": "Mohon tunggu sebelum meminta kode OTP baru.",
+    "emailNotVerified": "Email belum diverifikasi. Silakan selesaikan verifikasi OTP.",
+    "otpSent": "Kode verifikasi 6 digit telah dikirim ke email kamu.",
+    "otpResent": "Kode verifikasi baru berhasil dikirim."
   },
   "common": {
     "notFoundTitle": "Halaman tidak ditemukan",

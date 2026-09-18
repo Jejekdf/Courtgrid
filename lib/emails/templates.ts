@@ -110,3 +110,26 @@ export const paymentSuccessEmail = (data: {
     </div>
   `,
 });
+
+export const registerOtpEmail = (name: string | null | undefined, otp: string) => ({
+  from: process.env.RESEND_FROM_EMAIL || "CourtGrid <onboarding@resend.dev>",
+  to: [] as string[],
+  subject: "Kode Verifikasi Pendaftaran CourtGrid",
+  html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+      <h2 style="color: #059669; text-align: center;">CourtGrid</h2>
+      <div style="background-color: #fafafa; padding: 30px; border-radius: 8px; border: 1px solid #eaeaea;">
+        <h3 style="margin-top: 0;">Verifikasi Akun Baru</h3>
+        <p>Halo ${name || "Pelanggan"},</p>
+        <p>Terima kasih telah mendaftar di CourtGrid. Gunakan kode verifikasi 6 digit di bawah ini untuk mengaktifkan akun Anda:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <span style="display: inline-block; font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #09090b; background: #e4e4e7; padding: 12px 24px; border-radius: 8px; font-family: monospace;">${otp}</span>
+        </div>
+        <p style="font-size: 14px; color: #666;">Kode ini berlaku selama 10 menit. Jangan berikan kode ini kepada siapa pun.</p>
+      </div>
+      <p style="text-align: center; font-size: 12px; color: #999; margin-top: 20px;">
+        &copy; ${new Date().getFullYear()} CourtGrid. Hak cipta dilindungi.
+      </p>
+    </div>
+  `,
+});

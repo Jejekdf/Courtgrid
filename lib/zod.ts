@@ -73,10 +73,7 @@ export function createRegisterSchema(t: SchemaTranslator = defaultTranslator) {
         .string()
         .min(1, t("emailRequired"))
         .and(z.email(t("emailInvalid"))),
-      no_hp: z
-        .string()
-        .min(1, t("phoneRequired"))
-        .regex(/^[0-9+\-\s]{10,15}$/, t("phoneInvalid")),
+      no_hp: z.string().optional(),
       password: z
         .string()
         .min(8, t("passwordMin"))
@@ -94,6 +91,23 @@ export function createRegisterSchema(t: SchemaTranslator = defaultTranslator) {
 
 export const registerSchema = createRegisterSchema();
 export type RegisterInput = z.infer<typeof registerSchema>;
+
+export function createVerifyOtpSchema(t: SchemaTranslator = defaultTranslator) {
+  return z.object({
+    email: z
+      .string()
+      .min(1, t("emailRequired"))
+      .and(z.email(t("emailInvalid"))),
+    otp: z
+      .string()
+      .min(1, t("otpRequired"))
+      .length(6, t("otpLength"))
+      .regex(/^\d{6}$/, t("otpLength")),
+  });
+}
+
+export const verifyOtpSchema = createVerifyOtpSchema();
+export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>;
 
 export function createUpdatePasswordSchema(t: SchemaTranslator = defaultTranslator) {
   return z

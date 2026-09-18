@@ -4,6 +4,7 @@ import { signIn } from "@/auth";
 import {
   createLoginSchema,
   createRegisterSchema,
+  createVerifyOtpSchema,
   createUpdateProfileSchema,
   createUpdatePasswordSchema,
   createForgotPasswordSchema,
@@ -18,7 +19,7 @@ import { revalidatePath } from "next/cache";
 import { uploadAvatar } from "@/lib/supabase/storage";
 import crypto from "crypto";
 import { resend, RESEND_FROM_EMAIL } from "@/lib/resend";
-import { forgotPasswordEmail } from "@/lib/emails/templates";
+import { forgotPasswordEmail, registerOtpEmail } from "@/lib/emails/templates";
 import { getTranslations } from "next-intl/server";
 
 async function clientIp(): Promise<string> {
@@ -47,6 +48,7 @@ export async function authenticate(
   const t = await getTranslations("validation");
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  const callbackUrl = formData.get("callbackUrl") as string | null;
 
   // loginSchema.safeParse({ email, password })
   const validatedFields = createLoginSchema(t).safeParse({ email, password });
@@ -63,8 +65,12 @@ export async function authenticate(
 
   const existingUser = await prisma.user.findUnique({
     where: { email: validatedFields.data.email },
-    select: { role: true },
+    select: { role: true, emailVerified: true },
   });
+
+  if (existingUser && !existingUser.emailVerified) {
+    return { success: false, error: t("emailNotVerified") };
+  }
 
   let result: unknown;
 
@@ -88,13 +94,49 @@ export async function authenticate(
   }
 
   if (isSuccess) {
-    return { success: true, redirectTo: existingUser?.role === "ADMIN" ? "/admin" : "/dashboard" };
+    const roleTarget = existingUser?.role === "ADMIN" ? "/admin" : "/dashboard";
+    const isSafeCallback = callbackUrl && callbackUrl.startsWith("/") && !callbackUrl.startsWith("//");
+    return { success: true, redirectTo: isSafeCallback ? callbackUrl : roleTarget };
   }
 
   return { success: false, error: t("genericLoginError") };
 }
 
 export const login = authenticate;
+
+/**
+ * Generates, stores hashed token, and sends a 6-digit OTP email.
+ */
+async function issueAndSendOtp(
+  recipientEmail: string,
+  recipientName: string | null | undefined
+): Promise<void> {
+  const otp = crypto.randomInt(100000, 1000000).toString();
+  const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+  const expires = new Date(Date.now() + 10 * 60 * 1000);
+
+  await prisma.verificationToken.deleteMany({
+    where: { identifier: recipientEmail },
+  });
+
+  await prisma.verificationToken.create({
+    data: {
+      identifier: recipientEmail,
+      token: hashedOtp,
+      expires,
+    },
+  });
+
+  const emailPayload = registerOtpEmail(recipientName, otp);
+  try {
+    await resend.emails.send({
+      ...emailPayload,
+      to: [recipientEmail],
+    });
+  } catch (mailError) {
+    console.error("Resend error sending OTP:", mailError);
+  }
+}
 
 /**
  * Creates a new customer account.
@@ -104,7 +146,7 @@ export async function registerUser(formData: FormData) {
   const registerInput = {
     nama: formData.get("nama") as string,
     email: formData.get("email") as string,
-    no_hp: formData.get("no_hp") as string,
+    no_hp: (formData.get("no_hp") as string) || undefined,
     password: formData.get("password") as string,
     confirmPassword: formData.get("confirmPassword") as string,
   };
@@ -125,13 +167,14 @@ export async function registerUser(formData: FormData) {
   }
 
   const { nama, email, password } = validated.data;
+  const normalizedEmail = email.toLowerCase().trim();
 
   try {
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
-    if (existingUser) {
+    if (existingUser && existingUser.emailVerified) {
       return {
         success: false,
         error: t("emailAlreadyRegistered"),
@@ -140,18 +183,33 @@ export async function registerUser(formData: FormData) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await prisma.user.create({
-      data: {
-        name: nama,
-        email,
-        passwordHash: hashedPassword,
-        role: "CUSTOMER",
-      },
-    });
+    if (existingUser && !existingUser.emailVerified) {
+      await prisma.user.update({
+        where: { email: normalizedEmail },
+        data: {
+          name: nama,
+          passwordHash: hashedPassword,
+        },
+      });
+    } else {
+      await prisma.user.create({
+        data: {
+          name: nama,
+          email: normalizedEmail,
+          passwordHash: hashedPassword,
+          role: "CUSTOMER",
+          emailVerified: null,
+        },
+      });
+    }
+
+    await issueAndSendOtp(normalizedEmail, nama);
 
     return {
       success: true,
-      message: t("registerSuccess"),
+      requiresOtp: true,
+      email: normalizedEmail,
+      message: t("otpSent"),
     };
   } catch (error) {
     console.error("Error registering user:", error);
@@ -160,6 +218,94 @@ export async function registerUser(formData: FormData) {
       error: t("registerServerError"),
     };
   }
+}
+
+export async function verifyRegisterOtp(email: string, otp: string) {
+  const t = await getTranslations("validation");
+  const normalizedEmail = (email || "").toLowerCase().trim();
+  const cleanOtp = (otp || "").trim();
+
+  const validated = createVerifyOtpSchema(t).safeParse({
+    email: normalizedEmail,
+    otp: cleanOtp,
+  });
+
+  if (!validated.success) {
+    return {
+      success: false,
+      error: validated.error.issues[0].message,
+    };
+  }
+
+  const ip = await clientIp();
+  const { success } = await checkRateLimit(`verify_otp:${ip}`);
+  if (!success) {
+    return { success: false, error: t("rateLimitOtp") };
+  }
+
+  const hashedOtp = crypto.createHash("sha256").update(cleanOtp).digest("hex");
+
+  const tokenRecord = await prisma.verificationToken.findUnique({
+    where: {
+      identifier_token: {
+        identifier: normalizedEmail,
+        token: hashedOtp,
+      },
+    },
+  });
+
+  if (!tokenRecord || tokenRecord.expires < new Date()) {
+    return {
+      success: false,
+      error: t("otpInvalidOrExpired"),
+    };
+  }
+
+  await prisma.user.update({
+    where: { email: normalizedEmail },
+    data: { emailVerified: new Date() },
+  });
+
+  await prisma.verificationToken.deleteMany({
+    where: { identifier: normalizedEmail },
+  });
+
+  return {
+    success: true,
+    message: t("registerSuccess"),
+  };
+}
+
+export async function resendRegisterOtp(email: string) {
+  const t = await getTranslations("validation");
+  const normalizedEmail = (email || "").toLowerCase().trim();
+
+  const ip = await clientIp();
+  const { success } = await checkRateLimit(`resend_otp:${ip}_${normalizedEmail}`);
+  if (!success) {
+    return {
+      success: false,
+      error: t("rateLimitResendOtp"),
+    };
+  }
+
+  const targetAccount = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+  });
+
+  if (!targetAccount || targetAccount.emailVerified) {
+    return {
+      success: false,
+      error: t("emailAlreadyRegistered"),
+    };
+  }
+
+  await issueAndSendOtp(normalizedEmail, targetAccount.name);
+
+  return {
+    success: true,
+    message: t("otpResent"),
+  };
 }
 
 export async function updateProfile(formData: FormData) {

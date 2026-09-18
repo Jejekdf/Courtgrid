@@ -63,6 +63,7 @@
     "register": {
       "title": "Create New Account",
       "desc": "Create an account to start booking courts. Your slot locks automatically once the 50% DP is paid.",
+      "formLoading": "Loading registration form...",
       "haveAccount": "Already have an account?",
       "signInLink": "Sign In Now",
       "quote": "Registration is fast and the scheduling system is 100% accurate. Automatic online DP handling guarantees our team's schedule.",
@@ -91,7 +92,19 @@
       "hideConfirm": "Hide password confirmation",
       "toastSuccess": "Registration successful. Redirecting to the sign-in page...",
       "toastError": "An error occurred while registering.",
-      "metaTitle": "Register Account"
+      "metaTitle": "Register Account",
+      "otpTitle": "Verify Your Email",
+      "otpDesc": "We have sent a 6-digit verification code to",
+      "otpInputLabel": "Verification Code (OTP)",
+      "otpVerifyButton": "Verify Account",
+      "otpVerifying": "Verifying...",
+      "otpResendButton": "Resend Code",
+      "otpResending": "Sending code...",
+      "otpResendWait": "Resend in",
+      "otpChangeEmail": "Change Email / Back",
+      "otpSuccess": "Account successfully verified! Redirecting to sign in...",
+      "otpSent": "A 6-digit verification code has been sent to your email.",
+      "otpResent": "A new verification code has been sent successfully."
     },
     "forgot": {
       "title": "Forgot Password?",
@@ -1046,7 +1059,15 @@
     "ticketNotFound": "Ticket or reservation ID was not found.",
     "ticketCanceled": "This ticket has been CANCELED and cannot be used.",
     "ticketAlreadyUsed": "This ticket has already been used for check-in and is Completed.",
-    "statsNotReady": "Statistics are not available yet."
+    "statsNotReady": "Statistics are not available yet.",
+    "otpRequired": "OTP code is required",
+    "otpLength": "OTP code must be 6 digits",
+    "otpInvalidOrExpired": "Invalid or expired verification code. Please request a new code.",
+    "rateLimitOtp": "Too many verification attempts. Please try again in a few minutes.",
+    "rateLimitResendOtp": "Please wait before requesting a new OTP code.",
+    "emailNotVerified": "Email is not verified yet. Please complete OTP verification.",
+    "otpSent": "A 6-digit verification code has been sent to your email.",
+    "otpResent": "A new verification code has been sent successfully."
   },
   "common": {
     "notFoundTitle": "Page not found",
