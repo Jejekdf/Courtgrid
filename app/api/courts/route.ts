@@ -64,7 +64,14 @@ export async function GET(request: Request) {
     }
 
     try {
-      const slots = await getCourtAvailabilityDAL(courtId, date);
+      const cacheKey = `public:avail:${courtId}:${date}`;
+      const slots = await getOrSetCache(
+        cacheKey,
+        async () => {
+          return getCourtAvailabilityDAL(courtId, date);
+        },
+        120
+      );
       return NextResponse.json(
         { data: slots },
         {
@@ -97,7 +104,7 @@ export async function GET(request: Request) {
       async () => {
         return getActiveCourtsDAL(search || "", type || null);
       },
-      300
+      3600
     );
 
     return NextResponse.json({ data: courts });
