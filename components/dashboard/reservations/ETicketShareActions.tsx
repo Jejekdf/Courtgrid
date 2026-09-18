@@ -120,7 +120,7 @@ export default function ETicketShareActions({
 
       <DropdownMenu>
         <DropdownMenuTrigger
-          className="inline-flex items-center justify-center min-h-10 rounded-xl px-3.5 text-xs font-semibold text-zinc-700 hover:text-zinc-950 bg-white border border-zinc-200/80 transition-colors shadow-2xs cursor-pointer focus-visible:ring-2 focus-visible:ring-zinc-950 outline-none"
+          className="inline-flex items-center justify-center min-h-10 rounded-xl px-3.5 text-xs font-semibold text-zinc-700 hover:text-zinc-950 bg-white border border-zinc-200/80 transition-colors shadow-2xs cursor-pointer focus-visible:ring-2 focus-visible:ring-zinc-950 outline-hidden"
           aria-label="Simpan ke Kalender"
         >
           <CalendarPlus className="size-4 mr-1.5 text-zinc-500 shrink-0" />
