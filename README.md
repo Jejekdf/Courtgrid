@@ -35,7 +35,7 @@ The platform includes role-based access control (Admin and Customer), digital e-
 - **Single-Owner Ghost Booking Auto-Cancel**: Centralized cleanup routine cancels stale `PENDING` bookings that exceed the configured timeout (`Setting.autoCancelTimeout`, default 15 minutes) and lack a `stripeSessionId`. Active Stripe checkouts are never prematurely released.
 - **Strict Payment & Webhook Lifecycle**: Reservation status transitions through `PENDING → DP_PAID → DONE` (or `CANCELED`). Webhook handlers verify Stripe HMAC signatures and fulfill bookings only when `event.type === "checkout.session.completed"` and `session.payment_status === "paid"`.
 - **Data Access Layer (DAL) Isolation**: UI components never query Prisma directly. Mutations use Next.js Server Actions with Zod validation, session verification, and `$transaction` blocks. Read queries consume DTOs through `features/**/dal.ts` cached via React `cache()`.
-- **Global Admin UI State**: Ticket scanner modal state is managed through a lightweight Zustand store (`stores/useBoundStore.ts`), allowing admins to open the scanner from any admin page or topbar without prop drilling or route changes.
+- **Global Admin UI State**: Ticket scanner modal state is managed through URL search params via `nuqs` (`adminScannerParser`), allowing admins to open the scanner from any admin page or topbar without prop drilling or route changes.
 - **Pre-Upload Image Pipeline**: User avatars and court photos pass through server-side `sharp` processing to convert and compress to WebP before storing in Supabase Storage buckets.
 - **Rate Limiting & Protection**: Public mutation endpoints and court lookup endpoints are guarded by `@upstash/ratelimit` with Redis sliding window algorithms.
 
@@ -51,7 +51,7 @@ The platform includes role-based access control (Admin and Customer), digital e-
 | **Database & ORM** | PostgreSQL (Supabase), Prisma 7 | Schema models, relational constraints, `@prisma/adapter-pg` pooler |
 | **Authentication** | NextAuth.js v5 (Beta) | JWT session strategy, Credentials (bcryptjs), Google & Facebook OAuth |
 | **Payments** | Stripe Checkout | 50% down payment sessions with webhook signature validation |
-| **State & Fetching** | TanStack Query 5, Nuqs, Zustand | Asynchronous query caching, URL search param state, and global admin modal state |
+| **State & Fetching** | TanStack Query 5, Nuqs | Asynchronous query caching and URL search param state |
 | **Storage** | Supabase Storage + Sharp | WebP image optimization for court pictures and user avatars |
 | **Email & Caching** | Resend, Upstash Redis | Transactional booking receipts and sliding-window rate limiting |
 | **Testing & Tooling** | Node Test Runner, Playwright, Bundle Analyzer | Unit tests (`node:test` via `tsx`), E2E browser tests, and Webpack bundle analysis |
@@ -87,7 +87,6 @@ sport-center-app/
 │   ├── reservations/          # Booking creation, Stripe checkout, auto-cancel
 │   ├── settings/              # Operating hours, pricing, and timeout controls
 │   └── vouchers/              # Promo code validation and discount math
-├── stores/                    # Zustand store slices (useBoundStore.ts)
 ├── lib/                       # Singletons and utilities (prisma, stripe, resend, redis, ratelimit, timezone)
 ├── messages/                  # Localization files (id.json, en.json)
 ├── prisma/

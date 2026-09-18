@@ -41,7 +41,9 @@ export const proxy = auth((req) => {
 
   if (isAdminRoute) {
     if (!isLoggedIn) {
-      return NextResponse.redirect(toLocale("/login"));
+      const redirectUrl = toLocale("/login");
+      redirectUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(redirectUrl);
     }
     if (userRole !== "ADMIN") {
       return NextResponse.redirect(toLocale("/"));
@@ -50,7 +52,9 @@ export const proxy = auth((req) => {
 
   if (isDashboardRoute) {
     if (!isLoggedIn) {
-      return NextResponse.redirect(toLocale("/login"));
+      const redirectUrl = toLocale("/login");
+      redirectUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(redirectUrl);
     }
     if (userRole === "ADMIN") {
       return NextResponse.redirect(toLocale("/admin"));
@@ -58,6 +62,10 @@ export const proxy = auth((req) => {
   }
 
   if (isAuthRoute && isLoggedIn) {
+    const callbackParam = req.nextUrl.searchParams.get("callbackUrl");
+    if (callbackParam && callbackParam.startsWith("/") && !callbackParam.startsWith("//")) {
+      return NextResponse.redirect(new URL(callbackParam, req.nextUrl));
+    }
     const target = userRole === "ADMIN" ? "/admin" : "/dashboard";
     return NextResponse.redirect(toLocale(target));
   }

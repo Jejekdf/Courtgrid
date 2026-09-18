@@ -35,12 +35,14 @@ async function main() {
       name: adminNama,
       passwordHash: hashedPassword,
       role: 'ADMIN',
+      emailVerified: new Date(),
     },
     create: {
       email: adminEmail,
       name: adminNama,
       passwordHash: hashedPassword,
       role: 'ADMIN',
+      emailVerified: new Date(),
     },
   });
   console.log('✓ Admin account synchronized:', admin.email);
@@ -109,12 +111,14 @@ async function main() {
         name: "Wildan",
         passwordHash: wildanPassword,
         role: "CUSTOMER",
+        emailVerified: new Date(),
       },
       create: {
         email: "wildan@gmail.com",
         name: "Wildan",
         passwordHash: wildanPassword,
         role: "CUSTOMER",
+        emailVerified: new Date(),
       },
     });
     console.log('✓ Created/Updated customer user Wildan (wildan@gmail.com)');
