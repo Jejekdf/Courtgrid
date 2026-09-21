@@ -670,7 +670,8 @@
       "searchIdleHint": "Type to search reservations or courts",
       "searchNoResults": "No matching data.",
       "superadminRole": "Superadmin",
-      "verifyTicket": "Verify Ticket"
+      "verifyTicket": "Verify Ticket",
+      "viewSite": "View Site"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -891,6 +892,7 @@
       "searchPlaceholder": "Search voucher code",
       "loading": "Loading vouchers...",
       "empty": "No vouchers yet.",
+      "noResults": "No vouchers found.",
       "colCode": "Code",
       "colDiscount": "Discount",
       "colMaxDiscount": "Max Discount",

@@ -13,15 +13,15 @@ export default function PageHeader({
 }: PageHeaderProps) {
   return (
     <div className="border-b border-zinc-200 pb-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-      <div className="space-y-1">
+      <div className="flex flex-col gap-1">
         {section && (
-          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-zinc-400">
+          <div className="flex items-center gap-2 text-xs font-mono uppercase text-zinc-400">
             <span>{section}</span>
             <span>/</span>
             <span className="text-zinc-950 font-semibold">{title}</span>
           </div>
         )}
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950 text-balance">
+        <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-zinc-950 text-balance">
           {title}
         </h1>
         {description && (

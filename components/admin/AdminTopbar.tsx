@@ -1,6 +1,7 @@
 "use client";
 
-import { Menu, PanelLeftClose, PanelLeft, QrCode } from "lucide-react";
+import { Menu, PanelLeftClose, PanelLeft, QrCode, Globe } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import { useQueryState } from "nuqs";
@@ -54,7 +55,17 @@ export default function AdminTopbar({
       </div>
 
       {/* Action + Admin User Badge */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
+        <Link
+          href="/courts"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={t("viewSite")}
+          className="flex items-center gap-1.5 px-3 py-2 min-h-10 text-xs sm:text-sm font-semibold text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 rounded-xl transition-colors border border-transparent hover:border-zinc-200 cursor-pointer"
+        >
+          <Globe className="size-4" />
+          <span className="hidden sm:inline">{t("viewSite")}</span>
+        </Link>
         <button
           type="button"
           onClick={openScanner}

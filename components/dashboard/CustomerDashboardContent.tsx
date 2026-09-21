@@ -31,7 +31,7 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
-      className="space-y-8 max-w-7xl mx-auto text-zinc-950"
+      className="flex flex-col gap-8 max-w-7xl mx-auto text-zinc-950"
     >
       {/* Clean PageHeader */}
       <PageHeader
@@ -50,9 +50,9 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
 
       {/* Overview Stat Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-xs space-y-2">
+        <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-xs flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-600 uppercase tracking-wider font-sans">{t("statTotal")}</span>
+            <span className="text-xs font-semibold text-zinc-600 uppercase font-sans">{t("statTotal")}</span>
             <div className="size-8 rounded-lg bg-zinc-100 text-zinc-950 flex items-center justify-center font-bold text-xs">
               <CalendarCheck className="size-4" />
             </div>
@@ -61,9 +61,9 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
           <p className="text-xs sm:text-sm text-zinc-600 font-sans">{t("statTotalSub")}</p>
         </div>
 
-        <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-xs space-y-2">
+        <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-xs flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-600 uppercase tracking-wider font-sans">{t("statVerified")}</span>
+            <span className="text-xs font-semibold text-zinc-600 uppercase font-sans">{t("statVerified")}</span>
             <div className="size-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-xs">
               <ShieldCheck className="size-4" />
             </div>
@@ -72,9 +72,9 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
           <p className="text-xs sm:text-sm text-zinc-600 font-sans">{t("statVerifiedSub")}</p>
         </div>
 
-        <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-xs space-y-2 sm:col-span-2 lg:col-span-1">
+        <div className="bg-white border border-zinc-200/80 rounded-2xl p-5 shadow-xs flex flex-col gap-2 sm:col-span-2 lg:col-span-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-zinc-600 uppercase tracking-wider font-sans">{t("accountStatus")}</span>
+            <span className="text-xs font-semibold text-zinc-600 uppercase font-sans">{t("accountStatus")}</span>
             <div className="size-8 rounded-lg bg-zinc-950 text-white flex items-center justify-center font-bold text-xs">
               <Activity className="size-4" />
             </div>
@@ -87,10 +87,10 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
       {/* Upcoming Booking Banner */}
       {upcomingBooking && (
         <div className="p-5 bg-zinc-950 text-white rounded-2xl shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[0.6875rem] font-semibold uppercase tracking-wider text-emerald-400 font-sans">
+              <span className="text-[0.6875rem] font-semibold uppercase text-emerald-400 font-sans">
                 {t("nextSession")}
               </span>
             </div>
@@ -114,11 +114,11 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
       )}
 
       {/* Recent Reservations Table Section */}
-      <div className="space-y-4">
+      <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-base font-extrabold tracking-tight text-zinc-950 font-sans">{t("recentTitle")}</h2>
-            <p className="text-xs sm:text-sm text-zinc-500 font-sans">{t("recentDesc")}</p>
+            <h2 className="font-heading text-base font-extrabold text-zinc-950 text-balance">{t("recentTitle")}</h2>
+            <p className="text-xs sm:text-sm text-zinc-500 font-sans text-pretty">{t("recentDesc")}</p>
           </div>
           <Link href="/dashboard/reservations" className="text-xs sm:text-sm font-bold text-zinc-950 hover:underline font-sans">
             {t("viewAll")} &rarr;

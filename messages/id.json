@@ -670,7 +670,8 @@
       "searchIdleHint": "Ketik untuk mencari reservasi atau lapangan",
       "searchNoResults": "Tidak ada data yang cocok.",
       "superadminRole": "Superadmin",
-      "verifyTicket": "Verifikasi Tiket"
+      "verifyTicket": "Verifikasi Tiket",
+      "viewSite": "Lihat Situs"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -891,6 +892,7 @@
       "searchPlaceholder": "Cari kode voucher",
       "loading": "Memuat voucher...",
       "empty": "Belum ada voucher.",
+      "noResults": "Voucher tidak ditemukan.",
       "colCode": "Kode",
       "colDiscount": "Diskon",
       "colMaxDiscount": "Maks. Diskon",

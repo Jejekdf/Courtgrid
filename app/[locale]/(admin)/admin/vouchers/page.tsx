@@ -73,7 +73,7 @@ export default function AdminVouchersPage() {
   );
 
   return (
-    <div className="w-full space-y-8 text-zinc-950">
+    <div className="w-full flex flex-col gap-8 text-zinc-950">
       <AdminHeader
         title={t("title")}
         description={t("desc")}
@@ -101,123 +101,145 @@ export default function AdminVouchersPage() {
       </div>
 
       <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs overflow-hidden">
-        {/* Mobile Cards (sm:hidden) */}
-        <div className="divide-y divide-zinc-100 sm:hidden">
-          {isLoading ? (
-            <div className="p-8 text-center text-sm text-zinc-400">Loading...</div>
-          ) : filtered.length === 0 ? (
-            <div className="p-8 text-center text-sm text-zinc-500 font-medium">
-              {t("empty")}
+        {isLoading ? (
+          <div className="p-12 text-center text-sm text-zinc-400 font-mono">Loading...</div>
+        ) : filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center p-8 sm:p-12 text-center gap-3">
+            <div className="size-12 rounded-2xl bg-zinc-100 flex items-center justify-center text-zinc-500">
+              <Tag className="size-6 text-zinc-400" />
             </div>
-          ) : (
-            filtered.map((v) => (
-              <div key={v.id} className="p-4 space-y-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <div className="font-mono font-bold text-sm text-zinc-950 flex items-center gap-1.5">
-                      <Tag className="size-3.5 text-zinc-400" />
-                      <span>{v.code}</span>
+            <div className="flex flex-col gap-1 max-w-xs">
+              <p className="font-heading font-bold text-base text-zinc-950 text-balance">
+                {search ? t("noResults") : t("empty")}
+              </p>
+              <p className="text-xs sm:text-sm text-zinc-500 font-sans text-pretty">
+                {search
+                  ? "Coba kata kunci lain untuk mencari kode voucher."
+                  : "Buat kode voucher diskon pertama Anda untuk promosi pelanggan."}
+              </p>
+            </div>
+            {search ? (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  setSearchDraft("");
+                  setSearch("");
+                }}
+                className="mt-1"
+              >
+                Reset Pencarian
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={openAdd}
+                className="mt-1 bg-zinc-950 text-white"
+                leftIcon={<Plus className="size-4" />}
+              >
+                {t("addVoucher")}
+              </Button>
+            )}
+          </div>
+        ) : (
+          <>
+            {/* Mobile Cards (sm:hidden) */}
+            <div className="divide-y divide-zinc-100 sm:hidden">
+              {filtered.map((v) => (
+                <div key={v.id} className="p-4 flex flex-col gap-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="font-mono font-bold text-sm text-zinc-950 flex items-center gap-1.5">
+                        <Tag className="size-3.5 text-zinc-400" />
+                        <span>{v.code}</span>
+                      </div>
+                      {v.description && (
+                        <p className="text-xs text-zinc-500 mt-0.5">{v.description}</p>
+                      )}
                     </div>
-                    {v.description && (
-                      <p className="text-xs text-zinc-500 mt-0.5">{v.description}</p>
-                    )}
+                    <span
+                      className={`inline-flex px-2 py-0.5 rounded-md text-[0.6875rem] font-bold uppercase border shrink-0 ${
+                        v.isActive
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          : "bg-zinc-100 text-zinc-600 border-zinc-200"
+                      }`}
+                    >
+                      {v.isActive ? t("active") : t("inactive")}
+                    </span>
                   </div>
-                  <span
-                    className={`inline-flex px-2 py-0.5 rounded-md text-[0.6875rem] font-bold uppercase border shrink-0 ${
-                      v.isActive
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                        : "bg-zinc-100 text-zinc-600 border-zinc-200"
-                    }`}
-                  >
-                    {v.isActive ? t("active") : t("inactive")}
-                  </span>
-                </div>
 
-                <div className="bg-zinc-50/70 border border-zinc-100 rounded-lg p-2.5 space-y-1 text-xs text-zinc-700">
-                  <div className="flex justify-between">
-                    <span className="text-zinc-500">{t("colDiscount")}</span>
-                    <span className="font-bold text-zinc-950 font-mono">{v.discountPct}%</span>
-                  </div>
-                  {v.maxDiscount ? (
+                  <div className="bg-zinc-50/70 border border-zinc-100 rounded-lg p-2.5 flex flex-col gap-1 text-xs text-zinc-700">
                     <div className="flex justify-between">
-                      <span className="text-zinc-500">{t("colMaxDiscount")}</span>
-                      <span className="font-semibold text-zinc-800 font-mono">{formatRupiah(v.maxDiscount)}</span>
+                      <span className="text-zinc-500">{t("colDiscount")}</span>
+                      <span className="font-bold text-zinc-950 font-mono">{v.discountPct}%</span>
                     </div>
-                  ) : null}
-                  <div className="flex justify-between font-mono text-[0.6875rem] text-zinc-500 pt-0.5 border-t border-zinc-100">
-                    <span>{t("colExpires")}: {new Date(v.expiresAt).toLocaleDateString("id-ID")}</span>
-                    <span>{t("colUses")}: {v.maxUses}x</span>
+                    {v.maxDiscount ? (
+                      <div className="flex justify-between">
+                        <span className="text-zinc-500">{t("colMaxDiscount")}</span>
+                        <span className="font-semibold text-zinc-800 font-mono">{formatRupiah(v.maxDiscount)}</span>
+                      </div>
+                    ) : null}
+                    <div className="flex justify-between font-mono text-[0.6875rem] text-zinc-500 pt-0.5 border-t border-zinc-100">
+                      <span>{t("colExpires")}: {new Date(v.expiresAt).toLocaleDateString("id-ID")}</span>
+                      <span>{t("colUses")}: {v.maxUses}x</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-1 pt-1 border-t border-zinc-100">
+                    <button
+                      onClick={async () => {
+                        await adminToggleVoucherActive(v.id, !v.isActive);
+                        queryClient.invalidateQueries({ queryKey: ["admin", "vouchers"] });
+                      }}
+                      className={`p-1.5 rounded-lg border transition-colors ${
+                        v.isActive
+                          ? "text-emerald-600 hover:bg-emerald-50 border-emerald-200"
+                          : "text-zinc-400 hover:bg-zinc-100 border-zinc-200"
+                      }`}
+                      title={v.isActive ? t("inactive") : t("active")}
+                    >
+                      <Power className="size-4" />
+                    </button>
+                    <button
+                      onClick={() => openEdit(v)}
+                      className="p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-600 border border-zinc-200 transition-colors"
+                    >
+                      <Pencil className="size-4" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setPendingDelete(v);
+                        setIsDeleteOpen(true);
+                      }}
+                      className="p-1.5 rounded-lg hover:bg-red-50 text-red-600 border border-red-200 transition-colors"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
                   </div>
                 </div>
+              ))}
+            </div>
 
-                <div className="flex items-center justify-end gap-1 pt-1 border-t border-zinc-100">
-                  <button
-                    onClick={async () => {
-                      await adminToggleVoucherActive(v.id, !v.isActive);
-                      queryClient.invalidateQueries({ queryKey: ["admin", "vouchers"] });
-                    }}
-                    className={`p-1.5 rounded-lg border transition-colors ${
-                      v.isActive
-                        ? "text-emerald-600 hover:bg-emerald-50 border-emerald-200"
-                        : "text-zinc-400 hover:bg-zinc-100 border-zinc-200"
-                    }`}
-                    title={v.isActive ? t("inactive") : t("active")}
-                  >
-                    <Power className="size-4" />
-                  </button>
-                  <button
-                    onClick={() => openEdit(v)}
-                    className="p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-600 border border-zinc-200 transition-colors"
-                  >
-                    <Pencil className="size-4" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      setPendingDelete(v);
-                      setIsDeleteOpen(true);
-                    }}
-                    className="p-1.5 rounded-lg hover:bg-red-50 text-red-600 border border-red-200 transition-colors"
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Desktop Table (hidden sm:block) */}
-        <div className="hidden sm:block overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[700px]">
-            <thead>
-              <tr className="border-b border-zinc-200/80 bg-zinc-50/50 text-[0.6875rem] font-bold uppercase tracking-wider text-zinc-500">
-                <th className="p-4 pl-6">{t("colCode")}</th>
-                <th className="p-4">{t("colDiscount")}</th>
-                <th className="p-4">{t("colMaxDiscount")}</th>
-                <th className="p-4">{t("colMinSpend")}</th>
-                <th className="p-4">{t("colExpires")}</th>
-                <th className="p-4">{t("colUses")}</th>
-                <th className="p-4">{t("colStatus")}</th>
-                <th className="p-4 pr-6 text-right">{t("colAction")}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-200/60 text-sm">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={8} className="p-8 text-center text-zinc-400 font-mono">
-                    Loading...
-                  </td>
-                </tr>
-              ) : filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="p-8 text-center text-zinc-500 font-medium">
-                    {t("empty")}
-                  </td>
-                </tr>
-              ) : (
-                filtered.map((v) => (
-                  <tr key={v.id} className="hover:bg-zinc-50/50 transition-colors group">
-                    <td className="p-4 pl-6">
+            {/* Desktop Table (hidden sm:block) */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-[700px]">
+                <thead>
+                  <tr className="border-b border-zinc-200/80 bg-zinc-50/50 text-[0.6875rem] font-bold uppercase text-zinc-500">
+                    <th className="p-4 pl-6">{t("colCode")}</th>
+                    <th className="p-4">{t("colDiscount")}</th>
+                    <th className="p-4">{t("colMaxDiscount")}</th>
+                    <th className="p-4">{t("colMinSpend")}</th>
+                    <th className="p-4">{t("colExpires")}</th>
+                    <th className="p-4">{t("colUses")}</th>
+                    <th className="p-4">{t("colStatus")}</th>
+                    <th className="p-4 pr-6 text-right">{t("colAction")}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-200/60 text-sm">
+                  {filtered.map((v) => (
+                    <tr key={v.id} className="hover:bg-zinc-50/50 transition-colors group">
+                      <td className="p-4 pl-6">
                       <div className="font-mono font-bold text-zinc-950 flex items-center gap-2">
                         <Tag className="size-3.5 text-zinc-400" />
                         <span>{v.code}</span>
@@ -288,12 +310,13 @@ export default function AdminVouchersPage() {
                       </div>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </div>
 
       <VoucherFormDialog
         isOpen={isDialogOpen}

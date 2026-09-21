@@ -51,14 +51,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         onClose={() => setIsMobileOpen(false)}
       />
       
-      <div className="flex-1 flex flex-col min-w-0 h-svh overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 min-h-dvh h-dvh overflow-hidden">
         <AdminTopbar
           onMenuClick={() => setIsMobileOpen(true)}
           isSidebarOpen={isDesktopOpen}
           onToggleSidebar={() => setIsDesktopOpen((prev) => !prev)}
         />
         <main className="flex-1 p-4 sm:p-5 md:p-6 lg:p-8 xl:p-10 overflow-y-auto bg-zinc-50">
-          <div className="w-full max-w-7xl 2xl:max-w-(--breakpoint-2xl) mx-auto space-y-8">
+          <div className="w-full max-w-7xl 2xl:max-w-(--breakpoint-2xl) mx-auto flex flex-col gap-8">
             <PageTransition>
               {children}
             </PageTransition>
