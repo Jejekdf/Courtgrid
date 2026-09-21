@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useDebouncedCallback, usePrevious } from "@react-hookz/web";
 import { useQueryStates } from "nuqs";
 import { useQuery } from "@tanstack/react-query";
-import { RotateCcw, Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { fetchCourts, type CourtFilters, type CourtType } from "@/lib/api/courts";
 import { courtKeys } from "@/lib/query-keys";
@@ -48,18 +48,23 @@ export default function CourtCatalog() {
     ...(tab === "ALL" ? {} : { type: tab as CourtType }),
   };
 
-  const { data, isPending, isError, isFetching, refetch } = useQuery({
+  const { data, isPending, isError, refetch } = useQuery({
     queryKey: courtKeys.list(filters),
     queryFn: () => fetchCourts(filters),
   });
 
   const [expandedCourtId, setExpandedCourtId] = useState<string | null>(null);
 
+  const handleClearSearch = () => {
+    setSearchDraft("");
+    setQueryParams({ search: null });
+  };
+
   return (
-    <div className="space-y-8 text-zinc-950">
+    <div className="flex flex-col gap-8 text-zinc-950">
       {/* Header Catalog */}
-      <div className="text-center max-w-2xl mx-auto space-y-3">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-zinc-950 text-balance">
+      <div className="flex flex-col items-center text-center max-w-2xl mx-auto gap-3">
+        <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-extrabold text-zinc-950 text-balance">
           {t("title")}
         </h1>
         <p className="text-sm sm:text-base text-zinc-600 leading-relaxed text-pretty">
@@ -68,7 +73,7 @@ export default function CourtCatalog() {
       </div>
 
       {/* Filter Tabs & Search Bar */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-4 border-t border-zinc-200/80">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-4 border-t border-zinc-200/80">
         <div
           role="tablist"
           aria-label={t("filterLabel")}
@@ -91,31 +96,30 @@ export default function CourtCatalog() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2 w-full md:w-auto">
-          <Input
-            value={searchDraft}
-            onChange={(e) => {
-              const val = e.target.value;
-              setSearchDraft(val);
-              debouncedSetSearch(val);
-            }}
-            placeholder={t("searchPlaceholder")}
-            containerClassName="w-full md:w-72"
-            leftIcon={<Search className="size-4 text-zinc-400" />}
-            className="h-11 text-sm bg-zinc-50 border-zinc-200 rounded-xl"
-          />
-          <button
-            onClick={() => refetch()}
-            disabled={isFetching}
-            title={t("reloadTitle")}
-            aria-label={t("reloadTitle")}
-            className={`flex items-center justify-center size-11 shrink-0 rounded-xl border border-zinc-200 bg-background text-zinc-600 transition-colors hover-fine:bg-zinc-50 hover-fine:text-zinc-950 cursor-pointer disabled:opacity-50 ${
-              isFetching ? "animate-spin" : ""
-            }`}
-          >
-            <RotateCcw className="size-4" />
-          </button>
-        </div>
+        <Input
+          value={searchDraft}
+          onChange={(e) => {
+            const val = e.target.value;
+            setSearchDraft(val);
+            debouncedSetSearch(val);
+          }}
+          placeholder={t("searchPlaceholder")}
+          containerClassName="w-full sm:w-72 md:w-80 lg:w-96"
+          leftIcon={<Search className="size-4 text-zinc-400" />}
+          rightElement={
+            searchDraft ? (
+              <button
+                type="button"
+                onClick={handleClearSearch}
+                aria-label={t("resetSearch")}
+                className="p-1 rounded-md text-zinc-400 hover:text-zinc-700 hover:bg-zinc-200/50 transition-colors cursor-pointer"
+              >
+                <X className="size-4" />
+              </button>
+            ) : null
+          }
+          className="h-11 text-sm bg-zinc-50 border-zinc-200 rounded-xl"
+        />
       </div>
 
       {/* Catalog State Grid */}
@@ -132,7 +136,7 @@ export default function CourtCatalog() {
           }}
         />
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-start">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 items-start">
           {data?.map((court, index) => (
             <CourtCard
               key={court.id}
