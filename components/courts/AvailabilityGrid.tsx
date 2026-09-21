@@ -14,6 +14,7 @@ import { courtKeys } from "@/lib/query-keys";
 import { getJakartaNow } from "@/lib/timezone";
 import { safeFormatDate, formatRupiah } from "@/lib/utils";
 import { SlotCell } from "./SlotCell";
+import { useAvailabilityRealtime } from "@/components/dashboard/useAvailabilityRealtime";
 
 function addDays(dateStr: string, days: number): string {
   const d = new Date(dateStr + "T00:00:00Z");
@@ -49,6 +50,8 @@ export default function AvailabilityGrid({
     queryKey: courtKeys.availability(courtId, selectedDate),
     queryFn: () => fetchAvailability(courtId, selectedDate),
   });
+
+  useAvailabilityRealtime(courtId, selectedDate);
 
   const slots: AvailabilitySlot[] = data ?? [];
   const freeCount = slots.filter((s) => s.status === "FREE").length;
