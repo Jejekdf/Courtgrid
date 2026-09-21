@@ -123,21 +123,21 @@ export default async function FAQPage({
   ];
 
   return (
-    <div className="min-h-dvh pt-6 pb-16 px-4 sm:px-6 lg:px-8 bg-background text-zinc-950">
+    <div className="min-h-dvh pt-4 sm:pt-6 pb-16 px-4 sm:px-6 lg:px-8 bg-background text-zinc-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <PageWrapper className="max-w-7xl mx-auto">
+      <PageWrapper className="max-w-5xl mx-auto">
         <Breadcrumb items={breadcrumbItems} locale={locale} />
         <div className="space-y-10 sm:space-y-14">
           {/* Page Header */}
-          <header className="border-b border-zinc-200/80 pb-6 sm:pb-8 space-y-3.5 max-w-3xl">
+          <header className="border-b border-zinc-200/80 pb-6 sm:pb-8 space-y-3.5 max-w-2xl">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-zinc-200/90 bg-zinc-100 text-xs font-semibold uppercase tracking-wider text-zinc-700 shadow-xs font-sans">
             <HelpCircle className="size-3.5 text-zinc-950" aria-hidden="true" />
             <span>{t("badge")}</span>
           </div>
-          <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-zinc-950 text-balance">
+          <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-950 text-balance">
             {t("title")}
           </h1>
           <p className="text-base sm:text-lg text-zinc-600 leading-relaxed font-sans text-pretty">

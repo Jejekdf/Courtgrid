@@ -93,17 +93,17 @@ export default async function AboutPage({
   ];
 
   return (
-    <div className="min-h-dvh pt-6 pb-16 px-4 sm:px-6 lg:px-8 bg-background text-zinc-950">
-      <PageWrapper className="max-w-7xl mx-auto">
+    <div className="min-h-dvh pt-4 sm:pt-6 pb-16 px-4 sm:px-6 lg:px-8 bg-background text-zinc-950">
+      <PageWrapper className="max-w-6xl mx-auto">
         <Breadcrumb items={breadcrumbItems} locale={locale} />
         <div className="space-y-12 sm:space-y-16 lg:space-y-20">
           {/* Modern Hero */}
           <header className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-center">
-            <div className="lg:col-span-7 space-y-5">
-              <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-extrabold tracking-tight text-zinc-950 leading-[1.12] text-balance">
+            <div className="lg:col-span-7 space-y-4">
+              <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-zinc-950 leading-[1.12] text-balance">
                 {t("title")}
               </h1>
-              <p className="text-base sm:text-lg xl:text-xl text-zinc-600 leading-relaxed max-w-2xl font-sans text-pretty">
+              <p className="text-base sm:text-lg text-zinc-600 leading-relaxed max-w-xl font-sans text-pretty">
                 {t("description")}
               </p>
             </div>
@@ -134,11 +134,11 @@ export default async function AboutPage({
           {/* Company Story */}
           <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 pt-8 border-t border-zinc-200/80">
             <div className="lg:col-span-4 lg:sticky lg:top-28 self-start">
-              <h2 className="font-heading text-2xl sm:text-3xl xl:text-4xl font-extrabold tracking-tight text-zinc-950 text-balance">
+              <h2 className="font-heading text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-zinc-950 text-balance">
                 {t("storyTitle")}
               </h2>
             </div>
-            <div className="lg:col-span-8 space-y-5 text-base sm:text-lg xl:text-xl text-zinc-700 leading-relaxed font-sans text-pretty max-w-3xl">
+            <div className="lg:col-span-8 space-y-4 text-base sm:text-lg text-zinc-700 leading-relaxed font-sans text-pretty max-w-2xl">
               <p>{t("storyP1")}</p>
               <p>{t("storyP2")}</p>
               <p>{t("storyP3")}</p>

@@ -150,7 +150,7 @@ export default async function Home({
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
               <div className="space-y-2">
                 <span className="text-xs uppercase font-bold tracking-wider text-emerald-600 font-sans">{t("facilityStandard")}</span>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-950">
+                <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-950 text-balance">
                   {t("facilityTitle")}
                 </h2>
                 <p className="text-sm sm:text-base text-zinc-600 max-w-xl font-sans leading-relaxed">
@@ -273,7 +273,7 @@ export default async function Home({
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
             <div className="max-w-3xl space-y-3">
               <span className="text-xs sm:text-sm uppercase font-bold tracking-wider text-emerald-600 font-sans">{t("commitmentBadge")}</span>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-950 leading-tight text-balance">
+              <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-950 leading-tight text-balance">
                 {t("commitmentTitle")}
               </h2>
               <p className="text-base sm:text-lg text-zinc-600 leading-relaxed font-sans text-pretty">
@@ -286,7 +286,7 @@ export default async function Home({
                 <div className="size-11 sm:size-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
                   <ShieldCheck className="size-5 sm:size-6" aria-hidden="true" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-extrabold text-zinc-950">{t("guaranteedTitle")}</h3>
+                <h3 className="font-heading text-lg sm:text-xl font-bold text-zinc-950">{t("guaranteedTitle")}</h3>
                 <p className="text-sm sm:text-base text-zinc-600 leading-relaxed font-sans text-pretty">{t("guaranteedDesc")}</p>
               </div>
 
@@ -294,7 +294,7 @@ export default async function Home({
                 <div className="size-11 sm:size-12 rounded-2xl bg-sky-50 text-sky-700 flex items-center justify-center">
                   <Zap className="size-5 sm:size-6" aria-hidden="true" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-extrabold text-zinc-950">{t("instantStripeTitle")}</h3>
+                <h3 className="font-heading text-lg sm:text-xl font-bold text-zinc-950">{t("instantStripeTitle")}</h3>
                 <p className="text-sm sm:text-base text-zinc-600 leading-relaxed font-sans text-pretty">{t("instantStripeDesc")}</p>
               </div>
 
@@ -302,7 +302,7 @@ export default async function Home({
                 <div className="size-11 sm:size-12 rounded-2xl bg-zinc-100 text-zinc-900 flex items-center justify-center">
                   <QrCode className="size-5 sm:size-6" aria-hidden="true" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-extrabold text-zinc-950">{t("eticketFeatureTitle")}</h3>
+                <h3 className="font-heading text-lg sm:text-xl font-bold text-zinc-950">{t("eticketFeatureTitle")}</h3>
                 <p className="text-sm sm:text-base text-zinc-600 leading-relaxed font-sans text-pretty">{t("eticketFeatureDesc")}</p>
               </div>
             </div>
@@ -314,7 +314,7 @@ export default async function Home({
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
             <div className="text-center max-w-2xl mx-auto space-y-3">
               <span className="text-xs sm:text-sm uppercase font-bold tracking-wider text-zinc-500 font-sans">{t("guideBadge")}</span>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-950 text-balance">
+              <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-950 text-balance">
                 {t("guideTitle")}
               </h2>
               <p className="text-sm sm:text-base lg:text-lg text-zinc-600 font-sans text-pretty">
@@ -328,7 +328,7 @@ export default async function Home({
                 <div className="size-10 sm:size-11 rounded-2xl bg-zinc-950 text-white text-base sm:text-lg font-extrabold flex items-center justify-center shadow-xs">
                   1
                 </div>
-                <h3 className="text-base sm:text-lg font-extrabold text-zinc-950">{t("step1Title")}</h3>
+                <h3 className="font-heading text-base sm:text-lg font-bold text-zinc-950">{t("step1Title")}</h3>
                 <p className="text-sm sm:text-base text-zinc-600 font-sans leading-relaxed text-pretty">{t("step1Desc")}</p>
               </div>
 
@@ -336,7 +336,7 @@ export default async function Home({
                 <div className="size-10 sm:size-11 rounded-2xl bg-zinc-950 text-white text-base sm:text-lg font-extrabold flex items-center justify-center shadow-xs">
                   2
                 </div>
-                <h3 className="text-base sm:text-lg font-extrabold text-zinc-950">{t("step2Title")}</h3>
+                <h3 className="font-heading text-base sm:text-lg font-bold text-zinc-950">{t("step2Title")}</h3>
                 <p className="text-sm sm:text-base text-zinc-600 font-sans leading-relaxed text-pretty">{t("step2Desc")}</p>
               </div>
 
@@ -344,7 +344,7 @@ export default async function Home({
                 <div className="size-10 sm:size-11 rounded-2xl bg-zinc-950 text-white text-base sm:text-lg font-extrabold flex items-center justify-center shadow-xs">
                   3
                 </div>
-                <h3 className="text-base sm:text-lg font-extrabold text-zinc-950">{t("step3Title")}</h3>
+                <h3 className="font-heading text-base sm:text-lg font-bold text-zinc-950">{t("step3Title")}</h3>
                 <p className="text-sm sm:text-base text-zinc-600 font-sans leading-relaxed text-pretty">{t("step3Desc")}</p>
               </div>
 
@@ -352,7 +352,7 @@ export default async function Home({
                 <div className="size-10 sm:size-11 rounded-2xl bg-zinc-950 text-white text-base sm:text-lg font-extrabold flex items-center justify-center shadow-xs">
                   4
                 </div>
-                <h3 className="text-base sm:text-lg font-extrabold text-zinc-950">{t("step4Title")}</h3>
+                <h3 className="font-heading text-base sm:text-lg font-bold text-zinc-950">{t("step4Title")}</h3>
                 <p className="text-sm sm:text-base text-zinc-600 font-sans leading-relaxed text-pretty">{t("step4Desc")}</p>
               </div>
             </div>
@@ -365,7 +365,7 @@ export default async function Home({
             <div className="relative overflow-hidden bg-zinc-950 rounded-2xl sm:rounded-3xl p-7 sm:p-10 lg:p-14 flex flex-col items-center text-center gap-5 sm:gap-6 shadow-lg">
               <div className="relative z-10 space-y-3.5 max-w-2xl">
                 <span className="text-xs sm:text-sm uppercase font-bold tracking-wider text-emerald-400 font-sans">{t("onlineBookingBadge")}</span>
-                <h3 className="text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight text-white leading-tight">
+                <h3 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight text-balance">
                   {t("ctaTitle")}
                 </h3>
                 <p className="text-zinc-300 text-base sm:text-lg font-sans max-w-xl text-pretty">

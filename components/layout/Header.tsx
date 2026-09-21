@@ -154,10 +154,10 @@ export function Header() {
           border border-zinc-200/80 bg-white/90 shadow-xs
           w-full max-w-7xl`}
       >
-        <div className="flex items-center justify-between w-full gap-x-6">
+        <div className="flex items-center justify-between w-full gap-6">
           <div className="flex items-center">{logoElement}</div>
 
-          <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
+          <nav className="hidden md:flex items-center gap-6 lg:gap-8">
             {navLinksData.map((link) => (
               <Link
                 key={link.href}
@@ -197,7 +197,7 @@ export function Header() {
           className={`md:hidden flex flex-col items-center w-full transition-[max-height,opacity] ease-out duration-200 overflow-hidden
             ${isOpen ? "max-h-250 opacity-100 pt-4 pb-2" : "max-h-0 opacity-0 pt-0 pointer-events-none"}`}
         >
-          <nav onClick={closeMenu} className="flex flex-col items-center space-y-1 w-full">
+          <nav onClick={closeMenu} className="flex flex-col items-center gap-1 w-full">
             {navLinksData.map((link) => (
               <Link
                 key={link.href}
@@ -214,7 +214,7 @@ export function Header() {
               </Link>
             ))}
           </nav>
-          <div onClick={closeMenu} className="flex flex-col items-center space-y-2 mt-3 w-full">
+          <div onClick={closeMenu} className="flex flex-col items-center gap-2 mt-3 w-full">
             {userButtonsElement}
           </div>
         </div>

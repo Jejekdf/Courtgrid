@@ -35,12 +35,12 @@ export default async function Hero({ courts = [] }: { courts?: ActiveCourtDTO[] 
     <section className="relative w-full overflow-hidden bg-background">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 lg:pt-10 pb-12 sm:pb-16 lg:pb-20 flex flex-col items-center text-center">
         {/* Hero Headline */}
-        <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight text-zinc-950 max-w-5xl leading-[1.15] sm:leading-[1.12] xl:leading-[1.1] mb-4 sm:mb-5 text-balance">
+        <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-zinc-950 max-w-4xl leading-[1.15] sm:leading-[1.12] mb-4 sm:mb-5 text-balance">
           {t("headline")}
         </h1>
 
         {/* Hero Subheadline */}
-        <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-zinc-600 max-w-3xl xl:max-w-4xl leading-relaxed mb-6 sm:mb-8 lg:mb-10 font-sans text-pretty">
+        <p className="text-base sm:text-lg text-zinc-600 max-w-2xl leading-relaxed mb-6 sm:mb-8 font-sans text-pretty">
           {t("subheadline")}
         </p>
 
