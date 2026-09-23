@@ -27,7 +27,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `E-Ticket #${reservation.id.slice(0, 8)} – ${reservation.court?.name ?? ""} | CourtGrid Admin`,
+    title: `E-Ticket #${reservation.id.slice(0, 8)} – ${reservation.court?.name ?? ""}`,
     description: `Detail e-ticket reservasi lapangan di CourtGrid.`,
   };
 }

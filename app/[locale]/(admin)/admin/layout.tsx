@@ -8,7 +8,7 @@ import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard | CourtGrid",
+  title: "Admin Dashboard",
   description: "Kelola reservasi dan lapangan di CourtGrid.",
   robots: { index: false, follow: false },
 };

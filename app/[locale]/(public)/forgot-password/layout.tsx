@@ -11,7 +11,7 @@ export async function generateMetadata({
   setRequestLocale(locale);
   const t = await getTranslations("auth.forgot");
   return {
-    title: `${t("metaTitle")} | CourtGrid`,
+    title: t("metaTitle"),
     robots: { index: false, follow: false },
   };
 };

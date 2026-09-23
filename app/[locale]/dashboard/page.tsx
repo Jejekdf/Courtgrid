@@ -16,7 +16,7 @@ export async function generateMetadata({
   setRequestLocale(locale);
   const t = await getTranslations("dashboard.home");
   return {
-    title: `${t("metaTitle")} | CourtGrid`,
+    title: t("metaTitle"),
     description: t("metaDesc"),
   };
 }
