@@ -4,10 +4,9 @@ import { notFound } from "next/navigation";
 import { redirect, Link } from "@/i18n/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getReservationDetailsDAL } from "@/features/reservations/dal";
-import PrintButton from "@/components/ui/PrintButton";
 import ETicketShareActions from "@/components/dashboard/reservations/ETicketShareActions";
 import QRCode from "qrcode";
-import { ArrowLeft, ShieldCheck, Calendar, Clock, Receipt } from "lucide-react";
+import { ArrowLeft, ShieldCheck, Calendar, Clock, Receipt, CheckCircle2 } from "lucide-react";
 import { formatRupiah, safeFormatDate } from "@/lib/utils";
 import type { Locale } from "@/i18n/routing";
 
@@ -26,17 +25,20 @@ export async function generateMetadata({
   }
 
   return {
-    title: `E-Ticket #${reservation.id.slice(0, 8)} – ${reservation.court?.name ?? ""} | CourtGrid`,
+    title: `E-Ticket #${reservation.id.slice(0, 8)} – ${reservation.court?.name ?? ""}`,
     description: `Detail e-ticket reservasi lapangan di CourtGrid.`,
   };
 }
 
 export default async function CustomerETicketPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string; locale: Locale }>;
+  searchParams: Promise<{ payment?: string; session_id?: string }>;
 }) {
   const { id: ticketId, locale } = await params;
+  const { payment } = await searchParams;
   setRequestLocale(locale);
   const session = await auth();
   if (!session?.user?.id) {
@@ -66,7 +68,7 @@ export default async function CustomerETicketPage({
   });
 
   return (
-    <div className="space-y-8 max-w-3xl">
+    <div className="space-y-6 sm:space-y-8 max-w-3xl">
       {/* Back Link */}
       <Link
         href="/dashboard/reservations"
@@ -75,6 +77,17 @@ export default async function CustomerETicketPage({
         <ArrowLeft className="size-4" />
         {t("backLink")}
       </Link>
+
+      {/* Immediate Payment Success Confirmation Banner */}
+      {payment === "success" && (
+        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-3 text-emerald-950 shadow-xs">
+          <CheckCircle2 className="size-5 text-emerald-600 shrink-0" />
+          <div className="space-y-0.5">
+            <p className="font-bold text-sm">Pembayaran DP Berhasil!</p>
+            <p className="text-xs text-emerald-700">E-Ticket kamu sudah aktif dan terverifikasi otomatis oleh sistem.</p>
+          </div>
+        </div>
+      )}
 
       {/* E-Ticket Card */}
       <div className="bg-white border border-zinc-200 rounded-2xl shadow-sm overflow-hidden">
@@ -102,7 +115,7 @@ export default async function CustomerETicketPage({
         {/* Body */}
         <div className="p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
           {/* QR & Court Info */}
-          <div className="flex flex-col md:flex-row items-center gap-8">
+          <div className="flex flex-col md:flex-row items-center gap-6 sm:gap-8">
             {/* Real Dynamic QR Code */}
             <div
               className="shrink-0 bg-white p-3 rounded-2xl border border-zinc-200 shadow-xs size-36 flex items-center justify-center [&>svg]:size-full"
@@ -204,7 +217,7 @@ export default async function CustomerETicketPage({
             </div>
 
             {/* Actions */}
-            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+            <div className="w-full sm:w-auto">
               <ETicketShareActions
                 ticketId={reservation.id}
                 courtName={reservation.court?.name ?? t("unknownCourt")}
@@ -222,7 +235,6 @@ export default async function CustomerETicketPage({
                 dpAmountFormatted={formatRupiah(dpAmount)}
                 isVerified={isVerified}
               />
-              <PrintButton />
             </div>
           </div>
         </div>

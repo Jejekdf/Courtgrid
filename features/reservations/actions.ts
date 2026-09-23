@@ -206,8 +206,8 @@ export async function createReservationAction(rawInput: unknown) {
     checkoutSession = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
-      success_url: `${appUrl}/dashboard/book?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/dashboard/book?payment=cancel`,
+      success_url: `${appUrl}/dashboard/reservations/${reservationId}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${appUrl}/dashboard/reservations/${reservationId}?payment=cancel`,
       client_reference_id: reservationId,
       metadata: { reservationId },
       line_items: [
@@ -446,8 +446,8 @@ export async function resumeReservationPaymentAction(reservationId: string) {
     const checkoutSession = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
-      success_url: `${appUrl}/dashboard/book?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/dashboard/book?payment=cancel`,
+      success_url: `${appUrl}/dashboard/reservations/${reservation.id}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${appUrl}/dashboard/reservations/${reservation.id}?payment=cancel`,
       client_reference_id: reservation.id,
       metadata: { reservationId: reservation.id },
       line_items: [
