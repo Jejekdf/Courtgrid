@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useQueryState, parseAsString } from "nuqs";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { Loader2, WifiOff, ArrowRight } from "lucide-react";
 import { addDays, format } from "date-fns";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -43,14 +43,18 @@ export default function CustomerBookingWorkspace() {
   const tFlowSummary = useTranslations("dashboard.bookingFlow");
   const [paymentStatus, setPaymentStatus] = useQueryState("payment", parseAsString);
   const [courtId, setCourtId] = useQueryState("courtId", parseAsString.withDefault("").withOptions({ shallow: true }));
+  const [urlDate] = useQueryState("date", parseAsString);
+  const [urlTime] = useQueryState("time", parseAsString);
 
   const network = useNetworkState();
   const isOnline = network.online ?? true;
 
   const [selectedDate, setSelectedDate] = useState<string>(
-    () => getJakartaNow().dateStr
+    () => urlDate || getJakartaNow().dateStr
   );
-  const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>(
+    () => (urlTime ? [urlTime] : [])
+  );
   const [voucherCode, setVoucherCode] = useState("");
   const [showPreviewModal, setShowPreviewModal] = useState(false);
 
@@ -290,41 +294,43 @@ export default function CustomerBookingWorkspace() {
       </div>
 
       {/* Mobile Sticky Bottom Action Bar when slots are chosen */}
-      {selectedTimeSlots.length > 0 && (
-        <motion.div
-          initial={{ y: 80, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 80, opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-zinc-200 p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-lg lg:hidden"
-        >
-          <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-xs font-medium text-zinc-500 truncate">
-                {selectedTimeSlots.length} Jam • {activeCourt?.name}
-              </p>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-base sm:text-lg font-extrabold text-zinc-950 tabular-nums">
-                  {formatRupiah(dpAmount)}
-                </span>
-                <span className="text-[0.6875rem] font-bold text-emerald-600 uppercase">
-                  DP 50%
-                </span>
+      <AnimatePresence>
+        {selectedTimeSlots.length > 0 && (
+          <motion.div
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-zinc-200 p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-lg lg:hidden"
+          >
+            <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-zinc-500 truncate font-sans">
+                  {selectedTimeSlots.length} Jam • {activeCourt?.name}
+                </p>
+                <div className="flex items-baseline gap-1.5 font-sans">
+                  <span className="text-base sm:text-lg font-extrabold text-zinc-950 tabular-nums">
+                    {formatRupiah(dpAmount)}
+                  </span>
+                  <span className="text-[0.6875rem] font-bold text-emerald-600 uppercase">
+                    DP 50%
+                  </span>
+                </div>
               </div>
-            </div>
 
-            <button
-              type="button"
-              onClick={() => setShowPreviewModal(true)}
-              disabled={bookingMutation.isPending || !isOnline}
-              className="inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition-colors cursor-pointer shrink-0 min-h-11 disabled:opacity-50"
-            >
-              <span>{tFlowSummary("payButton")}</span>
-              <ArrowRight className="size-4" />
-            </button>
-          </div>
-        </motion.div>
-      )}
+              <button
+                type="button"
+                onClick={() => setShowPreviewModal(true)}
+                disabled={bookingMutation.isPending || !isOnline}
+                className="inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition-colors cursor-pointer shrink-0 min-h-11 disabled:opacity-50 font-sans"
+              >
+                <span>{tFlowSummary("payButton")}</span>
+                <ArrowRight className="size-4" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <BookingPreviewModal
         isOpen={showPreviewModal}

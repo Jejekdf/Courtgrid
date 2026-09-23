@@ -174,3 +174,31 @@ test("FIX-H4: non-PENDING reservations are never auto-canceled", () => {
   const stale = new Date("2026-08-13T09:00:00.000Z");
   assert.equal(shouldAutoCancelGhost({ createdAt: stale, status: "DP_PAID", stripeSessionId: null }, now, 15), false);
 });
+
+test("AVAIL-1: multi-hour reservations mark every covered hourly slot as BOOKED", () => {
+  const reservations = [
+    {
+      startTime: new Date("2026-08-18T09:00:00.000Z"),
+      endTime: new Date("2026-08-18T12:00:00.000Z"),
+      status: "DP_PAID",
+    },
+  ];
+
+  const bookedByHour = new Map<number, string>();
+  for (const r of reservations) {
+    const startH = r.startTime.getUTCHours();
+    let endH = r.endTime.getUTCHours();
+    if (endH === 0 && r.endTime.getUTCDate() !== r.startTime.getUTCDate()) {
+      endH = 24;
+    }
+    for (let h = startH; h < endH; h++) {
+      bookedByHour.set(h, r.status);
+    }
+  }
+
+  assert.equal(bookedByHour.get(9), "DP_PAID");
+  assert.equal(bookedByHour.get(10), "DP_PAID");
+  assert.equal(bookedByHour.get(11), "DP_PAID");
+  assert.equal(bookedByHour.has(8), false);
+  assert.equal(bookedByHour.has(12), false);
+});

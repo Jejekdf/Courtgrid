@@ -119,15 +119,22 @@ export const getCourtAvailabilityDAL = cache(
       },
       select: {
         startTime: true,
+        endTime: true,
         status: true,
       },
     });
 
-    // Index reservations by start hour (extracted from stored UTC DateTime)
+    // Index reservations across all covered hourly slots [startH, endH)
     const bookedByHour = new Map<number, string>();
     for (const r of reservations) {
-      const h = r.startTime.getUTCHours();
-      bookedByHour.set(h, r.status);
+      const startH = r.startTime.getUTCHours();
+      let endH = r.endTime.getUTCHours();
+      if (endH === 0 && r.endTime.getUTCDate() !== r.startTime.getUTCDate()) {
+        endH = 24;
+      }
+      for (let h = startH; h < endH; h++) {
+        bookedByHour.set(h, r.status);
+      }
     }
 
     // Build deterministic 14-slot grid
