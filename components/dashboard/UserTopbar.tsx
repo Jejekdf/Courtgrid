@@ -23,7 +23,7 @@ export function UserTopbar({
   const userInitial = userName.charAt(0).toUpperCase();
 
   return (
-    <header className="h-16 bg-white/90 backdrop-blur-md border-b border-zinc-200 flex items-center justify-between px-4 md:px-6 shrink-0 sticky top-0 z-30">
+    <header className="h-16 bg-white md:bg-white/90 md:backdrop-blur-md border-b border-zinc-200 flex items-center justify-between px-4 md:px-6 shrink-0 sticky top-0 z-30">
       <div className="flex items-center gap-3">
         {/* Mobile Drawer Trigger */}
         <UserMobileDrawer />

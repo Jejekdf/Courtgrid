@@ -89,7 +89,7 @@ export default function CustomerDashboardContent({ user, reservations }: Custome
         <div className="p-5 bg-zinc-950 text-white rounded-2xl shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
-              <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="size-2 rounded-full bg-emerald-400" />
               <span className="text-[0.6875rem] font-semibold uppercase text-emerald-400 font-sans">
                 {t("nextSession")}
               </span>
