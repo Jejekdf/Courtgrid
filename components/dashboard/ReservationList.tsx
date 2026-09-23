@@ -97,8 +97,8 @@ export default function ReservationList({
           <QrCode className="size-6" />
         </div>
         <div>
-          <p className="font-bold text-zinc-950 text-sm">{t("emptyTitle")}</p>
-          <p className="text-zinc-400 text-sm max-w-xs mx-auto mt-1 font-mono">
+          <p className="font-bold text-zinc-950 text-sm font-sans">{t("emptyTitle")}</p>
+          <p className="text-zinc-500 text-sm max-w-xs mx-auto mt-1 font-sans">
             {t("emptyDesc")}
           </p>
         </div>
@@ -117,7 +117,7 @@ export default function ReservationList({
       {/* Mobile Ergonomic Card List View */}
       <div className="space-y-3 block md:hidden">
         {filteredReservations.length === 0 ? (
-          <div className="p-6 text-center text-sm text-zinc-400 font-mono bg-white border border-zinc-200/80 rounded-2xl">
+          <div className="p-6 text-center text-sm text-zinc-500 font-sans bg-white border border-zinc-200/80 rounded-2xl">
             {t("noFilterMatch")}
           </div>
         ) : (
@@ -157,7 +157,7 @@ export default function ReservationList({
                 <tr>
                   <td
                     colSpan={7}
-                    className="px-5 py-12 text-center text-sm text-zinc-500 font-mono"
+                    className="px-5 py-12 text-center text-sm text-zinc-500 font-sans"
                   >
                     {t("noFilterMatch")}
                   </td>

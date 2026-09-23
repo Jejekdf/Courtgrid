@@ -91,8 +91,8 @@ export default async function CustomerETicketPage({
               </p>
             </div>
             <div className="text-left sm:text-right shrink-0">
-              <div className="text-[0.6875rem] sm:text-xs text-zinc-400 uppercase tracking-widest font-semibold">{t("ticketId")}</div>
-              <div className="font-mono text-xs sm:text-sm font-bold text-emerald-400 break-all">
+              <div className="text-[0.6875rem] sm:text-xs text-zinc-400 uppercase tracking-wider font-semibold font-sans">{t("ticketId")}</div>
+              <div className="inline-block mt-0.5 px-2.5 py-1 bg-zinc-900 border border-zinc-800 rounded-lg font-mono text-xs sm:text-sm font-bold text-emerald-400 select-all break-all">
                 {reservation.id}
               </div>
             </div>
