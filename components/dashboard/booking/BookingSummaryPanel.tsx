@@ -19,6 +19,7 @@ interface BookingSummaryPanelProps {
   onVoucherChange: (code: string) => void;
   onOpenPreview: () => void;
   isLoading: boolean;
+  hideActionOnMobile?: boolean;
 }
 
 export function BookingSummaryPanel({
@@ -32,6 +33,7 @@ export function BookingSummaryPanel({
   onVoucherChange,
   onOpenPreview,
   isLoading,
+  hideActionOnMobile = false,
 }: BookingSummaryPanelProps) {
   const t = useTranslations("dashboard.bookingFlow");
   const locale = useLocale();
@@ -115,7 +117,9 @@ export function BookingSummaryPanel({
             onClick={onOpenPreview}
             isLoading={isLoading}
             disabled={isLoading}
-            className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold h-12 text-sm rounded-xl shadow-md cursor-pointer transition-colors flex items-center justify-center gap-2"
+            className={`w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold h-12 text-sm rounded-xl shadow-md cursor-pointer transition-colors items-center justify-center gap-2 ${
+              hideActionOnMobile ? "hidden lg:flex" : "flex"
+            }`}
           >
             <span>{t("payButton")}</span>
             <ChevronRight className="size-4" />

@@ -76,11 +76,11 @@ export default async function CustomerReservationsPage({
 
       {/* Baseline Divide Reservation List */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4">
           <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
             {t("allCount", { count: reservations.length })}
           </span>
-          <span className="text-sm text-zinc-500 font-sans">{t("stripeAuto")}</span>
+          <span className="text-xs sm:text-sm text-zinc-500 font-sans">{t("stripeAuto")}</span>
         </div>
 
         <ReservationList reservations={reservations} />

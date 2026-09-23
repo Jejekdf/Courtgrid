@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { XCircle, ArrowUpRight, Copy, Check, CreditCard, Calendar, Clock } from "lucide-react";
 import type { ReservationRow } from "@/components/dashboard/ReservationList";
 import { resumeReservationPaymentAction } from "@/features/reservations/actions";
-import { ReservationStatusBadge, PaymentStatusBadge } from "./ReservationStatusBadge";
 
 interface ReservationCardProps {
   reservation: ReservationRow;
@@ -51,9 +50,9 @@ export function ReservationCard({
   return (
     <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-xs space-y-3.5">
       {/* Header: Court Name + Copy ID + Status */}
-      <div className="flex items-start justify-between gap-2.5">
-        <div className="space-y-1 min-w-0 flex-1">
-          <div className="flex items-center gap-1.5 min-w-0">
+      <div className="flex items-start justify-between gap-3">
+        <div className="space-y-1.5 min-w-0 flex-1">
+          <div className="flex items-center gap-2 min-w-0">
             <span
               className={`size-2 rounded-full shrink-0 ${
                 isVerified
@@ -66,27 +65,46 @@ export function ReservationCard({
             <h4 className="font-bold text-zinc-950 text-base leading-tight truncate">
               {res.court?.name}
             </h4>
+          </div>
+          <div className="flex items-center gap-1.5 text-zinc-400">
+            <span className="text-[0.6875rem] font-mono">
+              ID: {res.id.slice(0, 10)}...
+            </span>
             <button
               type="button"
               onClick={() => onCopyId(res.id)}
-              className="p-1.5 min-h-11 min-w-11 flex items-center justify-center text-zinc-400 hover:text-zinc-950 rounded-lg transition-colors cursor-pointer shrink-0"
+              className="p-1 hover:text-zinc-950 rounded transition-colors cursor-pointer"
               aria-label={t("copyId")}
             >
               {copiedId === res.id ? (
-                <Check className="size-3.5 text-emerald-600" />
+                <Check className="size-3 text-emerald-600" />
               ) : (
-                <Copy className="size-3.5" />
+                <Copy className="size-3" />
               )}
             </button>
           </div>
-          <span className="text-[0.6875rem] font-mono text-zinc-400 block">
-            ID: {res.id.slice(0, 10)}...
-          </span>
         </div>
 
-        <div className="flex flex-col items-end gap-1 shrink-0">
-          <ReservationStatusBadge status={res.status} />
-          <PaymentStatusBadge isVerified={isVerified} reservationStatus={res.status} />
+        <div className="shrink-0">
+          {isVerified ? (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[0.6875rem] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+              <span className="size-1.5 rounded-full bg-emerald-500 shrink-0" />
+              DP TERVERIFIKASI
+            </span>
+          ) : res.status === "PENDING" ? (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[0.6875rem] font-mono font-bold bg-amber-50 text-amber-800 border border-amber-200">
+              <span className="size-1.5 rounded-full bg-amber-500 shrink-0" />
+              MENUNGGU DP
+            </span>
+          ) : res.status === "DONE" ? (
+            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[0.6875rem] font-mono font-bold bg-sky-50 text-sky-800 border border-sky-200">
+              SELESAI
+            </span>
+          ) : (
+            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[0.6875rem] font-mono font-bold bg-red-50 text-red-700 border border-red-200">
+              DIBATALKAN
+            </span>
+          )}
         </div>
       </div>
 

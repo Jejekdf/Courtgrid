@@ -290,6 +290,7 @@ export default function CustomerBookingWorkspace() {
           onVoucherChange={setVoucherCode}
           onOpenPreview={() => setShowPreviewModal(true)}
           isLoading={bookingMutation.isPending || !isOnline}
+          hideActionOnMobile
         />
       </div>
 
@@ -301,7 +302,7 @@ export default function CustomerBookingWorkspace() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 80, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-zinc-200 p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-lg lg:hidden"
+            className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-zinc-200 p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-lg lg:hidden"
           >
             <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
               <div className="min-w-0">
