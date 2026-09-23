@@ -35,9 +35,9 @@ export function CourtCard({ court, onToggleActive, onEdit, onDelete }: CourtCard
             sizes="(min-width: 1024px) 33vw,(min-width: 640px) 50vw,100vw"
           />
         ) : (
-          <div className="text-sm text-zinc-400 font-mono flex items-center gap-1">
-            <ImageIcon className="size-3.5" />
-            <span>No Image</span>
+          <div className="text-xs text-zinc-400 font-sans font-medium flex items-center gap-1.5">
+            <ImageIcon className="size-4 text-zinc-400" />
+            <span>{t("noImage")}</span>
           </div>
         )}
       </div>

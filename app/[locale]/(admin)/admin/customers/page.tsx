@@ -178,11 +178,11 @@ export default function AdminCustomersPage() {
         {/* Card view for mobile and tablet (< 1024px) */}
         <div className="block lg:hidden divide-y divide-zinc-100">
           {isPending ? (
-            <div className="px-6 py-12 text-center text-xs text-zinc-500 font-mono">
+            <div className="px-6 py-12 text-center text-xs text-zinc-500 font-sans">
               {t("loading")}
             </div>
           ) : customers.length === 0 ? (
-            <div className="px-6 py-12 text-center text-xs text-zinc-500 font-mono bg-zinc-50/50">
+            <div className="px-6 py-12 text-center text-xs text-zinc-500 font-sans bg-zinc-50/50">
               {search ? t("emptySearch") : t("empty")}
             </div>
           ) : (

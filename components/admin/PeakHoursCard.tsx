@@ -123,12 +123,12 @@ export default function PeakHoursCard({
                 </ResponsiveContainer>
               </div>
             </div>
-            <p className="sm:hidden text-[0.6875rem] text-zinc-400 font-mono text-center pt-2">
+            <p className="sm:hidden text-xs text-zinc-500 font-sans text-center pt-2">
               {t("peakScrollHint")}
             </p>
           </div>
         ) : (
-          <div className="h-[260px] sm:h-[280px] flex items-center justify-center text-sm text-zinc-500 font-mono">
+          <div className="h-[260px] sm:h-[280px] flex items-center justify-center text-sm text-zinc-500 font-sans">
             {t("noPeakData")}
           </div>
         )}
