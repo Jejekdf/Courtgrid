@@ -24,9 +24,10 @@ export function ReservationCard({ reservation, onDelete }: ReservationCardProps)
           <h4 className="font-bold text-sm text-zinc-950 leading-tight truncate">
             {reservation.user?.name || "Pelanggan Hapus"}
           </h4>
-          <span className="text-[0.6875rem] font-mono text-zinc-400 block truncate">
-            ID: {reservation.id.slice(0, 8)} • {reservation.user?.email || "-"}
-          </span>
+          <div className="flex items-center gap-2 text-[0.6875rem] font-mono text-zinc-400 truncate">
+            <span>ID: {reservation.id.slice(0, 8)}</span>
+            <span className="truncate">{reservation.user?.email || "-"}</span>
+          </div>
         </div>
         <div className="shrink-0">
           <ReservationStatusBadge status={reservation.status} paymentStatus={reservation.payment?.status} />

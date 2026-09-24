@@ -67,11 +67,14 @@ export function BookingPreviewModal({
 
         <div className="space-y-5 pt-2">
           <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4 space-y-2.5 text-sm font-sans">
-            <div className="flex justify-between border-b border-zinc-200/60 pb-2">
+            <div className="flex justify-between items-center border-b border-zinc-200/60 pb-2">
               <span className="text-zinc-500">{t("courtLabel")}</span>
-              <span className="font-bold text-zinc-950">
-                {activeCourt.name} ({activeCourt.type})
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="font-bold text-zinc-950">{activeCourt.name}</span>
+                <span className="text-[0.6875rem] font-semibold bg-white text-zinc-600 px-1.5 py-0.5 rounded border border-zinc-200">
+                  {activeCourt.type}
+                </span>
+              </div>
             </div>
             <div className="flex justify-between border-b border-zinc-200/60 pb-2">
               <span className="text-zinc-500">{t("dateLabel")}</span>

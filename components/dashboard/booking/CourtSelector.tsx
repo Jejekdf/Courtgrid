@@ -20,7 +20,7 @@ export function CourtSelector({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs sm:text-sm font-bold text-zinc-950 uppercase tracking-wider font-sans">
+        <h3 className="text-sm font-semibold text-zinc-950 font-sans">
           {t("step1")}
         </h3>
         <span className="text-xs sm:text-sm text-zinc-500 font-sans">

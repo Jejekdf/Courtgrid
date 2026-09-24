@@ -31,7 +31,7 @@ export function BookingDateSelector({
           <CalendarIcon className="size-5" />
         </div>
         <div>
-          <h2 className="text-sm font-bold text-zinc-950 font-sans">{t("dateTitle")}</h2>
+          <h2 className="text-sm font-semibold text-zinc-950 font-sans">{t("dateTitle")}</h2>
           <p className="text-xs sm:text-sm text-zinc-600 font-medium font-sans">
             {format(new Date(selectedDate), "EEEE, dd MMMM yyyy", { locale: getDateFnsLocale(locale) })}
           </p>

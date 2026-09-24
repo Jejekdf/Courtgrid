@@ -306,9 +306,14 @@ export default function CustomerBookingWorkspace() {
           >
             <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs font-medium text-zinc-500 truncate font-sans">
-                  {selectedTimeSlots.length} Jam • {activeCourt?.name}
-                </p>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-zinc-950 truncate font-sans">
+                    {activeCourt?.name}
+                  </span>
+                  <span className="text-xs text-zinc-500 font-medium shrink-0 font-sans">
+                    {selectedTimeSlots.length} Jam
+                  </span>
+                </div>
                 <div className="flex items-baseline gap-1.5 font-sans">
                   <span className="text-base sm:text-lg font-extrabold text-zinc-950 tabular-nums">
                     {formatRupiah(dpAmount)}

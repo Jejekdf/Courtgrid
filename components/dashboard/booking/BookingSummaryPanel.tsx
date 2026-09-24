@@ -52,11 +52,14 @@ export function BookingSummaryPanel({
       {activeCourt && selectedTimeSlots.length > 0 ? (
         <div className="space-y-5">
           <div className="space-y-2.5 text-sm">
-            <div className="flex justify-between py-1.5 border-b border-zinc-100 font-sans">
+            <div className="flex justify-between items-center py-1.5 border-b border-zinc-100 font-sans">
               <span className="text-zinc-500">{t("courtLabel")}</span>
-              <span className="font-bold text-zinc-950">
-                {activeCourt.name} ({activeCourt.type})
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="font-bold text-zinc-950">{activeCourt.name}</span>
+                <span className="text-[0.6875rem] font-semibold bg-zinc-100 text-zinc-600 px-1.5 py-0.5 rounded border border-zinc-200">
+                  {activeCourt.type}
+                </span>
+              </div>
             </div>
             <div className="flex justify-between py-1.5 border-b border-zinc-100 font-sans">
               <span className="text-zinc-500">{t("dateLabel")}</span>

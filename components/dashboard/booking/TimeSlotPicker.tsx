@@ -43,10 +43,17 @@ export function TimeSlotPicker({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <h3 className="text-xs sm:text-sm font-bold text-zinc-950 uppercase tracking-wider font-sans flex items-center gap-2">
+        <div className="flex items-center gap-2">
           <Clock className="size-4 text-zinc-600" aria-hidden="true" />
-          {t("step2", { court: courtName })}
-        </h3>
+          <h3 className="text-sm font-semibold text-zinc-950 font-sans">
+            {t("step2")}
+          </h3>
+          {courtName && (
+            <span className="text-xs font-medium text-zinc-600 bg-zinc-100 px-2 py-0.5 rounded-md border border-zinc-200">
+              {courtName}
+            </span>
+          )}
+        </div>
 
         {/* Status Legend */}
         <div className="flex items-center gap-3 text-[0.6875rem] font-medium text-zinc-500 font-sans flex-wrap">
