@@ -7,9 +7,7 @@ import { getJakartaNow, jakartaDayBounds, jakartaMonthBounds, formatSlotHour } f
 import { invalidateCache, invalidateCachePattern } from "@/lib/redis";
 import { getAdminDashboardStatsDAL, type AdminStatsDTO } from "@/features/admin/dal";
 
-// =======================
 // Shared Return Types
-// =======================
 
 type AdminReservationRow = {
   id: string;
@@ -203,9 +201,7 @@ export async function adminDeleteReservation(id: string) {
   }
 }
 
-// =======================
 // Courts CRUD
-// =======================
 
 /**
  * Lists all courts, newest first.
@@ -406,9 +402,7 @@ export async function getAdminPaginatedCustomersAction(search?: string, page = 1
   return getAdminPaginatedCustomersDAL(search, page, pageSize);
 }
 
-// =======================
 // QR Ticket Scan & Check-in Verification
-// =======================
 
 /**
  * Looks up a reservation by ID for ticket scanning, with user/court/payment

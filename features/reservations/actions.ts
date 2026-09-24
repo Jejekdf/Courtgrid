@@ -27,7 +27,6 @@ import { acquireLock, releaseLock } from "@/lib/redis";
 export async function createReservationAction(rawInput: unknown) {
   const t = await getTranslations("validation");
 
-  // Server-side validation of raw input
   const bookingInput = createReservationSchema(t).safeParse(rawInput);
   if (!bookingInput.success) {
     return {
@@ -36,7 +35,6 @@ export async function createReservationAction(rawInput: unknown) {
     };
   }
 
-  // Auth session check
   let user;
   try {
     user = await verifyUserSession();
@@ -47,26 +45,23 @@ export async function createReservationAction(rawInput: unknown) {
     };
   }
 
-  // Reject dates/hours that have already passed (Asia/Jakarta, not the client's clock)
+  // Reject dates/hours that have already passed in Asia/Jakarta.
   const { courtId, dateStr, startTime, endTime, voucherCode } = bookingInput.data;
   const tzError = validateBookingTime(dateStr, startTime, t);
   if (tzError) {
     return { success: false, error: tzError };
   }
 
-  // The court must exist and be active
   const court = await prisma.court.findUnique({
     where: { id: courtId },
     select: { id: true, name: true, pricePerHour: true, isActive: true },
   });
 
   if (!court) {
-    // Court not found
     return { success: false, error: t("courtNotFound") };
   }
 
   if (!court.isActive) {
-    // Court is currently inactive
     return { success: false, error: t("courtInactive") };
   }
 
@@ -267,7 +262,6 @@ export async function createReservationAction(rawInput: unknown) {
   revalidatePath("/admin");
   revalidatePath("/admin/reservations");
 
-  // Return checkout session URL for client redirect
   return { success: true, url: checkoutSession.url };
 }
 
