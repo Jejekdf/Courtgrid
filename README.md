@@ -4,7 +4,9 @@
 
 **Sports Court Reservation Platform**: Futsal and badminton booking system for sports centers.
 
-Built with Next.js 16 (App Router), React 19, TypeScript, PostgreSQL (Supabase), Prisma 7, NextAuth v5, and Stripe.
+[**Explore Live Demo ↗**](https://courtgrid-one.vercel.app)
+
+<br />
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-000000?logo=next.js&logoColor=white)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=black)](https://react.dev)
@@ -24,20 +26,28 @@ Built with Next.js 16 (App Router), React 19, TypeScript, PostgreSQL (Supabase),
 
 CourtGrid is an online court booking system for futsal and badminton facilities. It provides live court availability checks, hourly slot reservations with a 50% down payment via Stripe Checkout, and an admin management dashboard with QR e-ticket verification.
 
-The platform includes role-based access control (Admin and Customer), digital e-tickets with real-time status tracking, automated slot locking, promo vouchers, and automated ghost-booking cancellation.
+The platform includes role-based access control for admins and customers, digital e-tickets with real-time status tracking, automated slot locking, promo vouchers, and ghost-booking cancellation.
+
+### Key Features
+
+- **Interactive Slot Booking**: Live availability grid with responsive time-slot selection for futsal and badminton courts.
+- **50% Down Payment**: Automated Stripe Checkout deposit flow with signed webhook fulfillment.
+- **QR Code E-Tickets and Scanner**: Instant digital ticket generation with built-in camera and file QR scanner for facility check-in.
+- **Admin Command Center**: Real-time revenue charts, peak hours visualization, court operations, customer directory, and promo vouchers.
+- **Bilingual Support**: Full Indonesian and English localization with SEO-friendly route prefixes.
 
 ---
 
 ## Core Engineering Invariants
 
-- **Atomic Double-Booking Prevention**: Court availability operates on half-open intervals `[start_time, end_time)`. A database-level unique constraint on `@@unique([courtId, date, startTime])` in PostgreSQL serves as a backstop, catching concurrent race conditions (`P2002`) atomically.
-- **Server-Authoritative Timezone Handling**: All date math, past-slot rejections, and availability evaluations run strictly in **Asia/Jakarta (WIB, UTC+7)**. The server clock is authoritative; client-side timestamps are never trusted.
-- **Single-Owner Ghost Booking Auto-Cancel**: Centralized cleanup routine cancels stale `PENDING` bookings that exceed the configured timeout (`Setting.autoCancelTimeout`, default 15 minutes) and lack a `stripeSessionId`. Active Stripe checkouts are never prematurely released.
-- **Strict Payment & Webhook Lifecycle**: Reservation status transitions through `PENDING → DP_PAID → DONE` (or `CANCELED`). Webhook handlers verify Stripe HMAC signatures and fulfill bookings only when `event.type === "checkout.session.completed"` and `session.payment_status === "paid"`.
-- **Data Access Layer (DAL) Isolation**: UI components never query Prisma directly. Mutations use Next.js Server Actions with Zod validation, session verification, and `$transaction` blocks. Read queries consume DTOs through `features/**/dal.ts` cached via React `cache()`.
-- **Global Admin UI State**: Ticket scanner modal state is managed through URL search params via `nuqs` (`adminScannerParser`), allowing admins to open the scanner from any admin page or topbar without prop drilling or route changes.
+- **Atomic Double-Booking Prevention**: Court availability operates on half-open intervals `[start_time, end_time)`. A database unique constraint on `@@unique([courtId, date, startTime])` in PostgreSQL catches concurrent race conditions atomically via Prisma error `P2002`.
+- **Server-Authoritative Timezone Handling**: All date calculations, past-slot rejections, and availability evaluations run strictly in **Asia/Jakarta (WIB)**. The server clock is authoritative; client timestamps are never trusted.
+- **Single-Owner Ghost Booking Auto-Cancel**: Centralized cleanup routine cancels stale `PENDING` bookings exceeding the 15-minute timeout that lack a `stripeSessionId`. Active Stripe checkouts are never prematurely released.
+- **Strict Payment and Webhook Lifecycle**: Reservation status transitions through `PENDING → DP_PAID → DONE` or `CANCELED`. Webhook handlers verify Stripe HMAC signatures and fulfill bookings only when `event.type === "checkout.session.completed"` and `session.payment_status === "paid"`.
+- **Data Access Layer Isolation**: UI components never query Prisma directly. Mutations use Next.js Server Actions with Zod validation, session verification, and `$transaction` blocks. Read queries consume DTOs through `features/**/dal.ts` cached via React `cache()`.
+- **Global Admin UI State**: Ticket scanner modal state is managed through URL search params via `nuqs`, allowing admins to open the scanner from any admin page or topbar without prop drilling or route changes.
 - **Pre-Upload Image Pipeline**: User avatars and court photos pass through server-side `sharp` processing to convert and compress to WebP before storing in Supabase Storage buckets.
-- **Rate Limiting & Protection**: Public mutation endpoints and court lookup endpoints are guarded by `@upstash/ratelimit` with Redis sliding window algorithms.
+- **Rate Limiting and Protection**: Public mutation endpoints and court lookups are guarded by `@upstash/ratelimit` using Redis sliding window algorithms.
 
 ---
 
@@ -45,16 +55,16 @@ The platform includes role-based access control (Admin and Customer), digital e-
 
 | Layer | Technology | Details |
 |---|---|---|
-| **Framework** | Next.js 16 (App Router) | React Server Components (RSC), Server Actions, Turbopack |
+| **Framework** | Next.js 16 App Router | React Server Components, Server Actions, Turbopack |
 | **Language** | TypeScript 5 | Strict typing across DAL, actions, and schemas |
 | **Styling & UI** | Tailwind CSS v4, Base UI, Radix UI | Utility-first styling, accessible primitives, and fluid Motion transitions |
-| **Database & ORM** | PostgreSQL (Supabase), Prisma 7 | Schema models, relational constraints, `@prisma/adapter-pg` pooler |
-| **Authentication** | NextAuth.js v5 (Beta) | JWT session strategy, Credentials (bcryptjs), Google & Facebook OAuth |
+| **Database & ORM** | PostgreSQL on Supabase, Prisma 7 | Schema models, relational constraints, `@prisma/adapter-pg` pooler |
+| **Authentication** | NextAuth.js v5 | JWT session strategy, bcryptjs credentials, Google and Facebook OAuth |
 | **Payments** | Stripe Checkout | 50% down payment sessions with webhook signature validation |
 | **State & Fetching** | TanStack Query 5, Nuqs | Asynchronous query caching and URL search param state |
-| **Storage** | Supabase Storage + Sharp | WebP image optimization for court pictures and user avatars |
+| **Storage** | Supabase Storage, Sharp | WebP image optimization for court pictures and user avatars |
 | **Email & Caching** | Resend, Upstash Redis | Transactional booking receipts and sliding-window rate limiting |
-| **Testing & Tooling** | Node Test Runner, Playwright, Bundle Analyzer | Unit tests (`node:test` via `tsx`), E2E browser tests, and Webpack bundle analysis |
+| **Testing & Tooling** | Node Test Runner, Playwright, Bundle Analyzer | Unit tests via `node:test` and `tsx`, E2E browser tests, and Webpack bundle analysis |
 
 ---
 
@@ -109,10 +119,10 @@ sport-center-app/
 
 - **Node.js** ≥ 20.x
 - **pnpm** ≥ 9.x
-- **PostgreSQL** database (Supabase instance)
-- **Stripe Account** & [Stripe CLI](https://docs.stripe.com/stripe-cli) (for local webhooks)
-- **Resend Account** (for transactional emails)
-- **Upstash Redis** (optional for local dev, required for rate limiting in production)
+- **PostgreSQL** database on Supabase
+- **Stripe Account** and [Stripe CLI](https://docs.stripe.com/stripe-cli) for local webhook forwarding
+- **Resend Account** for transactional emails
+- **Upstash Redis** (optional for local dev, required for production rate limiting)
 
 ### 1. Installation
 
@@ -132,7 +142,7 @@ cp .env.example .env
 
 ### 3. Database Initialization & Seeding
 
-Generate the Prisma client, check migration status, and seed default records (Venue, Super Admin, and Courts):
+Generate the Prisma client, check migration status, and seed default records:
 
 ```bash
 pnpm prisma generate
@@ -140,7 +150,7 @@ pnpm prisma migrate status
 pnpm prisma db seed
 ```
 
-> To seed a demo customer account and test bookings, set `SEED_DEMO="true"` in your `.env`.
+> Set `SEED_DEMO="true"` in `.env` to include demo customer accounts and sample reservations.
 
 ### 4. Start Development Server
 
@@ -205,23 +215,23 @@ Copy the webhook secret (`whsec_...`) and update `STRIPE_WEBHOOK_SECRET` in your
 
 ---
 
-## Application Routes & Access Control
+## Application Routes
 
-User routes are localized under `/[locale]` (`/id` default, `/en`).
+Routes are localized under `/[locale]` with Indonesian (`/id`) as default and English (`/en`).
 
-### Public (`(public)`)
+### Public Routes
 - `/` — Homepage with court previews, guide steps, and venue facilities.
 - `/courts` — Public court catalog with type filtering and real-time slot checker.
-- `/about` · `/faq` · `/terms` · `/privacy` — Information and terms.
-- `/login` · `/register` · `/forgot-password` · `/reset-password` — Authentication flows.
+- `/about`, `/faq`, `/terms`, `/privacy` — Information and terms.
+- `/login`, `/register`, `/forgot-password`, `/reset-password` — Authentication flows.
 
-### Customer Portal (`Role: CUSTOMER`)
+### Customer Portal
 - `/dashboard` — Active bookings overview, quick booking access, and stats.
 - `/dashboard/book` — Interactive reservation workspace with court selector and slot picker.
 - `/dashboard/reservations` — Booking history, payment settlement status, and QR e-tickets.
 - `/dashboard/settings` — Profile settings, avatar upload, and password management.
 
-### Super Admin Portal (`Role: ADMIN`)
+### Admin Portal
 - `/admin` — Revenue metrics, booking volume, and overview dashboard.
 - `/admin/courts` — Court CRUD management with photo uploads.
 - `/admin/reservations` — Reservation ledger, check-in controls, and manual cancellations.
