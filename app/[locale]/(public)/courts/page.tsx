@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import CourtCatalog from "@/components/courts/CourtCatalog";
 import CourtState from "@/components/courts/CourtState";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import type { Locale } from "@/i18n/routing";
 
@@ -14,7 +14,6 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  setRequestLocale(locale);
   const t = await getTranslations("courts");
   const title = `${t("metaTitle")} | CourtGrid`;
   const description = t("metaDesc");
@@ -55,7 +54,6 @@ export default async function CourtsPage({
   params: Promise<{ locale: Locale }>;
 }) {
   const { locale } = await params;
-  setRequestLocale(locale);
   const th = await getTranslations("header");
 
   const breadcrumbItems = [

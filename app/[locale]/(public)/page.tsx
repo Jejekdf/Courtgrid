@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Hero from "@/components/layout/Hero";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight, CheckCircle2, ShieldCheck, Zap, QrCode } from "lucide-react";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { getActiveCourtsDAL } from "@/features/courts/dal";
 import { formatRupiah } from "@/lib/utils";
 import type { Locale } from "@/i18n/routing";
@@ -17,7 +17,6 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  setRequestLocale(locale);
   const t = await getTranslations("landing");
   const title = `${t("metaTitle")} | CourtGrid`;
   const description = t("metaDesc");
@@ -64,7 +63,6 @@ export default async function Home({
   params: Promise<{ locale: Locale }>;
 }) {
   const { locale } = await params;
-  setRequestLocale(locale);
   const t = await getTranslations("landing");
   const courts = await getActiveCourtsDAL("", null);
 

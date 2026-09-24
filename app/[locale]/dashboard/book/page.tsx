@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { auth } from "@/auth";
 import { redirect } from "@/i18n/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import CustomerBookingWorkspace from "@/components/dashboard/CustomerBookingWorkspace";
 import PageHeader from "@/components/ui/PageHeader";
 import type { Locale } from "@/i18n/routing";
@@ -12,8 +12,7 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  setRequestLocale(locale);
-  const t = await getTranslations("dashboard.book");
+  const t = await getTranslations({ locale, namespace: "dashboard.book" });
   return {
     title: t("metaTitle"),
     description: t("metaDesc"),
@@ -26,7 +25,6 @@ export default async function CustomerBookPage({
   params: Promise<{ locale: Locale }>;
 }) {
   const { locale } = await params;
-  setRequestLocale(locale);
   const session = await auth();
   const t = await getTranslations("dashboard.book");
 

@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { auth } from "@/auth";
 import { redirect } from "@/i18n/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/features/auth/dal";
 import { getCustomerReservationsDAL } from "@/features/reservations/dal";
 import CustomerDashboardContent from "@/components/dashboard/CustomerDashboardContent";
@@ -13,8 +13,7 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  setRequestLocale(locale);
-  const t = await getTranslations("dashboard.home");
+  const t = await getTranslations({ locale, namespace: "dashboard.home" });
   return {
     title: t("metaTitle"),
     description: t("metaDesc"),
@@ -27,7 +26,6 @@ export default async function CustomerDashboardPage({
   params: Promise<{ locale: Locale }>;
 }) {
   const { locale } = await params;
-  setRequestLocale(locale);
   const session = await auth();
 
   if (!session || !session.user || !session.user.id) {

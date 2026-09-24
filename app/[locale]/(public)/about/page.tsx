@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import PageWrapper from "@/components/ui/PageWrapper";
 import { Zap, ShieldCheck, Building2, ArrowUpRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import type { Locale } from "@/i18n/routing";
 
@@ -16,7 +16,6 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  setRequestLocale(locale);
   const t = await getTranslations("about");
   const title = `${t("metaTitle")} | CourtGrid`;
   const description = t("metaDesc");
@@ -58,7 +57,6 @@ export default async function AboutPage({
   params: Promise<{ locale: Locale }>;
 }) {
   const { locale } = await params;
-  setRequestLocale(locale);
   const t = await getTranslations("about");
   const th = await getTranslations("header");
 

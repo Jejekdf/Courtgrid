@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { auth } from "@/auth";
 import { notFound } from "next/navigation";
 import { redirect, Link } from "@/i18n/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { AppUser } from "@/auth.config";
 import { getReservationDetailsDAL } from "@/features/reservations/dal";
 import PrintButton from "@/components/ui/PrintButton";
@@ -18,8 +18,7 @@ export async function generateMetadata({
   params: Promise<{ id: string; locale: Locale }>;
 }): Promise<Metadata> {
   const { id: ticketId, locale } = await params;
-  setRequestLocale(locale);
-  const t = await getTranslations("admin.eticket");
+  const t = await getTranslations({ locale, namespace: "admin.eticket" });
   const reservation = await getReservationDetailsDAL(ticketId).catch(() => null);
 
   if (!reservation) {
@@ -38,7 +37,6 @@ export default async function AdminETicketPage({
   params: Promise<{ id: string; locale: Locale }>;
 }) {
   const { id: ticketId, locale } = await params;
-  setRequestLocale(locale);
   const session = await auth();
   if (!session?.user?.id) {
     redirect({ href: "/login", locale });

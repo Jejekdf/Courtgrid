@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { auth } from "@/auth";
 import { redirect, Link } from "@/i18n/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { getCustomerReservationsDAL } from "@/features/reservations/dal";
 import { CalendarPlus } from "lucide-react";
 import ReservationList from "@/components/dashboard/ReservationList";
@@ -14,8 +14,7 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  setRequestLocale(locale);
-  const t = await getTranslations("dashboard.reservations");
+  const t = await getTranslations({ locale, namespace: "dashboard.reservations" });
   return {
     title: t("metaTitle"),
     description: t("metaDesc"),
@@ -28,7 +27,6 @@ export default async function CustomerReservationsPage({
   params: Promise<{ locale: Locale }>;
 }) {
   const { locale } = await params;
-  setRequestLocale(locale);
   const session = await auth();
   const t = await getTranslations("dashboard.reservations");
   const tHome = await getTranslations("dashboard.home");

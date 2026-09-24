@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 
 export async function generateMetadata({
@@ -8,8 +8,7 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  setRequestLocale(locale);
-  const t = await getTranslations("auth.reset");
+  const t = await getTranslations({ locale, namespace: "auth.reset" });
   return {
     title: t("metaTitle"),
     robots: { index: false, follow: false },

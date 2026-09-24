@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { auth } from "@/auth";
 import { redirect } from "@/i18n/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { User, Key, ShieldCheck } from "lucide-react";
 import ProfileForm from "@/components/dashboard/ProfileForm";
@@ -15,8 +15,7 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  setRequestLocale(locale);
-  const t = await getTranslations("dashboard.settings");
+  const t = await getTranslations({ locale, namespace: "dashboard.settings" });
   return {
     title: t("metaTitle"),
     description: t("metaDesc"),
@@ -29,7 +28,6 @@ export default async function CustomerSettingsPage({
   params: Promise<{ locale: Locale }>;
 }) {
   const { locale } = await params;
-  setRequestLocale(locale);
   const session = await auth();
   const t = await getTranslations("dashboard.settings");
 
