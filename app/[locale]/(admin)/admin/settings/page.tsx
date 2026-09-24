@@ -51,7 +51,7 @@ export default function AdminSettingsPage() {
     setNotifyEmail(settings.notifyEmail);
   }
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setLoading(true);
 

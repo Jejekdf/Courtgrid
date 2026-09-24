@@ -104,7 +104,7 @@ export function TicketVerificationDialog({
     [t]
   );
 
-  const handleSearch = async (e?: React.FormEvent) => {
+  const handleSearch = async (e?: React.SyntheticEvent) => {
     if (e) e.preventDefault();
     if (!ticketId.trim()) return;
     await executeSearch(ticketId);

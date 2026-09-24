@@ -108,7 +108,7 @@ export default function RegisterForm() {
     router.push(target);
   };
 
-  const handleVerifyOtp = async (e?: React.FormEvent) => {
+  const handleVerifyOtp = async (e?: React.SyntheticEvent) => {
     if (e) e.preventDefault();
     if (otpValue.length !== 6 || isVerifying) return;
 

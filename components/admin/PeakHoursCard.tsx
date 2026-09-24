@@ -1,7 +1,16 @@
 "use client";
 
 import { motion } from "motion/react";
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from "recharts";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Rectangle,
+  type BarShapeProps,
+} from "recharts";
 import { useTranslations } from "next-intl";
 
 export type HourlySlotDatum = {
@@ -41,7 +50,7 @@ function SlotTooltip({ active, payload }: SlotTooltipProps) {
   );
 }
 
-function getBarColor(intensity: HourlySlotDatum["intensity"]) {
+function getBarColor(intensity?: HourlySlotDatum["intensity"]) {
   switch (intensity) {
     case "peak":
       return "#18181b"; // zinc-900 (strongest contrast)
@@ -53,6 +62,11 @@ function getBarColor(intensity: HourlySlotDatum["intensity"]) {
     default:
       return "#e4e4e7"; // zinc-200
   }
+}
+
+function PeakBarShape(props: BarShapeProps) {
+  const datum = props.payload as HourlySlotDatum | undefined;
+  return <Rectangle {...props} fill={getBarColor(datum?.intensity)} />;
 }
 
 export default function PeakHoursCard({
@@ -85,7 +99,6 @@ export default function PeakHoursCard({
             <span className="size-2 rounded-full bg-zinc-950 shrink-0" />
             <span className="text-zinc-600">{t("peakBadgePrefix")}</span>
             <span className="font-mono font-bold text-zinc-950">{peakHour.replace(/:00/g, ".00")} WIB</span>
-            <span className="text-zinc-400">·</span>
             <span className="text-zinc-600 font-sans">{t("peakBookingsCount", { count: peakHourCount })}</span>
           </div>
         )}
@@ -114,11 +127,11 @@ export default function PeakHoursCard({
                       tickLine={false}
                     />
                     <Tooltip cursor={{ fill: "#f4f4f5" }} content={<SlotTooltip />} />
-                    <Bar dataKey="count" radius={[5, 5, 0, 0]}>
-                      {data.map((entry, idx) => (
-                        <Cell key={`cell-${idx}`} fill={getBarColor(entry.intensity)} />
-                      ))}
-                    </Bar>
+                    <Bar
+                      dataKey="count"
+                      radius={[5, 5, 0, 0]}
+                      shape={PeakBarShape}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

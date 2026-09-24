@@ -15,11 +15,11 @@ export function buildReservationSchema(t: SchemaTranslator = defaultTranslator) 
     .superRefine((data, ctx) => {
       const tzError = validateBookingTime(data.dateStr, data.startTime, t);
       if (tzError) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: tzError });
+        ctx.addIssue({ code: "custom", message: tzError });
       }
       if (data.endTime <= data.startTime) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: t("endTimeAfterStart"),
         });
       }

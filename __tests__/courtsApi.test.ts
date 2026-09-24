@@ -10,7 +10,7 @@ require.cache[require.resolve("server-only")] = {
   filename: require.resolve("server-only"),
   loaded: true,
   exports: {},
-} as unknown as NodeModule;
+} as unknown as NodeJS.Module;
 
 // --- Configurable Mock State ---
 let rateLimitSuccess = true;
@@ -35,7 +35,7 @@ require.cache[ratelimitPath] = {
       return { success: rateLimitSuccess };
     },
   },
-} as unknown as NodeModule;
+} as unknown as NodeJS.Module;
 
 let activeCourtExists = true;
 const sampleAvailability = [
@@ -72,7 +72,7 @@ require.cache[dalPath] = {
       return sampleCourts;
     },
   },
-} as unknown as NodeModule;
+} as unknown as NodeJS.Module;
 
 let cacheCalled = false;
 let lastCacheKey = "";
@@ -90,7 +90,7 @@ require.cache[redisPath] = {
     },
     getRedisClient: () => null,
   },
-} as unknown as NodeModule;
+} as unknown as NodeJS.Module;
 
 // Import GET route handler after mocks are in place
 // eslint-disable-next-line @typescript-eslint/no-require-imports
