@@ -7,4 +7,4 @@ if (!process.env.RESEND_API_KEY) {
 export const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const RESEND_FROM_EMAIL =
-  process.env.RESEND_FROM_EMAIL || "CourtGrid <onboarding@resend.dev>";
+  process.env.RESEND_FROM_EMAIL || "CourtGrid <noreply@courtgrid.rnm.biz.id>";

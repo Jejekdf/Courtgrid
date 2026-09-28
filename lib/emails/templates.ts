@@ -1,10 +1,11 @@
 import { formatRupiah } from "@/lib/utils";
 import { SITE_URL } from "@/lib/constants";
+import { RESEND_FROM_EMAIL } from "@/lib/resend";
 
 const appUrl = SITE_URL;
 
 export const forgotPasswordEmail = (name: string | null | undefined, resetUrl: string) => ({
-  from: process.env.RESEND_FROM_EMAIL || "CourtGrid <onboarding@resend.dev>",
+  from: RESEND_FROM_EMAIL,
   to: [] as string[],
   subject: "Reset Password CourtGrid Anda",
   html: `
@@ -41,7 +42,7 @@ export const bookingConfirmationEmail = (data: {
   dpAmount: number;
   reservationId: string;
 }) => ({
-  from: process.env.RESEND_FROM_EMAIL || "CourtGrid <onboarding@resend.dev>",
+  from: RESEND_FROM_EMAIL,
   to: data.userEmail ? [data.userEmail] : [],
   subject: "Booking Lapangan Berhasil — CourtGrid",
   html: `
@@ -82,7 +83,7 @@ export const paymentSuccessEmail = (data: {
   dpAmount: number;
   reservationId: string;
 }) => ({
-  from: process.env.RESEND_FROM_EMAIL || "CourtGrid <onboarding@resend.dev>",
+  from: RESEND_FROM_EMAIL,
   to: data.userEmail ? [data.userEmail] : [],
   subject: "Pembayaran DP Berhasil Diterima — CourtGrid",
   html: `
@@ -113,7 +114,7 @@ export const paymentSuccessEmail = (data: {
 });
 
 export const registerOtpEmail = (name: string | null | undefined, otp: string) => ({
-  from: process.env.RESEND_FROM_EMAIL || "CourtGrid <onboarding@resend.dev>",
+  from: RESEND_FROM_EMAIL,
   to: [] as string[],
   subject: "Kode Verifikasi Pendaftaran CourtGrid",
   html: `
