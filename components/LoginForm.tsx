@@ -65,6 +65,9 @@ export default function LoginForm() {
     const formData = new FormData();
     formData.append("email", data.email);
     formData.append("password", data.password);
+    if (callbackUrl) {
+      formData.append("callbackUrl", callbackUrl);
+    }
 
     try {
       const result = await login(undefined, formData);
