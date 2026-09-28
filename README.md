@@ -4,7 +4,7 @@
 
 **Sports Court Reservation Platform**: Futsal and badminton booking system for sports centers.
 
-[**Explore Live Demo ↗**](https://courtgrid-one.vercel.app)
+[**Explore Live Demo ↗**](https://courtgrid.rnm.biz.id)
 
 <br />
 
