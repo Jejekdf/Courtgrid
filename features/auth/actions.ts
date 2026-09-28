@@ -475,7 +475,11 @@ export async function forgotPasswordAction(rawInput: unknown): Promise<ForgotPas
 
   const resetToken = crypto.randomBytes(32).toString("hex");
   const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-  const passwordResetExpires = new Date(Date.now() + 3600000);
+  const passwordResetExpires = new Date(Date.now() + 15 * 60 * 1000);
+
+  await prisma.passwordResetToken.deleteMany({
+    where: { email: user.email! },
+  });
 
   await prisma.passwordResetToken.create({
     data: { email: user.email!, token: hashedToken, expires: passwordResetExpires },

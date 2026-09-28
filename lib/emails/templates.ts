@@ -15,7 +15,7 @@ export const forgotPasswordEmail = (name: string | null | undefined, resetUrl: s
         <h3 style="margin-top: 0;">Permintaan Reset Password</h3>
         <p>Halo ${name || "Pelanggan"},</p>
         <p>Kami menerima permintaan untuk mengatur ulang kata sandi Anda. Jika Anda tidak melakukan permintaan ini, abaikan saja email ini.</p>
-        <p>Untuk mengatur ulang kata sandi, klik tombol aman di bawah ini. Tautan ini berlaku selama 1 jam.</p>
+        <p>Untuk mengatur ulang kata sandi, klik tombol aman di bawah ini. Tautan ini berlaku selama 15 menit.</p>
         <div style="text-align: center; margin: 30px 0;">
           <a href="${resetUrl}" style="background-color: #09090b; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Atur Ulang Password</a>
         </div>
