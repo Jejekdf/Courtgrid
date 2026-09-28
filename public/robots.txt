@@ -4,4 +4,4 @@ Disallow: /api/
 Disallow: /dashboard/
 Disallow: /admin/
 
-Sitemap: https://courtgrid-one.vercel.app/sitemap.xml
+Sitemap: https://courtgrid.rnm.biz.id/sitemap.xml
