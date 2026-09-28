@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/constants";
 
-const BASE_URL = "https://courtgrid-one.vercel.app";
+const BASE_URL = SITE_URL;
 
 // Public pages that should be indexed by search engines.
 // Dashboard, admin, auth, and API routes are intentionally excluded.

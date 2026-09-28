@@ -6,8 +6,9 @@ import { getTranslations } from "next-intl/server";
 import { getActiveCourtsDAL } from "@/features/courts/dal";
 import { formatRupiah } from "@/lib/utils";
 import type { Locale } from "@/i18n/routing";
+import { SITE_URL } from "@/lib/constants";
 
-const BASE_URL = "https://courtgrid-one.vercel.app";
+const BASE_URL = SITE_URL;
 
 export const revalidate = 3600;
 

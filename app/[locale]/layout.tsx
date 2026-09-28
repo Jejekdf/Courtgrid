@@ -7,6 +7,7 @@ import { routing } from "@/i18n/routing";
 import "../globals.css";
 import Providers from "@/components/Providers";
 import { Toaster } from "@/components/ui/sonner";
+import { SITE_URL } from "@/lib/constants";
 
 const heading = Be_Vietnam_Pro({
   variable: "--font-heading",
@@ -36,7 +37,7 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-const BASE_URL = "https://courtgrid-one.vercel.app";
+const BASE_URL = SITE_URL;
 
 export async function generateMetadata({
   params,

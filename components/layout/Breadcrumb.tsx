@@ -1,7 +1,8 @@
 import { Link } from "@/i18n/navigation";
 import { ChevronRight } from "lucide-react";
+import { SITE_URL } from "@/lib/constants";
 
-const BASE_URL = "https://courtgrid-one.vercel.app";
+const BASE_URL = SITE_URL;
 
 export interface BreadcrumbItem {
   label: string;

@@ -5,8 +5,9 @@ import CourtState from "@/components/courts/CourtState";
 import { getTranslations } from "next-intl/server";
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import type { Locale } from "@/i18n/routing";
+import { SITE_URL } from "@/lib/constants";
 
-const BASE_URL = "https://courtgrid-one.vercel.app";
+const BASE_URL = SITE_URL;
 
 export async function generateMetadata({
   params,
