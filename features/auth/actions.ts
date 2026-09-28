@@ -21,6 +21,7 @@ import crypto from "crypto";
 import { resend, RESEND_FROM_EMAIL } from "@/lib/resend";
 import { forgotPasswordEmail, registerOtpEmail } from "@/lib/emails/templates";
 import { getTranslations } from "next-intl/server";
+import { SITE_URL } from "@/lib/constants";
 
 async function clientIp(): Promise<string> {
   try {
@@ -480,7 +481,7 @@ export async function forgotPasswordAction(rawInput: unknown): Promise<ForgotPas
     data: { email: user.email!, token: hashedToken, expires: passwordResetExpires },
   });
 
-  const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/reset-password?token=${resetToken}`;
+  const resetUrl = `${SITE_URL}/reset-password?token=${resetToken}`;
   const emailPayload = forgotPasswordEmail(user.name, resetUrl);
 
   const { error: resendError } = await resend.emails.send({

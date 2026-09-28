@@ -20,6 +20,7 @@ import { auth } from "@/auth";
 import { uploadPaymentProof, getPaymentProofSignedUrl } from "@/lib/supabase/storage";
 import { getTranslations } from "next-intl/server";
 import { acquireLock, releaseLock } from "@/lib/redis";
+import { SITE_URL } from "@/lib/constants";
 
 /**
  * Creates a reservation and redirects the user to Stripe Checkout for the down payment.
@@ -195,7 +196,7 @@ export async function createReservationAction(rawInput: unknown) {
   }
 
   // Create the Stripe Checkout session and attach it to the reservation
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const appUrl = SITE_URL;
   let checkoutSession;
   try {
     checkoutSession = await stripe.checkout.sessions.create({
@@ -421,7 +422,7 @@ export async function resumeReservationPaymentAction(reservationId: string) {
 
   const dpAmount =
     reservation.payment?.dpAmount ?? Math.ceil(reservation.totalPrice / 2);
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const appUrl = SITE_URL;
 
   if (reservation.stripeSessionId) {
     try {

@@ -1,6 +1,7 @@
 import { formatRupiah } from "@/lib/utils";
+import { SITE_URL } from "@/lib/constants";
 
-const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+const appUrl = SITE_URL;
 
 export const forgotPasswordEmail = (name: string | null | undefined, resetUrl: string) => ({
   from: process.env.RESEND_FROM_EMAIL || "CourtGrid <onboarding@resend.dev>",
