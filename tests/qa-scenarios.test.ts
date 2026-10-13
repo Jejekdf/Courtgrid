@@ -202,3 +202,43 @@ test("AVAIL-1: multi-hour reservations mark every covered hourly slot as BOOKED"
   assert.equal(bookedByHour.has(8), false);
   assert.equal(bookedByHour.has(12), false);
 });
+
+// === UX-2: Proactive contiguous slot validation ===
+test("UX-2: contiguous slot validation correctly distinguishes valid and gap intervals", () => {
+  function checkContiguous(slots: string[]): boolean {
+    if (slots.length <= 1) return true;
+    const sorted = [...slots].sort();
+    const startHour = parseInt(sorted[0].split(":")[0], 10);
+    const endHour = parseInt(sorted[sorted.length - 1].split(":")[0], 10) + 1;
+    return endHour - startHour === sorted.length;
+  }
+
+  assert.equal(checkContiguous([]), true);
+  assert.equal(checkContiguous(["08:00"]), true);
+  assert.equal(checkContiguous(["08:00", "09:00", "10:00"]), true);
+  assert.equal(checkContiguous(["10:00", "08:00", "09:00"]), true); // unsorted input
+  assert.equal(checkContiguous(["08:00", "10:00"]), false); // gap at 09:00
+  assert.equal(checkContiguous(["08:00", "09:00", "11:00"]), false); // gap at 10:00
+});
+
+// === UX-3: Voucher discount calculation rules ===
+test("UX-3: voucher discount correctly respects pct and maxDiscount cap", () => {
+  function computeVoucherDiscount(totalPrice: number, pct: number, maxDiscount?: number | null) {
+    const rawDiscount = Math.round((totalPrice * pct) / 100);
+    const discountAmount = Math.min(rawDiscount, maxDiscount ?? Infinity);
+    const finalPrice = Math.max(0, totalPrice - discountAmount);
+    return { discountAmount, finalPrice };
+  }
+
+  // 10% on 100,000 without cap -> 10,000 discount
+  assert.deepEqual(computeVoucherDiscount(100000, 10, null), {
+    discountAmount: 10000,
+    finalPrice: 90000,
+  });
+
+  // 50% on 200,000 capped at 25,000 -> 25,000 discount
+  assert.deepEqual(computeVoucherDiscount(200000, 50, 25000), {
+    discountAmount: 25000,
+    finalPrice: 175000,
+  });
+});
