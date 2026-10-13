@@ -128,3 +128,61 @@ export async function adminToggleVoucherActive(id: string, isActive: boolean) {
   revalidatePath("/admin/vouchers");
   return { success: true };
 }
+
+/**
+ * Validates a voucher code against current subtotal and returns computed discount.
+ */
+export async function validateVoucherAction(code: string, totalPrice: number) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false as const, error: "Silakan login terlebih dahulu." };
+  }
+
+  const cleanCode = code?.trim().toUpperCase();
+  if (!cleanCode) {
+    return { success: false as const, error: "Kode voucher tidak boleh kosong." };
+  }
+
+  const voucher = await prisma.voucher.findUnique({
+    where: { code: cleanCode },
+  });
+
+  if (!voucher || !voucher.isActive) {
+    return { success: false as const, error: "Kode voucher tidak valid atau tidak aktif." };
+  }
+
+  if (voucher.expiresAt < new Date()) {
+    return { success: false as const, error: "Kode voucher sudah kedaluwarsa." };
+  }
+
+  if (totalPrice < voucher.minSpend) {
+    return {
+      success: false as const,
+      error: `Minimal transaksi untuk voucher ini adalah Rp ${voucher.minSpend.toLocaleString("id-ID")}.`,
+    };
+  }
+
+  if (voucher.maxUses !== null && voucher.maxUses !== undefined) {
+    const usedCount = await prisma.reservation.count({
+      where: { voucherId: voucher.id, status: { not: "CANCELED" } },
+    });
+    if (usedCount >= voucher.maxUses) {
+      return { success: false as const, error: "Kuota penggunaan voucher ini sudah habis." };
+    }
+  }
+
+  const discountAmount = Math.min(
+    Math.round((totalPrice * voucher.discountPct) / 100),
+    voucher.maxDiscount ?? Infinity
+  );
+
+  const finalTotalPrice = Math.max(0, totalPrice - discountAmount);
+
+  return {
+    success: true as const,
+    code: voucher.code,
+    discountPct: voucher.discountPct,
+    discountAmount,
+    finalTotalPrice,
+  };
+}
