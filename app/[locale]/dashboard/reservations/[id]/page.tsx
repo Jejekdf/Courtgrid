@@ -5,6 +5,7 @@ import { redirect, Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 import { getReservationDetailsDAL } from "@/features/reservations/dal";
 import ETicketShareActions from "@/components/dashboard/reservations/ETicketShareActions";
+import ETicketPendingActions from "@/components/dashboard/reservations/ETicketPendingActions";
 import QRCode from "qrcode";
 import { ArrowLeft, ShieldCheck, Calendar, Clock, Receipt, CheckCircle2 } from "lucide-react";
 import { formatRupiah, safeFormatDate } from "@/lib/utils";
@@ -85,6 +86,14 @@ export default async function CustomerETicketPage({
             <p className="text-xs text-emerald-700">E-Ticket kamu sudah aktif dan terverifikasi otomatis oleh sistem.</p>
           </div>
         </div>
+      )}
+
+      {/* Pending Payment Action Card */}
+      {reservation.status === "PENDING" && (
+        <ETicketPendingActions
+          reservationId={reservation.id}
+          dpAmount={dpAmount}
+        />
       )}
 
       {/* E-Ticket Card */}
