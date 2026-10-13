@@ -19,6 +19,8 @@ import { CourtSelector } from "./booking/CourtSelector";
 import { TimeSlotPicker } from "./booking/TimeSlotPicker";
 import { BookingSummaryPanel } from "./booking/BookingSummaryPanel";
 import { BookingPreviewModal } from "./booking/BookingPreviewModal";
+import { useSlotSelection } from "./booking/useSlotSelection";
+import { useVoucherManager } from "./booking/useVoucherManager";
 
 import { useTranslations } from "next-intl";
 import { getJakartaNow } from "@/lib/timezone";
@@ -52,10 +54,6 @@ export default function CustomerBookingWorkspace() {
   const [selectedDate, setSelectedDate] = useState<string>(
     () => urlDate || getJakartaNow().dateStr
   );
-  const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>(
-    () => (urlTime ? [urlTime] : [])
-  );
-  const [voucherCode, setVoucherCode] = useState("");
   const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   // Fetch active courts for selector
@@ -93,48 +91,55 @@ export default function CustomerBookingWorkspace() {
   // Live refresh: invalidate availability when any slot changes on this court/date
   useAvailabilityRealtime(activeCourtId, selectedDate);
 
+  const {
+    selectedTimeSlots,
+    getSlotStatus,
+    toggleTimeSlot,
+    isContiguous,
+    clearSlots,
+  } = useSlotSelection({
+    selectedDate,
+    availability,
+    initialSlots: urlTime ? [urlTime] : [],
+  });
+
+  const originalTotalPrice = activeCourt
+    ? selectedTimeSlots.length * activeCourt.pricePerHour
+    : 0;
+
+  const {
+    voucherCode,
+    setVoucherCode,
+    appliedVoucher,
+    isValidatingVoucher,
+    voucherError,
+    applyVoucher,
+    removeVoucher,
+    resetVoucher,
+  } = useVoucherManager({
+    subtotal: originalTotalPrice,
+    slotCount: selectedTimeSlots.length,
+  });
+
+  const totalPrice = appliedVoucher ? appliedVoucher.finalTotalPrice : originalTotalPrice;
+  const dpAmount = Math.ceil(totalPrice / 2);
+  const remainingCash = totalPrice - dpAmount;
+
   const handleSelectCourt = (court: Court) => {
     setCourtId(court.id);
-    setSelectedTimeSlots([]);
+    clearSlots();
+    resetVoucher();
   };
 
   const handleSelectDate = (date: string) => {
     setSelectedDate(date);
-    setSelectedTimeSlots([]);
+    clearSlots();
+    resetVoucher();
   };
 
-  const toggleTimeSlot = (time: string) => {
-    setSelectedTimeSlots((prev) => {
-      if (prev.includes(time)) {
-        return prev.filter((t) => t !== time);
-      }
-      return [...prev, time];
-    });
+  const handleToggleSlot = (time: string) => {
+    toggleTimeSlot(time, resetVoucher);
   };
-
-  // Determine whether each hourly slot is in the past, pending, paid, or available
-  const getSlotStatus = useMemo(() => {
-    const { dateStr: todayStr, hour: currentHour } = getJakartaNow();
-
-    return (time: string) => {
-      const tHour = parseInt(time.split(":")[0], 10);
-
-      if (selectedDate === todayStr && tHour <= currentHour) {
-        return "PAST";
-      }
-
-      const slot = availability.find(
-        (res: { startTime: string; endTime: string; status: string }) => {
-          const sHour = parseInt(res.startTime.split(":")[0], 10);
-          const eHour = parseInt(res.endTime.split(":")[0], 10);
-          return tHour >= sHour && tHour < eHour;
-        }
-      );
-
-      if (!slot) return "AVAILABLE";
-      return slot.status as "AVAILABLE" | "PENDING" | "DP_PAID" | "PAST" | "UNAVAILABLE";
-    };
-  }, [availability, selectedDate]);
 
   // Submit reservation and proceed to Stripe checkout
   const bookingMutation = useMutation({
@@ -157,15 +162,15 @@ export default function CustomerBookingWorkspace() {
 
       const startTime = sortedSlots[0];
       const endTime = `${endHour.toString().padStart(2, "0")}:00`;
-      const totalPrice = sortedSlots.length * activeCourt.pricePerHour;
+      const basePrice = sortedSlots.length * activeCourt.pricePerHour;
 
       const result = await createReservationAction({
         courtId: activeCourt.id,
         dateStr: selectedDate,
         startTime,
         endTime,
-        totalPrice,
-        voucherCode: voucherCode.trim() || undefined,
+        totalPrice: basePrice,
+        voucherCode: appliedVoucher ? appliedVoucher.code : (voucherCode.trim() || undefined),
       });
 
       if (!result.success) {
@@ -213,13 +218,6 @@ export default function CustomerBookingWorkspace() {
   const todayDate = new Date(`${todayStr}T00:00:00+07:00`);
   const tomorrowStr = format(addDays(todayDate, 1), "yyyy-MM-dd");
   const dayAfterTomorrowStr = format(addDays(todayDate, 2), "yyyy-MM-dd");
-
-  const totalPrice = activeCourt
-    ? selectedTimeSlots.length * activeCourt.pricePerHour
-    : 0;
-  const dpAmount = Math.ceil(totalPrice / 2);
-  const remainingCash = totalPrice - dpAmount;
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -256,7 +254,8 @@ export default function CustomerBookingWorkspace() {
             selectedTimeSlots={selectedTimeSlots}
             isLoadingAvailability={isLoadingAvailability}
             getSlotStatus={getSlotStatus}
-            onToggleSlot={toggleTimeSlot}
+            onToggleSlot={handleToggleSlot}
+            isContiguous={isContiguous}
           />
         </div>
 
@@ -267,10 +266,17 @@ export default function CustomerBookingWorkspace() {
             selectedDate={selectedDate}
             selectedTimeSlots={selectedTimeSlots}
             totalPrice={totalPrice}
+            originalTotalPrice={originalTotalPrice}
             dpAmount={dpAmount}
             remainingCash={remainingCash}
             voucherCode={voucherCode}
             onVoucherChange={setVoucherCode}
+            appliedVoucher={appliedVoucher}
+            onApplyVoucher={applyVoucher}
+            onRemoveVoucher={removeVoucher}
+            isValidatingVoucher={isValidatingVoucher}
+            voucherError={voucherError}
+            isContiguous={isContiguous}
             onOpenPreview={() => setShowPreviewModal(true)}
             isLoading={bookingMutation.isPending || !isOnline}
           />
@@ -284,10 +290,17 @@ export default function CustomerBookingWorkspace() {
           selectedDate={selectedDate}
           selectedTimeSlots={selectedTimeSlots}
           totalPrice={totalPrice}
+          originalTotalPrice={originalTotalPrice}
           dpAmount={dpAmount}
           remainingCash={remainingCash}
           voucherCode={voucherCode}
           onVoucherChange={setVoucherCode}
+          appliedVoucher={appliedVoucher}
+          onApplyVoucher={applyVoucher}
+          onRemoveVoucher={removeVoucher}
+          isValidatingVoucher={isValidatingVoucher}
+          voucherError={voucherError}
+          isContiguous={isContiguous}
           onOpenPreview={() => setShowPreviewModal(true)}
           isLoading={bookingMutation.isPending || !isOnline}
           hideActionOnMobile
@@ -327,7 +340,7 @@ export default function CustomerBookingWorkspace() {
               <button
                 type="button"
                 onClick={() => setShowPreviewModal(true)}
-                disabled={bookingMutation.isPending || !isOnline}
+                disabled={bookingMutation.isPending || !isOnline || !isContiguous}
                 className="inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition-colors cursor-pointer shrink-0 min-h-11 disabled:opacity-50 font-sans"
               >
                 <span>{tFlowSummary("payButton")}</span>
@@ -345,6 +358,8 @@ export default function CustomerBookingWorkspace() {
         selectedDate={selectedDate}
         selectedTimeSlots={selectedTimeSlots}
         totalPrice={totalPrice}
+        originalTotalPrice={originalTotalPrice}
+        appliedVoucher={appliedVoucher}
         dpAmount={dpAmount}
         remainingCash={remainingCash}
         voucherCode={voucherCode}
