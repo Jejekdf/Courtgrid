@@ -223,7 +223,7 @@ export default function AdminVouchersPage() {
 
             {/* Desktop Table (hidden sm:block) */}
             <div className="hidden sm:block overflow-x-auto">
-              <table className="w-full text-left border-collapse min-w-[700px]">
+              <table className="w-full text-left border-collapse min-w-175">
                 <thead>
                   <tr className="border-b border-zinc-200/80 bg-zinc-50/50 text-[0.6875rem] font-bold uppercase text-zinc-500">
                     <th className="p-4 pl-6">{t("colCode")}</th>
@@ -245,7 +245,7 @@ export default function AdminVouchersPage() {
                         <span>{v.code}</span>
                       </div>
                       {v.description && (
-                        <div className="text-xs text-zinc-500 mt-0.5 line-clamp-1 max-w-[200px]">
+                        <div className="text-xs text-zinc-500 mt-0.5 line-clamp-1 max-w-50">
                           {v.description}
                         </div>
                       )}

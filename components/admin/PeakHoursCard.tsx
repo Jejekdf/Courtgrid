@@ -108,13 +108,13 @@ export default function PeakHoursCard({
         {hasData ? (
           <div className="w-full">
             <div className="w-full overflow-x-auto overflow-y-hidden pb-1 -mx-2 px-2 sm:mx-0 sm:px-0">
-              <div className="min-w-[560px] sm:min-w-full h-[260px] sm:h-[280px]">
+              <div className="min-w-140 sm:min-w-full h-65 sm:h-70">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={data} margin={{ top: 12, right: 12, left: -10, bottom: 4 }}>
                     <XAxis
                       dataKey="label"
                       tickFormatter={(val: string) => val.replace(":00", ".00")}
-                      tick={{ fontSize: 11, fill: "#71717a", fontFamily: "monospace" }}
+                      tick={{ fontSize: 11, fill: "#71717a", fontFamily: "var(--font-mono)" }}
                       axisLine={false}
                       tickLine={false}
                       interval={0}
@@ -122,7 +122,7 @@ export default function PeakHoursCard({
                     <YAxis
                       allowDecimals={false}
                       width={28}
-                      tick={{ fontSize: 11, fill: "#a1a1aa", fontFamily: "monospace" }}
+                      tick={{ fontSize: 11, fill: "#a1a1aa", fontFamily: "var(--font-mono)" }}
                       axisLine={false}
                       tickLine={false}
                     />
@@ -141,7 +141,7 @@ export default function PeakHoursCard({
             </p>
           </div>
         ) : (
-          <div className="h-[260px] sm:h-[280px] flex items-center justify-center text-sm text-zinc-500 font-sans">
+          <div className="h-65 sm:h-70 flex items-center justify-center text-sm text-zinc-500 font-sans">
             {t("noPeakData")}
           </div>
         )}

@@ -81,7 +81,7 @@ export function HeroShowcaseTrack({ images, swipeHint }: HeroShowcaseTrackProps)
           <Link
             key={idx}
             href={img.id ? `/dashboard/book?courtId=${img.id}` : "/dashboard/book"}
-            className="group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-zinc-200/90 aspect-16/10 bg-zinc-100 shadow-xs hover:shadow-md hover:border-zinc-400 transition-[border-color,box-shadow] duration-200 block text-left shrink-0 w-[82vw] max-w-[320px] sm:w-80 md:w-88 lg:w-96 xl:w-[420px] 2xl:w-[460px] snap-start"
+            className="group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-zinc-200/90 aspect-16/10 bg-zinc-100 shadow-xs hover:shadow-md hover:border-zinc-400 transition-[border-color,box-shadow] duration-200 block text-left shrink-0 w-[82vw] max-w-80 sm:w-80 md:w-88 lg:w-96 xl:w-105 2xl:w-115 snap-start"
           >
             <Image
               src={img.src}

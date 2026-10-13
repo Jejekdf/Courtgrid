@@ -47,7 +47,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Left Panel: Visual Showcase (Hidden on Mobile) */}
-        <div className="hidden lg:flex lg:w-5/12 bg-zinc-950 relative overflow-hidden flex-col justify-between p-8 xl:p-10 border-r border-zinc-900 min-h-[480px]">
+        <div className="hidden lg:flex lg:w-5/12 bg-zinc-950 relative overflow-hidden flex-col justify-between p-8 xl:p-10 border-r border-zinc-900 min-h-120">
           {/* Background Image with Overlay */}
           <div className="absolute inset-0 bg-[url('/badminton_court_pro.webp')] bg-cover bg-center opacity-30 mix-blend-luminosity transition-transform duration-700 hover-fine:scale-105" />
           <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/70 to-transparent" />
