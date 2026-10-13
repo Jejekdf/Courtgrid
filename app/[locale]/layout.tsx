@@ -12,20 +12,23 @@ import { SITE_URL } from "@/lib/constants";
 const heading = Be_Vietnam_Pro({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
+  weight: ["500", "600", "700", "800"],
+  fallback: ["system-ui", "sans-serif"],
   display: "swap",
 });
 
 const body = Albert_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
+  fallback: ["system-ui", "sans-serif"],
   display: "swap",
 });
 
 const mono = IBM_Plex_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["500", "600"],
+  weight: ["400", "500", "600", "700"],
+  fallback: ["monospace"],
   display: "swap",
 });
 

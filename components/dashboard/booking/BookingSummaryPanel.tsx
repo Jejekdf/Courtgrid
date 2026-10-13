@@ -42,7 +42,7 @@ export function BookingSummaryPanel({
       <div className="flex items-center justify-between border-b border-zinc-100 pb-4">
         <div className="flex items-center gap-2">
           <CreditCard className="size-5 text-zinc-950" />
-          <h3 className="font-extrabold text-base text-zinc-950 font-sans">{t("summaryTitle")}</h3>
+          <h3 className="font-extrabold text-base text-zinc-950">{t("summaryTitle")}</h3>
         </div>
         <span className="text-[0.6875rem] font-semibold bg-zinc-100 text-zinc-700 px-2.5 py-0.5 rounded-md font-sans">
           {t("stripeBadge")}

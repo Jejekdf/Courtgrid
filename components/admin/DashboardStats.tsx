@@ -93,7 +93,7 @@ export default function DashboardStats({
               </div>
             </div>
 
-            <p className="text-lg sm:text-2xl md:text-3xl font-extrabold font-mono tabular-nums tracking-tight text-zinc-950 my-0.5 truncate">
+            <p className="text-lg sm:text-2xl md:text-3xl font-bold font-mono tabular-nums tracking-tight text-zinc-950 my-0.5 truncate">
               {stat.value}
             </p>
 

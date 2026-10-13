@@ -22,7 +22,7 @@ export default function RecentReservationsTable({ reservations = [] }: { reserva
   return (
     <div className="bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
       <div className="px-6 py-5 border-b border-zinc-200 flex items-center justify-between">
-        <h3 className="text-lg font-medium tracking-tight text-zinc-950">{t("recentTitle")}</h3>
+        <h3 className="text-lg font-semibold tracking-tight text-zinc-950">{t("recentTitle")}</h3>
         <Link href="/admin/reservations" className="text-sm font-medium text-zinc-950 hover:text-zinc-700 transition-colors inline-flex items-center gap-1 cursor-pointer">
           <span>{t("viewAll")}</span>
           <span>&rarr;</span>
