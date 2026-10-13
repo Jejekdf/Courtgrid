@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { Clock, Loader2, Globe } from "lucide-react";
+import { Clock, Loader2, Globe, AlertCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface TimeSlotPickerProps {
@@ -13,6 +13,7 @@ interface TimeSlotPickerProps {
     time: string
   ) => "AVAILABLE" | "PENDING" | "DP_PAID" | "PAST" | "UNAVAILABLE";
   onToggleSlot: (time: string) => void;
+  isContiguous?: boolean;
 }
 
 function getUserTz(): string | null {
@@ -36,6 +37,7 @@ export function TimeSlotPicker({
   isLoadingAvailability,
   getSlotStatus,
   onToggleSlot,
+  isContiguous = true,
 }: TimeSlotPickerProps) {
   const t = useTranslations("dashboard.bookingFlow");
   const userTz = useSyncExternalStore(emptySubscribe, getUserTz, () => null);
@@ -105,9 +107,12 @@ export function TimeSlotPicker({
             if (isPast) {
               btnClasses +=
                 "bg-zinc-100 text-zinc-400 border border-zinc-200/80 cursor-not-allowed opacity-50 line-through";
-            } else if (status === "PENDING" || status === "DP_PAID") {
+            } else if (status === "PENDING") {
               btnClasses +=
-                "bg-amber-50 text-amber-800 border border-amber-200/80 cursor-not-allowed";
+                "bg-amber-50 text-amber-800 border border-amber-200/90 cursor-not-allowed";
+            } else if (status === "DP_PAID") {
+              btnClasses +=
+                "bg-zinc-100 text-zinc-500 border border-zinc-200 cursor-not-allowed";
             } else if (!isAvailable) {
               btnClasses +=
                 "bg-zinc-100 text-zinc-400 border border-zinc-200 cursor-not-allowed line-through opacity-60";
@@ -133,13 +138,22 @@ export function TimeSlotPicker({
                     ? t("legendPast")
                     : isSelected
                     ? t("legendSelected")
-                    : status === "PENDING" || status === "DP_PAID"
-                    ? t("legendTaken")
+                    : status === "PENDING"
+                    ? "Proses Bayar"
+                    : status === "DP_PAID"
+                    ? "Terbooking"
                     : t("legendFree")}
                 </span>
               </button>
             );
           })}
+        </div>
+      )}
+
+      {!isContiguous && selectedTimeSlots.length > 1 && (
+        <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-300 rounded-xl text-xs font-semibold text-amber-900">
+          <AlertCircle className="size-4 text-amber-700 shrink-0" aria-hidden="true" />
+          <span>Jam main yang dipilih tidak berurutan. Silakan pilih jam yang bersambung langsung tanpa jeda.</span>
         </div>
       )}
     </div>

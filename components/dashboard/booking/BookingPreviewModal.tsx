@@ -21,6 +21,13 @@ interface BookingPreviewModalProps {
   selectedDate: string;
   selectedTimeSlots: string[];
   totalPrice: number;
+  originalTotalPrice?: number;
+  appliedVoucher?: {
+    code: string;
+    discountPct: number;
+    discountAmount: number;
+    finalTotalPrice: number;
+  } | null;
   dpAmount: number;
   remainingCash: number;
   voucherCode: string;
@@ -35,6 +42,8 @@ export function BookingPreviewModal({
   selectedDate,
   selectedTimeSlots,
   totalPrice,
+  originalTotalPrice,
+  appliedVoucher,
   dpAmount,
   remainingCash,
   voucherCode,
@@ -88,14 +97,29 @@ export function BookingPreviewModal({
                 {startSlot} - {`${endHour}:00`} WIB
               </span>
             </div>
-            {voucherCode.trim() && (
+            {appliedVoucher ? (
+              <>
+                <div className="flex justify-between border-b border-zinc-200/60 pb-2">
+                  <span className="text-zinc-500">Subtotal</span>
+                  <span className="font-semibold text-zinc-950 tabular-nums">
+                    {formatRupiah(originalTotalPrice ?? totalPrice)}
+                  </span>
+                </div>
+                <div className="flex justify-between border-b border-zinc-200/60 pb-2">
+                  <span className="text-zinc-500">{t("voucherApplied")} ({appliedVoucher.code})</span>
+                  <span className="font-bold text-emerald-600 tabular-nums">
+                    -{formatRupiah(appliedVoucher.discountAmount)}
+                  </span>
+                </div>
+              </>
+            ) : voucherCode.trim() ? (
               <div className="flex justify-between border-b border-zinc-200/60 pb-2">
                 <span className="text-zinc-500">{t("voucherApplied")}</span>
                 <span className="font-bold text-emerald-600">
                   {voucherCode.trim()}
                 </span>
               </div>
-            )}
+            ) : null}
             <div className="flex justify-between pt-1 text-sm font-bold text-zinc-950">
               <span>{t("totalLabel")}</span>
               <span className="tabular-nums">{formatRupiah(totalPrice)}</span>

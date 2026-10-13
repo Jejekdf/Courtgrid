@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { CreditCard, Tag, ShieldCheck, ChevronRight, Clock } from "lucide-react";
+import { CreditCard, Tag, ShieldCheck, ChevronRight, Clock, CheckCircle2, X } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { getDateFnsLocale, formatRupiah } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ interface BookingSummaryPanelProps {
   selectedDate: string;
   selectedTimeSlots: string[];
   totalPrice: number;
+  originalTotalPrice?: number;
   dpAmount: number;
   remainingCash: number;
   voucherCode: string;
@@ -20,6 +21,17 @@ interface BookingSummaryPanelProps {
   onOpenPreview: () => void;
   isLoading: boolean;
   hideActionOnMobile?: boolean;
+  appliedVoucher?: {
+    code: string;
+    discountPct: number;
+    discountAmount: number;
+    finalTotalPrice: number;
+  } | null;
+  onApplyVoucher?: () => void;
+  onRemoveVoucher?: () => void;
+  isValidatingVoucher?: boolean;
+  voucherError?: string | null;
+  isContiguous?: boolean;
 }
 
 export function BookingSummaryPanel({
@@ -27,6 +39,7 @@ export function BookingSummaryPanel({
   selectedDate,
   selectedTimeSlots,
   totalPrice,
+  originalTotalPrice,
   dpAmount,
   remainingCash,
   voucherCode,
@@ -34,9 +47,18 @@ export function BookingSummaryPanel({
   onOpenPreview,
   isLoading,
   hideActionOnMobile = false,
+  appliedVoucher,
+  onApplyVoucher,
+  onRemoveVoucher,
+  isValidatingVoucher = false,
+  voucherError,
+  isContiguous = true,
 }: BookingSummaryPanelProps) {
   const t = useTranslations("dashboard.bookingFlow");
   const locale = useLocale();
+
+  const subtotal = originalTotalPrice ?? totalPrice;
+
   return (
     <div className="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-xs space-y-6 sticky top-6">
       <div className="flex items-center justify-between border-b border-zinc-100 pb-4">
@@ -73,28 +95,93 @@ export function BookingSummaryPanel({
                 {t("durationValue", { count: selectedTimeSlots.length })}
               </span>
             </div>
-            <div className="flex justify-between py-1.5 border-b border-zinc-100 font-sans">
-              <span className="text-zinc-500">{t("totalLabel")}</span>
-              <span className="font-extrabold text-zinc-950 tabular-nums">
-                {formatRupiah(totalPrice)}
-              </span>
-            </div>
+
+            {appliedVoucher ? (
+              <>
+                <div className="flex justify-between py-1.5 border-b border-zinc-100 font-sans">
+                  <span className="text-zinc-500">Subtotal ({selectedTimeSlots.length} Jam)</span>
+                  <span className="font-semibold text-zinc-700 tabular-nums">
+                    {formatRupiah(subtotal)}
+                  </span>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-zinc-100 font-sans text-emerald-600">
+                  <span className="font-medium">Potongan Voucher ({appliedVoucher.discountPct}%)</span>
+                  <span className="font-bold tabular-nums">
+                    -{formatRupiah(appliedVoucher.discountAmount)}
+                  </span>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-zinc-100 font-sans">
+                  <span className="text-zinc-500">{t("totalLabel")}</span>
+                  <span className="font-extrabold text-zinc-950 tabular-nums">
+                    {formatRupiah(totalPrice)}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="flex justify-between py-1.5 border-b border-zinc-100 font-sans">
+                <span className="text-zinc-500">{t("totalLabel")}</span>
+                <span className="font-extrabold text-zinc-950 tabular-nums">
+                  {formatRupiah(totalPrice)}
+                </span>
+              </div>
+            )}
           </div>
 
-          {/* Voucher Code Input */}
+          {/* Voucher Code Input Area */}
           <div className="space-y-1.5">
             <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 font-sans">
               {t("voucherLabel")}
             </label>
-            <div className="relative">
-              <Tag className="size-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <Input
-                placeholder={t("voucherPlaceholder")}
-                value={voucherCode}
-                onChange={(e) => onVoucherChange(e.target.value.toUpperCase())}
-                className="h-10 pl-8 text-sm uppercase bg-zinc-50 border-zinc-200 rounded-xl font-sans"
-              />
-            </div>
+            {appliedVoucher ? (
+              <div className="flex items-center justify-between p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs">
+                <div className="flex items-center gap-2 text-emerald-800 font-semibold font-sans">
+                  <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+                  <span>Voucher <strong>{appliedVoucher.code}</strong> aktif (-{appliedVoucher.discountPct}%)</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={onRemoveVoucher}
+                  className="text-xs text-zinc-500 hover:text-red-600 font-medium px-2 py-1 rounded transition-colors inline-flex items-center gap-1 cursor-pointer"
+                >
+                  <X className="size-3" />
+                  <span>Hapus</span>
+                </button>
+              </div>
+            ) : (
+              <div>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Tag className="size-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <Input
+                      placeholder={t("voucherPlaceholder")}
+                      value={voucherCode}
+                      onChange={(e) => onVoucherChange(e.target.value.toUpperCase())}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          onApplyVoucher?.();
+                        }
+                      }}
+                      className="h-10 pl-8 text-sm uppercase bg-zinc-50 border-zinc-200 rounded-xl font-sans"
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={onApplyVoucher}
+                    disabled={!voucherCode.trim() || isValidatingVoucher}
+                    isLoading={isValidatingVoucher}
+                    className="h-10 px-3 text-xs font-semibold rounded-xl cursor-pointer"
+                  >
+                    Pakai
+                  </Button>
+                </div>
+                {voucherError && (
+                  <p className="text-xs text-red-600 font-sans mt-1.5">{voucherError}</p>
+                )}
+              </div>
+            )}
           </div>
 
           {/* DP 50% Highlight Card */}
@@ -116,10 +203,16 @@ export function BookingSummaryPanel({
             </div>
           </div>
 
+          {!isContiguous && (
+            <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 font-medium text-center">
+              Pilih jam main yang berurutan langsung tanpa jeda.
+            </div>
+          )}
+
           <Button
             onClick={onOpenPreview}
             isLoading={isLoading}
-            disabled={isLoading}
+            disabled={isLoading || !isContiguous}
             className={`w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold h-12 text-sm rounded-xl shadow-md cursor-pointer transition-colors items-center justify-center gap-2 ${
               hideActionOnMobile ? "hidden lg:flex" : "flex"
             }`}
