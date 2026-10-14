@@ -60,25 +60,25 @@ export function BookingSummaryPanel({
   const subtotal = originalTotalPrice ?? totalPrice;
 
   return (
-    <div className="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-xs space-y-6 sticky top-6">
-      <div className="flex items-center justify-between border-b border-zinc-100 pb-4">
+    <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 sm:p-5 xl:p-6 shadow-xs space-y-4 xl:space-y-5 sticky top-4 xl:top-6">
+      <div className="flex items-center justify-between border-b border-zinc-100 pb-3 xl:pb-4">
         <div className="flex items-center gap-2">
           <CreditCard className="size-5 text-zinc-950" />
-          <h3 className="font-extrabold text-base text-zinc-950">{t("summaryTitle")}</h3>
+          <h3 className="font-extrabold text-base xl:text-lg text-zinc-950">{t("summaryTitle")}</h3>
         </div>
-        <span className="text-[0.6875rem] font-semibold bg-zinc-100 text-zinc-700 px-2.5 py-0.5 rounded-md font-sans">
+        <span className="text-xs font-semibold bg-zinc-100 text-zinc-700 px-2.5 py-0.5 rounded-md font-sans">
           {t("stripeBadge")}
         </span>
       </div>
 
       {activeCourt && selectedTimeSlots.length > 0 ? (
-        <div className="space-y-5">
-          <div className="space-y-2.5 text-sm">
+        <div className="space-y-4 xl:space-y-5">
+          <div className="space-y-2 xl:space-y-2.5 text-xs sm:text-sm">
             <div className="flex justify-between items-center py-1.5 border-b border-zinc-100 font-sans">
               <span className="text-zinc-500">{t("courtLabel")}</span>
               <div className="flex items-center gap-1.5">
                 <span className="font-bold text-zinc-950">{activeCourt.name}</span>
-                <span className="text-[0.6875rem] font-semibold bg-zinc-100 text-zinc-600 px-1.5 py-0.5 rounded border border-zinc-200">
+                <span className="text-xs font-semibold bg-zinc-100 text-zinc-700 px-2 py-0.5 rounded border border-zinc-200">
                   {activeCourt.type}
                 </span>
               </div>
@@ -185,17 +185,17 @@ export function BookingSummaryPanel({
           </div>
 
           {/* DP 50% Highlight Card */}
-          <div className="p-4 bg-zinc-950 text-white rounded-xl space-y-3 shadow-xs">
+          <div className="p-3.5 xl:p-4 bg-zinc-950 text-white rounded-xl space-y-2.5 xl:space-y-3 shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-zinc-200 flex items-center gap-1.5 font-sans">
+              <span className="text-xs sm:text-sm font-semibold text-zinc-200 flex items-center gap-1.5 font-sans">
                 <ShieldCheck className="size-4 text-emerald-400" />
                 {t("dpTitle")}
               </span>
-              <span className="text-lg font-extrabold text-emerald-400 tabular-nums">
+              <span className="text-base sm:text-lg xl:text-xl font-extrabold text-emerald-400 tabular-nums">
                 {formatRupiah(dpAmount)}
               </span>
             </div>
-            <div className="flex items-center justify-between text-sm text-zinc-300 pt-2 border-t border-zinc-800 font-sans">
+            <div className="flex items-center justify-between text-xs sm:text-sm text-zinc-300 pt-2 border-t border-zinc-800 font-sans">
               <span>{t("cashRemaining")}</span>
               <span className="font-bold text-zinc-200 tabular-nums">
                 {formatRupiah(remainingCash)}
@@ -204,7 +204,7 @@ export function BookingSummaryPanel({
           </div>
 
           {!isContiguous && (
-            <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 font-medium text-center">
+            <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 font-semibold text-center">
               Pilih jam main yang berurutan langsung tanpa jeda.
             </div>
           )}
@@ -213,7 +213,7 @@ export function BookingSummaryPanel({
             onClick={onOpenPreview}
             isLoading={isLoading}
             disabled={isLoading || !isContiguous}
-            className={`w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold h-12 text-sm rounded-xl shadow-md cursor-pointer transition-colors items-center justify-center gap-2 ${
+            className={`w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold h-11 xl:h-12 text-sm xl:text-base rounded-xl shadow-md cursor-pointer transition-colors items-center justify-center gap-2 ${
               hideActionOnMobile ? "hidden lg:flex" : "flex"
             }`}
           >

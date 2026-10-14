@@ -20,7 +20,7 @@ export function CourtSelector({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-zinc-950">
+        <h3 className="text-sm sm:text-base font-bold text-zinc-950">
           {t("step1")}
         </h3>
         <span className="text-xs sm:text-sm text-zinc-500 font-sans">
@@ -28,7 +28,7 @@ export function CourtSelector({
         </span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 xl:gap-5">
         {courts.map((court) => {
           const isSelected = activeCourt?.id === court.id;
 
@@ -37,7 +37,7 @@ export function CourtSelector({
               type="button"
               key={court.id}
               onClick={() => onSelectCourt(court)}
-              className={`group relative p-5 rounded-2xl border transition-[border-color,box-shadow,background-color] duration-200 cursor-pointer flex flex-col justify-between overflow-hidden text-left w-full focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950 ${
+              className={`group relative p-5 xl:p-6 rounded-2xl border transition-[border-color,box-shadow,background-color] duration-200 cursor-pointer flex flex-col justify-between overflow-hidden text-left w-full focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950 ${
                 isSelected
                   ? "border-zinc-950 bg-white shadow-md ring-2 ring-zinc-950/10"
                   : "border-zinc-200 bg-white hover:border-zinc-300 hover:shadow-xs"
@@ -45,24 +45,24 @@ export function CourtSelector({
             >
               {/* Selected Badge */}
               {isSelected && (
-                <div className="absolute top-3 right-3 px-2.5 py-1 bg-zinc-950 text-white rounded-full text-[0.6875rem] font-semibold flex items-center gap-1 shadow-xs font-sans">
+                <div className="absolute top-3 right-3 px-2.5 py-1 bg-zinc-950 text-white rounded-full text-xs font-semibold flex items-center gap-1 shadow-xs font-sans">
                   <CheckCircle2 className="size-3.5 text-emerald-400" aria-hidden="true" />
                   <span>{t("selectedBadge")}</span>
                 </div>
               )}
 
               <div className="space-y-2">
-                <span className="inline-block px-2.5 py-0.5 bg-zinc-100 text-zinc-700 border border-zinc-200 text-[0.6875rem] font-semibold uppercase tracking-wider rounded-md font-sans">
+                <span className="inline-block px-2.5 py-0.5 bg-zinc-100 text-zinc-700 border border-zinc-200 text-xs font-semibold uppercase tracking-wider rounded-md font-sans">
                   {court.type}
                 </span>
-                <h4 className="font-extrabold text-zinc-950 text-base sm:text-lg group-hover:text-emerald-700 transition-colors">
+                <h4 className="font-extrabold text-zinc-950 text-base sm:text-lg xl:text-xl group-hover:text-emerald-700 transition-colors">
                   {court.name}
                 </h4>
               </div>
 
-              <div className="mt-5 pt-3 border-t border-zinc-100 flex items-center justify-between w-full">
+              <div className="mt-5 pt-3.5 border-t border-zinc-100 flex items-center justify-between w-full">
                 <span className="text-xs sm:text-sm text-zinc-500 font-sans">{t("perHour")}</span>
-                <span className="text-sm sm:text-base font-extrabold text-zinc-950 tabular-nums">
+                <span className="text-sm sm:text-base xl:text-lg font-extrabold text-zinc-950 tabular-nums">
                   {formatRupiah(court.pricePerHour)}
                 </span>
               </div>

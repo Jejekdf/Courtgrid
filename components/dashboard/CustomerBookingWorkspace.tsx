@@ -223,7 +223,7 @@ export default function CustomerBookingWorkspace() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
-      className="space-y-8 max-w-7xl mx-auto text-zinc-950 pb-24 lg:pb-0"
+      className="space-y-6 sm:space-y-8 max-w-7xl xl:max-w-7xl 2xl:max-w-[88rem] mx-auto text-zinc-950 pb-24 lg:pb-0"
     >
       {!isOnline && (
         <div className="flex items-center gap-2.5 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs font-semibold text-amber-800 shadow-xs">
@@ -240,8 +240,8 @@ export default function CustomerBookingWorkspace() {
         dayAfterTomorrowStr={dayAfterTomorrowStr}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-        <div className="lg:col-span-2 space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 xl:gap-8 items-start">
+        <div className="lg:col-span-7 xl:col-span-8 space-y-6 sm:space-y-8">
           <CourtSelector
             courts={courts}
             activeCourt={activeCourt}
@@ -260,7 +260,7 @@ export default function CustomerBookingWorkspace() {
         </div>
 
         {/* Desktop Sticky Summary Panel */}
-        <div className="hidden lg:block">
+        <div className="hidden lg:block lg:col-span-5 xl:col-span-4">
           <BookingSummaryPanel
             activeCourt={activeCourt}
             selectedDate={selectedDate}

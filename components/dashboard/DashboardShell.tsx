@@ -16,7 +16,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           isSidebarOpen={isSidebarOpen}
           onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
         />
-        <main className="flex-1 overflow-y-auto p-3.5 sm:p-4 md:p-6 overscroll-y-contain [webkit-overflow-scrolling:touch]">
+        <main className="flex-1 overflow-y-auto p-3.5 sm:p-5 md:p-6 lg:p-7 xl:p-8 2xl:p-10 overscroll-y-contain [webkit-overflow-scrolling:touch]">
           <PageTransition>{children}</PageTransition>
         </main>
       </div>

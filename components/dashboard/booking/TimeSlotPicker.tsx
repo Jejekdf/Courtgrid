@@ -47,18 +47,18 @@ export function TimeSlotPicker({
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <Clock className="size-4 text-zinc-600" aria-hidden="true" />
-          <h3 className="text-sm font-semibold text-zinc-950">
+          <h3 className="text-sm sm:text-base font-bold text-zinc-950">
             {t("step2")}
           </h3>
           {courtName && (
-            <span className="text-xs font-medium text-zinc-600 bg-zinc-100 px-2 py-0.5 rounded-md border border-zinc-200">
+            <span className="text-xs font-semibold text-zinc-700 bg-zinc-100 px-2.5 py-0.5 rounded-md border border-zinc-200">
               {courtName}
             </span>
           )}
         </div>
 
         {/* Status Legend */}
-        <div className="flex items-center gap-3 text-[0.6875rem] font-medium text-zinc-500 font-sans flex-wrap">
+        <div className="flex items-center gap-3 text-xs font-medium text-zinc-500 font-sans flex-wrap">
           <span className="flex items-center gap-1.5">
             <span className="size-2.5 rounded-xs bg-white border border-zinc-300"></span>{" "}
             {t("legendFree")}
@@ -78,7 +78,7 @@ export function TimeSlotPicker({
       </div>
 
       {userTz && (
-        <div className="flex items-center gap-2.5 p-3 bg-zinc-50 border border-zinc-200/90 rounded-xl text-xs text-zinc-600 font-sans">
+        <div className="flex items-center gap-2.5 p-3 bg-zinc-50 border border-zinc-200/90 rounded-xl text-xs sm:text-sm text-zinc-600 font-sans">
           <Globe className="size-4 text-zinc-700 shrink-0" aria-hidden="true" />
           <p className="leading-relaxed">
             Semua slot di atas dalam zona waktu <strong>WIB (Asia/Jakarta / UTC+7)</strong>. Waktu lokal perangkat Anda: <span className="font-mono font-bold text-zinc-950">{userTz}</span>.
@@ -94,7 +94,7 @@ export function TimeSlotPicker({
           </span>
         </div>
       ) : (
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-2.5">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2 sm:gap-2.5 xl:gap-3">
           {timeSlots.map((time) => {
             const status = getSlotStatus(time);
             const isAvailable = status === "AVAILABLE";
@@ -102,7 +102,7 @@ export function TimeSlotPicker({
             const isSelected = selectedTimeSlots.includes(time);
 
             let btnClasses =
-              "h-13 sm:h-14 rounded-xl text-sm font-medium transition-[color,background-color,border-color,transform] duration-150 motion-reduce:transition-none will-change-transform flex flex-col items-center justify-center select-none cursor-pointer min-h-11 ";
+              "h-14 sm:h-15 xl:h-16 rounded-xl font-medium transition-[color,background-color,border-color,transform] duration-150 motion-reduce:transition-none will-change-transform flex flex-col items-center justify-center select-none cursor-pointer min-h-12 ";
 
             if (isPast) {
               btnClasses +=
@@ -132,8 +132,8 @@ export function TimeSlotPicker({
                 onClick={() => onToggleSlot(time)}
                 className={btnClasses}
               >
-                <span className="font-bold tabular-nums font-sans text-xs sm:text-sm">{time}</span>
-                <span className="text-[0.625rem] sm:text-[0.6875rem] block leading-tight mt-0.5 font-sans opacity-80">
+                <span className="font-bold tabular-nums font-sans text-xs sm:text-sm xl:text-base">{time}</span>
+                <span className="text-xs block leading-tight mt-0.5 font-sans opacity-85">
                   {isPast
                     ? t("legendPast")
                     : isSelected
