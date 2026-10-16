@@ -23,44 +23,45 @@ export default function Footer() {
 
   return (
     <footer className="w-full bg-white border-t border-zinc-200/80 mt-auto text-zinc-950">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14 md:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 lg:gap-12">
+      <div className="max-w-7xl xl:max-w-340 2xl:max-w-390 mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-12 sm:py-14 md:py-16 xl:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 lg:gap-12 xl:gap-16">
           {/* Brand Column */}
           <div className="lg:col-span-4 flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-2.5 group w-max outline-hidden">
               <Image
                 src="/logo.svg"
                 alt="CourtGrid Logo"
-                width={36}
-                height={36}
-                className="rounded-lg object-contain transition-transform group-hover-fine:scale-95"
+                width={32}
+                height={32}
+                className="size-8 rounded-lg object-contain transition-transform group-hover-fine:scale-95"
               />
-              <span className="font-heading text-zinc-950 font-extrabold tracking-tight text-xl sm:text-2xl lg:text-3xl">
+              <span className="font-heading text-zinc-950 font-extrabold tracking-tight text-xl sm:text-2xl">
                 CourtGrid
               </span>
             </Link>
-            <p className="text-zinc-600 text-sm sm:text-base lg:text-lg leading-relaxed max-w-sm lg:max-w-md text-pretty font-sans">
+            <p className="text-zinc-600 text-sm sm:text-base leading-relaxed max-w-sm lg:max-w-md text-pretty font-sans">
               {t("tagline")}
             </p>
           </div>
 
-          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 lg:gap-10">
+          {/* Link Columns: Kontak GOR, Navigasi Publik, Layanan & Kebijakan */}
+          <div className="lg:col-span-8 flex flex-col sm:flex-row justify-start lg:justify-end gap-8 sm:gap-10 lg:gap-12 xl:gap-16 2xl:gap-20">
             {/* Column 1: Kontak GOR */}
-            <div className="flex flex-col gap-3">
-              <span className="text-xs sm:text-sm lg:text-base font-bold uppercase tracking-wider text-zinc-950 mb-1 font-sans">
+            <div className="flex flex-col gap-3 max-w-xs xl:max-w-72">
+              <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-950 mb-1 font-sans">
                 {t("contactTitle")}
               </span>
-              <address className="not-italic flex flex-col gap-3 text-sm sm:text-base lg:text-base text-zinc-600 font-sans">
+              <address className="not-italic flex flex-col gap-2.5 text-sm text-zinc-600 font-sans">
                 <div className="flex items-start gap-2.5">
-                  <MapPin className="size-4.5 mt-0.5 shrink-0 text-zinc-500" aria-hidden="true" />
-                  <span>{t("address")}</span>
+                  <MapPin className="size-4 mt-0.5 shrink-0 text-zinc-500" aria-hidden="true" />
+                  <span className="leading-relaxed">{t("address")}</span>
                 </div>
                 <a
                   href="tel:+6287746288262"
                   className="flex items-center gap-2.5 hover:text-zinc-950 transition-colors w-max tabular-nums"
                   aria-label="Telepon CourtGrid"
                 >
-                  <Phone className="size-4.5 shrink-0 text-zinc-500" aria-hidden="true" />
+                  <Phone className="size-4 shrink-0 text-zinc-500" aria-hidden="true" />
                   <span>+62 877 4628 8262</span>
                 </a>
                 <a
@@ -68,15 +69,15 @@ export default function Footer() {
                   className="flex items-center gap-2.5 hover:text-zinc-950 transition-colors w-max"
                   aria-label="Email CourtGrid"
                 >
-                  <Mail className="size-4.5 shrink-0 text-zinc-500" aria-hidden="true" />
+                  <Mail className="size-4 shrink-0 text-zinc-500" aria-hidden="true" />
                   <span>info@courtgrid.com</span>
                 </a>
               </address>
             </div>
 
             {/* Column 2: Navigasi Publik */}
-            <div className="flex flex-col gap-3">
-              <span className="text-xs sm:text-sm lg:text-base font-bold uppercase tracking-wider text-zinc-950 mb-1 font-sans">
+            <div className="flex flex-col gap-3 min-w-32 xl:min-w-36">
+              <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-950 mb-1 font-sans">
                 {t("navigationTitle")}
               </span>
               <nav aria-label={t("navigationTitle")} className="flex flex-col gap-1.5">
@@ -84,7 +85,7 @@ export default function Footer() {
                   <Link
                     key={i}
                     href={href}
-                    className="w-max text-sm sm:text-base lg:text-base text-zinc-600 hover:text-zinc-950 transition-colors py-1.5 inline-flex items-center"
+                    className="w-max text-sm text-zinc-600 hover:text-zinc-950 transition-colors py-1 inline-flex items-center"
                   >
                     {title}
                   </Link>
@@ -93,8 +94,8 @@ export default function Footer() {
             </div>
 
             {/* Column 3: Layanan & Legal */}
-            <div className="flex flex-col gap-3">
-              <span className="text-xs sm:text-sm lg:text-base font-bold uppercase tracking-wider text-zinc-950 mb-1 font-sans">
+            <div className="flex flex-col gap-3 min-w-36 xl:min-w-44">
+              <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-950 mb-1 font-sans">
                 {t("servicesTitle")}
               </span>
               <nav aria-label={t("servicesTitle")} className="flex flex-col gap-1.5">
@@ -102,7 +103,7 @@ export default function Footer() {
                   <Link
                     key={i}
                     href={href}
-                    className="w-max text-sm sm:text-base lg:text-base text-zinc-600 hover:text-zinc-950 transition-colors py-1.5 inline-flex items-center"
+                    className="w-max text-sm text-zinc-600 hover:text-zinc-950 transition-colors py-1 inline-flex items-center"
                   >
                     {title}
                   </Link>

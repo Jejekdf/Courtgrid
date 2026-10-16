@@ -246,15 +246,13 @@ export default async function PrivacyPage({
   ];
 
   return (
-    <div className="min-h-dvh pt-6 pb-16 px-4 sm:px-6 lg:px-8 bg-background text-zinc-950">
-      <PageWrapper className="max-w-7xl mx-auto">
+    <div className="min-h-dvh pt-6 pb-16 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 bg-background text-zinc-950">
+      <PageWrapper className="max-w-7xl xl:max-w-340 2xl:max-w-390 mx-auto">
         <Breadcrumb items={breadcrumbItems} locale={locale} />
         <div className="space-y-10 sm:space-y-12">
           {/* Document Header */}
           <header className="border-b border-zinc-200/80 pb-6 sm:pb-8 space-y-4">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm lg:text-base text-zinc-500 font-sans">
-              <span className="font-semibold text-zinc-900">{t("badge")}</span>
-              <span className="text-zinc-300" aria-hidden="true">/</span>
               <span>{t("effectiveDateLabel")} {t("effectiveDateVal")}</span>
               <span className="text-zinc-300" aria-hidden="true">/</span>
               <span>{t("readingTime")}</span>
@@ -270,9 +268,9 @@ export default async function PrivacyPage({
 
             {/* Plain-Language Key Summary */}
             <div className="mt-6 p-5 sm:p-6 lg:p-7 bg-zinc-50 border border-zinc-200/90 rounded-2xl">
-              <span className="text-xs sm:text-sm lg:text-base font-bold uppercase tracking-wider text-zinc-950 block mb-3 font-sans">
+              <h2 className="text-sm sm:text-base lg:text-base font-bold text-zinc-950 block mb-3 font-sans">
                 {t("summaryTitle")}
-              </span>
+              </h2>
               <ul className="space-y-2.5">
                 {summaryItems.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-2.5 text-sm sm:text-base lg:text-base text-zinc-700 leading-relaxed font-sans text-pretty">
