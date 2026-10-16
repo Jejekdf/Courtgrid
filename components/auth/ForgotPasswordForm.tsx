@@ -20,7 +20,7 @@ import { createForgotPasswordSchema, ForgotPasswordInput } from "@/lib/zod";
 
 const easeCustom = [0.16, 1, 0.3, 1] as const;
 
-const inputLabelClass = "text-xs sm:text-sm font-semibold uppercase tracking-wider text-zinc-700";
+const inputLabelClass = "text-sm font-semibold text-zinc-800 font-sans";
 
 export default function ForgotPasswordForm() {
   const t = useTranslations("auth.forgot");

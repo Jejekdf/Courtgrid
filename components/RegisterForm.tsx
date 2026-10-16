@@ -27,7 +27,7 @@ import { OtpInput } from "@/components/auth/OtpInput";
 
 const easeCustom = [0.16, 1, 0.3, 1] as const;
 
-const inputLabelClass = "text-xs sm:text-sm lg:text-sm font-bold uppercase tracking-wider text-zinc-700";
+const inputLabelClass = "text-sm font-semibold text-zinc-800 font-sans";
 
 export default function RegisterForm() {
   const router = useRouter();

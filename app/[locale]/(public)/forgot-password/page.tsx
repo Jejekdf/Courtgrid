@@ -9,14 +9,14 @@ export default function ForgotPasswordPage() {
   const t = useTranslations("auth.forgot");
 
   return (
-    <div className="w-full flex-1 flex items-center justify-center py-6 sm:py-10 px-4 sm:px-6 lg:px-8 bg-background text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
-      <div className="w-full max-w-5xl bg-white border border-zinc-200/90 rounded-2xl sm:rounded-3xl shadow-xs overflow-hidden flex flex-col lg:flex-row">
+    <div className="w-full flex-1 flex items-center justify-center py-6 sm:py-10 xl:py-14 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 bg-background text-zinc-950 font-sans selection:bg-zinc-950 selection:text-white">
+      <div className="w-full max-w-5xl xl:max-w-330 2xl:max-w-370 bg-white border border-zinc-200/90 rounded-2xl sm:rounded-3xl shadow-xs overflow-hidden flex flex-col lg:flex-row">
         {/* Left Panel: Form */}
-        <div className="w-full lg:w-7/12 flex flex-col justify-center px-6 sm:px-10 md:px-12 py-8 sm:py-10 relative">
-          <div className="w-full max-w-md mx-auto space-y-6">
+        <div className="w-full lg:w-7/12 flex flex-col justify-center px-6 sm:px-10 md:px-12 py-8 sm:py-10 xl:p-14 2xl:p-16 relative">
+          <div className="w-full max-w-md xl:max-w-lg 2xl:max-w-xl mx-auto space-y-6 xl:space-y-8">
             <Link 
               href="/login" 
-              className="inline-flex items-center gap-2 text-sm font-semibold text-zinc-600 hover:text-zinc-950 transition-colors"
+              className="inline-flex items-center gap-2 text-sm xl:text-base font-semibold text-zinc-600 hover:text-zinc-950 transition-colors"
             >
               &larr; {t("backToLogin")}
             </Link>
@@ -38,7 +38,7 @@ export default function ForgotPasswordPage() {
         </div>
 
         {/* Right Panel: Visual Showcase (Hidden on Mobile) */}
-        <div className="hidden lg:flex lg:w-5/12 bg-zinc-950 relative overflow-hidden flex-col justify-between p-8 xl:p-10 border-l border-zinc-900 min-h-120">
+        <div className="hidden lg:flex lg:w-5/12 bg-zinc-950 relative overflow-hidden flex-col justify-between p-8 xl:p-12 2xl:p-14 border-l border-zinc-900 min-h-120 xl:min-h-140">
           <div className="absolute inset-0 bg-[url('/futsal1.webp')] bg-cover bg-center opacity-30 mix-blend-luminosity transition-transform duration-1000 hover-fine:scale-105" />
           <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/60 to-transparent" />
           <div className="absolute inset-0 bg-linear-to-r from-zinc-950 via-transparent to-transparent opacity-80" />
@@ -46,11 +46,11 @@ export default function ForgotPasswordPage() {
           <div className="relative z-10 flex flex-col justify-end h-full max-w-xl space-y-4">
             <Quote className="text-emerald-500 size-8 opacity-80" />
             <blockquote className="space-y-3">
-              <p className="text-base lg:text-lg font-bold leading-relaxed text-white font-sans text-pretty">
+              <p className="text-base xl:text-lg font-bold leading-relaxed text-white font-sans text-pretty">
                 &ldquo;{t("quote")}&rdquo;
               </p>
               <footer className="flex items-center gap-3 pt-1">
-                <div className="size-8 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-white font-bold text-xs">
+                <div className="size-8.5 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-white font-bold text-xs">
                   CG
                 </div>
                 <div>
