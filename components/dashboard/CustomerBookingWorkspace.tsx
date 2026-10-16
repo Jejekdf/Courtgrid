@@ -223,7 +223,7 @@ export default function CustomerBookingWorkspace() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
-      className="space-y-6 sm:space-y-8 max-w-7xl xl:max-w-7xl 2xl:max-w-[88rem] mx-auto text-zinc-950 pb-24 lg:pb-0"
+      className="space-y-6 sm:space-y-8 max-w-7xl xl:max-w-340 2xl:max-w-390 mx-auto text-zinc-950 pb-24 lg:pb-0"
     >
       {!isOnline && (
         <div className="flex items-center gap-2.5 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs font-semibold text-amber-800 shadow-xs">

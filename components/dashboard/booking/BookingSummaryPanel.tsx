@@ -191,13 +191,13 @@ export function BookingSummaryPanel({
                 <ShieldCheck className="size-4 text-emerald-400" />
                 {t("dpTitle")}
               </span>
-              <span className="text-base sm:text-lg xl:text-xl font-extrabold text-emerald-400 tabular-nums">
+              <span className="text-base sm:text-lg xl:text-xl font-extrabold text-emerald-400 tabular-nums whitespace-nowrap">
                 {formatRupiah(dpAmount)}
               </span>
             </div>
             <div className="flex items-center justify-between text-xs sm:text-sm text-zinc-300 pt-2 border-t border-zinc-800 font-sans">
               <span>{t("cashRemaining")}</span>
-              <span className="font-bold text-zinc-200 tabular-nums">
+              <span className="font-bold text-zinc-200 tabular-nums whitespace-nowrap">
                 {formatRupiah(remainingCash)}
               </span>
             </div>

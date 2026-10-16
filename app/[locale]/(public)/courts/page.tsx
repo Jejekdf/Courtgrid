@@ -63,8 +63,8 @@ export default async function CourtsPage({
   ];
 
   return (
-    <div className="min-h-dvh pt-4 sm:pt-6 pb-16 px-4 sm:px-6 lg:px-8 bg-background">
-      <div className="max-w-7xl 2xl:max-w-[88rem] mx-auto">
+    <div className="min-h-dvh pt-4 sm:pt-6 pb-16 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 bg-background">
+      <div className="max-w-7xl xl:max-w-340 2xl:max-w-390 mx-auto">
         <Breadcrumb items={breadcrumbItems} locale={locale} />
         <Suspense fallback={<CourtState type="loading" />}>
           <CourtCatalog />

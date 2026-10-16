@@ -98,7 +98,7 @@ export function HeroShowcaseTrack({ images, swipeHint }: HeroShowcaseTrackProps)
               <span className="text-xs sm:text-sm lg:text-sm uppercase font-bold tracking-wider text-emerald-400 mb-1 whitespace-nowrap font-sans">
                 {img.surfaceLabel}
               </span>
-              <span className="text-base sm:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-extrabold text-white tracking-tight leading-tight truncate drop-shadow-xs">
+              <span className="text-base sm:text-lg lg:text-xl 2xl:text-2xl font-extrabold text-white tracking-tight leading-tight truncate drop-shadow-xs">
                 {img.name}
               </span>
             </div>

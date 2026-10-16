@@ -63,8 +63,8 @@ export default function CourtCatalog() {
   return (
     <div className="flex flex-col gap-8 text-zinc-950">
       {/* Header Catalog */}
-      <div className="flex flex-col items-center text-center max-w-2xl mx-auto gap-3">
-        <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-extrabold text-zinc-950 text-balance">
+      <div className="flex flex-col items-center text-center max-w-2xl xl:max-w-3xl mx-auto gap-3">
+        <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold tracking-tight text-zinc-950 text-balance">
           {t("title")}
         </h1>
         <p className="text-sm sm:text-base text-zinc-600 leading-relaxed text-pretty">
@@ -104,7 +104,7 @@ export default function CourtCatalog() {
             debouncedSetSearch(val);
           }}
           placeholder={t("searchPlaceholder")}
-          containerClassName="w-full sm:w-72 md:w-80 lg:w-96"
+          containerClassName="w-full sm:w-72 md:w-80 lg:w-96 xl:w-105"
           leftIcon={<Search className="size-4 text-zinc-400" />}
           rightElement={
             searchDraft ? (
@@ -136,7 +136,7 @@ export default function CourtCatalog() {
           }}
         />
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 items-start">
+        <div className="grid gap-6 xl:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 items-start">
           {data?.map((court, index) => (
             <CourtCard
               key={court.id}

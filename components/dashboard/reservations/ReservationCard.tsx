@@ -117,12 +117,12 @@ export function ReservationCard({
           </div>
           <div className="flex items-center gap-1.5 font-mono text-xs text-zinc-500">
             <Clock className="size-3.5 text-zinc-400 shrink-0" />
-            <span>{res.startTime} - {res.endTime} WIB</span>
+            <span className="whitespace-nowrap">{res.startTime} - {res.endTime} WIB</span>
           </div>
         </div>
         <div className="text-right">
           <span className="text-[0.6875rem] uppercase font-semibold text-zinc-400 block">Total</span>
-          <span className="font-extrabold text-sm sm:text-base text-zinc-950 font-mono tabular-nums">
+          <span className="font-extrabold text-sm sm:text-base text-zinc-950 font-mono tabular-nums whitespace-nowrap">
             {formatRupiah(res.totalPrice)}
           </span>
         </div>

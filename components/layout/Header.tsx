@@ -84,8 +84,8 @@ export function Header() {
 
   const logoElement = (
     <Link href="/" onClick={(e) => handleNavClick("/", e)} className="flex items-center gap-2.5 group shrink-0 outline-hidden">
-      <Image src="/logo.svg" alt="CourtGrid Logo" width={32} height={32} priority className="size-7 sm:size-8 rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
-      <span className="font-heading text-zinc-950 font-extrabold tracking-tight text-base sm:text-lg lg:text-xl">
+      <Image src="/logo.svg" alt="CourtGrid Logo" width={32} height={32} priority className="size-7 sm:size-8 xl:size-9 rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
+      <span className="font-heading text-zinc-950 font-extrabold tracking-tight text-base sm:text-lg lg:text-xl xl:text-2xl">
         CourtGrid
       </span>
     </Link>
@@ -118,7 +118,7 @@ export function Header() {
     ) : isLoggedIn ? (
     <Link
       href={dashboardHref}
-      className="flex items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 text-sm lg:text-base font-bold bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl transition-colors shadow-xs outline-hidden w-full sm:w-auto cursor-pointer min-h-11 sm:min-h-12"
+      className="flex items-center justify-center gap-2 px-4 sm:px-5 py-2 text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl transition-colors shadow-xs outline-hidden w-full sm:w-auto cursor-pointer min-h-10 sm:min-h-11 h-10 sm:h-11 whitespace-nowrap"
     >
       {userImage ? (
         <Image src={userImage} alt={userName} width={18} height={18} className="size-4.5 rounded-full object-cover" />
@@ -131,13 +131,13 @@ export function Header() {
     <>
       <Link
         href="/login"
-        className="flex items-center justify-center px-4 sm:px-5 py-2 sm:py-2.5 text-sm lg:text-base font-bold border border-zinc-200 bg-zinc-50 text-zinc-950 rounded-xl hover:bg-zinc-100 transition-colors duration-200 w-full sm:w-auto text-center outline-hidden cursor-pointer min-h-11 sm:min-h-12"
+        className="flex items-center justify-center px-4 sm:px-5 py-2 text-sm font-semibold border border-zinc-200 bg-zinc-50 text-zinc-950 rounded-xl hover:bg-zinc-100 transition-colors duration-200 w-full sm:w-auto text-center outline-hidden cursor-pointer min-h-10 sm:min-h-11 h-10 sm:h-11"
       >
         {t("masuk")}
       </Link>
       <Link
         href="/register"
-        className="flex items-center justify-center px-4 sm:px-5 py-2 sm:py-2.5 text-sm lg:text-base font-bold text-white bg-zinc-950 rounded-xl hover:bg-zinc-800 transition-colors duration-200 w-full sm:w-auto outline-hidden cursor-pointer shadow-xs min-h-11 sm:min-h-12"
+        className="flex items-center justify-center px-4 sm:px-5 py-2 text-sm font-semibold text-white bg-zinc-950 rounded-xl hover:bg-zinc-800 transition-colors duration-200 w-full sm:w-auto outline-hidden cursor-pointer shadow-xs min-h-10 sm:min-h-11 h-10 sm:h-11"
       >
         {t("daftar")}
       </Link>
@@ -152,7 +152,7 @@ export function Header() {
           px-5 py-3 sm:px-6 sm:py-3.5 backdrop-blur-md
           rounded-2xl
           border border-zinc-200/80 bg-white/90 shadow-xs
-          w-full max-w-7xl`}
+          w-full max-w-7xl xl:max-w-340 2xl:max-w-390`}
       >
         <div className="flex items-center justify-between w-full gap-6">
           <div className="flex items-center">{logoElement}</div>
@@ -163,7 +163,7 @@ export function Header() {
                 key={link.href}
                 href={link.href}
                 onClick={(e) => handleNavClick(link.href, e)}
-                className={`relative text-sm lg:text-base font-semibold outline-hidden transition-colors py-1.5
+                className={`relative text-sm lg:text-base font-semibold outline-hidden transition-colors py-1.5 whitespace-nowrap
                   after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-zinc-950 after:origin-left after:transition-transform after:duration-200 after:ease-out
                   ${
                     checkIsActive(link.href)

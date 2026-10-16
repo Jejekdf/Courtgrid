@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { MapPin, ChevronDown, CheckCircle2, ArrowRight } from "lucide-react";
+import { MapPin, ChevronDown, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useTranslations } from "next-intl";
 import type { Court } from "@/lib/api/courts";
@@ -45,8 +45,7 @@ export default function CourtCard({
             {t("cardImageFallback")}
           </div>
         )}
-        <div className="absolute top-3 right-3 px-3 py-1 bg-zinc-950/90 text-white rounded-full text-xs font-bold uppercase border border-zinc-700 shadow-xs flex items-center gap-1.5 font-sans">
-          <CheckCircle2 className="size-3.5 text-emerald-400" aria-hidden="true" />
+        <div className="absolute top-3 right-3 px-2.5 py-1 bg-zinc-950/80 backdrop-blur-xs text-white rounded-lg text-xs font-semibold border border-zinc-700/80 shadow-xs font-sans">
           <span>{court.type}</span>
         </div>
       </div>
@@ -54,15 +53,15 @@ export default function CourtCard({
       <div className="p-5 sm:p-6 flex flex-col justify-between gap-4 flex-1">
         <div className="flex flex-col gap-1">
           <h3 className="font-heading text-base sm:text-lg font-bold text-zinc-950">{court.name}</h3>
-          <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-zinc-600 font-sans">
-            <MapPin className="size-3.5 text-zinc-500" aria-hidden="true" />
+          <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-zinc-500 font-sans">
+            <MapPin className="size-3.5 text-zinc-400" aria-hidden="true" />
             {court.venue?.name || "GOR CourtGrid Jakarta"}
           </span>
         </div>
 
         <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
-          <span className="text-xs sm:text-sm text-zinc-600 font-sans">{t("perHour")}</span>
-          <span className="font-extrabold text-zinc-950 text-sm sm:text-base tabular-nums">
+          <span className="text-xs sm:text-sm text-zinc-500 font-sans whitespace-nowrap">{t("perHour")}</span>
+          <span className="font-extrabold text-zinc-950 text-sm sm:text-base xl:text-lg tabular-nums whitespace-nowrap">
             {formatRupiah(court.pricePerHour)}
           </span>
         </div>
@@ -70,7 +69,7 @@ export default function CourtCard({
         <div className="flex flex-col gap-2 pt-1">
           <Link
             href={`/dashboard/book?courtId=${court.id}`}
-            className="flex items-center justify-center gap-1.5 w-full min-h-11 py-2.5 text-sm font-bold font-sans text-white bg-zinc-950 hover:bg-zinc-800 active:scale-[0.98] rounded-xl transition-[background-color,transform] shadow-xs cursor-pointer"
+            className="flex items-center justify-center gap-1.5 w-full min-h-11 py-2.5 text-sm font-bold font-sans text-white bg-zinc-950 hover:bg-zinc-800 active:scale-[0.98] rounded-xl transition-[background-color,transform] shadow-xs cursor-pointer whitespace-nowrap"
           >
             <span>{t("bookCourt")}</span>
             <ArrowRight className="size-4" aria-hidden="true" />
@@ -81,7 +80,7 @@ export default function CourtCard({
             aria-expanded={showAvailability}
             aria-controls={`court-schedule-${court.id}`}
             onClick={toggleAvailability}
-            className="flex items-center justify-center gap-1.5 w-full min-h-11 py-2 text-sm font-semibold font-sans text-zinc-700 hover:text-zinc-950 bg-zinc-100 hover:bg-zinc-200/70 rounded-xl transition-colors cursor-pointer"
+            className="flex items-center justify-center gap-1.5 w-full min-h-11 py-2 text-sm font-semibold font-sans text-zinc-700 hover:text-zinc-950 bg-zinc-100 hover:bg-zinc-200/70 rounded-xl transition-colors cursor-pointer whitespace-nowrap"
           >
             <span>{showAvailability ? t("hideSchedule") : t("showSchedule")}</span>
             <ChevronDown
