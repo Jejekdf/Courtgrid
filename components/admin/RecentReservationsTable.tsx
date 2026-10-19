@@ -22,19 +22,19 @@ export default function RecentReservationsTable({ reservations = [] }: { reserva
   return (
     <div className="bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
       <div className="px-6 py-5 border-b border-zinc-200 flex items-center justify-between">
-        <h3 className="text-lg font-semibold tracking-tight text-zinc-950">{t("recentTitle")}</h3>
-        <Link href="/admin/reservations" className="text-sm font-medium text-zinc-950 hover:text-zinc-700 transition-colors inline-flex items-center gap-1 cursor-pointer">
+        <h3 className="text-lg font-semibold tracking-tight text-zinc-950 text-balance">{t("recentTitle")}</h3>
+        <Link href="/admin/reservations" className="text-sm font-medium text-zinc-950 hover:text-zinc-700 transition-colors inline-flex items-center gap-1 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950/20 rounded-md">
           <span>{t("viewAll")}</span>
-          <span>&rarr;</span>
+          <span aria-hidden="true">&rarr;</span>
         </Link>
       </div>
 
       {reservations.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
           <div className="size-12 bg-zinc-50 rounded-full flex items-center justify-center mb-4">
-            <CalendarX className="size-6 text-zinc-400" />
+            <CalendarX className="size-6 text-zinc-400" aria-hidden="true" />
           </div>
-          <h4 className="text-base font-semibold text-zinc-950 mb-1">{t("emptyTitle")}</h4>
+          <h4 className="text-base font-semibold text-zinc-950 mb-1 text-balance">{t("emptyTitle")}</h4>
           <p className="text-sm text-zinc-500 max-w-sm mx-auto">
             {t("emptyDesc")}
           </p>

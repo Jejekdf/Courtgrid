@@ -37,12 +37,12 @@ export default function AdminSidebar({ isOpen, isDesktopOpen = true, onClose }: 
     >
       {/* Brand Header */}
       <div className="h-16 flex items-center justify-between px-6 border-b border-zinc-800/80 shrink-0">
-        <Link href="/admin" className="flex items-center gap-3 outline-hidden">
+        <Link href="/admin" className="flex items-center gap-3 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400 rounded-lg">
           <Image src="/logo.svg" alt="CourtGrid Logo" width={28} height={28} priority className="rounded-lg object-contain" />
           <span className="font-extrabold tracking-tight text-lg sm:text-xl">CourtGrid Admin</span>
         </Link>
-        <button className="md:hidden p-2 text-zinc-400 hover:text-white rounded-lg transition-colors cursor-pointer" onClick={onClose} aria-label={t("closeMenu")}>
-          <X className="size-5" />
+        <button className="md:hidden p-2 text-zinc-400 hover:text-white rounded-lg transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-400" onClick={onClose} aria-label={t("closeMenu")}>
+          <X className="size-5" aria-hidden="true" />
         </button>
       </div>
 

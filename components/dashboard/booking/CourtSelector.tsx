@@ -20,7 +20,7 @@ export function CourtSelector({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm sm:text-base font-bold text-zinc-950">
+        <h3 className="text-sm sm:text-base font-bold text-zinc-950 text-balance">
           {t("step1")}
         </h3>
         <span className="text-xs sm:text-sm text-zinc-500 font-sans">
@@ -55,7 +55,7 @@ export function CourtSelector({
                 <span className="inline-block px-2.5 py-0.5 bg-zinc-100 text-zinc-700 border border-zinc-200 text-xs font-semibold uppercase tracking-wider rounded-md font-sans">
                   {court.type}
                 </span>
-                <h4 className="font-extrabold text-zinc-950 text-base sm:text-lg xl:text-xl group-hover:text-emerald-700 transition-colors">
+                <h4 className="font-extrabold text-zinc-950 text-base sm:text-lg xl:text-xl group-hover:text-emerald-700 transition-colors text-balance">
                   {court.name}
                 </h4>
               </div>

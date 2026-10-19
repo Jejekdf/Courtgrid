@@ -106,7 +106,7 @@ export function BookingPreviewModal({
                   </span>
                 </div>
                 <div className="flex justify-between border-b border-zinc-200/60 pb-2">
-                  <span className="text-zinc-500">{t("voucherApplied")} ({appliedVoucher.code})</span>
+                  <span className="text-zinc-500">{t("voucherApplied")} {appliedVoucher.code}</span>
                   <span className="font-bold text-emerald-600 tabular-nums">
                     -{formatRupiah(appliedVoucher.discountAmount)}
                   </span>

@@ -63,8 +63,8 @@ export function BookingSummaryPanel({
     <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 sm:p-5 xl:p-6 shadow-xs space-y-4 xl:space-y-5 sticky top-4 xl:top-6">
       <div className="flex items-center justify-between border-b border-zinc-100 pb-3 xl:pb-4">
         <div className="flex items-center gap-2">
-          <CreditCard className="size-5 text-zinc-950" />
-          <h3 className="font-extrabold text-base xl:text-lg text-zinc-950">{t("summaryTitle")}</h3>
+          <CreditCard className="size-5 text-zinc-950" aria-hidden="true" />
+          <h3 className="font-extrabold text-base xl:text-lg text-zinc-950 text-balance">{t("summaryTitle")}</h3>
         </div>
         <span className="text-xs font-semibold bg-zinc-100 text-zinc-700 px-2.5 py-0.5 rounded-md font-sans">
           {t("stripeBadge")}
@@ -151,9 +151,12 @@ export function BookingSummaryPanel({
               <div>
                 <div className="flex gap-2">
                   <div className="relative flex-1">
-                    <Tag className="size-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <Tag className="size-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" aria-hidden="true" />
                     <Input
                       placeholder={t("voucherPlaceholder")}
+                      aria-label={t("voucherLabel")}
+                      autoComplete="off"
+                      spellCheck={false}
                       value={voucherCode}
                       onChange={(e) => onVoucherChange(e.target.value.toUpperCase())}
                       onKeyDown={(e) => {

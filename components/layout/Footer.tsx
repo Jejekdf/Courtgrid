@@ -27,7 +27,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 lg:gap-12 xl:gap-16">
           {/* Brand Column */}
           <div className="lg:col-span-4 flex flex-col gap-4">
-            <Link href="/" className="flex items-center gap-2.5 group w-max outline-hidden">
+            <Link href="/" className="flex items-center gap-2.5 group w-max focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950/20 rounded-lg">
               <Image
                 src="/logo.svg"
                 alt="CourtGrid Logo"

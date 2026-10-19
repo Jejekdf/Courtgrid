@@ -83,7 +83,7 @@ export function Header() {
   };
 
   const logoElement = (
-    <Link href="/" onClick={(e) => handleNavClick("/", e)} className="flex items-center gap-2.5 group shrink-0 outline-hidden">
+    <Link href="/" onClick={(e) => handleNavClick("/", e)} className="flex items-center gap-2.5 group shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950/20 rounded-lg">
       <Image src="/logo.svg" alt="CourtGrid Logo" width={32} height={32} priority className="size-7 sm:size-8 xl:size-9 rounded-lg object-contain transition-transform group-hover-fine:scale-95" />
       <span className="font-heading text-zinc-950 font-extrabold tracking-tight text-base sm:text-lg lg:text-xl xl:text-2xl">
         CourtGrid
@@ -112,18 +112,19 @@ export function Header() {
     </div>
   );
 
-  const userButtonsElement =
+  const renderUserButtons = (onItemClick?: () => void) =>
     status === "loading" ? (
       loadingButtonsElement
     ) : isLoggedIn ? (
     <Link
       href={dashboardHref}
-      className="flex items-center justify-center gap-2 px-4 sm:px-5 py-2 text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl transition-colors shadow-xs outline-hidden w-full sm:w-auto cursor-pointer min-h-10 sm:min-h-11 h-10 sm:h-11 whitespace-nowrap"
+      onClick={onItemClick}
+      className="flex items-center justify-center gap-2 px-4 sm:px-5 py-2 text-sm font-semibold bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl transition-colors shadow-xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950/20 w-full sm:w-auto cursor-pointer min-h-10 sm:min-h-11 h-10 sm:h-11 whitespace-nowrap"
     >
       {userImage ? (
         <Image src={userImage} alt={userName} width={18} height={18} className="size-4.5 rounded-full object-cover" />
       ) : (
-        <LayoutDashboard className="size-4.5 text-emerald-400" />
+        <LayoutDashboard className="size-4.5 text-emerald-400" aria-hidden="true" />
       )}
       <span>{dashboardText}</span>
     </Link>
@@ -131,13 +132,15 @@ export function Header() {
     <>
       <Link
         href="/login"
-        className="flex items-center justify-center px-4 sm:px-5 py-2 text-sm font-semibold border border-zinc-200 bg-zinc-50 text-zinc-950 rounded-xl hover:bg-zinc-100 transition-colors duration-200 w-full sm:w-auto text-center outline-hidden cursor-pointer min-h-10 sm:min-h-11 h-10 sm:h-11"
+        onClick={onItemClick}
+        className="flex items-center justify-center px-4 sm:px-5 py-2 text-sm font-semibold border border-zinc-200 bg-zinc-50 text-zinc-950 rounded-xl hover:bg-zinc-100 transition-colors duration-200 w-full sm:w-auto text-center focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950/20 cursor-pointer min-h-10 sm:min-h-11 h-10 sm:h-11"
       >
         {t("masuk")}
       </Link>
       <Link
         href="/register"
-        className="flex items-center justify-center px-4 sm:px-5 py-2 text-sm font-semibold text-white bg-zinc-950 rounded-xl hover:bg-zinc-800 transition-colors duration-200 w-full sm:w-auto outline-hidden cursor-pointer shadow-xs min-h-10 sm:min-h-11 h-10 sm:h-11"
+        onClick={onItemClick}
+        className="flex items-center justify-center px-4 sm:px-5 py-2 text-sm font-semibold text-white bg-zinc-950 rounded-xl hover:bg-zinc-800 transition-colors duration-200 w-full sm:w-auto focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950/20 cursor-pointer shadow-xs min-h-10 sm:min-h-11 h-10 sm:h-11"
       >
         {t("daftar")}
       </Link>
@@ -163,7 +166,7 @@ export function Header() {
                 key={link.href}
                 href={link.href}
                 onClick={(e) => handleNavClick(link.href, e)}
-                className={`relative text-sm lg:text-base font-semibold outline-hidden transition-colors py-1.5 whitespace-nowrap
+                className={`relative text-sm lg:text-base font-semibold focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950/20 rounded-md transition-colors py-1.5 whitespace-nowrap
                   after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-zinc-950 after:origin-left after:transition-transform after:duration-200 after:ease-out
                   ${
                     checkIsActive(link.href)
@@ -177,12 +180,12 @@ export function Header() {
           </nav>
 
           <div className="hidden md:flex items-center gap-2">
-            {userButtonsElement}
+            {renderUserButtons()}
           </div>
 
           <button
             type="button"
-            className="md:hidden flex items-center justify-center size-11 text-zinc-700 hover:text-zinc-950 focus:outline-hidden transition-colors outline-hidden cursor-pointer"
+            className="md:hidden flex items-center justify-center size-11 text-zinc-700 hover:text-zinc-950 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950/20 rounded-lg transition-colors cursor-pointer"
             onClick={toggleMenu}
             aria-expanded={isOpen}
             aria-controls="mobile-navigation"
@@ -197,13 +200,16 @@ export function Header() {
           className={`md:hidden flex flex-col items-center w-full transition-[max-height,opacity] ease-out duration-200 overflow-hidden
             ${isOpen ? "max-h-250 opacity-100 pt-4 pb-2" : "max-h-0 opacity-0 pt-0 pointer-events-none"}`}
         >
-          <nav onClick={closeMenu} className="flex flex-col items-center gap-1 w-full">
+          <nav className="flex flex-col items-center gap-1 w-full">
             {navLinksData.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={(e) => handleNavClick(link.href, e)}
-                className={`relative text-sm font-medium w-full justify-center text-center min-h-11 flex items-center transition-colors outline-hidden rounded-lg px-4
+                onClick={(e) => {
+                  closeMenu();
+                  handleNavClick(link.href, e);
+                }}
+                className={`relative text-sm font-medium w-full justify-center text-center min-h-11 flex items-center transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950/20 rounded-lg px-4
                   ${
                     checkIsActive(link.href)
                       ? "bg-zinc-100 text-zinc-950 font-bold"
@@ -214,8 +220,8 @@ export function Header() {
               </Link>
             ))}
           </nav>
-          <div onClick={closeMenu} className="flex flex-col items-center gap-2 mt-3 w-full">
-            {userButtonsElement}
+          <div className="flex flex-col items-center gap-2 mt-3 w-full">
+            {renderUserButtons(closeMenu)}
           </div>
         </div>
       </header>

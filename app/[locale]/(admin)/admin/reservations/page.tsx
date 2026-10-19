@@ -153,10 +153,11 @@ export default function AdminReservationsPage() {
                 <ShieldCheck className="size-4" />
                 <span>{t("verifyTicketBtn")}</span>
               </button>
-              <div className="flex items-center bg-white border border-zinc-200 rounded-lg px-2.5 py-2 min-h-10 shadow-xs">
-                <Filter className="size-3.5 text-zinc-400 mr-1.5" />
+              <div className="flex items-center bg-white border border-zinc-200 rounded-lg px-2.5 py-2 min-h-10 shadow-xs focus-within:ring-2 focus-within:ring-zinc-950/20">
+                <Filter className="size-3.5 text-zinc-400 mr-1.5" aria-hidden="true" />
                 <select
                   value={filter}
+                  aria-label={t("filterAllTime")}
                   onChange={(e) => {
                     setFilter(e.target.value as "daily" | "monthly" | "all");
                     setPage(1);
@@ -168,7 +169,7 @@ export default function AdminReservationsPage() {
                   <option value="monthly">{t("filterMonthly")}</option>
                 </select>
               </div>
-              <div className="flex items-center bg-white border border-zinc-200 rounded-lg px-2.5 py-2 min-h-10 shadow-xs">
+              <div className="flex items-center bg-white border border-zinc-200 rounded-lg px-2.5 py-2 min-h-10 shadow-xs focus-within:ring-2 focus-within:ring-zinc-950/20">
                 <select
                   value={statusFilter}
                   onChange={(e) => {

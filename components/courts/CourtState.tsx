@@ -44,17 +44,17 @@ export default function CourtState(props: Props) {
         className="flex flex-col items-center justify-center text-center gap-4 bg-zinc-50/50 border border-dashed border-zinc-200 rounded-2xl py-16 px-6"
       >
         <div className="h-12 w-12 rounded-xl bg-red-100 text-red-600 flex items-center justify-center">
-          <AlertTriangle className="h-6 w-6" />
+          <AlertTriangle className="h-6 w-6" aria-hidden="true" />
         </div>
         <div className="space-y-1">
-          <h3 className="text-sm font-semibold text-zinc-950">
+          <h3 className="text-sm font-semibold text-zinc-950 text-balance">
             {t("stateErrorTitle")}
           </h3>
           <p className="text-sm text-zinc-500 max-w-sm">
             {t("stateErrorDesc")}
           </p>
         </div>
-        <Button onClick={props.onRetry} leftIcon={<RotateCcw className="h-4 w-4" />}>
+        <Button onClick={props.onRetry} leftIcon={<RotateCcw className="h-4 w-4" aria-hidden="true" />}>
           {t("retry")}
         </Button>
       </div>
@@ -67,10 +67,10 @@ export default function CourtState(props: Props) {
       className="flex flex-col items-center justify-center text-center gap-4 py-16 px-6 bg-zinc-50/50 border border-dashed border-zinc-200 rounded-2xl"
     >
       <div className="h-12 w-12 rounded-xl bg-zinc-100 text-zinc-400 flex items-center justify-center">
-        <SearchX className="h-6 w-6" />
+        <SearchX className="h-6 w-6" aria-hidden="true" />
       </div>
       <div className="space-y-1">
-        <h3 className="text-sm font-semibold text-zinc-950">
+        <h3 className="text-sm font-semibold text-zinc-950 text-balance">
           {t("stateEmptyTitle")}
         </h3>
         <p className="text-sm text-zinc-500 max-w-sm">

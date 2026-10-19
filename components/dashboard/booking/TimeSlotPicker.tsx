@@ -47,7 +47,7 @@ export function TimeSlotPicker({
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <Clock className="size-4 text-zinc-600" aria-hidden="true" />
-          <h3 className="text-sm sm:text-base font-bold text-zinc-950">
+          <h3 className="text-sm sm:text-base font-bold text-zinc-950 text-balance">
             {t("step2")}
           </h3>
           {courtName && (

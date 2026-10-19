@@ -101,10 +101,10 @@ export default function ResetPasswordForm() {
                       <button
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
-                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-hidden p-2.5 h-11 sm:h-12 flex items-center justify-center cursor-pointer"
+                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950/20 rounded-lg p-2.5 h-11 sm:h-12 flex items-center justify-center cursor-pointer"
                         aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                       >
-                        {showPassword ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
+                        {showPassword ? <Eye className="size-4" aria-hidden="true" /> : <EyeOff className="size-4" aria-hidden="true" />}
                       </button>
                     }
                     {...field}
@@ -133,10 +133,10 @@ export default function ResetPasswordForm() {
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword((prev) => !prev)}
-                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-hidden p-2.5 h-11 sm:h-12 flex items-center justify-center cursor-pointer"
+                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950/20 rounded-lg p-2.5 h-11 sm:h-12 flex items-center justify-center cursor-pointer"
                         aria-label={showConfirmPassword ? t("hideConfirm") : t("showConfirm")}
                       >
-                        {showConfirmPassword ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
+                        {showConfirmPassword ? <Eye className="size-4" aria-hidden="true" /> : <EyeOff className="size-4" aria-hidden="true" />}
                       </button>
                     }
                     {...field}

@@ -52,7 +52,7 @@ export default function CourtCard({
 
       <div className="p-5 sm:p-6 flex flex-col justify-between gap-4 flex-1">
         <div className="flex flex-col gap-1">
-          <h3 className="font-heading text-base sm:text-lg font-bold text-zinc-950">{court.name}</h3>
+          <h3 className="font-heading text-base sm:text-lg font-bold text-zinc-950 text-balance">{court.name}</h3>
           <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-zinc-500 font-sans">
             <MapPin className="size-3.5 text-zinc-400" aria-hidden="true" />
             {court.venue?.name || "GOR CourtGrid Jakarta"}
@@ -69,7 +69,7 @@ export default function CourtCard({
         <div className="flex flex-col gap-2 pt-1">
           <Link
             href={`/dashboard/book?courtId=${court.id}`}
-            className="flex items-center justify-center gap-1.5 w-full min-h-11 py-2.5 text-sm font-bold font-sans text-white bg-zinc-950 hover:bg-zinc-800 active:scale-[0.98] rounded-xl transition-[background-color,transform] shadow-xs cursor-pointer whitespace-nowrap"
+            className="flex items-center justify-center gap-1.5 w-full min-h-11 py-2.5 text-sm font-bold font-sans text-white bg-zinc-950 hover:bg-zinc-800 active:scale-[0.98] rounded-xl transition-[background-color,transform] shadow-xs cursor-pointer whitespace-nowrap focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950/20"
           >
             <span>{t("bookCourt")}</span>
             <ArrowRight className="size-4" aria-hidden="true" />

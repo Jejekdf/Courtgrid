@@ -91,7 +91,7 @@ export function ReservationTableRow({
           reservationStatus={res.status}
         />
       </td>
-      <td className="px-5 py-4 text-right font-extrabold text-zinc-950 font-mono">
+      <td className="px-5 py-4 text-right font-extrabold text-zinc-950 font-mono tabular-nums">
         {formatRupiah(res.totalPrice)}
       </td>
       <td className="px-5 py-4 text-right">

@@ -28,10 +28,10 @@ export function BookingDateSelector({
     <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 sm:p-5 xl:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div className="flex items-center gap-3">
         <div className="size-10 xl:size-11 rounded-xl bg-zinc-950 text-white flex items-center justify-center font-bold text-sm shrink-0">
-          <CalendarIcon className="size-5" />
+          <CalendarIcon className="size-5" aria-hidden="true" />
         </div>
         <div>
-          <h2 className="text-sm sm:text-base font-bold text-zinc-950">{t("dateTitle")}</h2>
+          <h2 className="text-sm sm:text-base font-bold text-zinc-950 text-balance">{t("dateTitle")}</h2>
           <p className="text-xs sm:text-sm xl:text-base text-zinc-600 font-medium font-sans">
             {format(new Date(selectedDate), "EEEE, dd MMMM yyyy", { locale: getDateFnsLocale(locale) })}
           </p>

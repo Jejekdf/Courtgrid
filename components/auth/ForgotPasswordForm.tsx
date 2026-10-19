@@ -67,6 +67,7 @@ export default function ForgotPasswordForm() {
                     type="email"
                     placeholder="nama@email.com"
                     autoComplete="email"
+                    spellCheck={false}
                     disabled={form.formState.isSubmitting}
                     error={!!fieldState.error}
                     className="border-zinc-200 min-h-11 sm:min-h-12 h-11 sm:h-12 text-sm sm:text-base rounded-xl"

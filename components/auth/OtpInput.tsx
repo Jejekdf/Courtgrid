@@ -31,6 +31,7 @@ export function OtpInput({
         pattern="[0-9]*"
         maxLength={length}
         autoComplete="one-time-code"
+        spellCheck={false}
         autoFocus={autoFocus}
         disabled={disabled}
         value={value}
@@ -49,7 +50,7 @@ export function OtpInput({
         return (
           <div
             key={idx}
-            className={`size-11 sm:size-13 rounded-xl border flex items-center justify-center text-lg sm:text-xl font-bold font-mono transition-all ${
+            className={`size-11 sm:size-13 rounded-xl border flex items-center justify-center text-lg sm:text-xl font-bold font-mono transition-[background-color,border-color,color,box-shadow] duration-150 ${
               digit
                 ? "border-zinc-950 bg-zinc-50 text-zinc-950 shadow-xs"
                 : isActive

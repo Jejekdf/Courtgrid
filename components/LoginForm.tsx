@@ -109,6 +109,7 @@ export default function LoginForm() {
                     type="email"
                     placeholder={t("emailPlaceholder")}
                     autoComplete="email"
+                    spellCheck={false}
                     error={!!fieldState.error}
                     className="border-zinc-200 min-h-12 h-12 lg:min-h-13 lg:h-13 text-base rounded-xl"
                     {...field}
@@ -136,13 +137,13 @@ export default function LoginForm() {
                       <button
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
-                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus:outline-hidden p-2.5 h-12 lg:h-13 flex items-center justify-center cursor-pointer"
+                        className="text-zinc-400 hover:text-zinc-950 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-zinc-950/20 rounded-lg p-2.5 h-12 lg:h-13 flex items-center justify-center cursor-pointer"
                         aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                       >
                         {showPassword ? (
-                          <Eye className="size-4" />
+                          <Eye className="size-4" aria-hidden="true" />
                         ) : (
-                          <EyeOff className="size-4" />
+                          <EyeOff className="size-4" aria-hidden="true" />
                         )}
                       </button>
                     }
