@@ -26,7 +26,12 @@ import { SITE_URL } from "@/lib/constants";
 async function clientIp(): Promise<string> {
   try {
     const h = await headers();
-    return h.get("x-forwarded-for")?.split(",")[0]?.trim() || "anon";
+    return (
+      h.get("x-real-ip") ??
+      h.get("cf-connecting-ip") ??
+      h.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+      "anon"
+    );
   } catch {
     return "anon";
   }

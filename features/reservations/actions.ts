@@ -289,7 +289,13 @@ export async function cancelReservationAction(rawInput: unknown) {
 
   const { reservationId } = validation.data;
 
-  const reservation = await getReservationDetailsDAL(reservationId);
+  let reservation;
+  try {
+    reservation = await getReservationDetailsDAL(reservationId);
+  } catch {
+    return { success: false, error: t("unauthorized") };
+  }
+
   if (!reservation) {
     return { success: false, error: t("reservationNotFound") };
   }

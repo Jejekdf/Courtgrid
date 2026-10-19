@@ -16,7 +16,13 @@ let warned = false;
 function getRateLimiter(bucket: Bucket = "default"): Ratelimit | null {
   if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
     if (!warned) {
-      console.warn("[ratelimit] UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN not set — rate limiting disabled.");
+      if (process.env.NODE_ENV === "production") {
+        console.error(
+          "[SECURITY CRITICAL] UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN missing in production! Rate limiting is bypassed."
+        );
+      } else {
+        console.warn("[ratelimit] UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN not set — rate limiting disabled.");
+      }
       warned = true;
     }
     return null;
