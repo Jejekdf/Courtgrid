@@ -119,8 +119,12 @@ test("FIX-H2: validateBookingTime rejects past date and today's elapsed hour", (
   // today, current hour → rejected; a later hour today → allowed
   const cur = jakartaHour();
   assert.notEqual(validateBookingTime(today, `${String(cur).padStart(2, "0")}:00`), null);
-  const laterHour = Math.min(cur + 3, 23);
-  assert.equal(validateBookingTime(today, `${String(laterHour).padStart(2, "0")}:00`), null);
+  if (cur < 23) {
+    const laterHour = cur + 1;
+    assert.equal(validateBookingTime(today, `${String(laterHour).padStart(2, "0")}:00`), null);
+  } else {
+    assert.equal(validateBookingTime(tomorrow, "10:00"), null);
+  }
 });
 
 // === F6 — strict double-booking (half-open intervals) ===

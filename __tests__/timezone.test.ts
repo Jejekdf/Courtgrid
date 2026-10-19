@@ -64,9 +64,16 @@ test("validateBookingTime rejects today with passed hour", () => {
 // --- AC-TZ-2: Today with future hour accepted ---
 test("validateBookingTime accepts today with future hour", () => {
   const { dateStr: today, hour: currentHour } = getJakartaNow();
-  const futureHour = String(Math.min(23, currentHour + 1)).padStart(2, "0") + ":00";
-  const result = validateBookingTime(today, futureHour);
-  assert.equal(result, null);
+  if (currentHour < 23) {
+    const futureHour = String(currentHour + 1).padStart(2, "0") + ":00";
+    const result = validateBookingTime(today, futureHour);
+    assert.equal(result, null);
+  } else {
+    // If running at 23:xx WIB, no future hours remain today; next slot is tomorrow
+    const tomorrow = "2099-12-31";
+    const result = validateBookingTime(tomorrow, "10:00");
+    assert.equal(result, null);
+  }
 });
 
 // --- Future date accepted ---
@@ -97,14 +104,16 @@ test("createReservationSchema rejects past date via superRefine", async () => {
 test("createReservationSchema accepts valid future booking", async () => {
   const { createReservationSchema } = await import("../features/reservations/schemas");
   const { dateStr: today, hour: currentHour } = getJakartaNow();
-  const futureHour = String(Math.min(23, currentHour + 1)).padStart(2, "0") + ":00";
-  const nextHour = String(Math.min(23, currentHour + 2)).padStart(2, "0") + ":00";
+  const isLateEvening = currentHour >= 22;
+  const bookingDate = isLateEvening ? "2099-12-31" : today;
+  const startTime = isLateEvening ? "10:00" : String(currentHour + 1).padStart(2, "0") + ":00";
+  const endTime = isLateEvening ? "11:00" : String(currentHour + 2).padStart(2, "0") + ":00";
 
   const result = createReservationSchema.safeParse({
     courtId: "test-court",
-    dateStr: today,
-    startTime: futureHour,
-    endTime: nextHour,
+    dateStr: bookingDate,
+    startTime,
+    endTime,
     totalPrice: 100000,
   });
   assert.equal(result.success, true);
