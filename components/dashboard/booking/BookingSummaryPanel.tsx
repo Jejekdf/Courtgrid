@@ -99,13 +99,13 @@ export function BookingSummaryPanel({
             {appliedVoucher ? (
               <>
                 <div className="flex justify-between py-1.5 border-b border-zinc-100 font-sans">
-                  <span className="text-zinc-500">Subtotal ({selectedTimeSlots.length} Jam)</span>
+                  <span className="text-zinc-500">Subtotal {selectedTimeSlots.length} Jam</span>
                   <span className="font-semibold text-zinc-700 tabular-nums">
                     {formatRupiah(subtotal)}
                   </span>
                 </div>
                 <div className="flex justify-between py-1.5 border-b border-zinc-100 font-sans text-emerald-600">
-                  <span className="font-medium">Potongan Voucher ({appliedVoucher.discountPct}%)</span>
+                  <span className="font-medium">Potongan Voucher {appliedVoucher.discountPct}%</span>
                   <span className="font-bold tabular-nums">
                     -{formatRupiah(appliedVoucher.discountAmount)}
                   </span>
@@ -136,7 +136,7 @@ export function BookingSummaryPanel({
               <div className="flex items-center justify-between p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs">
                 <div className="flex items-center gap-2 text-emerald-800 font-semibold font-sans">
                   <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
-                  <span>Voucher <strong>{appliedVoucher.code}</strong> aktif (-{appliedVoucher.discountPct}%)</span>
+                  <span>Voucher <strong>{appliedVoucher.code}</strong> aktif hemat {appliedVoucher.discountPct}%</span>
                 </div>
                 <button
                   type="button"

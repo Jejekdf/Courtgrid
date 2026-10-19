@@ -81,7 +81,7 @@ export function TimeSlotPicker({
         <div className="flex items-center gap-2.5 p-3 bg-zinc-50 border border-zinc-200/90 rounded-xl text-xs sm:text-sm text-zinc-600 font-sans">
           <Globe className="size-4 text-zinc-700 shrink-0" aria-hidden="true" />
           <p className="leading-relaxed">
-            Semua slot di atas dalam zona waktu <strong>WIB (Asia/Jakarta / UTC+7)</strong>. Waktu lokal perangkat Anda: <span className="font-mono font-bold text-zinc-950">{userTz}</span>.
+            Semua slot di atas dalam zona waktu <strong>WIB Asia Jakarta</strong>. Waktu lokal perangkat Anda terdeteksi <span className="font-mono font-bold text-zinc-950">{userTz}</span>.
           </p>
         </div>
       )}

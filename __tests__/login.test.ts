@@ -50,7 +50,7 @@ test("invalid email → fail with 'Format email tidak valid…'", () => {
   if (!r.success) {
     assert.equal(
       r.error.issues[0].message,
-      "Format email tidak valid. Contoh: kamu@email.com"
+      "Format email tidak valid, contohnya kamu@email.com"
     );
   }
 });

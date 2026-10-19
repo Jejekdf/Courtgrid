@@ -139,7 +139,7 @@ export default function ETicketShareActions({
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleDownloadIcs} className="cursor-pointer text-xs font-medium py-2 px-2.5 rounded-lg hover:bg-zinc-100 flex items-center transition-colors">
             <Download className="size-4 mr-2 text-zinc-500" />
-            <span>Apple / Outlook (.ics)</span>
+            <span>Apple atau Outlook</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
