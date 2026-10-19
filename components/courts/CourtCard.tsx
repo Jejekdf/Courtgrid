@@ -28,7 +28,7 @@ export default function CourtCard({
 
   return (
     <div className="bg-white border border-zinc-200/80 rounded-2xl sm:rounded-3xl shadow-xs overflow-hidden flex flex-col hover:border-zinc-300 transition-[border-color,box-shadow]">
-      <div className="relative aspect-16/10 bg-zinc-100 border-b border-zinc-200/80 overflow-hidden">
+      <div className="relative aspect-16/10 bg-zinc-100 border-b border-zinc-200/80 overflow-hidden isolate">
         {court.imageUrl ? (
           <Image
             src={court.imageUrl}
@@ -37,7 +37,7 @@ export default function CourtCard({
             priority={priority}
             loading={priority ? "eager" : "lazy"}
             unoptimized={court.imageUrl.startsWith("http")}
-            className="object-cover transition-transform duration-500 hover-fine:scale-105"
+            className="object-cover transition-transform duration-500 hover-fine:scale-105 z-0"
             sizes="(min-width: 1440px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
           />
         ) : (
@@ -45,7 +45,7 @@ export default function CourtCard({
             {t("cardImageFallback")}
           </div>
         )}
-        <div className="absolute top-3 right-3 px-2.5 py-1 bg-zinc-950/80 backdrop-blur-xs text-white rounded-lg text-xs font-semibold border border-zinc-700/80 shadow-xs font-sans">
+        <div className="absolute top-3 right-3 z-10 px-2.5 py-1 bg-zinc-950/80 backdrop-blur-xs text-white rounded-lg text-xs font-semibold border border-zinc-700/80 shadow-xs font-sans">
           <span>{court.type}</span>
         </div>
       </div>
