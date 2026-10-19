@@ -197,7 +197,8 @@ export async function adminDeleteReservation(id: string) {
     return { success: true };
   } catch (error) {
     console.error("Failed to delete reservation:", error);
-    return { success: false, error: "Gagal menghapus reservasi" };
+    const t = await getTranslations("validation");
+    return { success: false, error: t("reservationDeleteFailed") };
   }
 }
 
@@ -502,7 +503,7 @@ export async function adminCheckInReservation(reservationId: string) {
 
   return {
     success: true,
-    message: `Check-in E-Ticket berhasil! Status reservasi ${reservationId.slice(0, 8)} diubah menjadi SELESAI (DONE).`,
+    message: t("checkInSuccessMsg"),
   };
 }
 

@@ -53,7 +53,10 @@ export async function adminCreateVoucher(formData: FormData) {
   }
 
   const exists = await prisma.voucher.findUnique({ where: { code: parsed.data.code } });
-  if (exists) return { success: false, error: "Kode voucher sudah ada" };
+  if (exists) {
+    const t = await getTranslations("validation");
+    return { success: false, error: t("voucherExists") };
+  }
 
   await prisma.voucher.create({ data: parsed.data });
   revalidatePath("/admin/vouchers");
@@ -85,14 +88,18 @@ export async function adminUpdateVoucher(id: string, formData: FormData) {
   const conflict = await prisma.voucher.findFirst({
     where: { code: parsed.data.code, NOT: { id } },
   });
-  if (conflict) return { success: false, error: "Kode voucher sudah dipakai voucher lain" };
+  if (conflict) {
+    const t = await getTranslations("validation");
+    return { success: false, error: t("voucherExists") };
+  }
 
   // Guard: cannot reduce maxUses below already used count
   const used = await prisma.reservation.count({
     where: { voucherId: id, status: { not: "CANCELED" } },
   });
   if (parsed.data.maxUses < used) {
-    return { success: false, error: `Kuota tidak bisa di bawah pemakaian saat ini (${used})` };
+    const t = await getTranslations("validation");
+    return { success: false, error: t("voucherQuotaBelowUsage") };
   }
 
   await prisma.voucher.update({ where: { id }, data: parsed.data });
@@ -110,7 +117,8 @@ export async function adminDeleteVoucher(id: string) {
     where: { voucherId: id, status: { not: "CANCELED" } },
   });
   if (used > 0) {
-    return { success: false, error: "Tidak bisa hapus voucher yang masih terpakai reservasi aktif" };
+    const t = await getTranslations("validation");
+    return { success: false, error: t("voucherInUseDelete") };
   }
 
   await prisma.voucher.delete({ where: { id } });
@@ -133,14 +141,24 @@ export async function adminToggleVoucherActive(id: string, isActive: boolean) {
  * Validates a voucher code against current subtotal and returns computed discount.
  */
 export async function validateVoucherAction(code: string, totalPrice: number) {
+  const t = await getTranslations("validation");
   const session = await auth();
   if (!session?.user?.id) {
-    return { success: false as const, error: "Silakan login terlebih dahulu." };
+    return { success: false as const, error: t("unauthorized") };
+  }
+
+  const { checkRateLimitRelaxed } = await import("@/lib/ratelimit");
+  const { success: allowed } = await checkRateLimitRelaxed(`voucher_validate:${session.user.id}`);
+  if (!allowed) {
+    return {
+      success: false as const,
+      error: t("voucherRateLimit"),
+    };
   }
 
   const cleanCode = code?.trim().toUpperCase();
   if (!cleanCode) {
-    return { success: false as const, error: "Kode voucher tidak boleh kosong." };
+    return { success: false as const, error: t("voucherEmpty") };
   }
 
   const voucher = await prisma.voucher.findUnique({
@@ -148,17 +166,17 @@ export async function validateVoucherAction(code: string, totalPrice: number) {
   });
 
   if (!voucher || !voucher.isActive) {
-    return { success: false as const, error: "Kode voucher tidak valid atau tidak aktif." };
+    return { success: false as const, error: t("voucherInvalidOrInactive") };
   }
 
   if (voucher.expiresAt < new Date()) {
-    return { success: false as const, error: "Kode voucher sudah kedaluwarsa." };
+    return { success: false as const, error: t("voucherExpired") };
   }
 
   if (totalPrice < voucher.minSpend) {
     return {
       success: false as const,
-      error: `Minimal transaksi untuk voucher ini adalah Rp ${voucher.minSpend.toLocaleString("id-ID")}.`,
+      error: t("voucherMinSpendMsg", { amount: voucher.minSpend.toLocaleString("id-ID") }),
     };
   }
 
@@ -167,7 +185,7 @@ export async function validateVoucherAction(code: string, totalPrice: number) {
       where: { voucherId: voucher.id, status: { not: "CANCELED" } },
     });
     if (usedCount >= voucher.maxUses) {
-      return { success: false as const, error: "Kuota penggunaan voucher ini sudah habis." };
+      return { success: false as const, error: t("voucherQuotaExceeded") };
     }
   }
 

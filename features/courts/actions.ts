@@ -7,6 +7,7 @@ import { formatSlotHour } from "@/lib/timezone";
 import { auth } from "@/auth";
 import { uploadCourtImage } from "@/lib/supabase/storage";
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 
 
 /**
@@ -64,37 +65,38 @@ export async function getCourtAvailability(courtId: string, dateStr: string): Pr
 
 
 export async function uploadCourtImageAction(formData: FormData) {
+  const t = await getTranslations("validation");
   const session = await auth();
   if (!session?.user || session.user.role !== "ADMIN") {
-    return { success: false, error: "Akses khusus Superadmin." };
+    return { success: false, error: t("unauthorizedAdmin") };
   }
 
   const { checkRateLimitRelaxed } = await import("@/lib/ratelimit");
   const { success: allowed } = await checkRateLimitRelaxed(`court_img:${session.user.id}`);
   if (!allowed) {
-    return { success: false, error: "Terlalu banyak upload. Coba lagi nanti." };
+    return { success: false, error: t("courtUploadRateLimit") };
   }
 
   const file = formData.get("file") as File | null;
   if (!file) {
-    return { success: false, error: "Pilih file gambar untuk diupload." };
+    return { success: false, error: t("courtImageRequired") };
   }
 
   if (!file.type.startsWith("image/")) {
-    return { success: false, error: "File harus format gambar (JPG/PNG/WEBP)." };
+    return { success: false, error: t("imageInvalidType") };
   }
 
   if (file.size > 3 * 1024 * 1024) {
-    return { success: false, error: "Ukuran file maksimal 3MB." };
+    return { success: false, error: t("imageTooLarge") };
   }
 
   try {
     const url = await uploadCourtImage(file);
     revalidatePath("/admin/courts");
     revalidatePath("/courts");
-    return { success: true, url, message: "Gambar lapangan berhasil diupload." };
+    return { success: true, url, message: t("courtImageSuccess") };
   } catch (err) {
     console.error("Court image upload error:", err);
-    return { success: false, error: "Gagal mengupload file gambar." };
+    return { success: false, error: t("avatarUploadFailed") };
   }
 }

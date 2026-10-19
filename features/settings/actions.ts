@@ -4,8 +4,7 @@ import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
-
-
+import { getTranslations } from "next-intl/server";
 
 /**
  * Checks that the current session belongs to an admin.
@@ -13,7 +12,8 @@ import { z } from "zod";
 async function checkAdmin() {
   const session = await auth();
   if (session?.user?.role !== "ADMIN") {
-    return { success: false as const, error: "Unauthorized. Admins only." };
+    const t = await getTranslations("validation");
+    return { success: false as const, error: t("unauthorizedAdmin") };
   }
 
   return { success: true as const };
@@ -26,6 +26,7 @@ async function checkAdmin() {
  * pages so the UI reflects new values immediately.
  */
 export async function updateAdminSettings(formData: FormData) {
+  const t = await getTranslations("validation");
   try {
     const adminCheck = await checkAdmin();
     if (!adminCheck.success) {
@@ -34,12 +35,12 @@ export async function updateAdminSettings(formData: FormData) {
 
     // Validate ranges via Zod (invalid values must be rejected).
     const settingsSchema = z.object({
-      venueName: z.string().min(1, "Nama venue wajib diisi.").max(100),
-      operationalHours: z.string().min(1, "Jam operasional wajib diisi.").max(100),
-      contactPhone: z.string().max(30, "Nomor telepon terlalu panjang.").optional(),
-      dpPercentage: z.number().int().min(1, "Persentase DP minimal 1%.").max(100, "Persentase DP maksimal 100%."),
-      autoCancelTimeout: z.number().int().min(1, "Waktu auto-cancel minimal 1 menit.").max(1440, "Waktu auto-cancel maksimal 1440 menit (24 jam)."),
-      notifyEmail: z.email("Email notifikasi tidak valid.").optional().or(z.literal("")),
+      venueName: z.string().min(1, t("venueNameRequired")).max(100, t("venueNameTooLong")),
+      operationalHours: z.string().min(1, t("operatingHoursRequired")).max(100, t("operatingHoursTooLong")),
+      contactPhone: z.string().max(30, t("contactPhoneTooLong")).optional(),
+      dpPercentage: z.number().int().min(10, t("dpPercentageRange")).max(100, t("dpPercentageRange")),
+      autoCancelTimeout: z.number().int().min(5, t("autoCancelTimeoutRange")).max(120, t("autoCancelTimeoutRange")),
+      notifyEmail: z.email(t("notificationEmailInvalid")).optional().or(z.literal("")),
     });
 
     const parsed = settingsSchema.safeParse({
@@ -90,14 +91,14 @@ export async function updateAdminSettings(formData: FormData) {
 
     return {
       success: true,
-      message: "Pengaturan sistem berhasil diperbarui dan disimpan!",
+      message: t("settingsUpdateSuccess"),
     };
 
   } catch (error) {
     console.error("Gagal menyimpan pengaturan:", error);
     return {
       success: false,
-      error: "Terjadi kesalahan server saat mencoba menyimpan data.",
+      error: t("settingsUpdateFailed"),
     };
   }
 }

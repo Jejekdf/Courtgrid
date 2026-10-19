@@ -20,6 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useTranslations } from "next-intl";
 
 interface ETicketPendingActionsProps {
   reservationId: string;
@@ -31,6 +32,7 @@ export default function ETicketPendingActions({
   dpAmount,
 }: ETicketPendingActionsProps) {
   const router = useRouter();
+  const t = useTranslations("dashboard.reservations");
   const [isResuming, setIsResuming] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
@@ -40,13 +42,13 @@ export default function ETicketPendingActions({
     try {
       const result = await resumeReservationPaymentAction(reservationId);
       if (result.success && result.url) {
-        toast.success("Mengarahkan ke pembayaran aman Stripe...");
+        toast.success(t("stripeRedirectToast"));
         window.location.href = result.url;
       } else {
-        toast.error(result.error || "Gagal melanjutkan pembayaran. Silakan coba lagi.");
+        toast.error(result.error || t("resumePaymentError"));
       }
     } catch {
-      toast.error("Terjadi kesalahan jaringan saat menyiapkan pembayaran.");
+      toast.error(t("networkErrorToast"));
     } finally {
       setIsResuming(false);
     }
@@ -57,14 +59,14 @@ export default function ETicketPendingActions({
     try {
       const result = await cancelReservationAction({ reservationId });
       if (result.success) {
-        toast.success(result.message || "Reservasi berhasil dibatalkan.");
+        toast.success(result.message || t("cancelSuccessToast"));
         setIsCancelDialogOpen(false);
         router.refresh();
       } else {
-        toast.error(result.error || "Gagal membatalkan reservasi.");
+        toast.error(result.error || t("cancelErrorToast"));
       }
     } catch {
-      toast.error("Terjadi kesalahan saat membatalkan reservasi.");
+      toast.error(t("cancelErrorToast"));
     } finally {
       setIsCancelling(false);
     }
@@ -80,16 +82,14 @@ export default function ETicketPendingActions({
           <div className="space-y-1 min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <h3 className="font-bold text-sm sm:text-base text-amber-950 font-sans">
-                Pembayaran DP Belum Selesai
+                {t("pendingPaymentTitle")}
               </h3>
               <span className="text-[0.625rem] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-200/80 text-amber-900 font-mono">
-                Menunggu DP
+                {t("statusPending")}
               </span>
             </div>
             <p className="text-xs sm:text-sm text-amber-800 leading-relaxed font-sans">
-              Segera selesaikan pembayaran Down Payment (DP) sebesar{" "}
-              <strong className="font-bold text-amber-950 font-mono">{formatRupiah(dpAmount)}</strong>{" "}
-              agar slot lapangan terkunci dan tiket resmi terbit.
+              {t("pendingPaymentDesc", { amount: formatRupiah(dpAmount) })}
             </p>
           </div>
         </div>
@@ -102,7 +102,7 @@ export default function ETicketPendingActions({
             className="flex-1 bg-zinc-950 hover:bg-zinc-800 text-white font-bold h-11 text-xs sm:text-sm rounded-xl transition-colors cursor-pointer shadow-xs gap-2"
           >
             <CreditCard className="size-4" />
-            <span>Bayar Sekarang (Stripe Checkout)</span>
+            <span>{t("payNowStripe")}</span>
           </Button>
 
           <Button
@@ -112,7 +112,7 @@ export default function ETicketPendingActions({
             className="sm:w-auto h-11 px-4 text-xs sm:text-sm font-semibold text-red-600 hover:text-red-700 bg-white hover:bg-red-50 border-red-200/80 rounded-xl transition-colors cursor-pointer gap-2"
           >
             <XCircle className="size-4" />
-            <span>Batalkan Reservasi</span>
+            <span>{t("cancelBtn")}</span>
           </Button>
         </div>
       </div>
@@ -120,19 +120,19 @@ export default function ETicketPendingActions({
       <AlertDialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
         <AlertDialogContent className="rounded-2xl">
           <AlertDialogHeader>
-            <AlertDialogTitle>Batalkan Reservasi Ini?</AlertDialogTitle>
+            <AlertDialogTitle>{t("cancelTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Slot jam main yang sudah kamu tahan akan langsung dilepas kembali dan tersedia untuk pemain lain. Tindakan ini tidak dapat diurungkan.
+              {t("cancelDesc")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-xl">Kembali</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-xl">{t("cancelBack")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmCancel}
               disabled={isCancelling}
               className="bg-red-600 hover:bg-red-700 text-white rounded-xl"
             >
-              {isCancelling ? "Membatalkan..." : "Ya, Batalkan"}
+              {isCancelling ? t("cancelling") : t("cancelConfirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

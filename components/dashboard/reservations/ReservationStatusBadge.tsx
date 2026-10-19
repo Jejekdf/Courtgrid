@@ -1,10 +1,13 @@
 import { CheckCircle2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface ReservationStatusBadgeProps {
   status: string;
 }
 
 export function ReservationStatusBadge({ status }: ReservationStatusBadgeProps) {
+  const t = useTranslations("dashboard.reservations");
+
   const getBadgeClass = () => {
     switch (status) {
       case "DP_PAID":
@@ -21,13 +24,13 @@ export function ReservationStatusBadge({ status }: ReservationStatusBadgeProps) 
   const getStatusLabel = () => {
     switch (status) {
       case "DP_PAID":
-        return "DP TERVERIFIKASI";
+        return t("statusDpPaid");
       case "PENDING":
-        return "MENUNGGU PEMBAYARAN";
+        return t("statusPending");
       case "DONE":
-        return "SELESAI";
+        return t("statusDone");
       case "CANCELED":
-        return "DIBATALKAN";
+        return t("statusCanceled");
       default:
         return status.replace("_", " ");
     }
@@ -51,11 +54,13 @@ export function PaymentStatusBadge({
   isVerified,
   reservationStatus,
 }: PaymentStatusBadgeProps) {
+  const t = useTranslations("dashboard.reservations");
+
   if (isVerified) {
     return (
       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[0.6875rem] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
         <CheckCircle2 className="size-3 text-emerald-600" />
-        TERVERIFIKASI DP 50%
+        {t("paymentVerifiedDp")}
       </span>
     );
   }
@@ -63,14 +68,14 @@ export function PaymentStatusBadge({
   if (reservationStatus === "CANCELED") {
     return (
       <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[0.6875rem] font-mono font-bold bg-red-50 text-red-700 border border-red-200">
-        DIBATALKAN
+        {t("paymentCanceled")}
       </span>
     );
   }
 
   return (
     <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[0.6875rem] font-mono font-bold bg-amber-50 text-amber-800 border border-amber-200">
-      BELUM DIBAYAR
+      {t("paymentUnpaid")}
     </span>
   );
 }
