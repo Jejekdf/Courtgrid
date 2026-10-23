@@ -59,31 +59,44 @@ export const getAdminRevenueChartDAL = cache(async (): Promise<AdminStatsDTO["re
   await verifyAdminSession();
 
   const todayStr = getJakartaNow().dateStr;
-  const chart: AdminStatsDTO["revenueChart"] = [];
+  const oldestDayDate = new Date(todayStr + "T00:00:00.000Z");
+  oldestDayDate.setUTCDate(oldestDayDate.getUTCDate() - 6);
+  const oldestDayStr = oldestDayDate.toISOString().slice(0, 10);
 
+  const { start: rangeStart } = jakartaDayBounds(oldestDayStr);
+  const { end: rangeEnd } = jakartaDayBounds(todayStr);
+
+  const reservations = await prisma.reservation.findMany({
+    where: {
+      date: {
+        gte: rangeStart,
+        lt: rangeEnd,
+      },
+      status: {
+        in: ["DP_PAID", "DONE"],
+      },
+    },
+    select: {
+      date: true,
+      totalPrice: true,
+    },
+  });
+
+  const dailyTotals = new Map<string, number>();
+  for (const r of reservations) {
+    const dayStr = r.date instanceof Date ? r.date.toISOString().slice(0, 10) : String(r.date).slice(0, 10);
+    dailyTotals.set(dayStr, (dailyTotals.get(dayStr) ?? 0) + r.totalPrice);
+  }
+
+  const chart: AdminStatsDTO["revenueChart"] = [];
   for (let i = 6; i >= 0; i--) {
-    // Revenue windows computed in Asia/Jakarta, stored as UTC.
     const dayDate = new Date(todayStr + "T00:00:00.000Z");
     dayDate.setUTCDate(dayDate.getUTCDate() - i);
     const dayStr = dayDate.toISOString().slice(0, 10);
-    const { start, end } = jakartaDayBounds(dayStr);
-
-    const result = await prisma.reservation.aggregate({
-      _sum: { totalPrice: true },
-      where: {
-        date: {
-          gte: start,
-          lt: end,
-        },
-        status: {
-          in: ["DP_PAID", "DONE"],
-        },
-      },
-    });
 
     chart.push({
       date: dayStr,
-      revenue: result._sum.totalPrice || 0,
+      revenue: dailyTotals.get(dayStr) ?? 0,
     });
   }
 
@@ -139,6 +152,8 @@ export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> 
             createdAt: { gte: thirtyDaysAgo },
             status: { in: ["DP_PAID", "DONE"] },
           },
+          take: 500,
+          orderBy: { createdAt: "desc" },
           select: { startTime: true, endTime: true },
         }),
         prisma.reservation.findMany({
@@ -344,11 +359,33 @@ export const getAdminPaginatedCustomersDAL = cache(
           reservations: {
             orderBy: { createdAt: "desc" },
             take: 1,
-            select: { createdAt: true, totalPrice: true },
+            select: { createdAt: true },
           },
         },
       }),
     ]);
+
+    const userIds = customers.map((u) => u.id);
+    const spendByUser = new Map<string, number>();
+
+    if (userIds.length > 0) {
+      const spendAggregates = await prisma.reservation.groupBy({
+        by: ["userId"],
+        where: {
+          userId: { in: userIds },
+          status: { in: ["DP_PAID", "DONE"] },
+        },
+        _sum: {
+          totalPrice: true,
+        },
+      });
+
+      for (const agg of spendAggregates) {
+        if (agg.userId) {
+          spendByUser.set(agg.userId, agg._sum.totalPrice ?? 0);
+        }
+      }
+    }
 
     return {
       customers: customers.map((user) => ({
@@ -357,7 +394,7 @@ export const getAdminPaginatedCustomersDAL = cache(
         email: user.email,
         createdAt: user.createdAt instanceof Date ? user.createdAt.toISOString() : String(user.createdAt),
         totalBookings: user._count.reservations,
-        totalSpent: user.reservations.reduce((sum, r) => sum + r.totalPrice, 0),
+        totalSpent: spendByUser.get(user.id) ?? 0,
         lastBookingAt: user.reservations[0]?.createdAt
           ? user.reservations[0].createdAt instanceof Date
             ? user.reservations[0].createdAt.toISOString()

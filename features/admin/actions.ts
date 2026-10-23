@@ -126,7 +126,7 @@ export async function getAllReservations(
     prisma.reservation.count({ where: dateFilter }),
     prisma.reservation.findMany({
       where: dateFilter,
-      orderBy: { startTime: "desc" },
+      orderBy: [{ date: "desc" }, { startTime: "desc" }],
       skip: (page - 1) * pageSize,
       take: pageSize,
       select: {
