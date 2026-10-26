@@ -1,7 +1,12 @@
 import { z } from "zod";
+import type idMessages from "@/messages/id.json";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type SchemaTranslator = (key: any, values?: any) => string;
+export type ValidationMessageKey = keyof typeof idMessages.validation;
+
+export type SchemaTranslator = (
+  key: ValidationMessageKey,
+  values?: Record<string, string | number | Date>
+) => string;
 
 const defaultValidationMessages: Record<string, string> = {
   emailRequired: "Email wajib diisi",

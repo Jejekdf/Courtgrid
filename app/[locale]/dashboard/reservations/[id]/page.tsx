@@ -78,12 +78,12 @@ export default async function CustomerETicketPage({
       </Link>
 
       {/* Immediate Payment Success Confirmation Banner */}
-      {payment === "success" && (
+      {payment === "success" && isVerified && (
         <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-3 text-emerald-950 shadow-xs">
           <CheckCircle2 className="size-5 text-emerald-600 shrink-0" />
           <div className="space-y-0.5">
-            <p className="font-bold text-sm">Pembayaran DP Berhasil!</p>
-            <p className="text-xs text-emerald-700">E-Ticket kamu sudah aktif dan terverifikasi otomatis oleh sistem.</p>
+            <p className="font-bold text-sm">{t("paymentSuccessTitle")}</p>
+            <p className="text-xs text-emerald-700">{t("paymentSuccessDesc")}</p>
           </div>
         </div>
       )}

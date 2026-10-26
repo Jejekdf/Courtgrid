@@ -4,6 +4,7 @@ import { redirect } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 import CustomerBookingWorkspace from "@/components/dashboard/CustomerBookingWorkspace";
 import PageHeader from "@/components/ui/PageHeader";
+import { getPublicDpPercentageDAL } from "@/features/settings/dal";
 import type { Locale } from "@/i18n/routing";
 
 export async function generateMetadata({
@@ -32,6 +33,8 @@ export default async function CustomerBookPage({
     redirect({ href: "/login", locale });
   }
 
+  const dpPercentage = await getPublicDpPercentageDAL();
+
   return (
     <div className="space-y-8 max-w-7xl mx-auto text-zinc-950">
       {/* Shared Reusable PageHeader (Consistent with Admin) */}
@@ -40,7 +43,7 @@ export default async function CustomerBookPage({
         description={t("pageDesc")}
       />
 
-      <CustomerBookingWorkspace />
+      <CustomerBookingWorkspace dpPercentage={dpPercentage} />
     </div>
   );
 }

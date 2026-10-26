@@ -16,6 +16,7 @@ export type UserDTO = {
   role: "ADMIN" | "CUSTOMER";
   image: string | null;
   hasPasswordAccount: boolean;
+  accounts: Array<{ provider: string }>;
   createdAt: string;
 };
 
@@ -52,6 +53,7 @@ export const getCurrentUser = cache(async (): Promise<UserDTO | null> => {
     role: user.role as "ADMIN" | "CUSTOMER",
     image: user.image,
     hasPasswordAccount: !!user.passwordHash,
+    accounts: user.accounts,
     createdAt: user.createdAt instanceof Date ? user.createdAt.toISOString() : String(user.createdAt),
   };
 });

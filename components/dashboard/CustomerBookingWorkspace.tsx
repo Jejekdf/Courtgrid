@@ -9,6 +9,7 @@ import { addDays, format } from "date-fns";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useNetworkState } from "@react-hookz/web";
 import { createReservationAction } from "@/features/reservations/actions";
+import { computeDeposit } from "@/features/reservations/doubleBooking";
 import { getCourts, getCourtAvailability } from "@/features/courts/actions";
 import { courtKeys } from "@/lib/query-keys";
 import { useAvailabilityRealtime } from "@/components/dashboard/useAvailabilityRealtime";
@@ -38,7 +39,11 @@ export type Court = {
   imageUrl?: string | null;
 };
 
-export default function CustomerBookingWorkspace() {
+export default function CustomerBookingWorkspace({
+  dpPercentage = 50,
+}: {
+  dpPercentage?: number;
+} = {}) {
   const router = useRouter();
   const tVal = useTranslations("validation");
   const tFlow = useTranslations("dashboard.book");
@@ -122,7 +127,7 @@ export default function CustomerBookingWorkspace() {
   });
 
   const totalPrice = appliedVoucher ? appliedVoucher.finalTotalPrice : originalTotalPrice;
-  const dpAmount = Math.ceil(totalPrice / 2);
+  const dpAmount = computeDeposit(totalPrice, dpPercentage);
   const remainingCash = totalPrice - dpAmount;
 
   const handleSelectCourt = (court: Court) => {

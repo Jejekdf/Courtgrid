@@ -35,3 +35,14 @@ export const getSettingsDAL = cache(async (): Promise<SettingsDTO | null> => {
     notifyEmail: s.notifyEmail,
   };
 });
+
+/**
+ * Down-payment percentage configured for the venue (defaults to 50%).
+ */
+export const getPublicDpPercentageDAL = cache(async (): Promise<number> => {
+  const s = await prisma.setting.findUnique({
+    where: { id: 1 },
+    select: { dpPercentage: true },
+  });
+  return s?.dpPercentage ?? 50;
+});

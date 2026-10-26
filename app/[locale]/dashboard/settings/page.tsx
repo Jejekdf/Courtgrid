@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { auth } from "@/auth";
 import { redirect } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
-import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/features/auth/dal";
 import { User, Key, ShieldCheck } from "lucide-react";
 import ProfileForm from "@/components/dashboard/ProfileForm";
 import PasswordForm from "@/components/dashboard/PasswordForm";
@@ -36,10 +36,7 @@ export default async function CustomerSettingsPage({
     return null;
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { name: true, email: true, image: true, accounts: true },
-  });
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect({ href: "/login", locale });

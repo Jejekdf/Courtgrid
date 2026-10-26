@@ -87,6 +87,7 @@ export async function updateAdminSettings(formData: FormData) {
 
     revalidatePath("/admin/settings");
     revalidatePath("/admin");
+    revalidatePath("/dashboard/book");
     revalidatePath("/");
 
     return {
