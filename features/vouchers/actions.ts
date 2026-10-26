@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
-import { voucherSchema } from "./schemas";
+import { buildVoucherSchema } from "./schemas";
 
 /**
  * Checks that the current session belongs to an admin.
@@ -47,14 +47,14 @@ export async function adminCreateVoucher(formData: FormData) {
     isActive: formData.get("isActive") === "true" || formData.get("isActive") === "on",
   };
 
-  const parsed = voucherSchema.safeParse(raw);
+  const t = await getTranslations("validation");
+  const parsed = buildVoucherSchema(t).safeParse(raw);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }
 
   const exists = await prisma.voucher.findUnique({ where: { code: parsed.data.code } });
   if (exists) {
-    const t = await getTranslations("validation");
     return { success: false, error: t("voucherExists") };
   }
 
@@ -80,7 +80,8 @@ export async function adminUpdateVoucher(id: string, formData: FormData) {
     isActive: formData.get("isActive") === "true" || formData.get("isActive") === "on",
   };
 
-  const parsed = voucherSchema.safeParse(raw);
+  const t = await getTranslations("validation");
+  const parsed = buildVoucherSchema(t).safeParse(raw);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }
@@ -89,16 +90,13 @@ export async function adminUpdateVoucher(id: string, formData: FormData) {
     where: { code: parsed.data.code, NOT: { id } },
   });
   if (conflict) {
-    const t = await getTranslations("validation");
     return { success: false, error: t("voucherExists") };
   }
 
-  // Guard: cannot reduce maxUses below already used count
   const used = await prisma.reservation.count({
     where: { voucherId: id, status: { not: "CANCELED" } },
   });
   if (parsed.data.maxUses < used) {
-    const t = await getTranslations("validation");
     return { success: false, error: t("voucherQuotaBelowUsage") };
   }
 

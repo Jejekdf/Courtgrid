@@ -571,7 +571,20 @@
       "summaryCopyFailed": "Gagal menyalin rincian tiket.",
       "downloadQr": "Unduh QR",
       "paymentSuccessTitle": "Pembayaran DP Berhasil!",
-      "paymentSuccessDesc": "E-Ticket kamu sudah aktif dan terverifikasi otomatis oleh sistem."
+      "paymentSuccessDesc": "E-Ticket kamu sudah aktif dan terverifikasi otomatis oleh sistem.",
+      "copiedBtn": "Tersalin",
+      "calendarBtn": "Kalender",
+      "saveToCalendarAria": "Simpan ke Kalender",
+      "googleCalendar": "Google Calendar",
+      "appleOutlookCalendar": "Apple atau Outlook",
+      "printPdfBtn": "Cetak PDF",
+      "printPdfAria": "Cetak atau Unduh PDF",
+      "googleCalendarFailed": "Gagal membuka Google Calendar",
+      "icsDownloaded": "File kalender (.ics) berhasil diunduh",
+      "icsDownloadFailed": "Gagal mengunduh file kalender",
+      "shareTextTemplate": "*CourtGrid E-Ticket Reservasi*\nArena {courtName}\nTanggal {dateStr}\nJam {startTime} sampai {endTime} WIB\nTotal {totalPrice} dengan DP {dpAmount}\nKode Tiket #{ticketId}\nStatus {status}\n\nTunjukkan QR ini ke kasir GOR saat tim kamu tiba di lokasi.",
+      "calendarEventTitle": "Booking Arena {courtName}",
+      "calendarEventDesc": "CourtGrid E-Ticket #{ticketId}\nArena {courtName}\nJam {startTime} sampai {endTime} WIB\nStatus {status}\nTunjukkan QR ini saat tiba di lokasi."
     },
     "book": {
       "metaTitle": "Pesan Lapangan",
@@ -649,7 +662,24 @@
       "voucherApplied": "Voucher Diskon",
       "dpStripeLabel": "DP 50%",
       "backBtn": "Kembali",
-      "payNowBtn": "Lanjut Bayar DP"
+      "payNowBtn": "Lanjut Bayar DP",
+      "subtotalHours": "Subtotal {count} Jam",
+      "subtotalLabel": "Subtotal",
+      "voucherDiscountLabel": "Potongan Voucher {pct}%",
+      "voucherActiveText": "Voucher {code} aktif hemat {pct}%",
+      "removeVoucherBtn": "Hapus",
+      "applyVoucherBtn": "Pakai",
+      "nonContiguousHint": "Pilih jam main yang berurutan langsung tanpa jeda.",
+      "nonContiguousWarning": "Jam main yang dipilih tidak berurutan. Silakan pilih jam yang bersambung langsung tanpa jeda.",
+      "tzNotice": "Semua slot di atas dalam zona waktu WIB Asia Jakarta. Waktu lokal perangkat Anda terdeteksi {tz}.",
+      "checkingSchedule": "Mengecek jadwal jam main...",
+      "slotPending": "Proses Bayar",
+      "slotBooked": "Terbooking",
+      "voucherEnterFirst": "Masukkan kode voucher terlebih dahulu",
+      "voucherSelectSlotFirst": "Pilih minimal 1 sesi jam sebelum memasang voucher",
+      "voucherAppliedToast": "Voucher {code} berhasil digunakan! Diskon {pct}%",
+      "voucherValidateFailed": "Gagal memvalidasi kode voucher",
+      "voucherRemovedToast": "Voucher {code} dilepas: {reason}"
     }
   },
   "admin": {
@@ -705,6 +735,7 @@
       "peakHoursDesc": "Jumlah pemesanan per jam main selama 30 hari terakhir",
       "peakBadgePrefix": "Paling ramai",
       "peakBookingsCount": "{count} reservasi",
+      "tooltipBookingsUnit": "reservasi",
       "intensityPeak": "Sangat ramai",
       "intensityHigh": "Ramai",
       "intensityMedium": "Sedang",
@@ -1105,7 +1136,20 @@
     "dpPercentageRange": "Persentase DP harus antara 10% dan 100%.",
     "autoCancelTimeoutRange": "Batas waktu auto-cancel harus antara 5 dan 120 menit.",
     "settingsUpdateSuccess": "Pengaturan berhasil disimpan.",
-    "settingsUpdateFailed": "Gagal memperbarui pengaturan venue."
+    "settingsUpdateFailed": "Gagal memperbarui pengaturan venue.",
+    "settingsNotInitialized": "Pengaturan belum diinisialisasi.",
+    "settingsLoadFailed": "Gagal memuat pengaturan.",
+    "voucherCodePattern": "Kode hanya boleh huruf kapital, angka, dash, dan underscore.",
+    "voucherDiscountInt": "Diskon harus bilangan bulat.",
+    "voucherDiscountMin": "Diskon minimal 1%.",
+    "voucherDiscountMax": "Diskon maksimal 100%.",
+    "voucherMaxDiscountPositive": "Maksimal diskon harus bernilai positif.",
+    "voucherMinSpendNonNegative": "Minimal belanja tidak boleh negatif.",
+    "voucherExpiryRequired": "Tanggal kedaluwarsa wajib diisi.",
+    "voucherExpiryPast": "Tanggal kedaluwarsa tidak boleh di masa lalu.",
+    "voucherQuotaMin": "Kuota minimal 1.",
+    "voucherQuotaMax": "Kuota maksimal 100.",
+    "voucherDescMax": "Deskripsi maksimal 200 karakter."
   },
   "common": {
     "notFoundTitle": "Halaman tidak ditemukan",
@@ -1115,6 +1159,8 @@
     "genericErrorDesc": "Silakan coba lagi. Jika terus terjadi, hubungi pengelola venue.",
     "retry": "Coba Lagi",
     "language": "Bahasa",
-    "switchLanguage": "Ganti Bahasa"
+    "switchLanguage": "Ganti Bahasa",
+    "loading": "Memuat...",
+    "loadingCourts": "Memuat data lapangan..."
   }
 }

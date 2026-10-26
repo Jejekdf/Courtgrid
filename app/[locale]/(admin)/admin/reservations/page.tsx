@@ -53,12 +53,11 @@ export default function AdminReservationsPage() {
 
   const displayedReservations = reservations;
 
-  // Mutation for deleting reservation and invalidating cache
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const res = await adminDeleteReservation(id);
       if (!res.success) {
-        throw new Error(res.error || "Gagal menghapus reservasi");
+        throw new Error(res.error);
       }
       return res;
     },
@@ -67,7 +66,9 @@ export default function AdminReservationsPage() {
       toast.success(t("deletedToast", { id: id.slice(0, 8) }));
     },
     onError: (err) => {
-      toast.error(err instanceof Error ? err.message : "Gagal menghapus reservasi");
+      if (err instanceof Error && err.message) {
+        toast.error(err.message);
+      }
     },
   });
 

@@ -86,7 +86,7 @@ export default function AdminCourtsPage() {
       formData.append("isActive", isActive.toString());
       const res = await adminToggleCourtActive(court.id, formData);
       if (!res.success) {
-        throw new Error(res.error || "Failed to update court status");
+        throw new Error(res.error);
       }
       return res;
     },
@@ -102,7 +102,9 @@ export default function AdminCourtsPage() {
       if (context?.previousCourts) {
         queryClient.setQueryData(courtKeys.all, context.previousCourts);
       }
-      toast.error(err instanceof Error ? err.message : "Failed to update court status");
+      if (err instanceof Error && err.message) {
+        toast.error(err.message);
+      }
     },
     onSuccess: (_, variables) => {
       toast.success(

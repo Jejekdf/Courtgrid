@@ -99,13 +99,13 @@ export function BookingSummaryPanel({
             {appliedVoucher ? (
               <>
                 <div className="flex justify-between py-1.5 border-b border-zinc-100 font-sans">
-                  <span className="text-zinc-500">Subtotal {selectedTimeSlots.length} Jam</span>
+                  <span className="text-zinc-500">{t("subtotalHours", { count: selectedTimeSlots.length })}</span>
                   <span className="font-semibold text-zinc-700 tabular-nums">
                     {formatRupiah(subtotal)}
                   </span>
                 </div>
                 <div className="flex justify-between py-1.5 border-b border-zinc-100 font-sans text-emerald-600">
-                  <span className="font-medium">Potongan Voucher {appliedVoucher.discountPct}%</span>
+                  <span className="font-medium">{t("voucherDiscountLabel", { pct: appliedVoucher.discountPct })}</span>
                   <span className="font-bold tabular-nums">
                     -{formatRupiah(appliedVoucher.discountAmount)}
                   </span>
@@ -127,7 +127,6 @@ export function BookingSummaryPanel({
             )}
           </div>
 
-          {/* Voucher Code Input Area */}
           <div className="space-y-1.5">
             <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 font-sans">
               {t("voucherLabel")}
@@ -136,7 +135,7 @@ export function BookingSummaryPanel({
               <div className="flex items-center justify-between p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs">
                 <div className="flex items-center gap-2 text-emerald-800 font-semibold font-sans">
                   <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
-                  <span>Voucher <strong>{appliedVoucher.code}</strong> aktif hemat {appliedVoucher.discountPct}%</span>
+                  <span>{t("voucherActiveText", { code: appliedVoucher.code, pct: appliedVoucher.discountPct })}</span>
                 </div>
                 <button
                   type="button"
@@ -144,7 +143,7 @@ export function BookingSummaryPanel({
                   className="text-xs text-zinc-500 hover:text-red-600 font-medium px-2 py-1 rounded transition-colors inline-flex items-center gap-1 cursor-pointer"
                 >
                   <X className="size-3" />
-                  <span>Hapus</span>
+                  <span>{t("removeVoucherBtn")}</span>
                 </button>
               </div>
             ) : (
@@ -177,7 +176,7 @@ export function BookingSummaryPanel({
                     isLoading={isValidatingVoucher}
                     className="h-10 px-3 text-xs font-semibold rounded-xl cursor-pointer"
                   >
-                    Pakai
+                    {t("applyVoucherBtn")}
                   </Button>
                 </div>
                 {voucherError && (
@@ -187,7 +186,6 @@ export function BookingSummaryPanel({
             )}
           </div>
 
-          {/* DP 50% Highlight Card */}
           <div className="p-3.5 xl:p-4 bg-zinc-950 text-white rounded-xl space-y-2.5 xl:space-y-3 shadow-xs">
             <div className="flex items-center justify-between">
               <span className="text-xs sm:text-sm font-semibold text-zinc-200 flex items-center gap-1.5 font-sans">
@@ -208,7 +206,7 @@ export function BookingSummaryPanel({
 
           {!isContiguous && (
             <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 font-semibold text-center">
-              Pilih jam main yang berurutan langsung tanpa jeda.
+              {t("nonContiguousHint")}
             </div>
           )}
 

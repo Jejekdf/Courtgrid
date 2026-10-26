@@ -100,7 +100,7 @@ export function BookingPreviewModal({
             {appliedVoucher ? (
               <>
                 <div className="flex justify-between border-b border-zinc-200/60 pb-2">
-                  <span className="text-zinc-500">Subtotal</span>
+                  <span className="text-zinc-500">{t("subtotalLabel")}</span>
                   <span className="font-semibold text-zinc-950 tabular-nums">
                     {formatRupiah(originalTotalPrice ?? totalPrice)}
                   </span>

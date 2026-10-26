@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { validateVoucherAction } from "@/features/vouchers/actions";
 
 export interface AppliedVoucher {
@@ -17,6 +18,7 @@ interface UseVoucherManagerProps {
 }
 
 export function useVoucherManager({ subtotal, slotCount }: UseVoucherManagerProps) {
+  const t = useTranslations("dashboard.bookingFlow");
   const [voucherCode, setVoucherCode] = useState("");
   const [appliedVoucher, setAppliedVoucher] = useState<AppliedVoucher | null>(null);
   const [isValidatingVoucher, setIsValidatingVoucher] = useState(false);
@@ -25,11 +27,11 @@ export function useVoucherManager({ subtotal, slotCount }: UseVoucherManagerProp
   const applyVoucher = useCallback(async () => {
     const code = voucherCode.trim();
     if (!code) {
-      setVoucherError("Masukkan kode voucher terlebih dahulu");
+      setVoucherError(t("voucherEnterFirst"));
       return;
     }
     if (subtotal === 0) {
-      setVoucherError("Pilih minimal 1 sesi jam sebelum memasang voucher");
+      setVoucherError(t("voucherSelectSlotFirst"));
       return;
     }
 
@@ -44,18 +46,18 @@ export function useVoucherManager({ subtotal, slotCount }: UseVoucherManagerProp
           discountAmount: res.discountAmount,
           finalTotalPrice: res.finalTotalPrice,
         });
-        toast.success(`Voucher ${res.code} berhasil digunakan! Diskon ${res.discountPct}%`);
+        toast.success(t("voucherAppliedToast", { code: res.code, pct: res.discountPct }));
       } else {
         setAppliedVoucher(null);
         setVoucherError(res.error);
         toast.error(res.error);
       }
     } catch {
-      setVoucherError("Gagal memvalidasi kode voucher");
+      setVoucherError(t("voucherValidateFailed"));
     } finally {
       setIsValidatingVoucher(false);
     }
-  }, [voucherCode, subtotal]);
+  }, [voucherCode, subtotal, t]);
 
   const removeVoucher = useCallback(() => {
     setAppliedVoucher(null);
@@ -86,14 +88,14 @@ export function useVoucherManager({ subtotal, slotCount }: UseVoucherManagerProp
       } else {
         setAppliedVoucher(null);
         setVoucherError(res.error);
-        toast.error(`Voucher ${appliedCode} dilepas: ${res.error}`);
+        toast.error(t("voucherRemovedToast", { code: appliedCode, reason: res.error }));
       }
     });
 
     return () => {
       isMounted = false;
     };
-  }, [subtotal, slotCount, appliedCode]);
+  }, [subtotal, slotCount, appliedCode, t]);
 
   return {
     voucherCode,

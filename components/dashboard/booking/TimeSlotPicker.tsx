@@ -81,7 +81,7 @@ export function TimeSlotPicker({
         <div className="flex items-center gap-2.5 p-3 bg-zinc-50 border border-zinc-200/90 rounded-xl text-xs sm:text-sm text-zinc-600 font-sans">
           <Globe className="size-4 text-zinc-700 shrink-0" aria-hidden="true" />
           <p className="leading-relaxed">
-            Semua slot di atas dalam zona waktu <strong>WIB Asia Jakarta</strong>. Waktu lokal perangkat Anda terdeteksi <span className="font-mono font-bold text-zinc-950">{userTz}</span>.
+            {t("tzNotice", { tz: userTz })}
           </p>
         </div>
       )}
@@ -90,7 +90,7 @@ export function TimeSlotPicker({
         <div className="py-16 flex flex-col items-center justify-center bg-zinc-50/50 rounded-2xl border border-zinc-200 border-dashed space-y-2">
           <Loader2 className="h-6 w-6 animate-spin text-zinc-400" />
           <span className="text-xs sm:text-sm text-zinc-500 font-sans">
-            Mengecek jadwal jam main...
+            {t("checkingSchedule")}
           </span>
         </div>
       ) : (
@@ -139,9 +139,9 @@ export function TimeSlotPicker({
                     : isSelected
                     ? t("legendSelected")
                     : status === "PENDING"
-                    ? "Proses Bayar"
+                    ? t("slotPending")
                     : status === "DP_PAID"
-                    ? "Terbooking"
+                    ? t("slotBooked")
                     : t("legendFree")}
                 </span>
               </button>
@@ -153,7 +153,7 @@ export function TimeSlotPicker({
       {!isContiguous && selectedTimeSlots.length > 1 && (
         <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-300 rounded-xl text-xs font-semibold text-amber-900">
           <AlertCircle className="size-4 text-amber-700 shrink-0" aria-hidden="true" />
-          <span>Jam main yang dipilih tidak berurutan. Silakan pilih jam yang bersambung langsung tanpa jeda.</span>
+          <span>{t("nonContiguousWarning")}</span>
         </div>
       )}
     </div>

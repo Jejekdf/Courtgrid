@@ -30,9 +30,10 @@ type SlotTooltipProps = {
   active?: boolean;
   payload?: Array<{ payload: HourlySlotDatum; value: number }>;
   label?: string | number;
+  unitLabel: string;
 };
 
-function SlotTooltip({ active, payload }: SlotTooltipProps) {
+function SlotTooltip({ active, payload, unitLabel }: SlotTooltipProps) {
   if (!active || !payload?.length) return null;
   const item = payload[0].payload;
   const startHour = String(item.hour).padStart(2, "0") + ".00";
@@ -44,7 +45,7 @@ function SlotTooltip({ active, payload }: SlotTooltipProps) {
         {startHour} - {endHour} WIB
       </p>
       <p className="text-sm font-bold font-mono text-zinc-950 tabular-nums mt-0.5">
-        {item.count} <span className="font-sans font-normal text-xs text-zinc-600">reservasi</span>
+        {item.count} <span className="font-sans font-normal text-xs text-zinc-600">{unitLabel}</span>
       </p>
     </div>
   );
@@ -126,7 +127,7 @@ export default function PeakHoursCard({
                       axisLine={false}
                       tickLine={false}
                     />
-                    <Tooltip cursor={{ fill: "#f4f4f5" }} content={<SlotTooltip />} />
+                    <Tooltip cursor={{ fill: "#f4f4f5" }} content={<SlotTooltip unitLabel={t("tooltipBookingsUnit")} />} />
                     <Bar
                       dataKey="count"
                       radius={[5, 5, 0, 0]}

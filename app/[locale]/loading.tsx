@@ -1,10 +1,12 @@
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function Loading() {
+  const t = useTranslations("common");
   return (
     <div className="flex min-h-[50dvh] flex-col items-center justify-center gap-4">
       <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
-      <p className="text-sm text-zinc-500">Memuat...</p>
+      <p className="text-sm text-zinc-500">{t("loading")}</p>
     </div>
   );
 }

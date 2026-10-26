@@ -108,6 +108,7 @@ export async function updateAdminSettings(formData: FormData) {
  * Fetches the current global venue settings. Admin-only.
  */
 export async function getSettingsAction() {
+  const t = await getTranslations("validation");
   try {
     const adminCheck = await checkAdmin();
     if (!adminCheck.success) {
@@ -116,10 +117,10 @@ export async function getSettingsAction() {
     const { getSettingsDAL } = await import("@/features/settings/dal");
     const settings = await getSettingsDAL();
     if (!settings) {
-      return { success: false, error: "Pengaturan belum diinisialisasi." };
+      return { success: false, error: t("settingsNotInitialized") };
     }
     return { success: true, data: settings };
   } catch {
-    return { success: false, error: "Gagal memuat pengaturan." };
+    return { success: false, error: t("settingsLoadFailed") };
   }
 }

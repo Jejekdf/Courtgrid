@@ -39,7 +39,17 @@ export default function ETicketShareActions({
   const t = useTranslations("dashboard.eticket");
   const [hasCopied, setHasCopied] = useState(false);
 
-  const shareText = `*CourtGrid E-Ticket Reservasi*\nArena ${courtName}\nTanggal ${dateStr}\nJam ${startTime} sampai ${endTime} WIB\nTotal ${totalPriceFormatted} dengan DP ${dpAmountFormatted}\nKode Tiket #${ticketId}\nStatus ${isVerified ? "DP Lunas" : "Menunggu DP"}\n\nTunjukkan QR ini ke kasir GOR saat tim kamu tiba di lokasi.`;
+  const statusText = isVerified ? t("dpPaidBadge") : t("awaitingBadge");
+  const shareText = t("shareTextTemplate", {
+    courtName,
+    dateStr,
+    startTime,
+    endTime,
+    totalPrice: totalPriceFormatted,
+    dpAmount: dpAmountFormatted,
+    ticketId,
+    status: statusText,
+  });
 
   const handleShareWhatsApp = () => {
     const url = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
@@ -59,8 +69,14 @@ export default function ETicketShareActions({
 
   const calendarDate = rawDateStr || dateStr;
   const calendarEvent = {
-    title: `Booking Arena ${courtName}`,
-    description: `CourtGrid E-Ticket #${ticketId}\nArena ${courtName}\nJam ${startTime} sampai ${endTime} WIB\nStatus ${isVerified ? "DP Lunas" : "Menunggu DP"}\nTunjukkan QR ini saat tiba di lokasi.`,
+    title: t("calendarEventTitle", { courtName }),
+    description: t("calendarEventDesc", {
+      ticketId,
+      courtName,
+      startTime,
+      endTime,
+      status: statusText,
+    }),
     location: "CourtGrid Sport Center Jakarta",
     dateStr: calendarDate,
     startTime,
@@ -72,16 +88,16 @@ export default function ETicketShareActions({
       const url = generateGoogleCalendarUrl(calendarEvent);
       window.open(url, "_blank", "noopener,noreferrer");
     } catch {
-      toast.error("Gagal membuka Google Calendar");
+      toast.error(t("googleCalendarFailed"));
     }
   };
 
   const handleDownloadIcs = () => {
     try {
       downloadIcsFile(calendarEvent, `courtgrid-${ticketId}.ics`);
-      toast.success("File kalender (.ics) berhasil diunduh");
+      toast.success(t("icsDownloaded"));
     } catch {
-      toast.error("Gagal mengunduh file kalender");
+      toast.error(t("icsDownloadFailed"));
     }
   };
 
@@ -114,7 +130,7 @@ export default function ETicketShareActions({
         {hasCopied ? (
           <>
             <Check className="size-4 mr-1.5 text-emerald-600 shrink-0" />
-            <span className="truncate">Tersalin</span>
+            <span className="truncate">{t("copiedBtn")}</span>
           </>
         ) : (
           <>
@@ -127,19 +143,19 @@ export default function ETicketShareActions({
       <DropdownMenu>
         <DropdownMenuTrigger
           className="inline-flex items-center justify-center w-full sm:w-auto min-h-10 rounded-xl px-3 text-xs font-semibold text-zinc-700 hover:text-zinc-950 bg-white border border-zinc-200/80 transition-colors shadow-2xs cursor-pointer focus-visible:ring-2 focus-visible:ring-zinc-950 outline-hidden"
-          aria-label="Simpan ke Kalender"
+          aria-label={t("saveToCalendarAria")}
         >
           <CalendarPlus className="size-4 mr-1.5 text-zinc-500 shrink-0" />
-          <span className="truncate">Kalender</span>
+          <span className="truncate">{t("calendarBtn")}</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-52 rounded-xl bg-white border border-zinc-200 shadow-md p-1">
           <DropdownMenuItem onClick={handleGoogleCalendar} className="cursor-pointer text-xs font-medium py-2 px-2.5 rounded-lg hover:bg-zinc-100 flex items-center transition-colors">
             <ExternalLink className="size-4 mr-2 text-zinc-500" />
-            <span>Google Calendar</span>
+            <span>{t("googleCalendar")}</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleDownloadIcs} className="cursor-pointer text-xs font-medium py-2 px-2.5 rounded-lg hover:bg-zinc-100 flex items-center transition-colors">
             <Download className="size-4 mr-2 text-zinc-500" />
-            <span>Apple atau Outlook</span>
+            <span>{t("appleOutlookCalendar")}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -149,10 +165,10 @@ export default function ETicketShareActions({
         size="sm"
         onClick={handlePrint}
         className="w-full sm:w-auto min-h-10 rounded-xl px-3 text-xs font-semibold text-zinc-700 hover:text-zinc-950 bg-white border-zinc-200/80 transition-colors shadow-2xs cursor-pointer justify-center"
-        aria-label="Cetak atau Unduh PDF"
+        aria-label={t("printPdfAria")}
       >
         <Printer className="size-4 mr-1.5 text-zinc-500 shrink-0" />
-        <span className="truncate">Cetak PDF</span>
+        <span className="truncate">{t("printPdfBtn")}</span>
       </Button>
     </div>
   );

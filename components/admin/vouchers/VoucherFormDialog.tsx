@@ -16,7 +16,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { adminCreateVoucher, adminUpdateVoucher } from "@/features/vouchers/actions";
-import { voucherSchema, type VoucherInput } from "@/features/vouchers/schemas";
+import { buildVoucherSchema, type VoucherInput } from "@/features/vouchers/schemas";
 
 export type AdminVoucher = {
   id: string;
@@ -39,13 +39,15 @@ interface VoucherFormContentProps {
 
 function VoucherFormContent({ editing, initialExpiresAt, onClose, onSuccess }: VoucherFormContentProps) {
   const t = useTranslations("admin.vouchers");
+  const tv = useTranslations("validation");
+  const schema = buildVoucherSchema(tv);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<z.input<typeof voucherSchema>, unknown, VoucherInput>({
-    resolver: zodResolver(voucherSchema),
+  } = useForm<z.input<typeof schema>, unknown, VoucherInput>({
+    resolver: zodResolver(schema),
     mode: "onChange",
     defaultValues: {
       code: editing?.code ?? "",

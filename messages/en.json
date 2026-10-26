@@ -571,7 +571,20 @@
       "summaryCopyFailed": "Failed to copy ticket details.",
       "downloadQr": "Download QR",
       "paymentSuccessTitle": "Down Payment Successful!",
-      "paymentSuccessDesc": "Your E-Ticket is now active and automatically verified by the system."
+      "paymentSuccessDesc": "Your E-Ticket is now active and automatically verified by the system.",
+      "copiedBtn": "Copied",
+      "calendarBtn": "Calendar",
+      "saveToCalendarAria": "Save to Calendar",
+      "googleCalendar": "Google Calendar",
+      "appleOutlookCalendar": "Apple or Outlook",
+      "printPdfBtn": "Print PDF",
+      "printPdfAria": "Print or Download PDF",
+      "googleCalendarFailed": "Failed to open Google Calendar",
+      "icsDownloaded": "Calendar file (.ics) downloaded",
+      "icsDownloadFailed": "Failed to download calendar file",
+      "shareTextTemplate": "*CourtGrid Booking E-Ticket*\nCourt: {courtName}\nDate: {dateStr}\nTime: {startTime} - {endTime} WIB\nTotal: {totalPrice} (DP: {dpAmount})\nTicket Code: #{ticketId}\nStatus: {status}\n\nShow this QR code at the venue desk upon arrival.",
+      "calendarEventTitle": "Court Booking: {courtName}",
+      "calendarEventDesc": "CourtGrid E-Ticket #{ticketId}\nCourt: {courtName}\nTime: {startTime} - {endTime} WIB\nStatus: {status}\nShow this QR code upon arrival."
     },
     "book": {
       "metaTitle": "Book a Court",
@@ -649,7 +662,24 @@
       "voucherApplied": "Voucher Discount",
       "dpStripeLabel": "50% Deposit",
       "backBtn": "Go Back",
-      "payNowBtn": "Continue to DP Payment"
+      "payNowBtn": "Continue to DP Payment",
+      "subtotalHours": "Subtotal ({count} hrs)",
+      "subtotalLabel": "Subtotal",
+      "voucherDiscountLabel": "Voucher Discount ({pct}%)",
+      "voucherActiveText": "Voucher {code} active ({pct}% off)",
+      "removeVoucherBtn": "Remove",
+      "applyVoucherBtn": "Apply",
+      "nonContiguousHint": "Select consecutive playing hours without gaps.",
+      "nonContiguousWarning": "Selected playing hours are not consecutive. Please select adjacent time slots without gaps.",
+      "tzNotice": "All time slots above are in WIB (Asia/Jakarta). Your device local time is detected as {tz}.",
+      "checkingSchedule": "Checking schedule availability...",
+      "slotPending": "In Checkout",
+      "slotBooked": "Booked",
+      "voucherEnterFirst": "Enter a voucher code first",
+      "voucherSelectSlotFirst": "Select at least 1 time slot before applying a voucher",
+      "voucherAppliedToast": "Voucher {code} applied! {pct}% discount",
+      "voucherValidateFailed": "Failed to validate voucher code",
+      "voucherRemovedToast": "Voucher {code} removed: {reason}"
     }
   },
   "admin": {
@@ -705,6 +735,7 @@
       "peakHoursDesc": "Court bookings per playing hour over past 30 days",
       "peakBadgePrefix": "Busiest hour",
       "peakBookingsCount": "{count} bookings",
+      "tooltipBookingsUnit": "bookings",
       "intensityPeak": "Very busy",
       "intensityHigh": "Busy",
       "intensityMedium": "Moderate",
@@ -1105,7 +1136,20 @@
     "dpPercentageRange": "Down payment percentage must be between 10% and 100%.",
     "autoCancelTimeoutRange": "Auto-cancel timeout must be between 5 and 120 minutes.",
     "settingsUpdateSuccess": "Settings saved successfully.",
-    "settingsUpdateFailed": "Failed to update venue settings."
+    "settingsUpdateFailed": "Failed to update venue settings.",
+    "settingsNotInitialized": "Settings have not been initialized.",
+    "settingsLoadFailed": "Failed to load settings.",
+    "voucherCodePattern": "Voucher code may only contain uppercase letters, numbers, dashes, and underscores.",
+    "voucherDiscountInt": "Discount must be a whole number.",
+    "voucherDiscountMin": "Minimum discount is 1%.",
+    "voucherDiscountMax": "Maximum discount is 100%.",
+    "voucherMaxDiscountPositive": "Maximum discount must be positive.",
+    "voucherMinSpendNonNegative": "Minimum spend cannot be negative.",
+    "voucherExpiryRequired": "Expiration date is required.",
+    "voucherExpiryPast": "Expiration date cannot be in the past.",
+    "voucherQuotaMin": "Minimum quota is 1.",
+    "voucherQuotaMax": "Maximum quota is 100.",
+    "voucherDescMax": "Description cannot exceed 200 characters."
   },
   "common": {
     "notFoundTitle": "Page not found",
@@ -1115,6 +1159,8 @@
     "genericErrorDesc": "Please try again. If the issue persists, contact venue support.",
     "retry": "Try Again",
     "language": "Language",
-    "switchLanguage": "Switch Language"
+    "switchLanguage": "Switch Language",
+    "loading": "Loading...",
+    "loadingCourts": "Loading courts..."
   }
 }
