@@ -18,9 +18,9 @@ type SlotChangeRow = {
  * the DB trigger inserts a slot_change row; this hook invalidates the
  * TanStack Query availability key so the grid refetches instantly.
  *
- * NOTE: the signal table deliberately has no RLS — Supabase Realtime does not
- * deliver postgres_changes for RLS-enabled tables (verified empirically). Only
- * a SELECT grant is needed; see supabase/realtime.sql.
+ * NOTE: RLS is enabled on `public.slot_change` with a SELECT-only policy for
+ * `anon` and `authenticated` roles (see `supabase/realtime.sql`). This allows
+ * Realtime subscribers to receive change events while blocking client writes.
  */
 export function useAvailabilityRealtime(courtId: string, dateStr: string) {
   const queryClient = useQueryClient();

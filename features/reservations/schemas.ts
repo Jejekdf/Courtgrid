@@ -13,6 +13,16 @@ export function buildReservationSchema(t: SchemaTranslator = defaultTranslator) 
       voucherCode: z.string().optional(),
     })
     .superRefine((data, ctx) => {
+      const startHour = parseInt(data.startTime.split(":")[0], 10);
+      const endHour = parseInt(data.endTime.split(":")[0], 10);
+      if (startHour < 0 || startHour > 23) {
+        ctx.addIssue({ code: "custom", message: t("startTimeInvalid") });
+        return;
+      }
+      if (endHour < 1 || endHour > 24) {
+        ctx.addIssue({ code: "custom", message: t("endTimeInvalid") });
+        return;
+      }
       const tzError = validateBookingTime(data.dateStr, data.startTime, t);
       if (tzError) {
         ctx.addIssue({ code: "custom", message: tzError });

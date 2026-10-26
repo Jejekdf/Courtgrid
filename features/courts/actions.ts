@@ -32,30 +32,47 @@ type AvailabilitySlot = { startTime: string; endTime: string; status: string };
 
 export async function getCourtAvailability(courtId: string, dateStr: string): Promise<AvailabilitySlot[]> {
   try {
-    const date = new Date(dateStr);
+    const { getRedisClient, getOrSetCache } = await import("@/lib/redis");
+    const redis = getRedisClient();
+    let shouldRunCancel = true;
+    if (redis) {
+      try {
+        const acquired = await redis.set("ghost-cancel:last-run", "1", { nx: true, ex: 300 });
+        shouldRunCancel = acquired === "OK";
+      } catch {
+        shouldRunCancel = true;
+      }
+    }
+    if (shouldRunCancel) {
+      await autoCancelGhostBookings();
+    }
 
-    // Ghost-booking cleanup: single owner rule.
-    await autoCancelGhostBookings();
-
-    const reservations = await prisma.reservation.findMany({
-      where: {
-        courtId,
-        date,
-        status: {
-          in: ["PENDING", "DP_PAID", "DONE"],
-        },
+    return await getOrSetCache(
+      `public:avail:raw:${courtId}:${dateStr}`,
+      async () => {
+        const date = new Date(`${dateStr}T00:00:00.000Z`);
+        const reservations = await prisma.reservation.findMany({
+          where: {
+            courtId,
+            date,
+            status: {
+              in: ["PENDING", "DP_PAID", "DONE"],
+            },
+          },
+          select: {
+            startTime: true,
+            endTime: true,
+            status: true,
+          },
+        });
+        return reservations.map((slot) => ({
+          startTime: formatSlotHour(slot.startTime),
+          endTime: formatSlotHour(slot.endTime),
+          status: slot.status,
+        }));
       },
-      select: {
-        startTime: true,
-        endTime: true,
-        status: true,
-      },
-    });
-    return reservations.map((slot) => ({
-      startTime: formatSlotHour(slot.startTime),
-      endTime: formatSlotHour(slot.endTime),
-      status: slot.status,
-    }));
+      60
+    );
   } catch (error) {
     console.error("Error fetching availability:", error);
     return [];

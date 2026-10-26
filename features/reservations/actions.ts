@@ -69,6 +69,9 @@ export async function createReservationAction(rawInput: unknown) {
   // Recompute the price server-side (never trust client numbers), then apply voucher if given
   const startHour = parseInt(startTime.split(":")[0], 10);
   const endHour = parseInt(endTime.split(":")[0], 10);
+  if (startHour < 8 || endHour > 22) {
+    return { success: false, error: t("outsideOperationalHours") };
+  }
   const duration = endHour - startHour;
   const originalTotalPrice = court.pricePerHour * duration;
   let finalTotalPrice = originalTotalPrice;
@@ -113,7 +116,7 @@ export async function createReservationAction(rawInput: unknown) {
 
   const dpAmount = computeDeposit(finalTotalPrice, dpPercentage);
 
-  const slotLockKey = `lock:court:${courtId}:${dateStr}:${startTime}`;
+  const slotLockKey = `lock:court:${courtId}:${dateStr}`;
   const slotLock = await acquireLock(slotLockKey, 10);
   if (!slotLock.acquired) {
     return { success: false, error: t("doubleBooked") };
@@ -426,8 +429,9 @@ export async function resumeReservationPaymentAction(reservationId: string) {
     return { success: false, error: tzError };
   }
 
+  const setting = await prisma.setting.findUnique({ where: { id: 1 }, select: { dpPercentage: true } });
   const dpAmount =
-    reservation.payment?.dpAmount ?? Math.ceil(reservation.totalPrice / 2);
+    reservation.payment?.dpAmount ?? computeDeposit(reservation.totalPrice, setting?.dpPercentage ?? 50);
   const appUrl = SITE_URL;
 
   if (reservation.stripeSessionId) {
