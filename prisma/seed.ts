@@ -131,7 +131,7 @@ async function main() {
       const futsalCourt = await prisma.court.findFirst({ where: { type: "FUTSAL" } });
       const badmintonCourt = await prisma.court.findFirst({ where: { type: "BADMINTON" } });
 
-      // DM-2: Dates in Asia/Jakarta, stored as UTC timestamptz.
+      // Compute current date in Asia/Jakarta, stored as UTC timestamptz.
       const jakartaNow = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Jakarta" });
       const jakartaDateStr = jakartaNow.split(" ")[0]; // "YYYY-MM-DD"
       const jakartaTz = "+07:00";
