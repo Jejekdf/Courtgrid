@@ -569,7 +569,9 @@
       "copySummary": "Copy Details",
       "summaryCopied": "Reservation details copied to clipboard",
       "summaryCopyFailed": "Failed to copy ticket details.",
-      "downloadQr": "Download QR"
+      "downloadQr": "Download QR",
+      "paymentSuccessTitle": "Down Payment Successful!",
+      "paymentSuccessDesc": "Your E-Ticket is now active and automatically verified by the system."
     },
     "book": {
       "metaTitle": "Book a Court",
@@ -895,7 +897,10 @@
       "searchPlaceholder": "Search voucher code",
       "loading": "Loading vouchers...",
       "empty": "No vouchers yet.",
+      "emptyDesc": "Create your first discount voucher code for customer promotions.",
       "noResults": "No vouchers found.",
+      "noResultsDesc": "Try another keyword to search for voucher codes.",
+      "resetSearchBtn": "Reset Search",
       "colCode": "Code",
       "colDiscount": "Discount",
       "colMaxDiscount": "Max Discount",
@@ -1064,6 +1069,8 @@
     "ticketNotFound": "Ticket or reservation ID was not found.",
     "ticketCanceled": "This ticket has been CANCELED and cannot be used.",
     "ticketAlreadyUsed": "This ticket has already been used for check-in and is Completed.",
+    "ticketNotPaid": "Down payment has not been verified yet; this ticket cannot be checked in.",
+    "outsideOperationalHours": "Booking hours must be within operational hours (08:00 - 22:00 WIB).",
     "statsNotReady": "Statistics are not available yet.",
     "otpRequired": "OTP code is required",
     "otpLength": "OTP code must be 6 digits",

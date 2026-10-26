@@ -102,7 +102,7 @@ export default function AdminVouchersPage() {
 
       <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs overflow-hidden">
         {isLoading ? (
-          <div className="p-12 text-center text-sm text-zinc-400 font-mono">Loading...</div>
+          <div className="p-12 text-center text-sm text-zinc-400 font-mono">{t("loading")}</div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-8 sm:p-12 text-center gap-3">
             <div className="size-12 rounded-2xl bg-zinc-100 flex items-center justify-center text-zinc-500">
@@ -113,9 +113,7 @@ export default function AdminVouchersPage() {
                 {search ? t("noResults") : t("empty")}
               </p>
               <p className="text-xs sm:text-sm text-zinc-500 font-sans text-pretty">
-                {search
-                  ? "Coba kata kunci lain untuk mencari kode voucher."
-                  : "Buat kode voucher diskon pertama Anda untuk promosi pelanggan."}
+                {search ? t("noResultsDesc") : t("emptyDesc")}
               </p>
             </div>
             {search ? (
@@ -128,7 +126,7 @@ export default function AdminVouchersPage() {
                 }}
                 className="mt-1"
               >
-                Reset Pencarian
+                {t("resetSearchBtn")}
               </Button>
             ) : (
               <Button

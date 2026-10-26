@@ -38,9 +38,9 @@ export default function AdminReservationsPage() {
 
   // Fetch reservations matching current filter and page
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: [...adminKeys.reservations(filter), page],
+    queryKey: [...adminKeys.reservations(filter), statusFilter, page],
     queryFn: async () => {
-      const res = await getAllReservations(filter, page, 10);
+      const res = await getAllReservations(filter, page, 10, statusFilter);
       const list = Array.isArray(res) ? res : res?.reservations || [];
       return { reservations: list as unknown as ReservationRowData[], totalPages: !Array.isArray(res) ? res?.totalPages ?? 1 : 1 };
     },
@@ -51,10 +51,7 @@ export default function AdminReservationsPage() {
   const reservations = data?.reservations ?? [];
   const totalPages = data?.totalPages ?? 1;
 
-  const displayedReservations = reservations.filter((res) => {
-    if (statusFilter === "ALL") return true;
-    return res.status === statusFilter;
-  });
+  const displayedReservations = reservations;
 
   // Mutation for deleting reservation and invalidating cache
   const deleteMutation = useMutation({
@@ -175,6 +172,7 @@ export default function AdminReservationsPage() {
                   onChange={(e) => {
                     const val = e.target.value as "ALL" | "PENDING" | "DP_PAID" | "DONE" | "CANCELED";
                     setStatusFilter(val === "ALL" ? null : val);
+                    setPage(1);
                   }}
                   className="bg-transparent text-xs sm:text-sm text-zinc-950 font-medium focus:outline-hidden cursor-pointer"
                   aria-label={t("filterStatus")}

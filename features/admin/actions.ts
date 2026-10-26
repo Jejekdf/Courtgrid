@@ -105,13 +105,14 @@ export async function getAllReservations(
   filter: "daily" | "monthly" | "all" = "all",
   page: number = 1,
   pageSize: number = 10,
+  statusFilter: "ALL" | "PENDING" | "DP_PAID" | "DONE" | "CANCELED" = "ALL",
 ): Promise<PaginatedReservationsResult> {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
     return { success: false as const, error: adminCheck.error, reservations: [], totalCount: 0, totalPages: 1, currentPage: 1 };
   }
 
-  let dateFilter = {};
+  let dateFilter: Record<string, unknown> = {};
 
   if (filter === "daily") {
     // Day boundary must be Asia/Jakarta, not server-local TZ.
@@ -120,6 +121,10 @@ export async function getAllReservations(
   } else if (filter === "monthly") {
     const { start, end } = jakartaMonthBounds(getJakartaNow().dateStr);
     dateFilter = { date: { gte: start, lt: end } };
+  }
+
+  if (statusFilter && statusFilter !== "ALL") {
+    dateFilter = { ...dateFilter, status: statusFilter };
   }
 
   const [totalCount, rawReservations] = await Promise.all([
@@ -483,6 +488,13 @@ export async function adminCheckInReservation(reservationId: string) {
     return {
       success: false,
       error: t("ticketAlreadyUsed"),
+    };
+  }
+
+  if (reservation.status !== "DP_PAID") {
+    return {
+      success: false,
+      error: t("ticketNotPaid"),
     };
   }
 

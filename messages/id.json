@@ -569,7 +569,9 @@
       "copySummary": "Salin Rincian",
       "summaryCopied": "Rincian reservasi berhasil disalin",
       "summaryCopyFailed": "Gagal menyalin rincian tiket.",
-      "downloadQr": "Unduh QR"
+      "downloadQr": "Unduh QR",
+      "paymentSuccessTitle": "Pembayaran DP Berhasil!",
+      "paymentSuccessDesc": "E-Ticket kamu sudah aktif dan terverifikasi otomatis oleh sistem."
     },
     "book": {
       "metaTitle": "Pesan Lapangan",
@@ -895,7 +897,10 @@
       "searchPlaceholder": "Cari kode voucher",
       "loading": "Memuat voucher...",
       "empty": "Belum ada voucher.",
+      "emptyDesc": "Buat kode voucher diskon pertama Anda untuk promosi pelanggan.",
       "noResults": "Voucher tidak ditemukan.",
+      "noResultsDesc": "Coba kata kunci lain untuk mencari kode voucher.",
+      "resetSearchBtn": "Reset Pencarian",
       "colCode": "Kode",
       "colDiscount": "Diskon",
       "colMaxDiscount": "Maks. Diskon",
@@ -1064,6 +1069,8 @@
     "ticketNotFound": "Tiket atau ID reservasi tidak ditemukan.",
     "ticketCanceled": "Tiket ini sudah DIBATALKAN dan tidak dapat digunakan.",
     "ticketAlreadyUsed": "Tiket ini sudah digunakan untuk check-in dan berstatus Selesai.",
+    "ticketNotPaid": "Tiket belum melunasi pembayaran DP dan belum dapat digunakan untuk check-in.",
+    "outsideOperationalHours": "Jam pemesanan harus berada di dalam jam operasional (08:00 - 22:00 WIB).",
     "statsNotReady": "Data statistik belum tersedia.",
     "otpRequired": "Kode OTP wajib diisi",
     "otpLength": "Kode OTP harus berupa 6 digit angka",
