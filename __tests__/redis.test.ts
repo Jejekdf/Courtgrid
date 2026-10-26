@@ -38,10 +38,20 @@ test("getOrSetCache deduplicates concurrent in-flight calls (singleflight)", asy
 });
 
 test("acquireLock and releaseLock gracefully bypass when Redis env is not configured", async () => {
-  const lock = await acquireLock("lock:test:slot", 5);
-  assert.equal(lock.acquired, true);
-  assert.equal(lock.token, null);
+  const prevUrl = process.env.UPSTASH_REDIS_REST_URL;
+  const prevToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+  delete process.env.UPSTASH_REDIS_REST_URL;
+  delete process.env.UPSTASH_REDIS_REST_TOKEN;
 
-  const released = await releaseLock("lock:test:slot", lock.token);
-  assert.equal(released, true);
+  try {
+    const lock = await acquireLock("lock:test:slot", 5);
+    assert.equal(lock.acquired, true);
+    assert.equal(lock.token, null);
+
+    const released = await releaseLock("lock:test:slot", lock.token);
+    assert.equal(released, true);
+  } finally {
+    if (prevUrl !== undefined) process.env.UPSTASH_REDIS_REST_URL = prevUrl;
+    if (prevToken !== undefined) process.env.UPSTASH_REDIS_REST_TOKEN = prevToken;
+  }
 });
