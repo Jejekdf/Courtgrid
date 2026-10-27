@@ -38,7 +38,7 @@ export async function POST(req: Request) {
 
     // Only fulfill when the payment actually went through.
     if (session.payment_status !== "paid") {
-      console.warn(`Webhook FIX-M4: unpaid session ${session.id} — no state change`);
+      console.warn(`Webhook: unpaid session ${session.id} — no state change`);
       return NextResponse.json({ received: true });
     }
 
