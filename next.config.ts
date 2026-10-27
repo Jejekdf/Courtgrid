@@ -9,7 +9,17 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   allowedDevOrigins: ["local-origin.dev", "*.local-origin.dev", "localhost", "*.localhost"],
   serverExternalPackages: ["sharp"],
+  compiler: {
+    removeConsole: !isDev ? { exclude: ["error", "warn"] } : false,
+  },
   experimental: {
+    optimizePackageImports: [
+      "lucide-react",
+      "date-fns",
+      "recharts",
+      "motion",
+      "sonner",
+    ],
     serverActions: {
       // Upload actions carry raw image files up to the 5MB app-level cap;
       // form encoding inflates the payload past 1MB default.

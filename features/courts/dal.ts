@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { isCourtType } from "@/lib/api/courts";
 import { autoCancelGhostBookings } from "@/features/reservations/ghostCancel";
 import { getJakartaNow } from "@/lib/timezone";
-import { getRedisClient } from "@/lib/redis";
+import { getRedisClient, getOrSetCache } from "@/lib/redis";
 
 export type CourtDTO = {
   id: string;
@@ -47,23 +47,33 @@ function fmtTime(h: number): string {
 
 export const getActiveCourtsDAL = cache(
   async (search: string, type: string | null): Promise<ActiveCourtDTO[]> => {
-    const courts = await prisma.court.findMany({
-      where: {
-        isActive: true,
-        ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
-        ...(isCourtType(type) ? { type } : {}),
+    const cleanSearch = search?.trim().toLowerCase() || "";
+    const cleanType = isCourtType(type) ? type : "all";
+    const cacheKey = `public:courts:list:${cleanSearch}:${cleanType}`;
+
+    return getOrSetCache(
+      cacheKey,
+      async () => {
+        const courts = await prisma.court.findMany({
+          where: {
+            isActive: true,
+            ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
+            ...(isCourtType(type) ? { type } : {}),
+          },
+          orderBy: { name: "asc" },
+          select: {
+            id: true,
+            name: true,
+            type: true,
+            pricePerHour: true,
+            imageUrl: true,
+            venue: { select: { name: true } },
+          },
+        });
+        return courts as ActiveCourtDTO[];
       },
-      orderBy: { name: "asc" },
-      select: {
-        id: true,
-        name: true,
-        type: true,
-        pricePerHour: true,
-        imageUrl: true,
-        venue: { select: { name: true } },
-      },
-    });
-    return courts as ActiveCourtDTO[];
+      300
+    );
   }
 );
 
