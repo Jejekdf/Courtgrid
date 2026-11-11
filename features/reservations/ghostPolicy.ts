@@ -5,16 +5,9 @@ export type GhostCandidate = {
 };
 
 /**
- * Pure ghost-booking auto-cancel policy.
- *
- * Mirrors the single owner rule implemented in `ghostCancel.ts`:
- * cancel a reservation only when it is PENDING, has no live Stripe session
- * (stripeSessionId === null), and was created before `now - timeout`.
- *
- * A reservation with a live stripe_session_id is NEVER released here —
- * only Stripe session expiry (~24h) or explicit admin action handles it.
- *
- * Tested as the executable spec; the SQL owner lives in ghostCancel.ts.
+ * Returns true when an unpaid reservation without an active Stripe checkout session
+ * has exceeded the configured auto-cancel timeout. Reservations with a live
+ * `stripeSessionId` are left alone until the Stripe session expires or an admin acts.
  */
 export function shouldAutoCancelGhost(
   reservation: GhostCandidate,

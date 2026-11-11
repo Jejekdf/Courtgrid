@@ -38,8 +38,7 @@ export default function AdminSettingsPage() {
     select: (res) => (res.success ? (res.data as Settings) : undefined),
   });
 
-  // Hydrate the form once settings load (React "adjusting state during render" pattern —
-  // guards against cascading setState-in-effect per react-hooks lint).
+  // Sync form state during render when settings first arrive to avoid cascading setState in an effect.
   const [loadedId, setLoadedId] = useState<number | null>(null);
   if (settings && settings.id !== loadedId) {
     setLoadedId(settings.id);

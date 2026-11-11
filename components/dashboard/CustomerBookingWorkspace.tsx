@@ -61,7 +61,6 @@ export default function CustomerBookingWorkspace({
   );
   const [showPreviewModal, setShowPreviewModal] = useState(false);
 
-  // Fetch active courts for selector
   const { data: courts = [], isLoading: isLoadingCourts } = useQuery({
     queryKey: courtKeys.all,
     queryFn: async () => {
@@ -70,7 +69,6 @@ export default function CustomerBookingWorkspace({
     },
   });
 
-  // Fallback to first available court if none explicitly chosen
   const activeCourt = useMemo(() => {
     if (courtId) {
       return courts.find((c) => c.id === courtId) || courts[0] || null;
@@ -80,7 +78,6 @@ export default function CustomerBookingWorkspace({
 
   const activeCourtId = activeCourt?.id || "";
 
-  // Fetch slot availability for selected court and date
   const { data: availability = [], isLoading: isLoadingAvailability } = useQuery(
     {
       queryKey: courtKeys.availability(activeCourtId, selectedDate),
@@ -93,7 +90,6 @@ export default function CustomerBookingWorkspace({
     }
   );
 
-  // Live refresh: invalidate availability when any slot changes on this court/date
   useAvailabilityRealtime(activeCourtId, selectedDate);
 
   const {
@@ -146,7 +142,6 @@ export default function CustomerBookingWorkspace({
     toggleTimeSlot(time, resetVoucher);
   };
 
-  // Submit reservation and proceed to Stripe checkout
   const bookingMutation = useMutation({
     mutationFn: async () => {
       if (!isOnline) {

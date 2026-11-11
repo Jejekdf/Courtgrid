@@ -15,7 +15,7 @@ async function main() {
 
   const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
-  // 1) Create Venue first (required for Court.venueId)
+  // Venue must exist before seeding courts since Court.venueId is non-null.
   const venue = await prisma.venue.upsert({
     where: { id: 'venue-courtgrid-001' },
     update: {},
@@ -28,7 +28,6 @@ async function main() {
   });
   console.log('✓ Venue synchronized:', venue.name);
 
-  // 2) Upsert Super Admin
   const admin = await prisma.user.upsert({
     where: { email: adminEmail },
     update: {
@@ -47,7 +46,6 @@ async function main() {
   });
   console.log('✓ Admin account synchronized:', admin.email);
 
-  // 3) Create 5 courts (2 FUTSAL, 3 BADMINTON) with venueId
   const courts = [
     {
       name: "Futsal Court A",
@@ -102,7 +100,6 @@ async function main() {
     }
   }
 
-  // 4) Demo rows: gated behind SEED_DEMO=true
   if (process.env.SEED_DEMO === 'true') {
     const wildanPassword = await bcrypt.hash("password123", 10);
     const wildanUser = await prisma.user.upsert({
@@ -131,9 +128,8 @@ async function main() {
       const futsalCourt = await prisma.court.findFirst({ where: { type: "FUTSAL" } });
       const badmintonCourt = await prisma.court.findFirst({ where: { type: "BADMINTON" } });
 
-      // Compute current date in Asia/Jakarta, stored as UTC timestamptz.
       const jakartaNow = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Jakarta" });
-      const jakartaDateStr = jakartaNow.split(" ")[0]; // "YYYY-MM-DD"
+      const jakartaDateStr = jakartaNow.split(" ")[0];
       const jakartaTz = "+07:00";
 
       const tomorrowDate = new Date(`${jakartaDateStr}T00:00:00${jakartaTz}`);

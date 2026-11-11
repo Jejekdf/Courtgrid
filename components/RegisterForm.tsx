@@ -60,7 +60,6 @@ export default function RegisterForm() {
     return () => clearTimeout(timer);
   }, [step, countdown]);
 
-  // Real-time password criteria verification
   const passwordCriteria = [
     { label: t("criteriaMin"), valid: watchPassword.length >= 8 },
     { label: t("criteriaUpper"), valid: /[A-Z]/.test(watchPassword) },

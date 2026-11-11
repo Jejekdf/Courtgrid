@@ -4,16 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { invalidateCache, invalidateCachePattern } from "@/lib/redis";
 
 /**
- * Single owner rule for ghost-booking auto-cancel.
- *
- * Cancels PENDING reservations where:
- *   createdAt < now - auto_cancel_timeout AND stripe_session_id IS NULL
- *
- * A reservation with a live stripe_session_id is never released here —
- * only Stripe session expiry (~24h) or explicit admin action handles it.
- *
- * Idempotent: safe to call concurrently with the webhook.
- * The PENDING-only scope prevents double-handling with a just-completed payment.
+ * Cancels unpaid reservations that never reached Stripe Checkout before the
+ * configured timeout elapsed. Any reservation that already has a `stripeSessionId`
+ * is kept active so an in-flight checkout cannot lose its slot mid-payment.
  */
 export async function autoCancelGhostBookings(): Promise<void> {
   const setting = await prisma.setting.findUnique({ where: { id: 1 } });

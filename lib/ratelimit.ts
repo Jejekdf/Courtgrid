@@ -29,12 +29,9 @@ function getRateLimiter(bucket: Bucket = "default"): Ratelimit | null {
   }
 
   if (!ratelimits[bucket]) {
-    // Separate limits per bucket (Upstash multi-limiter pattern) — distinct prefix
-    // keeps counters isolated in Redis. "default" (3/15m) guards sensitive flows
-    // (auth, contact, availability); "list" (30/15m) is a looser public catalog read.
-    // "availability" (60/1m) is looser still: toggling the schedule grid on several
-    // courts fires one request per court+date, so a tight bucket would throttle
-    // normal browsing.
+    // Distinct Redis prefixes keep counters isolated per bucket. The availability
+    // bucket allows more requests per minute because toggling the schedule grid
+    // across several courts fires one request per court and date.
     ratelimits[bucket] = new Ratelimit({
       redis: Redis.fromEnv(),
       limiter:
@@ -58,26 +55,14 @@ function getRateLimiter(bucket: Bucket = "default"): Ratelimit | null {
   return ratelimits[bucket];
 }
 
-/**
- * Centralized rate-limit check (Upstash SDK best practice).
- * Awaits `pending` so the analytics write flushes before the serverless function returns.
- * Returns `{ success: true }` when Redis env is missing (rate limiting disabled).
- */
 export async function checkRateLimit(identifier: string): Promise<{ success: boolean }> {
   return runRateLimit(getRateLimiter("default"), identifier);
 }
 
-/**
- * Looser rate limit for high-frequency public read endpoints (e.g. court catalog list).
- */
 export async function checkRateLimitRelaxed(identifier: string): Promise<{ success: boolean }> {
   return runRateLimit(getRateLimiter("list"), identifier);
 }
 
-/**
- * Rate limit for the court availability grid. Looser than the default bucket
- * because toggling the schedule on several courts fires one request per court+date.
- */
 export async function checkRateLimitAvailability(identifier: string): Promise<{ success: boolean }> {
   return runRateLimit(getRateLimiter("availability"), identifier);
 }
@@ -89,6 +74,7 @@ async function runRateLimit(
   if (!rateLimiter) {
     return { success: true };
   }
+  // Await pending so the analytics write flushes before the serverless function returns.
   const { success, pending } = await rateLimiter.limit(identifier);
   await pending;
   return { success };

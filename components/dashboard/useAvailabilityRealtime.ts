@@ -11,16 +11,9 @@ type SlotChangeRow = {
 };
 
 /**
- * Live availability via Supabase Realtime (postgres_changes on the
- * public.slot_change signal table — PII-free: only court_id + date_key).
- *
- * Whenever a reservation for this court+date is created, updated, or deleted,
- * the DB trigger inserts a slot_change row; this hook invalidates the
- * TanStack Query availability key so the grid refetches instantly.
- *
- * NOTE: RLS is enabled on `public.slot_change` with a SELECT-only policy for
- * `anon` and `authenticated` roles (see `supabase/realtime.sql`). This allows
- * Realtime subscribers to receive change events while blocking client writes.
+ * Subscribes to Supabase Realtime changes on `public.slot_change`, which stores only
+ * court_id and date_key without PII. When a reservation changes, the DB trigger writes
+ * a signal row and this hook invalidates the TanStack Query availability cache.
  */
 export function useAvailabilityRealtime(courtId: string, dateStr: string) {
   const queryClient = useQueryClient();

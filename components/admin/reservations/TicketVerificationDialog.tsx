@@ -185,7 +185,7 @@ export function TicketVerificationDialog({
       let started = false;
       let lastError: unknown = null;
 
-      // 1. Mobile phone / tablet: rear camera
+      // Try rear camera first, then front webcam, then first enumerated device.
       try {
         await scanner.start(
           { facingMode: "environment" },
@@ -199,7 +199,6 @@ export function TicketVerificationDialog({
         console.warn("Camera attempt 1 (environment) failed:", envErr);
       }
 
-      // 2. Front webcam fallback (laptops / PCs)
       if (!started) {
         try {
           await scanner.start(
@@ -215,7 +214,6 @@ export function TicketVerificationDialog({
         }
       }
 
-      // 3. Explicit deviceId query fallback
       if (!started) {
         try {
           const cameras = await Html5Qrcode.getCameras();

@@ -88,21 +88,14 @@ export const checkActiveCourtExistsDAL = cache(
 );
 
 /**
- * Full 14-slot availability grid for a court+date.
- *
- * Always returns exactly 14 slots (08:00–21:00). Each slot is classified:
- *   PAST  — hour ≤ current Jakarta hour and date is today
- *   BOOKED — overlaps a PENDING/DP_PAID/DONE reservation
- *   FREE  — all others
- *
- * Ghost-cancel runs before the query so released slots appear FREE.
+ * Returns the 14 hourly availability slots from 08:00 to 21:00 for a court and date.
+ * Stale unpaid reservations are released beforehand so their slots appear free.
  */
 export const getCourtAvailabilityDAL = cache(
   async (courtId: string, dateStr: string): Promise<AvailabilitySlotDTO[]> => {
     const { dateStr: todayStr, hour: currentHour } = getJakartaNow();
     const isToday = dateStr === todayStr;
 
-    // Ghost-booking cleanup, throttled to once every 5 minutes via Redis.
     const redis = getRedisClient();
     let shouldRunCancel = true;
     if (redis) {
@@ -118,7 +111,6 @@ export const getCourtAvailabilityDAL = cache(
       await autoCancelGhostBookings();
     }
 
-    // Parse date as UTC midnight — Prisma will compare against stored timestamptz
     const date = new Date(dateStr + "T00:00:00.000Z");
 
     const reservations = await prisma.reservation.findMany({
@@ -134,7 +126,6 @@ export const getCourtAvailabilityDAL = cache(
       },
     });
 
-    // Index reservations across all covered hourly slots [startH, endH)
     const bookedByHour = new Map<number, string>();
     for (const r of reservations) {
       const startH = r.startTime.getUTCHours();
@@ -147,7 +138,6 @@ export const getCourtAvailabilityDAL = cache(
       }
     }
 
-    // Build deterministic 14-slot grid
     return ALL_HOURS.map((hour): AvailabilitySlotDTO => {
       let status: SlotStatus;
       if (isToday && hour <= currentHour) {

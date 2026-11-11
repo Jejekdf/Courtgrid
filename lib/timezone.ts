@@ -1,8 +1,8 @@
 const JAKARTA_OFFSET_MS = 7 * 60 * 60 * 1000;
 
 /**
- * Returns the current date string (YYYY-MM-DD) and hour (0-23) in Asia/Jakarta timezone.
- * Asia/Jakarta is fixed UTC+7 (no DST) — no external dependency needed.
+ * Returns the current date string and hour in Asia/Jakarta.
+ * Jakarta is fixed at UTC+7 without daylight saving time, so arithmetic offset is exact.
  */
 export function getJakartaNow(): { dateStr: string; hour: number } {
   const nowUtc = Date.now();
@@ -18,9 +18,7 @@ export function getJakartaNow(): { dateStr: string; hour: number } {
 }
 
 /**
- * Jakarta day bounds. Returns the UTC instants for
- * [00:00 WIB, 00:00 WIB next day) of the given YYYY-MM-DD date.
- * Used for daily report/filter windows.
+ * Returns the UTC start and end instants for a given YYYY-MM-DD day in Asia/Jakarta.
  */
 export function jakartaDayBounds(dateStr: string): { start: Date; end: Date } {
   const [y, m, d] = dateStr.split("-").map(Number);
@@ -30,8 +28,7 @@ export function jakartaDayBounds(dateStr: string): { start: Date; end: Date } {
 }
 
 /**
- * Jakarta month bounds. Returns the UTC instants for
- * [00:00 WIB first-of-month, 00:00 WIB first-of-next-month).
+ * Returns the UTC start and end instants for the calendar month of a YYYY-MM-DD date in Asia/Jakarta.
  */
 export function jakartaMonthBounds(dateStr: string): { start: Date; end: Date } {
   const [y, m] = dateStr.split("-").map(Number);
@@ -42,10 +39,6 @@ export function jakartaMonthBounds(dateStr: string): { start: Date; end: Date } 
 
 import type { SchemaTranslator } from "@/lib/zod";
 
-/**
- * Rejects booking dates/hours already in the past (Asia/Jakarta).
- * Returns null if valid, or an error message (localized when a translator is given).
- */
 export function validateBookingTime(
   dateStr: string,
   startTime: string,
@@ -68,13 +61,9 @@ export function validateBookingTime(
 }
 
 /**
- * Format slot hours for display (Kategori A — WIB-as-UTC convention).
- *
- * Slot hours are stored as UTC timestamps whose UTC wall-clock hour EQUALS
- * the booked WIB hour (18:00 WIB → 18:00Z, NOT 11:00Z). This is a deliberate
- * convention — see getCourtAvailabilityDAL's getUTCHours() indexing.
- * Display MUST use timeZone "UTC". Do NOT use "Asia/Jakarta" (shift +7 → "01:00")
- * and do NOT omit timeZone (would follow server/browser TZ).
+ * Slot hours are stored as UTC timestamps whose UTC hour matches the booked WIB hour
+ * so availability queries can index directly with getUTCHours(). Always format in UTC
+ * to avoid shifting the displayed hour by +7.
  */
 export function formatSlotHour(date: Date): string {
   const hh = String(date.getUTCHours()).padStart(2, "0");

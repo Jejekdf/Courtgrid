@@ -45,16 +45,10 @@ export type AdminStatsDTO = {
   }>;
 };
 
-/**
- * Ensures the current user is an admin before any admin DAL call proceeds.
- */
 export const verifyAdminSession = cache(async () => {
   return verifyUserSession("ADMIN");
 });
 
-/**
- * 7-day revenue series for the admin dashboard, computed in parallel.
- */
 export const getAdminRevenueChartDAL = cache(async (): Promise<AdminStatsDTO["revenueChart"]> => {
   await verifyAdminSession();
 
@@ -103,9 +97,6 @@ export const getAdminRevenueChartDAL = cache(async (): Promise<AdminStatsDTO["re
   return chart;
 });
 
-/**
- * Aggregates dashboard totals, customer growth, occupancy, peak hours, recent bookings, and revenue chart.
- */
 export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> => {
   await verifyAdminSession();
 
@@ -174,7 +165,7 @@ export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> 
         getAdminRevenueChartDAL(),
       ]);
 
-      // Occupancy Rate Today: 14 available slot hours per active court (08:00 - 22:00)
+      // Each active court has 14 bookable hours per day between 08:00 and 22:00.
       const totalCapacityToday = Math.max(1, activeCourtsCount * 14);
       let bookedHoursToday = 0;
       for (const b of todayBookings) {
@@ -183,7 +174,6 @@ export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> 
       }
       const occupancyRateToday = Math.min(100, Math.round((bookedHoursToday / totalCapacityToday) * 100));
 
-      // Peak Hours Analysis (14 operational slots: 8..21)
       const slotCounts: Record<number, number> = {};
       for (let h = 8; h <= 21; h++) {
         slotCounts[h] = 0;
@@ -257,13 +247,10 @@ export const getAdminDashboardStatsDAL = cache(async (): Promise<AdminStatsDTO> 
         revenueChart,
       };
     },
-    30 // 30 seconds TTL in Redis
+    30
   );
 });
 
-/**
- * Paginated reservations for the admin list, with optional day/month scope.
- */
 export const getAdminPaginatedReservationsDAL = cache(
   async (filter: "daily" | "monthly" | "all" = "all", page = 1, pageSize = 10) => {
     await verifyAdminSession();
@@ -330,9 +317,6 @@ export type CustomerDTO = {
   lastBookingAt: string | null;
 };
 
-/**
- * Paginated customers with case-insensitive name/email search.
- */
 export const getAdminPaginatedCustomersDAL = cache(
   async (search?: string, page = 1, pageSize = 10) => {
     await verifyAdminSession();

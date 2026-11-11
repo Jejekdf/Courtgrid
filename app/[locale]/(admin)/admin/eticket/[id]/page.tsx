@@ -63,7 +63,6 @@ export default async function AdminETicketPage({
   const remainingAmount = reservation.totalPrice - dpAmount;
   const isVerified = reservation.status === "DP_PAID" || reservation.payment?.status === "VERIFIED";
 
-  // Generate real dynamic QR code SVG for ticket check-in
   const qrSvg = await QRCode.toString(reservation.id, {
     type: "svg",
     margin: 1,

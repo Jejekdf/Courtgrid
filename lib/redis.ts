@@ -66,9 +66,6 @@ export async function getOrSetCache<T>(
   return fetchPromise;
 }
 
-/**
- * Invalidate cache key(s)
- */
 export async function invalidateCache(...keys: string[]): Promise<void> {
   const redis = getRedisClient();
   if (!redis || keys.length === 0) return;
