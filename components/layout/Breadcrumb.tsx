@@ -14,8 +14,6 @@ interface BreadcrumbProps {
   locale?: string;
 }
 
-// Visual breadcrumb nav + JSON-LD BreadcrumbList for Google rich results.
-// The first item is always injected by the caller (Home / Beranda).
 export default function Breadcrumb({ items, locale = "id" }: BreadcrumbProps) {
   const jsonLd = {
     "@context": "https://schema.org",
@@ -38,7 +36,7 @@ export default function Breadcrumb({ items, locale = "id" }: BreadcrumbProps) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
       <nav aria-label="Breadcrumb" className="mb-6">
         <ol className="flex flex-wrap items-center gap-1.5 text-sm text-zinc-600">

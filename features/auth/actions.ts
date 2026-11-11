@@ -22,6 +22,7 @@ import { resend, RESEND_FROM_EMAIL } from "@/lib/resend";
 import { forgotPasswordEmail, registerOtpEmail } from "@/lib/emails/templates";
 import { getTranslations } from "next-intl/server";
 import { SITE_URL } from "@/lib/constants";
+import { verifyCredentialsPassword } from "@/features/auth/credentials";
 
 async function clientIp(): Promise<string> {
   try {
@@ -37,16 +38,10 @@ async function clientIp(): Promise<string> {
   }
 }
 
-/**
- * Result shape for login server actions.
- */
 export type LoginResult =
   | { success: true; redirectTo: string }
   | { success: false; error: string };
 
-/**
- * Signs a user in with email/password via NextAuth v5.
- */
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData
@@ -56,7 +51,6 @@ export async function authenticate(
   const password = formData.get("password") as string;
   const callbackUrl = formData.get("callbackUrl") as string | null;
 
-  // loginSchema.safeParse({ email, password })
   const validatedFields = createLoginSchema(t).safeParse({ email, password });
 
   if (!validatedFields.success) {
@@ -71,8 +65,17 @@ export async function authenticate(
 
   const existingUser = await prisma.user.findUnique({
     where: { email: validatedFields.data.email },
-    select: { role: true, emailVerified: true },
+    select: { role: true, emailVerified: true, passwordHash: true },
   });
+
+  const isPasswordValid = await verifyCredentialsPassword(
+    existingUser,
+    validatedFields.data.password
+  );
+
+  if (!isPasswordValid) {
+    return { success: false, error: t("invalidCredentials") };
+  }
 
   if (existingUser && !existingUser.emailVerified) {
     return { success: false, error: t("emailNotVerified") };
@@ -87,7 +90,6 @@ export async function authenticate(
       redirect: false,
     });
   } catch {
-    // Wrong email or password.
     return { success: false, error: t("invalidCredentials") };
   }
 
@@ -95,13 +97,16 @@ export async function authenticate(
   const isSuccess = resolved !== "" && !resolved.includes("error=");
 
   if (!isSuccess) {
-    // Wrong email or password.
     return { success: false, error: t("invalidCredentials") };
   }
 
   if (isSuccess) {
     const roleTarget = existingUser?.role === "ADMIN" ? "/admin" : "/dashboard";
-    const isSafeCallback = callbackUrl && callbackUrl.startsWith("/") && !callbackUrl.startsWith("//");
+    const isSafeCallback =
+      callbackUrl &&
+      callbackUrl.startsWith("/") &&
+      !callbackUrl.startsWith("//") &&
+      !callbackUrl.includes("\\");
     return { success: true, redirectTo: isSafeCallback ? callbackUrl : roleTarget };
   }
 
@@ -110,9 +115,6 @@ export async function authenticate(
 
 export const login = authenticate;
 
-/**
- * Generates, stores hashed token, and sends a 6-digit OTP email.
- */
 async function issueAndSendOtp(
   recipientEmail: string,
   recipientName: string | null | undefined
@@ -144,9 +146,6 @@ async function issueAndSendOtp(
   }
 }
 
-/**
- * Creates a new customer account.
- */
 export async function registerUser(formData: FormData) {
   const t = await getTranslations("validation");
   const registerInput = {
@@ -244,8 +243,11 @@ export async function verifyRegisterOtp(email: string, otp: string) {
   }
 
   const ip = await clientIp();
-  const { success } = await checkRateLimit(`verify_otp:${ip}`);
-  if (!success) {
+  const [ipLimit, emailLimit] = await Promise.all([
+    checkRateLimit(`verify_otp:${ip}`),
+    checkRateLimit(`verify_otp:email:${normalizedEmail}`),
+  ]);
+  if (!ipLimit.success || !emailLimit.success) {
     return { success: false, error: t("rateLimitOtp") };
   }
 
@@ -318,7 +320,6 @@ export async function updateProfile(formData: FormData) {
   const t = await getTranslations("validation");
   const session = await auth();
   if (!session || !session.user || !session.user.id) {
-    // Not logged in.
     return { success: false, error: t("unauthorized") };
   }
 
@@ -328,7 +329,6 @@ export async function updateProfile(formData: FormData) {
     image: (formData.get("image") as string) || undefined,
   };
 
-  // updateProfileSchema.safeParse(rawInput)
   const validation = createUpdateProfileSchema(t).safeParse(rawInput);
   if (!validation.success) {
     return { success: false, error: validation.error.issues[0].message };
@@ -337,21 +337,33 @@ export async function updateProfile(formData: FormData) {
   const { name, email, image } = validation.data;
 
   try {
-    if (email !== session.user.email) {
+    const currentAccount = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { email: true, accounts: { select: { provider: true } } },
+    });
+
+    if (!currentAccount) {
+      return { success: false, error: t("unauthorized") };
+    }
+
+    if (email !== currentAccount.email) {
       const existingUser = await prisma.user.findUnique({ where: { email } });
       if (existingUser && existingUser.id !== session.user.id) {
-        // Email is already used by another account.
         return { success: false, error: t("emailInUse") };
       }
     }
 
+    const safeEmail = currentAccount.accounts.length > 0 ? currentAccount.email : email;
+
     const { updateUserProfileDAL } = await import("@/features/auth/dal");
     await updateUserProfileDAL(session.user.id, { name, email, image });
+    if (safeEmail !== email) {
+      await updateUserProfileDAL(session.user.id, { name, email: safeEmail, image });
+    }
 
     revalidatePath("/");
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/settings");
-    // Profile updated successfully.
     return { success: true, message: t("profileUpdateSuccess") };
   } catch (error) {
     console.error("Update profile error:", error);
@@ -421,29 +433,22 @@ export async function uploadAvatarAction(formData: FormData) {
 
   const file = formData.get("file") as File | null;
   if (!file || file.size === 0) {
-    // Avatar image is required.
     return { success: false, error: t("imageRequired") };
   }
 
   if (!file.type.startsWith("image/")) {
-    // Must be an image (JPG/PNG/WebP).
     return { success: false, error: t("imageInvalidType") };
   }
 
   if (file.size > 2 * 1024 * 1024) {
-    // Cap avatar size at 2MB.
     return { success: false, error: t("imageTooLarge") };
   }
 
   try {
     const url = await uploadAvatar(session.user.id, file);
 
-    const { updateUserProfileDAL } = await import("@/features/auth/dal");
-    await updateUserProfileDAL(session.user.id, {
-      name: session.user.name || "",
-      email: session.user.email || "",
-      image: url,
-    });
+    const { updateUserAvatarDAL } = await import("@/features/auth/dal");
+    await updateUserAvatarDAL(session.user.id, url);
 
     revalidatePath("/");
     revalidatePath("/dashboard");
@@ -474,7 +479,8 @@ export async function forgotPasswordAction(rawInput: unknown): Promise<ForgotPas
   }
 
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) {
+  // OAuth-only accounts have no passwordHash and must not receive a password reset link.
+  if (!user || !user.passwordHash) {
     return { success: true, message: t("resetLinkSent") };
   }
 
@@ -537,7 +543,7 @@ export async function resetPasswordAction(rawInput: unknown): Promise<ResetPassw
   }
 
   const user = await prisma.user.findUnique({ where: { email: resetToken.email } });
-  if (!user) {
+  if (!user || !user.passwordHash) {
     return { success: false, error: t("userNotFound") };
   }
 

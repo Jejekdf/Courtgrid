@@ -1,3 +1,4 @@
+import "server-only";
 import { createClient } from "@supabase/supabase-js";
 
 export function createAdminClient() {
@@ -22,8 +23,8 @@ async function optimizeImage(
 ): Promise<Buffer> {
   const sharp = (await import("sharp")).default;
   const buffer = Buffer.from(await file.arrayBuffer());
-  return sharp(buffer)
-    .rotate() // bake EXIF orientation into pixels
+  return sharp(buffer, { limitInputPixels: 25_000_000 })
+    .rotate()
     .resize({ width: maxWidth, withoutEnlargement: true })
     .webp({ quality })
     .toBuffer();
@@ -32,7 +33,7 @@ async function optimizeImage(
 export async function uploadPaymentProof(reservationId: string, file: File) {
   const supabase = createAdminClient();
 
-  // Keep proofs readable (receipts, transfer screenshots) — mild compression only.
+  // Mild compression keeps receipt text and transfer screenshots legible.
   const optimized = await optimizeImage(file, 2000, 85);
   const path = `${reservationId}/proof.webp`;
 

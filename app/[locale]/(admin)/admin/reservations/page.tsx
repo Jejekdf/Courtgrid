@@ -36,7 +36,6 @@ export default function AdminReservationsPage() {
   const [, setIsScannerOpen] = useQueryState("scanner", adminScannerParser.withOptions({ shallow: true }));
   const openScanner = () => setIsScannerOpen(true);
 
-  // Fetch reservations matching current filter and page
   const { data, isLoading, isFetching } = useQuery({
     queryKey: [...adminKeys.reservations(filter), statusFilter, page],
     queryFn: async () => {
@@ -113,11 +112,14 @@ export default function AdminReservationsPage() {
       r.payment?.status ?? "-",
     ]);
 
+    const sanitizeCsvCell = (val: unknown): string => {
+      const str = String(val).replace(/"/g, '""');
+      return /^[=+\-@\t\r]/.test(str) ? `"'${str}"` : `"${str}"`;
+    };
+
     const csvContent = [
       headers.join(","),
-      ...rows.map((row) =>
-        row.map((val) => `"${String(val).replace(/"/g, '""')}"`).join(",")
-      ),
+      ...rows.map((row) => row.map(sanitizeCsvCell).join(",")),
     ].join("\r\n");
 
     const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });

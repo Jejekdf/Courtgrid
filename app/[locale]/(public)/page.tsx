@@ -137,7 +137,7 @@ export default async function Home({
     <div className="flex flex-col bg-background text-zinc-950 min-h-dvh">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd).replace(/</g, "\\u003c") }}
       />
       <main className="flex-1 w-full">
         {/* Main Hero Component with Dynamic Realtime Courts */}

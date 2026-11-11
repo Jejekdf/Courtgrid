@@ -1,13 +1,12 @@
 "use server";
 
 import { auth } from "@/auth";
+import { verifyUserSession } from "@/features/auth/dal";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getJakartaNow, jakartaDayBounds, jakartaMonthBounds, formatSlotHour } from "@/lib/timezone";
 import { invalidateCache, invalidateCachePattern } from "@/lib/redis";
 import { getAdminDashboardStatsDAL, type AdminStatsDTO } from "@/features/admin/dal";
-
-// Shared Return Types
 
 type AdminReservationRow = {
   id: string;
@@ -54,12 +53,6 @@ import { getTranslations } from "next-intl/server";
 import { buildCourtSchema, type CreateCourtInput } from "@/features/admin/schemas";
 import type { SchemaTranslator } from "@/lib/zod";
 
-/**
- * Checks that the current session belongs to an admin.
- *
- * Returns a typed failure instead of throwing so server actions can respond
- * with a controlled `{ success: false, error }` object.
- */
 async function checkAdmin() {
   const session = await auth();
   if (session?.user?.role !== "ADMIN") {
@@ -67,12 +60,16 @@ async function checkAdmin() {
     return { success: false as const, error: t("unauthorizedAdmin") };
   }
 
+  try {
+    await verifyUserSession("ADMIN");
+  } catch {
+    const t = await getTranslations("validation");
+    return { success: false as const, error: t("unauthorizedAdmin") };
+  }
+
   return { success: true as const };
 }
 
-/**
- * Validates court form fields against the Zod schema.
- */
 function parseCourtForm(
   formData: FormData,
   t?: SchemaTranslator
@@ -93,14 +90,6 @@ function parseCourtForm(
   return { data: parsed.data, error: null };
 }
 
-
-
-
-/**
- * Paginated admin reservations, optionally scoped to today or this month.
- *
- * The payload is paginated so the client table can page without re-fetching everything.
- */
 export async function getAllReservations(
   filter: "daily" | "monthly" | "all" = "all",
   page: number = 1,
@@ -163,9 +152,6 @@ export async function getAllReservations(
   };
 }
 
-/**
- * Hard-deletes a reservation by ID.
- */
 export async function adminDeleteReservation(id: string) {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
@@ -207,11 +193,6 @@ export async function adminDeleteReservation(id: string) {
   }
 }
 
-// Courts CRUD
-
-/**
- * Lists all courts, newest first.
- */
 export async function adminGetCourts(): Promise<AdminCourtRow[]> {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
@@ -220,9 +201,6 @@ export async function adminGetCourts(): Promise<AdminCourtRow[]> {
   return prisma.court.findMany({ orderBy: { createdAt: "desc" }, select: { id: true, name: true, type: true, pricePerHour: true, isActive: true, imageUrl: true } });
 }
 
-/**
- * Creates a new court from form data.
- */
 export async function adminCreateCourt(formData: FormData) {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
@@ -263,9 +241,6 @@ export async function adminCreateCourt(formData: FormData) {
   }
 }
 
-/**
- * Updates an existing court by ID.
- */
 export async function adminUpdateCourt(id: string, formData: FormData) {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
@@ -301,9 +276,6 @@ export async function adminUpdateCourt(id: string, formData: FormData) {
   }
 }
 
-/**
- * Deletes a court by ID.
- */
 export async function adminDeleteCourt(id: string) {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
@@ -318,9 +290,6 @@ export async function adminDeleteCourt(id: string) {
   return { success: true as const };
 }
 
-/**
- * Toggles whether a court is listed as active.
- */
 export async function adminToggleCourtActive(id: string, formData: FormData) {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
@@ -339,10 +308,6 @@ export async function adminToggleCourtActive(id: string, formData: FormData) {
   return { success: true as const };
 }
 
-
-/**
- * Permanently deletes a customer account.
- */
 export async function adminDeleteCustomer(id: string) {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
@@ -396,9 +361,6 @@ export async function adminToggleUserRole(id: string) {
   return { success: true, role: "CUSTOMER" as const };
 }
 
-/**
- * Paginated customers with optional name/email search.
- */
 export async function getAdminPaginatedCustomersAction(search?: string, page = 1, pageSize = 10): Promise<PaginatedCustomersResult> {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
@@ -408,12 +370,6 @@ export async function getAdminPaginatedCustomersAction(search?: string, page = 1
   return getAdminPaginatedCustomersDAL(search, page, pageSize);
 }
 
-// QR Ticket Scan & Check-in Verification
-
-/**
- * Looks up a reservation by ID for ticket scanning, with user/court/payment
- * details so staff can verify identity and booking before check-in.
- */
 export async function adminScanTicket(reservationId: string) {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
@@ -458,11 +414,6 @@ export async function adminScanTicket(reservationId: string) {
   };
 }
 
-/**
- * Marks a reservation as DONE after on-site check-in.
- *
- * Rejects canceled reservations and revalidates the affected caches.
- */
 export async function adminCheckInReservation(reservationId: string) {
   const adminCheck = await checkAdmin();
   if (!adminCheck.success) {
@@ -498,10 +449,17 @@ export async function adminCheckInReservation(reservationId: string) {
     };
   }
 
-  await prisma.reservation.update({
-    where: { id: reservationId.trim() },
+  const updated = await prisma.reservation.updateMany({
+    where: { id: reservationId.trim(), status: "DP_PAID" },
     data: { status: "DONE" },
   });
+
+  if (updated.count === 0) {
+    return {
+      success: false,
+      error: t("ticketAlreadyUsed"),
+    };
+  }
 
   if (reservation.userId) {
     await invalidateCache("admin:dashboard:stats", `customer:${reservation.userId}:reservations`);

@@ -17,6 +17,25 @@ import { routing } from "@/i18n/routing";
  */
 const handleI18nRouting = createMiddleware(routing);
 
+function buildDynamicCspHeader(nonce: string): string {
+  const isDev = process.env.NODE_ENV === "development";
+  const scriptSrc = `'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""} https://va.vercel-scripts.com https://vercel.live https://*.vercel.live`;
+
+  return [
+    "default-src 'self'",
+    `script-src ${scriptSrc}`,
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://vercel.live",
+    "img-src 'self' data: blob: https://*.supabase.co https://*.stripe.com https://lh3.googleusercontent.com https://platform-lookaside.fbsbx.com https://vercel.live https://vercel.com",
+    "font-src 'self' data: https://fonts.gstatic.com https://assets.vercel.com",
+    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://vitals.vercel-insights.com https://va.vercel-scripts.com https://*.vercel.app https://vercel.live wss://*.pusher.com",
+    "frame-src 'self' https://vercel.live",
+    "frame-ancestors 'self'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "object-src 'none'",
+  ].join("; ");
+}
+
 export const proxy = auth((req) => {
   const { pathname } = req.nextUrl;
 
@@ -63,11 +82,26 @@ export const proxy = auth((req) => {
 
   if (isAuthRoute && isLoggedIn) {
     const callbackParam = req.nextUrl.searchParams.get("callbackUrl");
-    if (callbackParam && callbackParam.startsWith("/") && !callbackParam.startsWith("//")) {
+    if (
+      callbackParam &&
+      callbackParam.startsWith("/") &&
+      !callbackParam.startsWith("//") &&
+      !callbackParam.includes("\\")
+    ) {
       return NextResponse.redirect(new URL(callbackParam, req.nextUrl));
     }
     const target = userRole === "ADMIN" ? "/admin" : "/dashboard";
     return NextResponse.redirect(toLocale(target));
+  }
+
+  if (isAdminRoute || isDashboardRoute) {
+    const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+    const cspHeader = buildDynamicCspHeader(nonce);
+    req.headers.set("x-nonce", nonce);
+    req.headers.set("Content-Security-Policy", cspHeader);
+    const response = handleI18nRouting(req);
+    response.headers.set("Content-Security-Policy", cspHeader);
+    return response;
   }
 
   return handleI18nRouting(req);

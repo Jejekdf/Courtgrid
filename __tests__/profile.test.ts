@@ -134,7 +134,8 @@ test("unauth → typed failure (SEC-2)", () => {
 
 test("action validates via updateProfileSchema.safeParse", () => {
   assert.ok(
-    actionsSrc.includes("updateProfileSchema.safeParse(rawInput)"),
+    actionsSrc.includes("createUpdateProfileSchema(t).safeParse(rawInput)") ||
+      actionsSrc.includes("updateProfileSchema.safeParse(rawInput)"),
     "should run Zod safeParse before touching DB",
   );
   assert.ok(

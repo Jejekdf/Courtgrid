@@ -13,6 +13,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
+  jwt: { maxAge: 7 * 24 * 60 * 60 },
   trustHost: true,
   providers: [
     Google({
@@ -38,19 +39,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const { email, password } = parsedCredentials.data;
 
-        // Standard Database User Validation
         const user = await prisma.user.findUnique({
           where: { email },
         });
 
-        // Run password verification unconditionally to ensure constant-time response
+        // Always run bcrypt even when the user is missing to keep response time constant.
         const isPasswordValid = await verifyCredentialsPassword(user, password);
 
         if (!isPasswordValid) {
           return null;
         }
 
-        if (!user) {
+        if (!user || !user.emailVerified) {
           return null;
         }
 

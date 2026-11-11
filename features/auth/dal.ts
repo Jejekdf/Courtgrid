@@ -5,9 +5,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
 /**
- * Sanitized user DTO returned to client-facing code.
- *
- * Excludes sensitive fields such as `passwordHash`.
+ * Public user profile shape with sensitive fields like `passwordHash` stripped out.
  */
 export type UserDTO = {
   id: string;
@@ -21,9 +19,7 @@ export type UserDTO = {
 };
 
 /**
- * Returns the currently authenticated user, sanitized for client-facing code.
- *
- * `cache()` dedupes DB hits within the same request.
+ * Fetches the authenticated user for the current request, deduplicating DB queries via React `cache()`.
  */
 export const getCurrentUser = cache(async (): Promise<UserDTO | null> => {
   const session = await auth();
@@ -45,7 +41,6 @@ export const getCurrentUser = cache(async (): Promise<UserDTO | null> => {
 
   if (!user) return null;
 
-  // Never leak passwordHash to client layers.
   return {
     id: user.id,
     name: user.name,
@@ -59,9 +54,7 @@ export const getCurrentUser = cache(async (): Promise<UserDTO | null> => {
 });
 
 /**
- * Returns the current user, optionally enforcing a required role.
- *
- * Throws when the session is missing or the role does not match.
+ * Asserts an active session and optional role requirement against the database.
  */
 export const verifyUserSession = cache(async (requiredRole?: "ADMIN" | "CUSTOMER") => {
   const user = await getCurrentUser();
@@ -76,9 +69,6 @@ export const verifyUserSession = cache(async (requiredRole?: "ADMIN" | "CUSTOMER
   return user;
 });
 
-/**
- * Updates a user's profile: name and email always, image only when provided.
- */
 export async function updateUserProfileDAL(userId: string, data: { name: string; email: string; image?: string }) {
   return prisma.user.update({
     where: { id: userId },
@@ -90,9 +80,13 @@ export async function updateUserProfileDAL(userId: string, data: { name: string;
   });
 }
 
-/**
- * Replaces a user's password hash. The new value must already be hashed.
- */
+export async function updateUserAvatarDAL(userId: string, image: string) {
+  return prisma.user.update({
+    where: { id: userId },
+    data: { image },
+  });
+}
+
 export async function changePasswordDAL(userId: string, passwordHash: string) {
   return prisma.user.update({
     where: { id: userId },

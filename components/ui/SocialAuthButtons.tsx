@@ -94,7 +94,11 @@ export default function SocialAuthButtons({ isLoading, callbackUrl }: SocialAuth
     }, 6000);
 
     try {
-      const isSafeCallback = callbackUrl && callbackUrl.startsWith("/") && !callbackUrl.startsWith("//");
+      const isSafeCallback =
+        callbackUrl &&
+        callbackUrl.startsWith("/") &&
+        !callbackUrl.startsWith("//") &&
+        !callbackUrl.includes("\\");
       const targetUrl = isSafeCallback ? callbackUrl : "/dashboard";
       await signIn(provider, { callbackUrl: targetUrl });
     } catch {

@@ -5,14 +5,12 @@ import { getActiveCourtsDAL, ActiveCourtDTO } from "@/features/courts/dal";
 import { autoCancelGhostBookings } from "@/features/reservations/ghostCancel";
 import { formatSlotHour } from "@/lib/timezone";
 import { auth } from "@/auth";
+import { verifyUserSession } from "@/features/auth/dal";
 import { uploadCourtImage } from "@/lib/supabase/storage";
 import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
 
 
-/**
- * All active courts, sorted by name. Returns an empty array on failure.
- */
 export async function getCourts(): Promise<ActiveCourtDTO[]> {
   try {
     return await getActiveCourtsDAL("", null);
@@ -22,12 +20,6 @@ export async function getCourts(): Promise<ActiveCourtDTO[]> {
   }
 }
 
-/**
- * Booked time slots for a court on a given date.
- *
- * Runs the ghost-booking cleanup first so stale, unpaid PENDING reservations
- * (older than `Setting.autoCancelTimeout`, no Stripe session) release their slots.
- */
 type AvailabilitySlot = { startTime: string; endTime: string; status: string };
 
 export async function getCourtAvailability(courtId: string, dateStr: string): Promise<AvailabilitySlot[]> {
@@ -85,6 +77,12 @@ export async function uploadCourtImageAction(formData: FormData) {
   const t = await getTranslations("validation");
   const session = await auth();
   if (!session?.user || session.user.role !== "ADMIN") {
+    return { success: false, error: t("unauthorizedAdmin") };
+  }
+
+  try {
+    await verifyUserSession("ADMIN");
+  } catch {
     return { success: false, error: t("unauthorizedAdmin") };
   }
 

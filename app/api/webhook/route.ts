@@ -36,13 +36,11 @@ export async function POST(req: Request) {
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
 
-    // Only fulfill when the payment actually went through.
     if (session.payment_status !== "paid") {
-      console.warn(`Webhook: unpaid session ${session.id} — no state change`);
+      console.warn(`Webhook: unpaid session ${session.id}, skipping fulfillment`);
       return NextResponse.json({ received: true });
     }
 
-    // Extract reservationId from client_reference_id or metadata
     const reservationId = session.client_reference_id || session.metadata?.reservationId;
 
     if (!reservationId) {
@@ -54,10 +52,14 @@ export async function POST(req: Request) {
     }
 
     try {
-      // Idempotent — only update if the reservation is still PENDING.
+      // Skip duplicate deliveries once the reservation has moved past PENDING.
       const existingReservation = await prisma.reservation.findUnique({
         where: { id: reservationId },
-        select: { status: true },
+        select: {
+          status: true,
+          stripeSessionId: true,
+          payment: { select: { dpAmount: true } },
+        },
       });
 
       if (!existingReservation || existingReservation.status !== "PENDING") {
@@ -65,25 +67,62 @@ export async function POST(req: Request) {
         return NextResponse.json({ received: true });
       }
 
-      const updated = await prisma.$transaction([
-        prisma.reservation.update({
-          where: { id: reservationId },
+      if (
+        existingReservation.stripeSessionId &&
+        session.id &&
+        existingReservation.stripeSessionId !== session.id
+      ) {
+        logger.warn("Webhook:SessionMismatch", `Ignored stale checkout session ${session.id} for reservation ${reservationId}`, {
+          reservationId,
+        });
+        return NextResponse.json({ received: true });
+      }
+
+      const expectedMinorAmount =
+        existingReservation.payment?.dpAmount !== undefined
+          ? existingReservation.payment.dpAmount * 100
+          : null;
+
+      if (
+        expectedMinorAmount !== null &&
+        typeof session.amount_total === "number" &&
+        session.amount_total < expectedMinorAmount
+      ) {
+        logger.error("Webhook:AmountMismatch", `Paid amount ${session.amount_total} is below expected ${expectedMinorAmount}`, undefined, {
+          reservationId,
+        });
+        return NextResponse.json({ error: "Payment amount mismatch" }, { status: 400 });
+      }
+
+      const reservation = await prisma.$transaction(async (tx) => {
+        const claimed = await tx.reservation.updateMany({
+          where: { id: reservationId, status: "PENDING" },
           data: { status: "DP_PAID" },
+        });
+
+        if (claimed.count === 0) {
+          return null;
+        }
+
+        await tx.payment.update({
+          where: { reservationId: reservationId },
+          data: { status: "VERIFIED" },
+        });
+
+        return tx.reservation.findUnique({
+          where: { id: reservationId },
           include: {
             user: true,
             court: true,
             payment: true,
           },
-        }),
-        prisma.payment.update({
-          where: { reservationId: reservationId },
-          data: { status: "VERIFIED" },
-        }),
-      ]);
+        });
+      });
 
-      const reservation = updated[0];
+      if (!reservation) {
+        return NextResponse.json({ received: true });
+      }
 
-      // Send payment confirmation email (non-blocking)
       if (reservation.user?.email) {
         const dateStr = reservation.date.toISOString().split("T")[0];
         const startTime = reservation.startTime.toISOString().split("T")[1]?.slice(0, 5) ?? "";
@@ -109,7 +148,6 @@ export async function POST(req: Request) {
 
       logger.info("Webhook:Success", `Payment verified and reservation ${reservationId} updated to DP_PAID.`, { reservationId });
 
-      // Invalidate Redis cache for admin stats and customer reservations
       if (reservation.userId) {
         await invalidateCache("admin:dashboard:stats", `customer:${reservation.userId}:reservations`);
       } else {
@@ -117,7 +155,6 @@ export async function POST(req: Request) {
       }
       await invalidateCachePattern("public:avail:*");
 
-      // Revalidate admin and dashboard caches
       revalidatePath("/admin");
       revalidatePath("/admin/reservations");
       revalidatePath("/dashboard");

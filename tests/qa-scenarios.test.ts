@@ -12,6 +12,7 @@ import {
 } from "@/features/reservations/doubleBooking";
 import { shouldAutoCancelGhost } from "@/features/reservations/ghostPolicy";
 import { createReservationSchema } from "@/features/reservations/schemas";
+import { escapeHtml, forgotPasswordEmail, bookingConfirmationEmail, registerOtpEmail } from "@/lib/emails/templates";
 
 // --- FIX-H2 helpers (Asia/Jakarta boundaries) ---
 function jakartaToday(): string {
@@ -245,4 +246,31 @@ test("UX-3: voucher discount correctly respects pct and maxDiscount cap", () => 
     discountAmount: 25000,
     finalPrice: 175000,
   });
+});
+
+// === SEC-8: HTML escaping in email templates ===
+test("SEC-8: email templates escape HTML characters in dynamic fields", () => {
+  assert.equal(escapeHtml('<script>alert("xss")</script>'), "&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;");
+
+  const resetMail = forgotPasswordEmail('<img src=x onerror=alert(1)>', "https://example.com/reset?a=1&b=2");
+  assert.equal(resetMail.html.includes("<img src=x"), false);
+  assert.equal(resetMail.html.includes("&lt;img src=x onerror=alert(1)&gt;"), true);
+
+  const otpMail = registerOtpEmail("<b>Victim</b>", "123456");
+  assert.equal(otpMail.html.includes("<b>Victim</b>"), false);
+  assert.equal(otpMail.html.includes("&lt;b&gt;Victim&lt;/b&gt;"), true);
+
+  const bookingMail = bookingConfirmationEmail({
+    userName: "<script>evil()</script>",
+    userEmail: "user@example.com",
+    courtName: 'Court "A" & <B>',
+    dateStr: "2026-11-12",
+    startTime: "10:00",
+    endTime: "11:00",
+    totalPrice: 150000,
+    dpAmount: 75000,
+    reservationId: "res-1",
+  });
+  assert.equal(bookingMail.html.includes("<script>evil()</script>"), false);
+  assert.equal(bookingMail.html.includes("Court &quot;A&quot; &amp; &lt;B&gt;"), true);
 });

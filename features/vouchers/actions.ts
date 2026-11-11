@@ -2,19 +2,21 @@
 
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
+import { verifyUserSession } from "@/features/auth/dal";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { buildVoucherSchema } from "./schemas";
 
-/**
- * Checks that the current session belongs to an admin.
- *
- * Returns a typed failure instead of throwing so server actions can respond
- * with a controlled `{ success: false, error }` object.
- */
 async function checkAdmin() {
   const session = await auth();
   if (session?.user?.role !== "ADMIN") {
+    const t = await getTranslations("validation");
+    return { success: false as const, error: t("unauthorizedAdmin") };
+  }
+
+  try {
+    await verifyUserSession("ADMIN");
+  } catch {
     const t = await getTranslations("validation");
     return { success: false as const, error: t("unauthorizedAdmin") };
   }

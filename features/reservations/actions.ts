@@ -46,7 +46,12 @@ export async function createReservationAction(rawInput: unknown) {
     };
   }
 
-  // Reject dates/hours that have already passed in Asia/Jakarta.
+  const { checkRateLimitRelaxed } = await import("@/lib/ratelimit");
+  const { success: allowed } = await checkRateLimitRelaxed(`reservation_create:${user.id}`);
+  if (!allowed) {
+    return { success: false, error: t("rateLimitResetSubmit") };
+  }
+
   const { courtId, dateStr, startTime, endTime, voucherCode } = bookingInput.data;
   const tzError = validateBookingTime(dateStr, startTime, t);
   if (tzError) {
@@ -66,7 +71,7 @@ export async function createReservationAction(rawInput: unknown) {
     return { success: false, error: t("courtInactive") };
   }
 
-  // Recompute the price server-side (never trust client numbers), then apply voucher if given
+  // Always derive total price on the server from court rate and duration.
   const startHour = parseInt(startTime.split(":")[0], 10);
   const endHour = parseInt(endTime.split(":")[0], 10);
   if (startHour < 8 || endHour > 22) {
@@ -110,7 +115,6 @@ export async function createReservationAction(rawInput: unknown) {
   const startDateTime = new Date(`${dateStr}T${startTime}:00.000Z`);
   const endDateTime = new Date(`${dateStr}T${endTime}:00.000Z`);
 
-  // Down-payment percentage from Settings (default 50%)
   const setting = await prisma.setting.findUnique({ where: { id: 1 } });
   const dpPercentage = setting?.dpPercentage ?? 50;
 
@@ -122,12 +126,10 @@ export async function createReservationAction(rawInput: unknown) {
     return { success: false, error: t("doubleBooked") };
   }
 
-  // Check for overlap inside a transaction so the slot can't be double-booked,
-  // then create the reservation and its payment record together.
   let reservationId: string;
   try {
     const reservation = await prisma.$transaction(async (tx) => {
-      // Half-open interval [start, end): adjacent slots don't collide.
+      // Half-open interval [start, end) so back-to-back bookings do not collide.
       const overlap = await tx.reservation.findFirst({
         where: {
           courtId,
@@ -143,8 +145,7 @@ export async function createReservationAction(rawInput: unknown) {
         throw new ReservationGuardError(t("doubleBooked"));
       }
 
-      // Voucher redemption limit: count prior non-canceled usages inside this
-      // transaction so two concurrent checkouts can't exceed max_uses.
+      // Check voucher usage inside the transaction so parallel checkouts cannot exceed maxUses.
       if (appliedVoucherId) {
         const [usedCount, voucher] = await Promise.all([
           tx.reservation.count({
@@ -161,7 +162,6 @@ export async function createReservationAction(rawInput: unknown) {
         }
       }
 
-      // No overlap — create reservation + payment atomically
       return tx.reservation.create({
         data: {
           userId: user.id,
@@ -189,7 +189,6 @@ export async function createReservationAction(rawInput: unknown) {
       return { success: false, error: error.message };
     }
     if (error && typeof error === "object" && "code" in error && error.code === "P2002") {
-      // Caught by the DB unique constraint — someone else just booked this slot.
       return { success: false, error: t("doubleBookedRace") };
     }
     console.error("Create reservation action error:", error);
@@ -198,7 +197,6 @@ export async function createReservationAction(rawInput: unknown) {
     await releaseLock(slotLockKey, slotLock.token);
   }
 
-  // Create the Stripe Checkout session and attach it to the reservation
   const appUrl = SITE_URL;
   let checkoutSession;
   try {
@@ -230,12 +228,10 @@ export async function createReservationAction(rawInput: unknown) {
     });
   } catch (stripeError) {
     console.error("Stripe Checkout Error:", stripeError);
-    // Cleanup the pending reservation if Stripe fails
     await prisma.reservation.delete({ where: { id: reservationId } });
     return { success: false, error: t("stripeError") };
   }
 
-  // Confirmation email is fire-and-forget; then invalidate caches and revalidate affected routes
   resend.emails.send({
     ...bookingConfirmationEmail({
       userName: user.name,
@@ -400,6 +396,12 @@ export async function resumeReservationPaymentAction(reservationId: string) {
     user = await verifyUserSession();
   } catch {
     return { success: false, error: t("unauthorized") };
+  }
+
+  const { checkRateLimitRelaxed } = await import("@/lib/ratelimit");
+  const { success: allowed } = await checkRateLimitRelaxed(`reservation_resume:${user.id}`);
+  if (!allowed) {
+    return { success: false, error: t("rateLimitResetSubmit") };
   }
 
   const reservation = await prisma.reservation.findUnique({

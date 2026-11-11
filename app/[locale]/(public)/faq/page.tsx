@@ -125,7 +125,7 @@ export default async function FAQPage({
     <div className="min-h-dvh pt-4 sm:pt-6 pb-16 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 bg-background text-zinc-950">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
       />
       <PageWrapper className="max-w-5xl xl:max-w-320 2xl:max-w-360 mx-auto">
         <Breadcrumb items={breadcrumbItems} locale={locale} />

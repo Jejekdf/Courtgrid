@@ -151,7 +151,8 @@ test("authenticate is a server action ('use server')", () => {
 
 test("action validates via loginSchema.safeParse (SEC-8)", () => {
   assert.ok(
-    actionsSrc.includes("loginSchema.safeParse({ email, password })"),
+    actionsSrc.includes("createLoginSchema(t).safeParse({ email, password })") ||
+      actionsSrc.includes("loginSchema.safeParse({ email, password })"),
     "should re-validate raw input server-side",
   );
 });

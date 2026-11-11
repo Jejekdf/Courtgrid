@@ -1,14 +1,12 @@
 "use server";
 
 import { auth } from "@/auth";
+import { verifyUserSession } from "@/features/auth/dal";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { getTranslations } from "next-intl/server";
 
-/**
- * Checks that the current session belongs to an admin.
- */
 async function checkAdmin() {
   const session = await auth();
   if (session?.user?.role !== "ADMIN") {
@@ -16,15 +14,16 @@ async function checkAdmin() {
     return { success: false as const, error: t("unauthorizedAdmin") };
   }
 
+  try {
+    await verifyUserSession("ADMIN");
+  } catch {
+    const t = await getTranslations("validation");
+    return { success: false as const, error: t("unauthorizedAdmin") };
+  }
+
   return { success: true as const };
 }
 
-/**
- * Updates (or creates) the global venue settings record.
- *
- * Admin-only. Revalidates the settings, admin dashboard, and public home
- * pages so the UI reflects new values immediately.
- */
 export async function updateAdminSettings(formData: FormData) {
   const t = await getTranslations("validation");
   try {
@@ -33,7 +32,6 @@ export async function updateAdminSettings(formData: FormData) {
       return { success: false, error: adminCheck.error };
     }
 
-    // Validate ranges via Zod (invalid values must be rejected).
     const settingsSchema = z.object({
       venueName: z.string().min(1, t("venueNameRequired")).max(100, t("venueNameTooLong")),
       operationalHours: z.string().min(1, t("operatingHoursRequired")).max(100, t("operatingHoursTooLong")),
@@ -58,8 +56,6 @@ export async function updateAdminSettings(formData: FormData) {
 
     const { venueName, operationalHours, contactPhone, dpPercentage, autoCancelTimeout, notifyEmail } = parsed.data;
 
-    // --- SAVE TO DATABASE ---
-    // Upsert: update if the settings row exists, create it otherwise.
     await prisma.setting.upsert({
       where: { id: 1 },
       update: {
@@ -81,7 +77,6 @@ export async function updateAdminSettings(formData: FormData) {
       },
     });
 
-    // Clear the Next.js cache so the UI reflects changes immediately.
     const { invalidateCache } = await import("@/lib/redis");
     await invalidateCache("admin:dashboard:stats");
 
@@ -104,9 +99,6 @@ export async function updateAdminSettings(formData: FormData) {
   }
 }
 
-/**
- * Fetches the current global venue settings. Admin-only.
- */
 export async function getSettingsAction() {
   const t = await getTranslations("validation");
   try {
